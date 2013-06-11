@@ -22,21 +22,35 @@
         <ul>
           <li>
             <%= render "layouts/application_top_nav_link", 
-                       target_text:            "ABOUT",
+                       target_text:            "WRITE A QUESTION",
                        target_id:              "top-nav-about-link",
                        target_path:            "#",
                        target_current_symbol:  :top_nav_about_current %>
           </li>
           <li>
             <%= render "layouts/application_top_nav_link", 
-                       target_text:            "API",
+                       target_text:            "FIND QUESTIONS",
                        target_id:              "top-nav-api-link",
-                       target_path:            api_path,
+                       target_path:            '#',
                        target_current_symbol:  :top_nav_api_current %>
           </li>
           <li>
             <%= render "layouts/application_top_nav_link", 
-                       target_text:            "SIGN IN",
+                       target_text:            "LISTS",
+                       target_id:              "top-nav-api-link",
+                       target_path:            '#',
+                       target_current_symbol:  :top_nav_api_current %>
+          </li>
+          <li>
+            <%= render "layouts/application_top_nav_link", 
+                       target_text:            "SHARE",
+                       target_id:              "top-nav-api-link",
+                       target_path:            '#',
+                       target_current_symbol:  :top_nav_api_current %>
+          </li>
+          <li>
+            <%= render "layouts/application_top_nav_link", 
+                       target_text:            "HELP",
                        target_id:              "top-nav-account-link",
                        target_path:            "#",
                        target_current_symbol:  :top_nav_account_current,
@@ -44,7 +58,12 @@
           </li>
         </ul>
       </div>
+
+      <input type='text' placeholder="SEARCH"/>
+
     </div>
+
+
   </div>
 
   <noscript>
