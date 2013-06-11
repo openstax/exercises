@@ -1,0 +1,19 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+#application-home-page-background-image {
+  height:         544px;
+  margin-bottom:  -15px;
+  padding:        0px 0px;
+
+  // background: image-url("student_full_home_haze.jpg");
+}
+
+#application-home-page-welcome-image {
+  clear:        both;
+  float:        right; 
+  margin-right: $application_edge_distance;
+  padding-top:  30px
+}

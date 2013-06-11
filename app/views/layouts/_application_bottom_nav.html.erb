@@ -1,0 +1,36 @@
+<div id="bottom-nav-frame">
+  <div id="bottom-nav-content">
+
+    <div id="bottom-nav-links">
+
+      <%= link_to "Terms of Use", nil %>
+      <%= image_tag "links_dash.png" %>
+      
+      <%= link_to "About", nil %>
+      <%= image_tag "links_dash.png" %>
+      
+      <%= link_to "Contact Us", nil %>
+
+      <% if false %>
+      <% links = [ ["Terms of Use", nil],
+                   ["About", nil],
+                   ["Contact Us", nil] ] %>
+
+      <ul>
+      <% links.each_with_index do |link, ii| %>
+        <li>
+        <%= link_to link[1] do %>
+          <span class='bottom-nav-link'>
+            <%= link[0] %>
+            <%= content_tag :em if ii != links.size-1 %>
+          </span>
+        <% end %>
+        </li>
+      <% end %>
+      </ul>
+      <% end %>
+
+    </div>
+
+  </div>
+</div>

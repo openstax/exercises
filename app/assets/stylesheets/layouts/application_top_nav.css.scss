@@ -1,0 +1,92 @@
+@import "common";
+
+#top-nav-frame {
+  height: $application_top_nav_height;
+  background-color: white;
+  border: 1px solid rgb(228, 224, 222);
+}
+
+#top-nav-content {
+  padding-left:  12px;
+}
+
+#top-nav-links {
+
+  ul {
+    float: left;
+
+    padding:  0px 0px  0px 0px;
+    margin:   0px 0px 10px 0px;
+  }
+
+  li {
+    display: inline;
+
+    height:  $application_top_nav_height;
+    margin:  0px 0px;
+
+    list-style-type: none;
+    text-align:      center;
+  }
+
+  a {
+    color:           black;
+    text-decoration: none;
+
+    &:hover {
+      color:            white;
+      background-color: $ost_hot_blue;
+    }
+  }
+
+  .top-nav-link {
+    float: left;
+
+    display:  inline; 
+    position: relative;
+
+    padding-right: 19px;
+
+    font-size:   10px;
+    font-family: arial, helvetica, sans-serif;
+    line-height: $application_top_nav_height;
+
+    &:hover {
+      color: $ost_hot_blue;
+    }
+
+    em {
+       position: absolute;
+       top:      8px;
+       // left:     0px;
+
+       height:    62px;
+       width:    100%;
+
+       background: image-url("links_dash.png") no-repeat top center;
+
+       &.last {
+        background: none;
+       }
+
+       z-index: 2;
+    }
+  }
+
+  .current {
+    color:            white;
+    background-color: $ost_hot_blue ! important;
+
+
+  }
+
+  .help-link-icon {
+    height:         12px;
+    width:          12px;
+    margin-top:     -2px; 
+    padding-left:    5px;
+
+    vertical-align: middle; 
+  }
+
+}

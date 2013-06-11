@@ -1,0 +1,21 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+#application-body-only-frame {
+  position: relative;
+
+  $body_width:  $application_master_width - 2*$application_edge_distance;
+
+  #application-body-only-body-content {
+    width:          $body_width;
+    padding-left:   $application_edge_distance;
+    padding-right:  $application_edge_distance;
+    padding-top:    $application_basic_spacing;
+    padding-bottom: $application_basic_spacing;
+
+    #application-body-only-body {
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% content_for :application_body do %>
+
+  <div id="application-body-nav">
+
+    <div id="application-body-nav-account-bar">
+      <%= render  :partial  => "layouts/application_account_bar", 
+                  :locals   => { :icon_color => "gray" } %>
+    </div>
+
+    <div id="application-body-nav-global-alerts">
+      <%= render  partial: "shared/global_alerts" %>
+    </div>
+
+    <div id="application-body-nav-body-frame">
+      <div id="application-body-nav-local-alerts">
+        <%= render  partial: "shared/local_alerts" %>
+      </div>
+
+      <div id="application-body-nav-body-content">
+        <%= yield %>
+      </div>
+    </div>
+
+    <div id="application-body-nav-nav-frame">
+      <div id="application-body-nav-nav-content">
+        <%= yield :nav %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>
+
+<%= render :template => "layouts/application" %>

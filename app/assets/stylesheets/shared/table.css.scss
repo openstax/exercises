@@ -1,0 +1,46 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+.table-block-table {
+  margin-top: 5px;
+  padding:    2px;
+
+  font-size:   13px;
+  font-weight: normal;
+  font-color:  #000000;
+
+  text-align:  left;
+
+  border-spacing:  2px;
+  border-width:    0px 0px 0px 0px;
+  border-style:    outset outset outset outset;
+  border-color:    gray gray gray gray;
+  border-collapse: collapse;
+
+  th {
+    font-weight:   bold;
+    text-align:    left;
+    border-bottom: 1px solid black;
+  }
+
+  tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  td {
+    padding-right: 10px;
+
+    text-align: right;
+  }
+
+  td.section-heading {
+    text-align: left;
+    font-style: italic;
+  }
+
+  td.outlined_cell {
+    border-left: 1px solid #ddd; 
+    border-right:1px solid #ddd; 
+    padding: 8px;
+  }
+}

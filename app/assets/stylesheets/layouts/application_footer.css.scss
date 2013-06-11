@@ -1,0 +1,44 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+#application-footer-frame {
+  clear: both;
+  
+  height: $application_footer_height;
+}
+
+#application-footer-content {
+  height: $application_footer_height;
+
+  padding-left:  12px;
+
+  color:            rgb(149,149,149);
+  font-size:        9px;
+  font-family:      verdana, arial, helvetica, sans-serif;
+  line-height:      14px;
+  
+  a {
+    font-size:        9px;
+    text-decoration:  none;
+    color:            rgb(149,149,149);
+
+    &:hover {
+      color: $ost_hot_blue;
+    }
+  }
+
+  #footer-copyright {
+    padding-top: 24px;
+  }
+
+  #footer-rice-logo {
+    float: right;
+  }
+
+  #footer-rice-logo-image {
+    padding-top:  21px;
+    float:        right;
+  }
+}

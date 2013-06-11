@@ -1,0 +1,40 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+#application-header {
+
+  #application-header-between-bars {
+    height: $application_header_between_bars_height;
+  }
+
+  #application-header-color-bar {
+    background: image-url("color_bar.png") no-repeat transparent;
+    height: 4px;
+    margin-left: -$application_overhang_distance;
+    width: 959px;
+    position: absolute;
+    top: 0px;
+  }
+
+  #application-header-logo {
+    margin-top: 18px;
+    float: left;
+  }
+
+  #application-header-logo-link  {
+    background: image-url("os_exercises_logo.png") no-repeat transparent;
+    $image_height:  24px;
+    $image_width:  196px;
+
+    float:      left;
+    height:     $image_height;
+    width:      $image_width;
+    margin-top: ($application_top_nav_height - $image_height)/2;
+  }
+
+
+
+
+}

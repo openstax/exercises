@@ -1,0 +1,6 @@
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% self.now_global_alerts.each do |alert_info| %>
+  <%= render partial: "shared/alert", locals: { alert: alert_info } %>
+<% end %>

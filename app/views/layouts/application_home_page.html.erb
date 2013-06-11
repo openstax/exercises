@@ -1,0 +1,19 @@
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% top_nav_home_page_background %>
+<% account_bar_transparent %>
+
+<% content_for :application_body do %>
+
+  <div id="application-home-page-global-alerts">
+    <%= render  partial: "shared/global_alerts" %>
+  </div>
+
+  <div id="application-home-page-local-alerts">
+    <%= render  partial: "shared/local_alerts" %>
+  </div>
+
+<% end %>
+
+<%= render :template => "layouts/application" %>
