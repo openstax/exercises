@@ -61,7 +61,8 @@
     display:  inline; 
     position: relative;
 
-    padding-right: 19px;
+    padding-right: 9px;
+    margin-right: 9px;
 
     font-size:   10px;
     font-family: arial, helvetica, sans-serif;
@@ -74,12 +75,10 @@
     em {
        position: absolute;
        top:      8px;
-       // left:     0px;
-
-       height:    62px;
-       width:    100%;
-
-       background: image-url("links_dash.png") no-repeat top center;
+       right:     0px;
+       width: 1px;
+       height: 12px;
+       background: image-url("links_dash.png") no-repeat top;
 
        &.last {
         background: none;
@@ -92,8 +91,6 @@
   .current {
     color:            white;
     background-color: $ost_hot_blue ! important;
-
-
   }
 
   .help-link-icon {

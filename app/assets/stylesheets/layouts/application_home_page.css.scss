@@ -11,9 +11,65 @@
   // background: image-url("student_full_home_haze.jpg");
 }
 
-#application-home-page-welcome-image {
-  clear:        both;
-  float:        right; 
-  margin-right: $application_edge_distance;
-  padding-top:  30px
+$create_image_height: 384px;
+
+#application-home-page-create {
+  float:        left; 
+  background: image-url('carrot.jpg');
+  height: $create_image_height;
+  width: 671px;
+  text-align: center;
+
+  h3 {
+    margin-top: 115px;
+    font-size: 45px;
+    color: white;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  p {
+    padding-top: 20px;
+    color: white;
+    font-size: 16px;
+    letter-spacing: 1px;
+    font-family: arial, helvetica, sans-serif;
+    margin-bottom: 60px;
+  }
+
+  a {
+    text-transform: uppercase;
+    color: white;
+  }
+}
+
+.application-home-page-right-box {
+  $bottom_margin: 7px;
+  $padding_and_border_space: 2*10px + 2*1px;
+  @include white-box;
+  float: right;
+  width: 170px - $padding_and_border_space;
+  margin-bottom: $bottom_margin;
+  height: ($create_image_height - 2*$bottom_margin)/3 - $padding_and_border_space;
+
+  &.last {
+    margin-bottom: 0px;
+  }
+
+  h3 {
+    font-size:19px;
+    text-transform: uppercase;
+    color: rgb(37,37,37);
+    margin-top:0px;
+    line-height: 20px;
+  }
+
+  p {
+    font-size: 9px;
+    line-height: 12px;
+  }
+
+  a {
+    font-size:10px;
+  }
 }
