@@ -1,6 +1,8 @@
 // Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
 // License version 3 or later.  See the COPYRIGHT file for details.
 
+@import "common_colors";
+
 @mixin vertical-bar-common {
   display:      inline;
   border-left:  1px solid white;
@@ -20,4 +22,19 @@
 
 .bar-top {
   @include bar-top;
+}
+
+.link_button {
+  background-color: $os_green;
+  color: white;
+  font-weight: bold;
+  padding: 2px 8px 3px 9px;
+  font-size: 11px;
+  border: none;
+ 
+  &:hover {
+   background-color: lighten($os_green, 5%);
+   color: white;
+   text-decoration: none
+  }
 }

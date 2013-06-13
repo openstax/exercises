@@ -40,6 +40,8 @@ $create_image_height: 384px;
   a {
     text-transform: uppercase;
     color: white;
+    display:inline-block;
+    line-height: 12px;
   }
 }
 
@@ -71,5 +73,8 @@ $create_image_height: 384px;
 
   a {
     font-size:10px;
+    margin-top:4px;
+    display:inline-block;
+    line-height: 12px;
   }
 }

@@ -51,7 +51,7 @@
 
     &:hover {
       color:            white;
-      background-color: $ost_hot_blue;
+      background-color: $hot_blue;
     }
   }
 
@@ -69,7 +69,7 @@
     line-height: $application_top_nav_height;
 
     &:hover {
-      color: $ost_hot_blue;
+      color: $hot_blue;
     }
 
     em {
@@ -90,7 +90,7 @@
 
   .current {
     color:            white;
-    background-color: $ost_hot_blue ! important;
+    background-color: $hot_blue ! important;
   }
 
   .help-link-icon {

@@ -5,8 +5,15 @@
 
 #application-body {
   min-height: 300px;
+  clear:both;
 }
 
 #application-body a {
   font-weight: normal;
+  text-decoration: none;
+  color: $os_green;
+
+  &:hover {
+    color: $hot_blue;
+  }
 }

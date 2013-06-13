@@ -18,7 +18,6 @@
 
 #bottom-nav-links {
   position:relative;
-  padding-left: 12px;
   
   a {
     color: rgb(85,85,85);
@@ -28,7 +27,7 @@
     font-family: arial, helvetica, sans-serif;
 
     &:hover {
-      color: $ost_hot_blue;
+      color: $hot_blue;
     }
   }
 

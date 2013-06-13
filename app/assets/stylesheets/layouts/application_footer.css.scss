@@ -12,8 +12,6 @@
 #application-footer-content {
   height: $application_footer_height;
 
-  padding-left:  12px;
-
   color:            rgb(149,149,149);
   font-size:        9px;
   font-family:      verdana, arial, helvetica, sans-serif;
@@ -25,7 +23,7 @@
     color:            rgb(149,149,149);
 
     &:hover {
-      color: $ost_hot_blue;
+      color: $hot_blue;
     }
   }
 

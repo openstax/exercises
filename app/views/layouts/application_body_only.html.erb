@@ -5,11 +5,6 @@
 
   <div id="application-body-only">
 
-    <div id="application-body-only-account-bar">
-      <%= render  :partial  => "layouts/application_account_bar", 
-                  :locals   => { :icon_color => "gray" } %>
-    </div>
-
     <div id="application-body-only-global-alerts">
       <%= render  partial: "shared/global_alerts" %>
     </div>
@@ -21,6 +16,10 @@
       </div>
 
       <div id="application-body-only-body-content">
+        <% if content_for?(:page_heading) %>
+          <%= yield :page_heading %>
+        <% end %>
+
         <%= yield %>
       </div>
     </div>

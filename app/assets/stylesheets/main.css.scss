@@ -58,7 +58,7 @@
 
   a, #message_dialog_body a, #help_dialog_body a {
     text-decoration: none;
-    color: $ost_hot_blue;
+    color: $hot_blue;
     &:link {}
     &:hover { color: black; text-decoration:none;}
     &:visited {}
@@ -73,13 +73,13 @@
     a {
       color: black;
       &:hover {
-        color: $ost_hot_blue;
+        color: $hot_blue;
       }
     }
   }
 
   .link_button {
-    background-color: $ost_hot_blue;
+    background-color: $hot_blue;
     color: white;
     // font-weight: bold;
     padding: 5px 13px 5px 14px;
@@ -88,7 +88,7 @@
     @include rounded(13px);
    
     &:hover {
-     background-color: darken($ost_hot_blue, 10%);
+     background-color: darken($hot_blue, 10%);
      color: white;
      text-decoration:none;
     }
@@ -110,7 +110,7 @@
   }
 
   input[disabled].link_button {
-    background-color: $ost_hot_blue;
+    background-color: $hot_blue;
   }
 
   #big_get_button {
