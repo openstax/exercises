@@ -7,9 +7,33 @@
 # Ignore bundler config
 /.bundle
 
-# Ignore the default SQLite database.
+# Ignore the default SQLite database and yaml_db database files
 /db/*.sqlite3
+/db/data.yml*
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
-/tmp
+/tmp/**/*
+
+# Ignore OS X's Desktop Service Store files
+*.DS_Store
+
+config/developer_settings.yml
+config/secret_settings.yml
+config/deploy_settings.yml
+
+# Ignore editor temp files
+*~
+
+# Ignore Cucumber and RSpec failure information
+cucumber_rerun.txt
+rspec.failures
+
+.vagrant*
+brakeman.html
+
+notes
+
+Berksfile.lock
+
+.vagrant_setup.json
