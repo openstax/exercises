@@ -28,7 +28,7 @@ Exercises::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
@@ -66,4 +66,12 @@ Exercises::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   config.action_mailer.default_url_options = { :host => 'exercises.openstax.org' }
+
+  config.middleware.use ExceptionNotifier,
+    :email => {
+      :email_prefix => "[Exercises] ",
+      :sender_address => %{"OpenStax Exercises" <noreply@openstax.org>},
+      :exception_recipients => %w{exercises-dev@openstax.org}
+    }
+
 end

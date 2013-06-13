@@ -3,6 +3,8 @@
 
 module ApplicationHelper
 
+  include SharedApplicationMethods
+
   def vertical_bar(options={})
     options = add_class(options, "vertical-bar")
     content_tag :span, nil, options

@@ -1,12 +1,16 @@
 Exercises::Application.routes.draw do
 
+  use_doorkeeper
+
   devise_for :users
 
   apipie
 
-  namespace :api do
-    namespace :v1 do
-      resources :identities, :only => [:create]
+  use_doorkeeper
+
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v1, constraints: ApiConstraints.new(version: 1) do
+      get 'dummy', :to => 'dummy#index'
     end
   end
   

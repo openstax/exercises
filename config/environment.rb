@@ -1,6 +1,9 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
+require 'shared_application_methods'
+require 'api_constraints'
+
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"
 

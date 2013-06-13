@@ -23,6 +23,9 @@ gem 'openstax_utilities', '~> 0.0.4'
 gem 'apipie-rails'
 gem 'maruku'
 
+gem 'doorkeeper', '~> 0.6.7'
+gem 'exception_notification'
+
 
 # Gems used only for assets and not required
 # in production environments by default.

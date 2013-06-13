@@ -106,9 +106,13 @@ GEM
       railties (~> 3.1)
       warden (~> 1.2.1)
     diff-lcs (1.2.4)
+    doorkeeper (0.6.7)
+      railties (~> 3.1)
     eager_beaver (0.0.1)
     erubis (2.7.0)
     eventmachine (1.0.3)
+    exception_notification (3.0.1)
+      actionmailer (>= 3.0.4)
     execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (4.2.0)
@@ -283,6 +287,8 @@ DEPENDENCIES
   database_cleaner
   debugger (~> 1.5.0)
   devise (~> 2.0)
+  doorkeeper (~> 0.6.7)
+  exception_notification
   factory_girl
   faker
   jbuilder
