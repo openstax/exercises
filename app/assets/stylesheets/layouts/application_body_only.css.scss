@@ -5,9 +5,8 @@
 
 #application-body-only {
   position: relative;
-  margin-bottom: 15px;
-  margin-left: 12px;
-  margin-right: 12px;
+
+  @include body-margins;
 
   #application-body-only-body-content {
     #application-body-only-body {
