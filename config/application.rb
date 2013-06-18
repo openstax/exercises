@@ -60,7 +60,7 @@ module Exercises
     config.assets.version = '1.0'
 
     config.to_prepare do
-      Doorkeeper::ApplicationController.layout "application"
+      Doorkeeper::ApplicationController.layout "application_body_only"
     end
     
   end

@@ -3,6 +3,6 @@ require 'bundler'
 
 Bundler.require
 
-require './quadbase_client'
+require './exercises_client'
 
-run QuadbaseClient
+run ExercisesClient

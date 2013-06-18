@@ -6,8 +6,6 @@ Exercises::Application.routes.draw do
 
   apipie
 
-  use_doorkeeper
-
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       get 'dummy', :to => 'dummy#index'
@@ -20,4 +18,5 @@ Exercises::Application.routes.draw do
 
   match 'copyright', :to => 'static_page#copyright'
   match 'api', :to => 'static_page#api'
+  match 'developers', :to => 'static_page#developers'
 end

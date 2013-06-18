@@ -16,5 +16,6 @@
  *= require_self
  *= require jquery-ui
  *= require main
+ *= require openstax_utilities
  *= require_tree .
  */

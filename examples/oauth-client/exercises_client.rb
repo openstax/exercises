@@ -4,7 +4,7 @@ require 'logger'
 # Load custom environment variables
 load 'env.rb' if File.exists?('env.rb')
 
-class QuadbaseClient < Sinatra::Base
+class ExercisesClient < Sinatra::Base
   enable :sessions
 
   helpers do

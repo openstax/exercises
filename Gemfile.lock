@@ -151,7 +151,8 @@ GEM
     nifty-generators (0.4.6)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
-    openstax_utilities (0.0.4)
+    openstax_utilities (0.0.5)
+      rails (>= 3.1)
     orm_adapter (0.4.0)
     pager (1.0.1)
     polyamorous (0.5.0)
@@ -297,7 +298,7 @@ DEPENDENCIES
   mysql2 (~> 0.3.11)
   newrelic_rpm
   nifty-generators
-  openstax_utilities (~> 0.0.4)
+  openstax_utilities (~> 0.0.5)
   quiet_assets
   rack-test
   railroady

@@ -1,0 +1,22 @@
+@import "common";
+
+table.style-1 {
+  td {
+    padding: 3px 5px;
+  }
+  thead {
+    border-bottom: 1px solid #ccc;
+    th, td {
+      text-align: left;
+      color: black;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+  }
+
+  tbody {
+    tr.even {
+      background-color: lighten($application_background_color,3%); 
+    }
+  }
+}

@@ -17,7 +17,7 @@ gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
-gem 'openstax_utilities', '~> 0.0.4'
+gem 'openstax_utilities', '~> 0.0.5'
 
 # API documentation
 gem 'apipie-rails'

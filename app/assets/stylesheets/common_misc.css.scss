@@ -20,21 +20,4 @@
   padding: 10px;
 }
 
-.bar-top {
-  @include bar-top;
-}
 
-.link_button {
-  background-color: $os_green;
-  color: white;
-  font-weight: bold;
-  padding: 2px 8px 3px 9px;
-  font-size: 11px;
-  border: none;
- 
-  &:hover {
-   background-color: lighten($os_green, 5%);
-   color: white;
-   text-decoration: none
-  }
-}

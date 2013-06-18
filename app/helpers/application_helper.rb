@@ -41,4 +41,11 @@ module ApplicationHelper
     end
   end
 
+  def section(title, options={}, &block)
+    block_to_partial('shared/section', 
+                     options.merge(:title => title), 
+                     &block)
+  end
+
+
 end

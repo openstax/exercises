@@ -1,22 +1,21 @@
-<div class="span16">
-  <header class="page-header">
-    <h2>Your applications</h2>
-  </header>
+<%= page_heading "OAuth Applications" %>
+
+<div>
 
   <p><%= link_to 'New Application', new_oauth_application_path %></p>
 
-  <table class="zebra-striped">
+  <table class="style-1">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Callback url</th>
-        <th></th>
-        <th></th>
+        <th width="25%">Name</th>
+        <th width="75%">Callback url</th>
+        <th width="12%"></th>
+        <th width="13%"></th>
       </tr>
     </thead>
     <tbody>
       <% @applications.each do |application| %>
-        <tr id="application_<%= application.id %>">
+        <tr id="application_<%= application.id %>" class="<%= cycle('odd', 'even') %>">
           <td><%= link_to application.name, [:oauth, application] %></td>
           <td><%= application.redirect_uri %></td>
           <td><%= link_to 'Edit', edit_oauth_application_path(application) %></td>

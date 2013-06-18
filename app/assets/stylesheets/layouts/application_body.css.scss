@@ -13,6 +13,13 @@
   text-decoration: none;
   color: $os_green;
 
+  &.link_button {
+    color: white;
+    &:hover { 
+      color: white;
+    }
+  }
+
   &:hover {
     color: $hot_blue;
   }
