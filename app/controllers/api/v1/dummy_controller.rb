@@ -17,7 +17,7 @@ module Api
         EOS
       end
 
-      api :GET, '/v1/dummy', 'Lorem ipsum dolor sit amet'
+      api :GET, '/dummy', 'Lorem ipsum dolor sit amet'
       description <<-EOS
         Returns information about Lorem ipsum dolor sit amet, consectetur adipisicing 
         elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
