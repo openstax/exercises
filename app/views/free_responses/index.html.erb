@@ -1,0 +1,33 @@
+<h1>Listing free_responses</h1>
+
+<table>
+  <tr>
+    <th>Question</th>
+    <th>Content</th>
+    <th>Content html</th>
+    <th>Free response</th>
+    <th>Order</th>
+    <th>Credit</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @free_responses.each do |free_response| %>
+  <tr>
+    <td><%= free_response.question_id %></td>
+    <td><%= free_response.content %></td>
+    <td><%= free_response.content_html %></td>
+    <td><%= free_response.free_response %></td>
+    <td><%= free_response.order %></td>
+    <td><%= free_response.credit %></td>
+    <td><%= link_to 'Show', free_response %></td>
+    <td><%= link_to 'Edit', edit_free_response_path(free_response) %></td>
+    <td><%= link_to 'Destroy', free_response, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Free response', new_free_response_path %>

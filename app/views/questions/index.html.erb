@@ -1,0 +1,31 @@
+<h1>Listing questions</h1>
+
+<table>
+  <tr>
+    <th>Exercise</th>
+    <th>Content</th>
+    <th>Content html</th>
+    <th>Order</th>
+    <th>Credit</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @questions.each do |question| %>
+  <tr>
+    <td><%= question.exercise_id %></td>
+    <td><%= question.content %></td>
+    <td><%= question.content_html %></td>
+    <td><%= question.order %></td>
+    <td><%= question.credit %></td>
+    <td><%= link_to 'Show', question %></td>
+    <td><%= link_to 'Edit', edit_question_path(question) %></td>
+    <td><%= link_to 'Destroy', question, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Question', new_question_path %>

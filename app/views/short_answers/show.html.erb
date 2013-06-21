@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Question:</b>
+  <%= @short_answer.question_id %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @short_answer.content %>
+</p>
+
+<p>
+  <b>Content html:</b>
+  <%= @short_answer.content_html %>
+</p>
+
+<p>
+  <b>Short answer:</b>
+  <%= @short_answer.short_answer %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @short_answer.order %>
+</p>
+
+<p>
+  <b>Credit:</b>
+  <%= @short_answer.credit %>
+</p>
+
+
+<%= link_to 'Edit', edit_short_answer_path(@short_answer) %> |
+<%= link_to 'Back', short_answers_path %>

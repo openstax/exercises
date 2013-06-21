@@ -1,0 +1,49 @@
+<%= form_for(@fill_in_the_blank_answer) do |f| %>
+  <% if @fill_in_the_blank_answer.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@fill_in_the_blank_answer.errors.count, "error") %> prohibited this fill_in_the_blank_answer from being saved:</h2>
+
+      <ul>
+      <% @fill_in_the_blank_answer.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :question_id %><br />
+    <%= f.number_field :question_id %>
+  </div>
+  <div class="field">
+    <%= f.label :pre_content %><br />
+    <%= f.text_area :pre_content %>
+  </div>
+  <div class="field">
+    <%= f.label :pre_content_html %><br />
+    <%= f.text_area :pre_content_html %>
+  </div>
+  <div class="field">
+    <%= f.label :post_content %><br />
+    <%= f.text_area :post_content %>
+  </div>
+  <div class="field">
+    <%= f.label :post_content_html %><br />
+    <%= f.text_area :post_content_html %>
+  </div>
+  <div class="field">
+    <%= f.label :blank_answer %><br />
+    <%= f.text_field :blank_answer %>
+  </div>
+  <div class="field">
+    <%= f.label :order %><br />
+    <%= f.number_field :order %>
+  </div>
+  <div class="field">
+    <%= f.label :credit %><br />
+    <%= f.text_field :credit %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

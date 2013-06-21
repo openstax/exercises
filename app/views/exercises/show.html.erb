@@ -1,0 +1,60 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Number:</b>
+  <%= @exercise.number %>
+</p>
+
+<p>
+  <b>Version:</b>
+  <%= @exercise.version %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @exercise.content %>
+</p>
+
+<p>
+  <b>Content html:</b>
+  <%= @exercise.content_html %>
+</p>
+
+<p>
+  <b>License:</b>
+  <%= @exercise.license_id %>
+</p>
+
+<p>
+  <b>Locked by:</b>
+  <%= @exercise.locked_by %>
+</p>
+
+<p>
+  <b>Locked at:</b>
+  <%= @exercise.locked_at %>
+</p>
+
+<p>
+  <b>Changes solution:</b>
+  <%= @exercise.changes_solution %>
+</p>
+
+<p>
+  <b>Embargoed until:</b>
+  <%= @exercise.embargoed_until %>
+</p>
+
+<p>
+  <b>Only embargo solutions:</b>
+  <%= @exercise.only_embargo_solutions %>
+</p>
+
+<p>
+  <b>Suggested credit:</b>
+  <%= @exercise.suggested_credit %>
+</p>
+
+
+<%= link_to 'Edit', edit_exercise_path(@exercise) %> |
+<%= link_to 'Back', exercises_path %>

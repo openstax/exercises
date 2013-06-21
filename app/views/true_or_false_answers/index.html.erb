@@ -1,0 +1,33 @@
+<h1>Listing true_or_false_answers</h1>
+
+<table>
+  <tr>
+    <th>Question</th>
+    <th>Content</th>
+    <th>Content html</th>
+    <th>Is true</th>
+    <th>Order</th>
+    <th>Credit</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @true_or_false_answers.each do |true_or_false_answer| %>
+  <tr>
+    <td><%= true_or_false_answer.question_id %></td>
+    <td><%= true_or_false_answer.content %></td>
+    <td><%= true_or_false_answer.content_html %></td>
+    <td><%= true_or_false_answer.is_true %></td>
+    <td><%= true_or_false_answer.order %></td>
+    <td><%= true_or_false_answer.credit %></td>
+    <td><%= link_to 'Show', true_or_false_answer %></td>
+    <td><%= link_to 'Edit', edit_true_or_false_answer_path(true_or_false_answer) %></td>
+    <td><%= link_to 'Destroy', true_or_false_answer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New True or false answer', new_true_or_false_answer_path %>

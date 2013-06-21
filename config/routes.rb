@@ -1,5 +1,29 @@
 Exercises::Application.routes.draw do
 
+  resources :free_responses
+
+
+  resources :short_answers
+
+
+  resources :true_or_false_answers
+
+
+  resources :fill_in_the_blank_answers
+
+
+  resources :matching_answers
+
+
+  resources :multiple_choice_answers
+
+
+  resources :questions
+
+
+  resources :exercises
+
+
   use_doorkeeper
 
   devise_for :users

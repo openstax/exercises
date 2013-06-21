@@ -1,0 +1,37 @@
+<h1>Listing fill_in_the_blank_answers</h1>
+
+<table>
+  <tr>
+    <th>Question</th>
+    <th>Pre content</th>
+    <th>Pre content html</th>
+    <th>Post content</th>
+    <th>Post content html</th>
+    <th>Blank answer</th>
+    <th>Order</th>
+    <th>Credit</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @fill_in_the_blank_answers.each do |fill_in_the_blank_answer| %>
+  <tr>
+    <td><%= fill_in_the_blank_answer.question_id %></td>
+    <td><%= fill_in_the_blank_answer.pre_content %></td>
+    <td><%= fill_in_the_blank_answer.pre_content_html %></td>
+    <td><%= fill_in_the_blank_answer.post_content %></td>
+    <td><%= fill_in_the_blank_answer.post_content_html %></td>
+    <td><%= fill_in_the_blank_answer.blank_answer %></td>
+    <td><%= fill_in_the_blank_answer.order %></td>
+    <td><%= fill_in_the_blank_answer.credit %></td>
+    <td><%= link_to 'Show', fill_in_the_blank_answer %></td>
+    <td><%= link_to 'Edit', edit_fill_in_the_blank_answer_path(fill_in_the_blank_answer) %></td>
+    <td><%= link_to 'Destroy', fill_in_the_blank_answer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Fill in the blank answer', new_fill_in_the_blank_answer_path %>

@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Question:</b>
+  <%= @fill_in_the_blank_answer.question_id %>
+</p>
+
+<p>
+  <b>Pre content:</b>
+  <%= @fill_in_the_blank_answer.pre_content %>
+</p>
+
+<p>
+  <b>Pre content html:</b>
+  <%= @fill_in_the_blank_answer.pre_content_html %>
+</p>
+
+<p>
+  <b>Post content:</b>
+  <%= @fill_in_the_blank_answer.post_content %>
+</p>
+
+<p>
+  <b>Post content html:</b>
+  <%= @fill_in_the_blank_answer.post_content_html %>
+</p>
+
+<p>
+  <b>Blank answer:</b>
+  <%= @fill_in_the_blank_answer.blank_answer %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @fill_in_the_blank_answer.order %>
+</p>
+
+<p>
+  <b>Credit:</b>
+  <%= @fill_in_the_blank_answer.credit %>
+</p>
+
+
+<%= link_to 'Edit', edit_fill_in_the_blank_answer_path(@fill_in_the_blank_answer) %> |
+<%= link_to 'Back', fill_in_the_blank_answers_path %>

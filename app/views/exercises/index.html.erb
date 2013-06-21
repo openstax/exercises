@@ -1,0 +1,43 @@
+<h1>Listing exercises</h1>
+
+<table>
+  <tr>
+    <th>Number</th>
+    <th>Version</th>
+    <th>Content</th>
+    <th>Content html</th>
+    <th>License</th>
+    <th>Locked by</th>
+    <th>Locked at</th>
+    <th>Changes solution</th>
+    <th>Embargoed until</th>
+    <th>Only embargo solutions</th>
+    <th>Suggested credit</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @exercises.each do |exercise| %>
+  <tr>
+    <td><%= exercise.number %></td>
+    <td><%= exercise.version %></td>
+    <td><%= exercise.content %></td>
+    <td><%= exercise.content_html %></td>
+    <td><%= exercise.license_id %></td>
+    <td><%= exercise.locked_by %></td>
+    <td><%= exercise.locked_at %></td>
+    <td><%= exercise.changes_solution %></td>
+    <td><%= exercise.embargoed_until %></td>
+    <td><%= exercise.only_embargo_solutions %></td>
+    <td><%= exercise.suggested_credit %></td>
+    <td><%= link_to 'Show', exercise %></td>
+    <td><%= link_to 'Edit', edit_exercise_path(exercise) %></td>
+    <td><%= link_to 'Destroy', exercise, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Exercise', new_exercise_path %>

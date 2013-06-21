@@ -1,0 +1,41 @@
+<%= form_for(@true_or_false_answer) do |f| %>
+  <% if @true_or_false_answer.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@true_or_false_answer.errors.count, "error") %> prohibited this true_or_false_answer from being saved:</h2>
+
+      <ul>
+      <% @true_or_false_answer.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :question_id %><br />
+    <%= f.number_field :question_id %>
+  </div>
+  <div class="field">
+    <%= f.label :content %><br />
+    <%= f.text_area :content %>
+  </div>
+  <div class="field">
+    <%= f.label :content_html %><br />
+    <%= f.text_area :content_html %>
+  </div>
+  <div class="field">
+    <%= f.label :is_true %><br />
+    <%= f.check_box :is_true %>
+  </div>
+  <div class="field">
+    <%= f.label :order %><br />
+    <%= f.number_field :order %>
+  </div>
+  <div class="field">
+    <%= f.label :credit %><br />
+    <%= f.text_field :credit %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

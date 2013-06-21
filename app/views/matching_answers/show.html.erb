@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Question:</b>
+  <%= @matching_answer.question_id %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @matching_answer.content %>
+</p>
+
+<p>
+  <b>Content html:</b>
+  <%= @matching_answer.content_html %>
+</p>
+
+<p>
+  <b>Match number:</b>
+  <%= @matching_answer.match_number %>
+</p>
+
+<p>
+  <b>Right column:</b>
+  <%= @matching_answer.right_column %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @matching_answer.order %>
+</p>
+
+<p>
+  <b>Credit:</b>
+  <%= @matching_answer.credit %>
+</p>
+
+
+<%= link_to 'Edit', edit_matching_answer_path(@matching_answer) %> |
+<%= link_to 'Back', matching_answers_path %>

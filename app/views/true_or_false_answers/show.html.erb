@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Question:</b>
+  <%= @true_or_false_answer.question_id %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @true_or_false_answer.content %>
+</p>
+
+<p>
+  <b>Content html:</b>
+  <%= @true_or_false_answer.content_html %>
+</p>
+
+<p>
+  <b>Is true:</b>
+  <%= @true_or_false_answer.is_true %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @true_or_false_answer.order %>
+</p>
+
+<p>
+  <b>Credit:</b>
+  <%= @true_or_false_answer.credit %>
+</p>
+
+
+<%= link_to 'Edit', edit_true_or_false_answer_path(@true_or_false_answer) %> |
+<%= link_to 'Back', true_or_false_answers_path %>
