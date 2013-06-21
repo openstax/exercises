@@ -1,5 +1,26 @@
 Exercises::Application.routes.draw do
 
+  resources :website_configurations
+
+
+  resources :exercise_derivations
+
+
+  resources :question_dependency_pairs
+
+
+  resources :attachable_assets
+
+
+  resources :assets
+
+
+  resources :announcements
+
+
+  resources :free_response_answers
+
+
   resources :user_profiles
 
 
@@ -25,9 +46,6 @@ Exercises::Application.routes.draw do
 
 
   resources :solutions
-
-
-  resources :free_responses
 
 
   resources :short_answers

@@ -1,0 +1,29 @@
+<%= form_for(@exercise_derivation) do |f| %>
+  <% if @exercise_derivation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@exercise_derivation.errors.count, "error") %> prohibited this exercise_derivation from being saved:</h2>
+
+      <ul>
+      <% @exercise_derivation.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :derived %><br />
+    <%= f.text_field :derived %>
+  </div>
+  <div class="field">
+    <%= f.label :source_exercise_id %><br />
+    <%= f.number_field :source_exercise_id %>
+  </div>
+  <div class="field">
+    <%= f.label :deriver_id %><br />
+    <%= f.number_field :deriver_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

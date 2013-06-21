@@ -1,0 +1,2 @@
+module AttachableAssetsHelper
+end

@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Attachment file name:</b>
+  <%= @asset.attachment_file_name %>
+</p>
+
+<p>
+  <b>Attachment content type:</b>
+  <%= @asset.attachment_content_type %>
+</p>
+
+<p>
+  <b>Attachment file size:</b>
+  <%= @asset.attachment_file_size %>
+</p>
+
+<p>
+  <b>Attachment uploaded at:</b>
+  <%= @asset.attachment_uploaded_at %>
+</p>
+
+<p>
+  <b>Uploader:</b>
+  <%= @asset.uploader_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_asset_path(@asset) %> |
+<%= link_to 'Back', assets_path %>

@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Question:</b>
+  <%= @free_response_answer.question_id %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @free_response_answer.content %>
+</p>
+
+<p>
+  <b>Content html:</b>
+  <%= @free_response_answer.content_html %>
+</p>
+
+<p>
+  <b>Free response:</b>
+  <%= @free_response_answer.free_response %>
+</p>
+
+<p>
+  <b>Can be sketched:</b>
+  <%= @free_response_answer.can_be_sketched %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @free_response_answer.order %>
+</p>
+
+<p>
+  <b>Credit:</b>
+  <%= @free_response_answer.credit %>
+</p>
+
+
+<%= link_to 'Edit', edit_free_response_answer_path(@free_response_answer) %> |
+<%= link_to 'Back', free_response_answers_path %>

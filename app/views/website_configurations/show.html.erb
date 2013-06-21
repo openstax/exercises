@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @website_configuration.name %>
+</p>
+
+<p>
+  <b>Value:</b>
+  <%= @website_configuration.value %>
+</p>
+
+<p>
+  <b>Value type:</b>
+  <%= @website_configuration.value_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_website_configuration_path(@website_configuration) %> |
+<%= link_to 'Back', website_configurations_path %>

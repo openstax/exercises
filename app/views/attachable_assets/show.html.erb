@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Attachable:</b>
+  <%= @attachable_asset.attachable_id %>
+</p>
+
+<p>
+  <b>Asset:</b>
+  <%= @attachable_asset.asset_id %>
+</p>
+
+<p>
+  <b>Local name:</b>
+  <%= @attachable_asset.local_name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @attachable_asset.description %>
+</p>
+
+<p>
+  <b>Attachable type:</b>
+  <%= @attachable_asset.attachable_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_attachable_asset_path(@attachable_asset) %> |
+<%= link_to 'Back', attachable_assets_path %>

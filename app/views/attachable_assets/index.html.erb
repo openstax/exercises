@@ -1,0 +1,31 @@
+<h1>Listing attachable_assets</h1>
+
+<table>
+  <tr>
+    <th>Attachable</th>
+    <th>Asset</th>
+    <th>Local name</th>
+    <th>Description</th>
+    <th>Attachable type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @attachable_assets.each do |attachable_asset| %>
+  <tr>
+    <td><%= attachable_asset.attachable_id %></td>
+    <td><%= attachable_asset.asset_id %></td>
+    <td><%= attachable_asset.local_name %></td>
+    <td><%= attachable_asset.description %></td>
+    <td><%= attachable_asset.attachable_type %></td>
+    <td><%= link_to 'Show', attachable_asset %></td>
+    <td><%= link_to 'Edit', edit_attachable_asset_path(attachable_asset) %></td>
+    <td><%= link_to 'Destroy', attachable_asset, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Attachable asset', new_attachable_asset_path %>

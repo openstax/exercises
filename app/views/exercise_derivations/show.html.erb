@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Derived:</b>
+  <%= @exercise_derivation.derived %>
+</p>
+
+<p>
+  <b>Source exercise:</b>
+  <%= @exercise_derivation.source_exercise_id %>
+</p>
+
+<p>
+  <b>Deriver:</b>
+  <%= @exercise_derivation.deriver_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_exercise_derivation_path(@exercise_derivation) %> |
+<%= link_to 'Back', exercise_derivations_path %>

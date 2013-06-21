@@ -1,0 +1,31 @@
+<h1>Listing assets</h1>
+
+<table>
+  <tr>
+    <th>Attachment file name</th>
+    <th>Attachment content type</th>
+    <th>Attachment file size</th>
+    <th>Attachment uploaded at</th>
+    <th>Uploader</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @assets.each do |asset| %>
+  <tr>
+    <td><%= asset.attachment_file_name %></td>
+    <td><%= asset.attachment_content_type %></td>
+    <td><%= asset.attachment_file_size %></td>
+    <td><%= asset.attachment_uploaded_at %></td>
+    <td><%= asset.uploader_id %></td>
+    <td><%= link_to 'Show', asset %></td>
+    <td><%= link_to 'Edit', edit_asset_path(asset) %></td>
+    <td><%= link_to 'Destroy', asset, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Asset', new_asset_path %>

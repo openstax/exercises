@@ -1,0 +1,27 @@
+<h1>Listing website_configurations</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Value</th>
+    <th>Value type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @website_configurations.each do |website_configuration| %>
+  <tr>
+    <td><%= website_configuration.name %></td>
+    <td><%= website_configuration.value %></td>
+    <td><%= website_configuration.value_type %></td>
+    <td><%= link_to 'Show', website_configuration %></td>
+    <td><%= link_to 'Edit', edit_website_configuration_path(website_configuration) %></td>
+    <td><%= link_to 'Destroy', website_configuration, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Website configuration', new_website_configuration_path %>

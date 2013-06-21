@@ -1,0 +1,27 @@
+<h1>Listing exercise_derivations</h1>
+
+<table>
+  <tr>
+    <th>Derived</th>
+    <th>Source exercise</th>
+    <th>Deriver</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @exercise_derivations.each do |exercise_derivation| %>
+  <tr>
+    <td><%= exercise_derivation.derived %></td>
+    <td><%= exercise_derivation.source_exercise_id %></td>
+    <td><%= exercise_derivation.deriver_id %></td>
+    <td><%= link_to 'Show', exercise_derivation %></td>
+    <td><%= link_to 'Edit', edit_exercise_derivation_path(exercise_derivation) %></td>
+    <td><%= link_to 'Destroy', exercise_derivation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Exercise derivation', new_exercise_derivation_path %>

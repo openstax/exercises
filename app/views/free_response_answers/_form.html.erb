@@ -1,0 +1,45 @@
+<%= form_for(@free_response_answer) do |f| %>
+  <% if @free_response_answer.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@free_response_answer.errors.count, "error") %> prohibited this free_response_answer from being saved:</h2>
+
+      <ul>
+      <% @free_response_answer.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :question_id %><br />
+    <%= f.number_field :question_id %>
+  </div>
+  <div class="field">
+    <%= f.label :content %><br />
+    <%= f.text_area :content %>
+  </div>
+  <div class="field">
+    <%= f.label :content_html %><br />
+    <%= f.text_area :content_html %>
+  </div>
+  <div class="field">
+    <%= f.label :free_response %><br />
+    <%= f.text_area :free_response %>
+  </div>
+  <div class="field">
+    <%= f.label :can_be_sketched %><br />
+    <%= f.check_box :can_be_sketched %>
+  </div>
+  <div class="field">
+    <%= f.label :order %><br />
+    <%= f.number_field :order %>
+  </div>
+  <div class="field">
+    <%= f.label :credit %><br />
+    <%= f.text_field :credit %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

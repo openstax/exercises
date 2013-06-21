@@ -1,0 +1,29 @@
+<%= form_for(@question_dependency_pair) do |f| %>
+  <% if @question_dependency_pair.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@question_dependency_pair.errors.count, "error") %> prohibited this question_dependency_pair from being saved:</h2>
+
+      <ul>
+      <% @question_dependency_pair.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :independent_question_id %><br />
+    <%= f.number_field :independent_question_id %>
+  </div>
+  <div class="field">
+    <%= f.label :dependent_question_id %><br />
+    <%= f.number_field :dependent_question_id %>
+  </div>
+  <div class="field">
+    <%= f.label :kind %><br />
+    <%= f.number_field :kind %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
