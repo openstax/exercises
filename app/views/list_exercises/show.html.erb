@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>List:</b>
+  <%= @list_exercise.list_id %>
+</p>
+
+<p>
+  <b>Exercise:</b>
+  <%= @list_exercise.exercise_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_list_exercise_path(@list_exercise) %> |
+<%= link_to 'Back', list_exercises_path %>

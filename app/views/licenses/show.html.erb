@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Short name:</b>
+  <%= @license.short_name %>
+</p>
+
+<p>
+  <b>Long name:</b>
+  <%= @license.long_name %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%= @license.url %>
+</p>
+
+<p>
+  <b>Partial name:</b>
+  <%= @license.partial_name %>
+</p>
+
+<p>
+  <b>Is default:</b>
+  <%= @license.is_default %>
+</p>
+
+
+<%= link_to 'Edit', edit_license_path(@license) %> |
+<%= link_to 'Back', licenses_path %>

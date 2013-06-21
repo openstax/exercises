@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @exercise_collaborator.user_id %>
+</p>
+
+<p>
+  <b>Exercise:</b>
+  <%= @exercise_collaborator.exercise_id %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @exercise_collaborator.order %>
+</p>
+
+<p>
+  <b>Is author:</b>
+  <%= @exercise_collaborator.is_author %>
+</p>
+
+<p>
+  <b>Is copyright holder:</b>
+  <%= @exercise_collaborator.is_copyright_holder %>
+</p>
+
+<p>
+  <b>Exercise collaborator requests count:</b>
+  <%= @exercise_collaborator.exercise_collaborator_requests_count %>
+</p>
+
+
+<%= link_to 'Edit', edit_exercise_collaborator_path(@exercise_collaborator) %> |
+<%= link_to 'Back', exercise_collaborators_path %>

@@ -1,5 +1,32 @@
 Exercises::Application.routes.draw do
 
+  resources :user_profiles
+
+
+  resources :exercise_collaborator_requests
+
+
+  resources :exercise_collaborators
+
+
+  resources :list_exercises
+
+
+  resources :lists
+
+
+  resources :user_group_members
+
+
+  resources :user_groups
+
+
+  resources :licenses
+
+
+  resources :solutions
+
+
   resources :free_responses
 
 

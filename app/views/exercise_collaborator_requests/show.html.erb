@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Exercise collaborator:</b>
+  <%= @exercise_collaborator_request.exercise_collaborator_id %>
+</p>
+
+<p>
+  <b>Requester:</b>
+  <%= @exercise_collaborator_request.requester_id %>
+</p>
+
+<p>
+  <b>Toggle is author:</b>
+  <%= @exercise_collaborator_request.toggle_is_author %>
+</p>
+
+<p>
+  <b>Toggle is copyright holder:</b>
+  <%= @exercise_collaborator_request.toggle_is_copyright_holder %>
+</p>
+
+
+<%= link_to 'Edit', edit_exercise_collaborator_request_path(@exercise_collaborator_request) %> |
+<%= link_to 'Back', exercise_collaborator_requests_path %>
