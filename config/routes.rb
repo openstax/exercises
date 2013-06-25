@@ -1,9 +1,15 @@
 Exercises::Application.routes.draw do
 
-  resources :website_configurations
+  resources :deputizations
+
+
+  resources :solutions
 
 
   resources :exercise_derivations
+
+
+  resources :website_configurations
 
 
   resources :question_dependency_pairs
@@ -43,9 +49,6 @@ Exercises::Application.routes.draw do
 
 
   resources :licenses
-
-
-  resources :solutions
 
 
   resources :short_answers

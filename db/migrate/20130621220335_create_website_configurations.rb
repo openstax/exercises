@@ -7,5 +7,7 @@ class CreateWebsiteConfigurations < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :website_configurations, :name, :unique => true
   end
 end

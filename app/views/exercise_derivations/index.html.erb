@@ -2,7 +2,7 @@
 
 <table>
   <tr>
-    <th>Derived</th>
+    <th>Derived exercise</th>
     <th>Source exercise</th>
     <th>Deriver</th>
     <th></th>
@@ -12,7 +12,7 @@
 
 <% @exercise_derivations.each do |exercise_derivation| %>
   <tr>
-    <td><%= exercise_derivation.derived %></td>
+    <td><%= exercise_derivation.derived_exercise_id %></td>
     <td><%= exercise_derivation.source_exercise_id %></td>
     <td><%= exercise_derivation.deriver_id %></td>
     <td><%= link_to 'Show', exercise_derivation %></td>

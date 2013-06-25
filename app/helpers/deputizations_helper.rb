@@ -1,0 +1,2 @@
+module DeputizationsHelper
+end

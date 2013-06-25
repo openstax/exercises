@@ -8,5 +8,7 @@ class CreateAnnouncements < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :announcements, :creator_id
   end
 end

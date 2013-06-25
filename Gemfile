@@ -19,13 +19,16 @@ gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_utilities', '~> 0.0.5'
 
+gem 'acts-as-taggable-on'
+gem 'acts_as_votable'
+gem 'commontator'
+
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
 
 gem 'doorkeeper', '~> 0.6.7'
 gem 'exception_notification'
-
 
 # Gems used only for assets and not required
 # in production environments by default.

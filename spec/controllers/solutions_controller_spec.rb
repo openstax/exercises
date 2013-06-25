@@ -23,7 +23,7 @@ describe SolutionsController do
   # This should return the minimal set of attributes required to create a valid
   # Solution. As you add validations to Solution, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "content" => "MyText" } }
+  let(:valid_attributes) { { "number" => "1" } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -85,14 +85,14 @@ describe SolutionsController do
       it "assigns a newly created but unsaved solution as @solution" do
         # Trigger the behavior that occurs when invalid params are submitted
         Solution.any_instance.stub(:save).and_return(false)
-        post :create, {:solution => { "content" => "invalid value" }}, valid_session
+        post :create, {:solution => { "number" => "invalid value" }}, valid_session
         assigns(:solution).should be_a_new(Solution)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         Solution.any_instance.stub(:save).and_return(false)
-        post :create, {:solution => { "content" => "invalid value" }}, valid_session
+        post :create, {:solution => { "number" => "invalid value" }}, valid_session
         response.should render_template("new")
       end
     end
@@ -106,8 +106,8 @@ describe SolutionsController do
         # specifies that the Solution created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        Solution.any_instance.should_receive(:update_attributes).with({ "content" => "MyText" })
-        put :update, {:id => solution.to_param, :solution => { "content" => "MyText" }}, valid_session
+        Solution.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+        put :update, {:id => solution.to_param, :solution => { "number" => "1" }}, valid_session
       end
 
       it "assigns the requested solution as @solution" do
@@ -128,7 +128,7 @@ describe SolutionsController do
         solution = Solution.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Solution.any_instance.stub(:save).and_return(false)
-        put :update, {:id => solution.to_param, :solution => { "content" => "invalid value" }}, valid_session
+        put :update, {:id => solution.to_param, :solution => { "number" => "invalid value" }}, valid_session
         assigns(:solution).should eq(solution)
       end
 
@@ -136,7 +136,7 @@ describe SolutionsController do
         solution = Solution.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Solution.any_instance.stub(:save).and_return(false)
-        put :update, {:id => solution.to_param, :solution => { "content" => "invalid value" }}, valid_session
+        put :update, {:id => solution.to_param, :solution => { "number" => "invalid value" }}, valid_session
         response.should render_template("edit")
       end
     end

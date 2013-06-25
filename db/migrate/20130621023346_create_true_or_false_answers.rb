@@ -5,10 +5,12 @@ class CreateTrueOrFalseAnswers < ActiveRecord::Migration
       t.text :content
       t.text :content_html
       t.boolean :is_true
-      t.integer :order
+      t.integer :number
       t.decimal :credit
 
       t.timestamps
     end
+
+    add_index :true_or_false_answers, [:question_id, :number], :unique => true
   end
 end

@@ -7,5 +7,7 @@ class CreateUserGroupMembers < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :user_group_members, [:user_group_id, :user_id], :unique => true
   end
 end

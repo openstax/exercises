@@ -12,15 +12,15 @@ class User < ActiveRecord::Base
   before_create :make_first_user_an_admin
   before_update :validate_at_least_one_admin
 
-  def self.administrators; where{is_administrator == true}; end
+  def self.administrators; where{is_admin == true}; end
 
-  def is_administrator?
-    is_administrator
+  def is_admin?
+    is_admin
   end
 
   def make_first_user_an_admin
     if User.count == 0
-      self.is_administrator = true
+      self.is_admin = true
     end
   end
 
@@ -32,11 +32,11 @@ class User < ActiveRecord::Base
 
   def validate_at_least_one_admin
     only_one_active_admin = User.administrators.count == 1
-    was_admin = is_administrator_was
+    was_admin = is_admin_was
     return if !only_one_active_admin ||
               !was_admin ||
-              (is_administrator?)
-    errors.add(:base, "There must have at least one admin.")
+              (is_admin?)
+    errors.add(:base, "There must be at least one admin.")
     false
   end
 

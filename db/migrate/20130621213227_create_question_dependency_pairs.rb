@@ -7,5 +7,8 @@ class CreateQuestionDependencyPairs < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :question_dependency_pairs, [:independent_question_id, :dependent_question_id, :kind], :unique => true, :name => "index_qdp_on_iq_id_and_dq_id_and_kind"
+    add_index :question_dependency_pairs, :dependent_question_id
   end
 end

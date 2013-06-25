@@ -7,10 +7,12 @@ class CreateFillInTheBlankAnswers < ActiveRecord::Migration
       t.text :post_content
       t.text :post_content_html
       t.string :blank_answer
-      t.integer :order
+      t.integer :number
       t.decimal :credit
 
       t.timestamps
     end
+
+    add_index :fill_in_the_blank_answers, [:question_id, :number], :unique => true
   end
 end

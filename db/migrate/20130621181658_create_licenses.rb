@@ -9,5 +9,7 @@ class CreateLicenses < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :licenses, :is_default
   end
 end

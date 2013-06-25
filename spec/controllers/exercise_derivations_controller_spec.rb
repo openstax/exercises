@@ -23,7 +23,7 @@ describe ExerciseDerivationsController do
   # This should return the minimal set of attributes required to create a valid
   # ExerciseDerivation. As you add validations to ExerciseDerivation, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "derived" => "" } }
+  let(:valid_attributes) { { "derived_exercise_id" => "1" } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -85,14 +85,14 @@ describe ExerciseDerivationsController do
       it "assigns a newly created but unsaved exercise_derivation as @exercise_derivation" do
         # Trigger the behavior that occurs when invalid params are submitted
         ExerciseDerivation.any_instance.stub(:save).and_return(false)
-        post :create, {:exercise_derivation => { "derived" => "invalid value" }}, valid_session
+        post :create, {:exercise_derivation => { "derived_exercise_id" => "invalid value" }}, valid_session
         assigns(:exercise_derivation).should be_a_new(ExerciseDerivation)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         ExerciseDerivation.any_instance.stub(:save).and_return(false)
-        post :create, {:exercise_derivation => { "derived" => "invalid value" }}, valid_session
+        post :create, {:exercise_derivation => { "derived_exercise_id" => "invalid value" }}, valid_session
         response.should render_template("new")
       end
     end
@@ -106,8 +106,8 @@ describe ExerciseDerivationsController do
         # specifies that the ExerciseDerivation created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        ExerciseDerivation.any_instance.should_receive(:update_attributes).with({ "derived" => "" })
-        put :update, {:id => exercise_derivation.to_param, :exercise_derivation => { "derived" => "" }}, valid_session
+        ExerciseDerivation.any_instance.should_receive(:update_attributes).with({ "derived_exercise_id" => "1" })
+        put :update, {:id => exercise_derivation.to_param, :exercise_derivation => { "derived_exercise_id" => "1" }}, valid_session
       end
 
       it "assigns the requested exercise_derivation as @exercise_derivation" do
@@ -128,7 +128,7 @@ describe ExerciseDerivationsController do
         exercise_derivation = ExerciseDerivation.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         ExerciseDerivation.any_instance.stub(:save).and_return(false)
-        put :update, {:id => exercise_derivation.to_param, :exercise_derivation => { "derived" => "invalid value" }}, valid_session
+        put :update, {:id => exercise_derivation.to_param, :exercise_derivation => { "derived_exercise_id" => "invalid value" }}, valid_session
         assigns(:exercise_derivation).should eq(exercise_derivation)
       end
 
@@ -136,7 +136,7 @@ describe ExerciseDerivationsController do
         exercise_derivation = ExerciseDerivation.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         ExerciseDerivation.any_instance.stub(:save).and_return(false)
-        put :update, {:id => exercise_derivation.to_param, :exercise_derivation => { "derived" => "invalid value" }}, valid_session
+        put :update, {:id => exercise_derivation.to_param, :exercise_derivation => { "derived_exercise_id" => "invalid value" }}, valid_session
         response.should render_template("edit")
       end
     end

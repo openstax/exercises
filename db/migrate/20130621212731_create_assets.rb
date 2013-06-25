@@ -9,5 +9,7 @@ class CreateAssets < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :assets, :uploader_id
   end
 end

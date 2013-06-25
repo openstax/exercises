@@ -2,10 +2,13 @@
 
 <table>
   <tr>
+    <th>Number</th>
+    <th>Version</th>
     <th>Content</th>
     <th>Content html</th>
     <th>Summary</th>
     <th>Question</th>
+    <th>Creator</th>
     <th></th>
     <th></th>
     <th></th>
@@ -13,10 +16,13 @@
 
 <% @solutions.each do |solution| %>
   <tr>
+    <td><%= solution.number %></td>
+    <td><%= solution.version %></td>
     <td><%= solution.content %></td>
     <td><%= solution.content_html %></td>
     <td><%= solution.summary %></td>
     <td><%= solution.question_id %></td>
+    <td><%= solution.creator_id %></td>
     <td><%= link_to 'Show', solution %></td>
     <td><%= link_to 'Edit', edit_solution_path(solution) %></td>
     <td><%= link_to 'Destroy', solution, method: :delete, data: { confirm: 'Are you sure?' } %></td>

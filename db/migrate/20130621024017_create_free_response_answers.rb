@@ -6,10 +6,12 @@ class CreateFreeResponseAnswers < ActiveRecord::Migration
       t.text :content_html
       t.text :free_response
       t.boolean :can_be_sketched
-      t.integer :order
+      t.integer :number
       t.decimal :credit
 
       t.timestamps
     end
+
+    add_index :free_response_answers, [:question_id, :number], :unique => true
   end
 end
