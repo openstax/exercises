@@ -1,15 +1,16 @@
 class CreateAssets < ActiveRecord::Migration
   def change
     create_table :assets do |t|
-      t.string :attachment_file_name
-      t.string :attachment_content_type
-      t.integer :attachment_file_size
-      t.datetime :attachment_uploaded_at
-      t.integer :uploader_id
+      t.string :file
+      t.text :caption
+      t.text :alt
+      t.integer :attachable_id
+      t.string :attachable_type
+      t.string :local_name
 
       t.timestamps
     end
 
-    add_index :assets, :uploader_id
+    add_index :assets, [:attachable_type, :attachable_id, :local_name], :unique => true
   end
 end

@@ -13,40 +13,18 @@
 
 ActiveRecord::Schema.define(:version => 20130624174736) do
 
-  create_table "announcements", :force => true do |t|
-    t.integer  "creator_id"
-    t.string   "subject"
-    t.text     "body"
-    t.boolean  "force"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "announcements", ["creator_id"], :name => "index_announcements_on_creator_id"
-
   create_table "assets", :force => true do |t|
-    t.string   "attachment_file_name"
-    t.string   "attachment_content_type"
-    t.integer  "attachment_file_size"
-    t.datetime "attachment_uploaded_at"
-    t.integer  "uploader_id"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
-  end
-
-  add_index "assets", ["uploader_id"], :name => "index_assets_on_uploader_id"
-
-  create_table "attachable_assets", :force => true do |t|
+    t.string   "file"
+    t.text     "caption"
+    t.text     "alt"
     t.integer  "attachable_id"
-    t.integer  "asset_id"
-    t.string   "local_name"
-    t.text     "description"
     t.string   "attachable_type"
+    t.string   "local_name"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
 
-  add_index "attachable_assets", ["attachable_type", "attachable_id", "local_name"], :name => "index_aa_on_a_type_and_a_id_and_l_name", :unique => true
+  add_index "assets", ["attachable_type", "attachable_id", "local_name"], :name => "index_assets_on_attachable_type_and_attachable_id_and_local_name", :unique => true
 
   create_table "collaborator_requests", :force => true do |t|
     t.integer  "collaborator_id"
@@ -451,15 +429,5 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   add_index "votes", ["votable_id", "votable_type"], :name => "index_votes_on_votable_id_and_votable_type"
   add_index "votes", ["voter_id", "voter_type", "vote_scope"], :name => "index_votes_on_voter_id_and_voter_type_and_vote_scope"
   add_index "votes", ["voter_id", "voter_type"], :name => "index_votes_on_voter_id_and_voter_type"
-
-  create_table "website_configurations", :force => true do |t|
-    t.string   "name"
-    t.string   "value"
-    t.integer  "value_type"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "website_configurations", ["name"], :name => "index_website_configurations_on_name", :unique => true
 
 end
