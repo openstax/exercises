@@ -13,8 +13,8 @@
 
 ActiveRecord::Schema.define(:version => 20130624174736) do
 
-  create_table "assets", :force => true do |t|
-    t.string   "file"
+  create_table "attachable_assets", :force => true do |t|
+    t.string   "asset"
     t.text     "caption"
     t.text     "alt"
     t.integer  "attachable_id"
@@ -24,7 +24,8 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",      :null => false
   end
 
-  add_index "assets", ["attachable_type", "attachable_id", "local_name"], :name => "index_assets_on_attachable_type_and_attachable_id_and_local_name", :unique => true
+  add_index "attachable_assets", ["asset"], :name => "index_attachable_assets_on_asset"
+  add_index "attachable_assets", ["attachable_type", "attachable_id", "local_name"], :name => "index_aa_on_a_type_and_a_id_and_l_name", :unique => true
 
   create_table "collaborator_requests", :force => true do |t|
     t.integer  "collaborator_id"

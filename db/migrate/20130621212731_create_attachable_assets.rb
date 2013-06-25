@@ -11,7 +11,7 @@ class CreateAttachableAssets < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :attachable_assets, [:attachable_type, :attachable_id, :local_name], :unique => true
+    add_index :attachable_assets, [:attachable_type, :attachable_id, :local_name], :unique => true, :name => "index_aa_on_a_type_and_a_id_and_l_name"
     add_index :attachable_assets, :asset
   end
 end
