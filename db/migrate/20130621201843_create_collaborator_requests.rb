@@ -9,7 +9,6 @@ class CreateCollaboratorRequests < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :collaborator_requests, [:collaborator_id, :toggle_author], :unique => true, :name => "index_c_r_on_c_id_and_toggle_author"
-    add_index :collaborator_requests, [:collaborator_id, :toggle_copyright_holder], :unique => true, :name => "index_c_r_on_c_id_and_toggle_copyright_holder"
+    add_index :collaborator_requests, :collaborator_id, :unique => true
   end
 end

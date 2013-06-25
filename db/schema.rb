@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",      :null => false
   end
 
-  add_index "attachable_assets", ["attachable_id", "attachable_type", "local_name"], :name => "index_aa_on_a_id_and_a_type_and_l_name", :unique => true
+  add_index "attachable_assets", ["attachable_type", "attachable_id", "local_name"], :name => "index_aa_on_a_type_and_a_id_and_l_name", :unique => true
 
   create_table "collaborator_requests", :force => true do |t|
     t.integer  "collaborator_id"
@@ -57,8 +57,7 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",              :null => false
   end
 
-  add_index "collaborator_requests", ["collaborator_id", "toggle_author"], :name => "index_c_r_on_c_id_and_toggle_author", :unique => true
-  add_index "collaborator_requests", ["collaborator_id", "toggle_copyright_holder"], :name => "index_c_r_on_c_id_and_toggle_copyright_holder", :unique => true
+  add_index "collaborator_requests", ["collaborator_id"], :name => "index_collaborator_requests_on_collaborator_id", :unique => true
 
   create_table "collaborators", :force => true do |t|
     t.integer  "user_id"
@@ -71,10 +70,10 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",          :null => false
   end
 
-  add_index "collaborators", ["collaborable_type", "collaborable_id", "number"], :name => "index_c_on_c_type_and_c_id_and_number", :unique => true
+  add_index "collaborators", ["collaborable_type", "collaborable_id", "user_id"], :name => "index_c_on_c_type_and_c_id_and_u_id", :unique => true
   add_index "collaborators", ["is_author"], :name => "index_collaborators_on_is_author"
   add_index "collaborators", ["is_copyright_holder"], :name => "index_collaborators_on_is_copyright_holder"
-  add_index "collaborators", ["user_id", "collaborable_type", "collaborable_id"], :name => "index_c_on_u_id_and_c_type_and_c_id", :unique => true
+  add_index "collaborators", ["user_id"], :name => "index_collaborators_on_user_id"
 
   create_table "commontator_comments", :force => true do |t|
     t.text     "body"
@@ -130,16 +129,6 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
 
   add_index "deputizations", ["deputizer_id", "deputy_id"], :name => "index_deputizations_on_deputizer_id_and_deputy_id", :unique => true
   add_index "deputizations", ["deputy_id"], :name => "index_deputizations_on_deputy_id"
-
-  create_table "exercise_derivations", :force => true do |t|
-    t.integer  "derived_exercise_id"
-    t.integer  "source_exercise_id"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
-  end
-
-  add_index "exercise_derivations", ["derived_exercise_id"], :name => "index_exercise_derivations_on_derived_exercise_id"
-  add_index "exercise_derivations", ["source_exercise_id"], :name => "index_exercise_derivations_on_source_exercise_id"
 
   create_table "exercises", :force => true do |t|
     t.text     "content"
@@ -214,10 +203,11 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
 
   add_index "list_exercises", ["exercise_id"], :name => "index_list_exercises_on_exercise_id"
   add_index "list_exercises", ["list_id", "exercise_id"], :name => "index_list_exercises_on_list_id_and_exercise_id", :unique => true
-  add_index "list_exercises", ["list_id", "number"], :name => "index_list_exercises_on_list_id_and_number", :unique => true
 
   create_table "lists", :force => true do |t|
     t.string   "name"
+    t.boolean  "is_public"
+    t.integer  "parent_list_id"
     t.integer  "reader_user_group_id"
     t.integer  "editor_user_group_id"
     t.integer  "publisher_user_group_id"
@@ -225,6 +215,8 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
   end
+
+  add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
 
   create_table "matching_answers", :force => true do |t|
     t.integer  "question_id"
@@ -238,7 +230,6 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",   :null => false
   end
 
-  add_index "matching_answers", ["question_id", "match_number", "right_column"], :name => "index_ma_on_q_id_and_m_number_and_right_column", :unique => true
   add_index "matching_answers", ["question_id", "number"], :name => "index_matching_answers_on_question_id_and_number", :unique => true
 
   create_table "multiple_choice_answers", :force => true do |t|
@@ -397,16 +388,16 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   create_table "user_profiles", :force => true do |t|
     t.integer  "user_id"
     t.integer  "default_list_id"
-    t.boolean  "group_member_email"
-    t.boolean  "collaborator_request_email"
-    t.boolean  "announcement_email"
     t.boolean  "auto_author_subscribe"
+    t.boolean  "announcement_email"
+    t.boolean  "collaborator_request_email"
+    t.boolean  "group_member_email"
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
   end
 
   add_index "user_profiles", ["default_list_id"], :name => "index_user_profiles_on_default_list_id"
-  add_index "user_profiles", ["user_id"], :name => "index_user_profiles_on_user_id"
+  add_index "user_profiles", ["user_id"], :name => "index_user_profiles_on_user_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "",    :null => false

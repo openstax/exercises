@@ -9,7 +9,6 @@ class CreateListExercises < ActiveRecord::Migration
     end
 
     add_index :list_exercises, [:list_id, :exercise_id], :unique => true
-    add_index :list_exercises, [:list_id, :number], :unique => true
     add_index :list_exercises, :exercise_id
   end
 end
