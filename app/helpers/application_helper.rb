@@ -2,7 +2,6 @@
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 module ApplicationHelper
-
   include SharedApplicationMethods
 
   def vertical_bar(options={})
@@ -46,6 +45,4 @@ module ApplicationHelper
                      options.merge(:title => title), 
                      &block)
   end
-
-
 end

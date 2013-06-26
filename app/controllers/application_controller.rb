@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
 
   helper OpenStax::Utilities::Engine.helpers
 
-
   layout :layout
 
   private
@@ -13,5 +12,4 @@ class ApplicationController < ActionController::Base
   def layout
     "application_body_only"
   end
-  
 end

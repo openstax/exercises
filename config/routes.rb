@@ -1,85 +1,61 @@
 Exercises::Application.routes.draw do
-
-  resources :deputizations
-
-
-  resources :solutions
-
-
-  resources :question_dependency_pairs
-
-
-  resources :attachable_assets
-
-
-  resources :assets
-
-
-  resources :free_response_answers
-
-
   resources :user_profiles
-
-
-  resources :exercise_collaborator_requests
-
-
-  resources :exercise_collaborators
-
-
-  resources :list_exercises
-
-
-  resources :lists
-
-
-  resources :user_group_members
-
 
   resources :user_groups
 
+  resources :user_group_members
 
-  resources :licenses
-
-
-  resources :short_answers
-
-
-  resources :true_or_false_answers
-
-
-  resources :fill_in_the_blank_answers
-
-
-  resources :matching_answers
-
-
-  resources :multiple_choice_answers
-
-
-  resources :questions
-
+  resources :deputizations
 
   resources :exercises
 
+  resources :questions
 
-  use_doorkeeper
+  resources :multiple_choice_answers
+
+  resources :matching_answers
+
+  resources :fill_in_the_blank_answers
+
+  resources :true_or_false_answers
+
+  resources :short_answers
+
+  resources :free_response_answers
+
+  resources :solutions
+
+  resources :licenses
+
+  resources :lists
+
+  resources :list_exercises
+
+  resources :collaborators
+
+  resources :collaborator_requests
+
+  resources :question_dependency_pairs
+
+  resources :attachments
+
+  resources :api_keys, :except => [:new, :edit, :update]
 
   devise_for :users
 
+  use_doorkeeper
+
   apipie
+
+  get 'api', :to => 'static_pages#api'
+  get 'copyright', :to => 'static_pages#copyright'
+  get 'developers', :to => 'static_pages#developers'
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       get 'dummy', :to => 'dummy#index'
     end
   end
-  
-  resources :api_keys, :except => [:new, :edit, :update]
 
-  root :to => "static_page#home"
-
-  match 'copyright', :to => 'static_page#copyright'
-  match 'api', :to => 'static_page#api'
-  match 'developers', :to => 'static_page#developers'
+  root :to => "static_pages#home"
 end

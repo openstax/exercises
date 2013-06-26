@@ -1,27 +1,29 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
-  # :token_authenticatable, 
-  # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :confirmable
+  # :token_authenticatable, :lockable,
+  # :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable, :recoverable,
+         :rememberable, :trackable, :validatable, :confirmable
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :last_name, :first_name
-  # attr_accessible :title, :body
+  attr_accessible :email, :password, :password_confirmation, :remember_me
 
   before_create :make_first_user_an_admin
-  before_update :validate_at_least_one_admin
+  before_update :validate_username_unchanged, :validate_at_least_one_admin
 
-  def self.administrators; where{is_admin == true}; end
+  scope :admins, where(:is_admin => true)
 
   def is_admin?
     is_admin
   end
 
+  def is_disabled?
+    !disabled_at.nil?
+  end
+
+  protected
+
   def make_first_user_an_admin
-    if User.count == 0
-      self.is_admin = true
-    end
+    self.is_admin = true if User.count == 0
   end
 
   def validate_username_unchanged
@@ -31,31 +33,9 @@ class User < ActiveRecord::Base
   end
 
   def validate_at_least_one_admin
-    only_one_active_admin = User.administrators.count == 1
-    was_admin = is_admin_was
-    return if !only_one_active_admin ||
-              !was_admin ||
-              (is_admin?)
+    return if (User.admins.count != 1) ||
+              !is_admin_was || is_admin
     errors.add(:base, "There must be at least one admin.")
     false
   end
-
-  # Access control redirect methods
-  
-  def can_read?(resource)
-    resource.can_be_read_by?(self)
-  end
-  
-  def can_create?(resource)
-    resource.can_be_created_by?(self)
-  end
-  
-  def can_update?(resource)
-    resource.can_be_updated_by?(self)
-  end
-    
-  def can_destroy?(resource)
-    resource.can_be_destroyed_by?(self)
-  end
-  
 end
