@@ -41,7 +41,7 @@ Exercises::Application.routes.draw do
 
   resources :api_keys, :except => [:new, :edit, :update]
 
-  devise_for :users
+  devise_for :users, :controllers => { :registrations => "registrations" }
 
   use_doorkeeper
 

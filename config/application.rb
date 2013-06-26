@@ -62,6 +62,5 @@ module Exercises
     config.to_prepare do
       Doorkeeper::ApplicationController.layout "application_body_only"
     end
-    
   end
 end

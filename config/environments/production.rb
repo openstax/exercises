@@ -73,5 +73,4 @@ Exercises::Application.configure do
       :sender_address => %{"OpenStax Exercises" <noreply@openstax.org>},
       :exception_recipients => %w{exercises-dev@openstax.org}
     }
-
 end
