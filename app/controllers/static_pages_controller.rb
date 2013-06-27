@@ -4,7 +4,9 @@
 class StaticPagesController < ApplicationController
   layout :resolve_layout
 
-protected
+  skip_before_filter :authenticate_user!
+
+  protected
 
   def resolve_layout
     'home' == action_name ? 'application_home_page' : 'application_body_only'

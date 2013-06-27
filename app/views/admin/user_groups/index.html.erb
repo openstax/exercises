@@ -1,18 +1,16 @@
-<h1>You are a member of the following groups:</h1>
+<h1>Listing user_groups</h1>
 
 <table>
   <tr>
-    <th>Name |</th>
-    <th>Manager?</th>
+    <th>Name</th>
     <th></th>
     <th></th>
     <th></th>
   </tr>
 
-<% current_user.user_group_members.each do |user_group_member| %>
+<% @user_groups.each do |user_group| %>
   <tr>
-    <td><%= user_group_member.user_group.name %></td>
-    <td><%= tf_to_yn(user_group_member.is_manager) %></td>
+    <td><%= user_group.name %></td>
     <td><%= link_to 'Show', user_group %></td>
     <td><%= link_to 'Edit', edit_user_group_path(user_group) %></td>
     <td><%= link_to 'Destroy', user_group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -22,4 +20,4 @@
 
 <br />
 
-<%= link_to 'New user group', new_user_group_path %>
+<%= link_to 'New User group', new_user_group_path %>

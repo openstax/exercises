@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
 
   layout :layout
 
+  before_filter :authenticate_user!
+
   private
 
   def layout

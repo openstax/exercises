@@ -22,23 +22,30 @@
         <ul>
           <li>
             <%= render "layouts/application_top_nav_link", 
-                       target_text:            "WRITE A QUESTION",
+                       target_text:            "WRITE AN EXERCISE",
                        target_id:              "top-nav-about-link",
-                       target_path:            "#",
+                       target_path:            "exercises/new",
                        target_current_symbol:  :top_nav_about_current %>
           </li>
           <li>
             <%= render "layouts/application_top_nav_link", 
-                       target_text:            "FIND QUESTIONS",
+                       target_text:            "FIND EXERCISES",
                        target_id:              "top-nav-api-link",
-                       target_path:            '#',
+                       target_path:            'exercises',
+                       target_current_symbol:  :top_nav_api_current %>
+          </li>
+          <li>
+            <%= render "layouts/application_top_nav_link", 
+                       target_text:            "USER GROUPS",
+                       target_id:              "top-nav-api-link",
+                       target_path:            'user_groups',
                        target_current_symbol:  :top_nav_api_current %>
           </li>
           <li>
             <%= render "layouts/application_top_nav_link", 
                        target_text:            "LISTS",
                        target_id:              "top-nav-api-link",
-                       target_path:            '#',
+                       target_path:            'lists',
                        target_current_symbol:  :top_nav_api_current %>
           </li>
           <li>

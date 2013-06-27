@@ -12,6 +12,7 @@ class CreateLists < ActiveRecord::Migration
       t.timestamps
     end
 
+    add_index :lists, :name, :unique => true
     add_index :lists, :parent_list_id
   end
 end

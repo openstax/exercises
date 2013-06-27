@@ -8,13 +8,15 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
   before_save :force_active_admin
-  before_update :validate_username_unchanged
 
   validates_presence_of :username, :password, :email, :first_name, :last_name
   validates_uniqueness_of :username, :email
 
   scope :active, where(:disabled_at => nil)
   scope :admins, where(:is_admin => true)
+
+  has_many :user_group_members, :dependent => :destroy
+  has_many :user_groups, :through => :user_group_members
 
   def is_admin?
     is_admin
@@ -35,11 +37,5 @@ class User < ActiveRecord::Base
       self.is_admin = true
       self.disabled_at = nil
     end
-  end
-
-  def validate_username_unchanged
-    return if username == username_was
-    errors.add(:base, "Usernames cannot be changed.")
-    false
   end
 end
