@@ -45,4 +45,8 @@ module ApplicationHelper
                      options.merge(:title => title), 
                      &block)
   end
+
+  def tf_to_yn(bool)
+    bool ? 'Yes' : 'No'
+  end
 end

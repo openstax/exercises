@@ -13,9 +13,9 @@
   <tr>
     <td><%= user_group_member.user_group.name %></td>
     <td><%= tf_to_yn(user_group_member.is_manager) %></td>
-    <td><%= link_to 'Show', user_group %></td>
-    <td><%= link_to 'Edit', edit_user_group_path(user_group) %></td>
-    <td><%= link_to 'Destroy', user_group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to 'Show', user_group_member.user_group %> |</td>
+    <td><%= link_to 'Edit', edit_user_group_path(user_group_member.user_group) %> |</td>
+    <td><%= link_to 'Leave group', user_group_member, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
 </table>

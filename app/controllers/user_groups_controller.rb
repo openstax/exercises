@@ -43,10 +43,14 @@ class UserGroupsController < ApplicationController
     @user_group = UserGroup.new(params[:user_group])
 
     respond_to do |format|
-      if @user_group.save
+      begin
+        @user_group.transaction do
+          raise ActiveRecord::RecordInvalid unless @user_group.save
+          raise ActiveRecord::RecordInvalid unless @user_group.add_member(current_user, true)
+        end
         format.html { redirect_to @user_group, notice: 'User group was successfully created.' }
         format.json { render json: @user_group, status: :created, location: @user_group }
-      else
+      rescue ActiveRecord::RecordInvalid
         format.html { render action: "new" }
         format.json { render json: @user_group.errors, status: :unprocessable_entity }
       end

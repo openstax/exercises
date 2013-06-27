@@ -196,6 +196,7 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",              :null => false
   end
 
+  add_index "lists", ["name"], :name => "index_lists_on_name", :unique => true
   add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
 
   create_table "matching_answers", :force => true do |t|
@@ -352,9 +353,9 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   create_table "user_group_members", :force => true do |t|
     t.integer  "user_group_id"
     t.integer  "user_id"
-    t.boolean  "is_group_manager"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.boolean  "is_manager"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   add_index "user_group_members", ["user_group_id", "user_id"], :name => "index_user_group_members_on_user_group_id_and_user_id", :unique => true

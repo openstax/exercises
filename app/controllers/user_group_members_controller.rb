@@ -76,7 +76,7 @@ class UserGroupMembersController < ApplicationController
     @user_group_member.destroy
 
     respond_to do |format|
-      format.html { redirect_to user_group_members_url }
+      format.html { redirect_to user_groups_url }
       format.json { head :no_content }
     end
   end

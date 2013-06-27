@@ -9,11 +9,23 @@ class UserGroup < ActiveRecord::Base
   validates_presence_of :name
 
   def managers
-    user_group_members.select{ |ugm| ugm.is_manager }
+    UserGroupMember.find_all_by_user_group_id_and_is_manager(id, true)
   end
   
-  def add_user!(user)
-    UserGroupMember.create(:user_group => self, :user => user)
+  def add_member(user, manager = false)
+    return false if user.nil?
+    ugm = UserGroupMember.new(:is_manager => manager)
+    ugm.user_group = self
+    ugm.user = user
+    return false unless ugm.save
+    ugm
+  end
+
+  def remove_member(user)
+    return false if user.nil?
+    ugm = UserGroupMember.find_by_user_group_id_and_user_id(id, user.id)
+    return false if ugm.nil?
+    ugm.destroy
   end
   
   def is_member?(user)

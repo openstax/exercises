@@ -13,22 +13,49 @@ class List < ActiveRecord::Base
 
   validates_presence_of :name, :reader_user_group, :editor_user_group, :publisher_user_group, :manager_user_group
   validates_uniqueness_of :name
+
+  protected
+
+  def permission_group_for(permission)
+    case permission.to_s.downcase
+    when 'reader'
+      reader_user_group
+    when 'editor'
+      editor_user_group
+    when 'publisher'
+      publisher_user_group
+    when 'manager'
+      manager_user_group
+    else
+      nil
+    end
+  end
+
+  public
   
-  def add_question!(question)
-    ListQuestion.create(:list => self, :question => question)
+  def add_exercise!(exercise)
+    ListExercise.create(:list => self, :exercise => exercise)
   end
 
-  def is_reader?(user)
+  def add_permission(user, permission)
     return false if user.nil?
-    reader_user_group.is_member?(user) || \
-    editor_user_group.is_member?(user) || \
-    publisher_user_group.is_member?(user) || \
-    manager_user_group.is_member?(user) ||
+    pg = permission_group_for(permission)
+    return false if pg.nil?
+    pg.add_member(user)
   end
 
-  def is_manager?(user)
+  def remove_permission(user, permission)
     return false if user.nil?
-    manager_user_group.is_member?(user)
+    pg = permission_group_for(permission)
+    return false if pg.nil?
+    pg.remove_member(user)
+  end
+
+  def has_permission?(user, permission)
+    return false if user.nil?
+    pg = permission_group_for(permission)
+    return false if pg.nil?
+    pg.is_member?(user)
   end
   
   ##########################
@@ -36,7 +63,8 @@ class List < ActiveRecord::Base
   ##########################
 
   def can_be_read_by?(user)
-    is_public || is_reader?(user)
+    is_public || has_permission?(user, :reader) || has_permission?(user, :editor) || \
+    has_permission?(user, :publisher) || has_permission?(user, :manager)
   end
     
   def can_be_created_by?(user)
