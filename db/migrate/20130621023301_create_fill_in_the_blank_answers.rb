@@ -1,13 +1,13 @@
 class CreateFillInTheBlankAnswers < ActiveRecord::Migration
   def change
     create_table :fill_in_the_blank_answers do |t|
-      t.integer :question_id
-      t.text :pre_content
-      t.text :pre_content_html
-      t.text :post_content
-      t.text :post_content_html
-      t.string :blank_answer
-      t.integer :number
+      t.integer :question_id, :null => false
+      t.text :pre_content, :null => false, :default => ''
+      t.text :pre_content_cache, :null => false, :default => ''
+      t.text :post_content, :null => false, :default => ''
+      t.text :post_content_cache, :null => false, :default => ''
+      t.string :blank_answer, :null => false, :default => ''
+      t.integer :number, :null => false
       t.decimal :credit
 
       t.timestamps

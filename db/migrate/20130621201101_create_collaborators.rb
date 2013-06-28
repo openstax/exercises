@@ -1,12 +1,12 @@
 class CreateCollaborators < ActiveRecord::Migration
   def change
     create_table :collaborators do |t|
-      t.integer :user_id
-      t.integer :collaborable_id
-      t.string :collaborable_type
-      t.integer :number
-      t.boolean :is_author
-      t.boolean :is_copyright_holder
+      t.integer :user_id, :null => false
+      t.integer :collaborable_id, :null => false
+      t.string :collaborable_type, :null => false
+      t.integer :number, :null => false
+      t.boolean :is_author, :null => false, :default => false
+      t.boolean :is_copyright_holder, :null => false, :default => false
 
       t.timestamps
     end

@@ -11,7 +11,7 @@
 
 <% current_user.user_group_members.each do |user_group_member| %>
   <tr>
-    <td><%= user_group_member.user_group.name %></td>
+    <td><%= user_group_member.user_group.full_name %></td>
     <td><%= user_group_member.is_manager ? 'Manager' : 'Member' %></td>
     <td><%= link_to 'Show', user_group_member.user_group %> |</td>
     <td><%= link_to 'Edit', edit_user_group_path(user_group_member.user_group) %> |</td>

@@ -1,12 +1,12 @@
 class CreateSolutions < ActiveRecord::Migration
   def change
     create_table :solutions do |t|
-      t.integer :question_id
-      t.text :content
-      t.text :content_html
-      t.text :summary
-      t.integer :number
-      t.integer :version
+      t.integer :question_id, :null => false
+      t.text :content, :null => false, :default => ''
+      t.text :content_cache, :null => false, :default => ''
+      t.text :summary, :null => false, :default => ''
+      t.integer :number, :null => false
+      t.integer :version, :null => false
       t.datetime :published_at
       t.integer :source_solution_id
 

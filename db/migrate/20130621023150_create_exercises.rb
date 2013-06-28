@@ -1,23 +1,23 @@
 class CreateExercises < ActiveRecord::Migration
   def change
     create_table :exercises do |t|
-      t.text :content
-      t.text :content_html
-      t.integer :number
-      t.integer :version
+      t.text :content, :null => false, :default => ''
+      t.text :content_cache, :null => false, :default => ''
+      t.integer :number, :null => false
+      t.integer :version, :null => false
       t.datetime :published_at
       t.integer :source_exercise_id
-      t.decimal :suggested_credit
-      t.integer :license_id
+      t.decimal :credit
+      t.integer :license_id, :null => false
       t.datetime :embargoed_until
-      t.boolean :only_embargo_solutions
+      t.boolean :only_embargo_solutions, :null => false, :default => false
       t.integer :locked_by
       t.datetime :locked_at
 
       t.timestamps
     end
 
-    add_index :exercises, [:number, :version]
+    add_index :exercises, [:number, :version], :unique => true
     add_index :exercises, :published_at
     add_index :exercises, :source_exercise_id
     add_index :exercises, :license_id

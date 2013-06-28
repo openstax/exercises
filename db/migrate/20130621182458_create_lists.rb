@@ -1,13 +1,13 @@
 class CreateLists < ActiveRecord::Migration
   def change
     create_table :lists do |t|
-      t.string :name
-      t.boolean :is_public
+      t.string :name, :null => false, :default => ''
+      t.boolean :is_public, :null => false, :default => false
       t.integer :parent_list_id
-      t.integer :reader_user_group_id
-      t.integer :editor_user_group_id
-      t.integer :publisher_user_group_id
-      t.integer :manager_user_group_id
+      t.integer :reader_user_group_id, :null => false
+      t.integer :editor_user_group_id, :null => false
+      t.integer :publisher_user_group_id, :null => false
+      t.integer :manager_user_group_id, :null => false
 
       t.timestamps
     end

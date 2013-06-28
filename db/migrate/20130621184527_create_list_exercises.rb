@@ -1,9 +1,9 @@
 class CreateListExercises < ActiveRecord::Migration
   def change
     create_table :list_exercises do |t|
-      t.integer :list_id
-      t.integer :exercise_id
-      t.integer :number
+      t.integer :list_id, :null => false
+      t.integer :exercise_id, :null => false
+      t.integer :number, :null => false
 
       t.timestamps
     end

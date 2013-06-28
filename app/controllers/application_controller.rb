@@ -9,6 +9,13 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate_user!
 
+  protected
+
+  def raise_unless(authorized)
+    return if authorized || user_is_admin?
+    raise SecurityTransgression
+  end
+
   private
 
   def layout
