@@ -1,10 +1,14 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Name:</b>
+  <b>Group:</b>
   <%= @user_group.name %>
 </p>
 
+<%= render :partial => 'user_group_members/index', :locals => {:user_group_members => @user_group.user_group_members} %>
 
-<%= link_to 'Edit', edit_user_group_path(@user_group) %> |
+<br />
+
+<%= link_to 'Add member', new_user_group_member_path(@user_group) %> |
+<%= link_to 'Edit group', edit_user_group_path(@user_group) %> |
 <%= link_to 'Back', user_groups_path %>

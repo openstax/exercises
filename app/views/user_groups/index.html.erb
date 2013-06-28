@@ -2,8 +2,8 @@
 
 <table>
   <tr>
-    <th>Name |</th>
-    <th>Manager?</th>
+    <th>Group name</th>
+    <th>Status</th>
     <th></th>
     <th></th>
     <th></th>
@@ -12,7 +12,7 @@
 <% current_user.user_group_members.each do |user_group_member| %>
   <tr>
     <td><%= user_group_member.user_group.name %></td>
-    <td><%= tf_to_yn(user_group_member.is_manager) %></td>
+    <td><%= user_group_member.is_manager ? 'Manager' : 'Member' %></td>
     <td><%= link_to 'Show', user_group_member.user_group %> |</td>
     <td><%= link_to 'Edit', edit_user_group_path(user_group_member.user_group) %> |</td>
     <td><%= link_to 'Leave group', user_group_member, method: :delete, data: { confirm: 'Are you sure?' } %></td>

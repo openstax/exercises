@@ -3,18 +3,25 @@ class UserGroup < ActiveRecord::Base
 
   has_many :user_group_members, :dependent => :destroy
   has_many :users, :through => :user_group_members
+
+  belongs_to :parent_object, :polymorphic => true
   
   accepts_nested_attributes_for :user_group_members, :allow_destroy => true
 
   validates_presence_of :name
 
+  def name
+    parent_object.nil? ? @name : "#{@parent_object.name}'s #{@name}"
+  end
+
   def managers
+    return [] if externally_managed
     UserGroupMember.find_all_by_user_group_id_and_is_manager(id, true)
   end
   
   def add_member(user, manager = false)
     return false if user.nil?
-    ugm = UserGroupMember.new(:is_manager => manager)
+    ugm = UserGroupMember.new(:is_manager => (!externally_managed && manager))
     ugm.user_group = self
     ugm.user = user
     return false unless ugm.save
@@ -34,18 +41,27 @@ class UserGroup < ActiveRecord::Base
   end
 
   def is_manager?(user)
-    return false if user.nil?
+    return false if (user.nil? || externally_managed)
     user_group_member = UserGroupMember.find_by_user_group_id_and_user_id(id, user.id)
     return false if user_group_member.nil?
     user_group_member.is_manager
   end
 
+  def deputizer
+    User.where(:deputy_user_group_id => id)
+  end
+
+  def list
+    List.where{(reader_user_group_id == id) | (editor_user_group_id == id) | \
+               (publisher_user_group_id == id) | (manager_user_group_id == id)}
+  end
+
   def update_callback
-    user_group_members.first.update_attribute(:is_manager, true) if managers.empty?
+    user_group_members.first.update_attribute(:is_manager, true) if (!externally_managed && managers.empty?)
   end
 
   def destroy_callback
-    destroy if user_group_members.empty?
+    destroy if (!externally_managed && user_group_members.empty?)
   end
   
   ##########################

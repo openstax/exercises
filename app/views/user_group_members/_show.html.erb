@@ -1,0 +1,5 @@
+<tr>
+  <td><%= user_group_member.user.name %></td>
+  <td><%= user_group_member.is_manager ? 'Manager' : 'Member' %> (<%= link_to 'Toggle', user_group_member, method: :put, data: { confirm: 'Are you sure?' } %>)</td>
+  <td><%= link_to 'Remove', user_group_member, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+</tr>

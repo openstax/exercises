@@ -15,8 +15,17 @@ class User < ActiveRecord::Base
   scope :active, where(:disabled_at => nil)
   scope :admins, where(:is_admin => true)
 
+  has_one :user_profile, :dependent => :destroy
+  has_one :deputy_user_group, :class_name => 'UserGroup', :through => :user_profile
+  has_many :deputies, :class_name => 'User', :through => :deputy_user_group
+  has_one :default_list, :class_name => 'List', :through => :user_profile
+
   has_many :user_group_members, :dependent => :destroy
   has_many :user_groups, :through => :user_group_members
+
+  def name
+    "#{first_name} #{last_name}"
+  end
 
   def is_admin?
     is_admin

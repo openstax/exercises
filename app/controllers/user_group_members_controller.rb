@@ -10,31 +10,16 @@ class UserGroupMembersController < ApplicationController
     end
   end
 
-  # GET /user_group_members/1
-  # GET /user_group_members/1.json
-  def show
-    @user_group_member = UserGroupMember.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @user_group_member }
-    end
-  end
-
   # GET /user_group_members/new
   # GET /user_group_members/new.json
   def new
+    @user_group = params[:user_group_id]
     @user_group_member = UserGroupMember.new
 
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @user_group_member }
     end
-  end
-
-  # GET /user_group_members/1/edit
-  def edit
-    @user_group_member = UserGroupMember.find(params[:id])
   end
 
   # POST /user_group_members
@@ -59,8 +44,8 @@ class UserGroupMembersController < ApplicationController
     @user_group_member = UserGroupMember.find(params[:id])
 
     respond_to do |format|
-      if @user_group_member.update_attributes(params[:user_group_member])
-        format.html { redirect_to @user_group_member, notice: 'User group member was successfully updated.' }
+      if @user_group_member.update_attribute(:is_manager, !@user_group_member.is_manager)
+        format.html { redirect_to @user_group_member.user_group, notice: 'User group member was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

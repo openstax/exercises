@@ -1,11 +1,20 @@
 Exercises::Application.routes.draw do
+  apipie
+
+  use_doorkeeper
+
+  devise_for :users, :controllers => { :registrations => "registrations" }
+
+  resources :users, :only => [] do
+    get 'help'
+    post 'search'
+  end
+
   resources :user_profiles
 
   resources :user_groups
 
   resources :user_group_members
-
-  resources :deputizations
 
   resources :exercises
 
@@ -25,7 +34,11 @@ Exercises::Application.routes.draw do
 
   resources :solutions
 
-  resources :licenses
+  resources :licenses do
+    collection do
+      put 'make_default'
+    end
+  end
 
   resources :lists
 
@@ -41,15 +54,18 @@ Exercises::Application.routes.draw do
 
   resources :api_keys, :except => [:new, :edit, :update]
 
-  devise_for :users, :controllers => { :registrations => "registrations" }
 
-  use_doorkeeper
-
-  apipie
 
   get 'api', :to => 'static_pages#api'
   get 'copyright', :to => 'static_pages#copyright'
   get 'developers', :to => 'static_pages#developers'
+
+  namespace :admin do
+    resources :users, :only => [:index, :show, :edit, :update] do
+      post 'become'
+      post 'confirm'
+    end
+  end
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do

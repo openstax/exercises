@@ -4,17 +4,39 @@ class List < ActiveRecord::Base
   has_many :list_questions, :dependent => :destroy
   has_many :questions, :through => :list_questions
 
-  has_one :reader_user_group, :class_name => 'UserGroup'
-  has_one :editor_user_group, :class_name => 'UserGroup'
-  has_one :manager_user_group, :class_name => 'UserGroup'
-  has_one :publisher_user_group, :class_name => 'UserGroup'
+  has_one :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_one :editor_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_one :publisher_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_one :manager_user_group, :class_name => 'UserGroup', :dependent => :destroy
+
+  has_many :readers, :class_name => 'User', :through => :reader_user_group
+  has_many :editors, :class_name => 'User', :through => :editor_user_group
+  has_many :publishers, :class_name => 'User', :through => :publisher_user_group
+  has_many :managers, :class_name => 'User', :through => :manager_user_group
 
   accepts_nested_attributes_for :list_questions, :allow_destroy => true
 
-  validates_presence_of :name, :reader_user_group, :editor_user_group, :publisher_user_group, :manager_user_group
-  validates_uniqueness_of :name
+  validates_presence_of :name
+
+  after_create :create_user_groups  
 
   protected
+
+  def create_user_groups
+    self.reader_user_group = UserGroup.new
+    self.reader_user_group.externally_managed = true
+    self.reader_user_group.save
+    self.editor_user_group = UserGroup.new
+    self.editor_user_group.externally_managed = true
+    self.editor_user_group.save
+    self.publisher_user_group = UserGroup.new
+    self.publisher_user_group.externally_managed = true
+    self.publisher_user_group.save
+    self.manager_user_group = UserGroup.new
+    self.manager_user_group.externally_managed = true
+    self.manager_user_group.save
+    self.save
+  end
 
   def permission_group_for(permission)
     case permission.to_s.downcase
@@ -33,7 +55,7 @@ class List < ActiveRecord::Base
 
   public
   
-  def add_exercise!(exercise)
+  def add_exercise(exercise)
     ListExercise.create(:list => self, :exercise => exercise)
   end
 
