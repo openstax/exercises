@@ -1,3 +1,12 @@
 class TrueOrFalseAnswer < ActiveRecord::Base
-  attr_accessible :content, :content_html, :credit, :is_true, :order, :question_id
+  content
+  numberable
+
+  attr_accessible :is_true, :credit
+
+  belongs_to :question
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

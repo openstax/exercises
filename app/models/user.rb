@@ -10,16 +10,16 @@ class User < ActiveRecord::Base
   validates_presence_of :username, :password, :email, :first_name, :last_name
   validates_uniqueness_of :username, :email
 
-  scope :active, where(:disabled_at => nil)
-  scope :admins, where(:is_admin => true)
-
   has_one :user_profile, :dependent => :destroy
-  has_one :deputy_user_group, :class_name => 'UserGroup', :through => :user_profile
+  has_one :deputy_user_group, :through => :user_profile
   has_many :deputies, :class_name => 'User', :through => :deputy_user_group
-  has_one :default_list, :class_name => 'List', :through => :user_profile
+  has_one :default_list, :through => :user_profile
 
   has_many :user_group_members, :dependent => :destroy
   has_many :user_groups, :through => :user_group_members
+
+  has_many :collaborators, :dependent => :destroy
+  has_many :collaborables, :through => :collaborators
 
   before_save :force_active_admin
   after_create :create_user_profile

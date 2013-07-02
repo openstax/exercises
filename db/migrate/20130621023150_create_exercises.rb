@@ -6,11 +6,11 @@ class CreateExercises < ActiveRecord::Migration
       t.integer :number, :null => false
       t.integer :version, :null => false
       t.datetime :published_at
+      t.integer :license_id
       t.integer :source_exercise_id
-      t.decimal :credit
-      t.integer :license_id, :null => false
       t.datetime :embargoed_until
       t.boolean :only_embargo_solutions, :null => false, :default => false
+      t.decimal :credit
       t.integer :locked_by
       t.datetime :locked_at
 

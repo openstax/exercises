@@ -1,3 +1,15 @@
 class Solution < ActiveRecord::Base
-  attr_accessible :content, :content_html, :creator_id, :number, :question_id, :summary, :version
+  attachable
+  collaborable
+  content
+  derivable
+  publishable
+
+  attr_accessible :summary
+
+  belongs_to :question
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

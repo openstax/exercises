@@ -4,6 +4,7 @@ class CreateQuestionDependencyPairs < ActiveRecord::Migration
       t.integer :independent_question_id, :null => false
       t.integer :dependent_question_id, :null => false
       t.integer :kind, :null => false
+      t.integer :number, :null => false
 
       t.timestamps
     end

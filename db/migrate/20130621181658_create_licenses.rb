@@ -5,6 +5,7 @@ class CreateLicenses < ActiveRecord::Migration
       t.string :short_name, :null => false, :default => ''
       t.string :partial_name, :null => false, :default => ''
       t.string :url, :null => false, :default => ''
+      t.integer :number, :null => false
 
       t.timestamps
     end

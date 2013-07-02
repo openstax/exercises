@@ -8,6 +8,7 @@ class CreateSolutions < ActiveRecord::Migration
       t.integer :number, :null => false
       t.integer :version, :null => false
       t.datetime :published_at
+      t.integer :license_id
       t.integer :source_solution_id
 
       t.timestamps

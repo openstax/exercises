@@ -1,3 +1,12 @@
 class QuestionDependencyPair < ActiveRecord::Base
-  attr_accessible :dependent_question_id, :independent_question_id, :kind
+  numberable
+
+  attr_accessible :kind
+
+  belongs_to :dependent_question, :class_name => 'Question'
+  belongs_to :independent_question, :class_name => 'Question'
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

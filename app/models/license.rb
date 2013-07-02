@@ -1,3 +1,11 @@
 class License < ActiveRecord::Base
-  attr_accessible :is_default, :long_name, :partial_name, :short_name, :url
+  numberable
+
+  attr_accessible :short_name, :long_name, :partial_name, :url
+
+  has_many :exercises, :solutions
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

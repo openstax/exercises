@@ -1,3 +1,12 @@
 class MultipleChoiceAnswer < ActiveRecord::Base
-  attr_accessible :content, :content_html, :credit, :order, :question_id
+  content
+  numberable
+
+  attr_accessible :credit
+
+  belongs_to :question
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

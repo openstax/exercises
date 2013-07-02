@@ -1,22 +1,17 @@
 class List < ActiveRecord::Base
   attr_accessible :name, :is_public, :list_exercises_attributes
 
+  accepts_nested_attributes_for :list_exercises, :allow_destroy => true
+
   belongs_to :parent_list, :class_name => 'List'
+
+  belongs_to :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  belongs_to :editor_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  belongs_to :publisher_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  belongs_to :manager_user_group, :class_name => 'UserGroup', :dependent => :destroy
 
   has_many :list_exercises, :dependent => :destroy
   has_many :exercises, :through => :list_exercises
-
-  has_one :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_one :editor_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_one :publisher_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_one :manager_user_group, :class_name => 'UserGroup', :dependent => :destroy
-
-  has_many :readers, :class_name => 'User', :through => :reader_user_group
-  has_many :editors, :class_name => 'User', :through => :editor_user_group
-  has_many :publishers, :class_name => 'User', :through => :publisher_user_group
-  has_many :managers, :class_name => 'User', :through => :manager_user_group
-
-  accepts_nested_attributes_for :list_exercises, :allow_destroy => true
 
   validates_presence_of :name, :reader_user_group, :editor_user_group, :publisher_user_group, :manager_user_group
   validates_uniqueness_of :name, :if => :is_public

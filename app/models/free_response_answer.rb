@@ -1,3 +1,12 @@
 class FreeResponseAnswer < ActiveRecord::Base
-  attr_accessible :can_be_sketched, :content, :content_html, :credit, :free_response, :order, :question_id
+  content
+  numberable
+
+  attr_accessible :can_be_sketched, :free_response, :credit
+
+  belongs_to :question
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

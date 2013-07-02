@@ -7,6 +7,9 @@ class CreateCollaborators < ActiveRecord::Migration
       t.integer :number, :null => false
       t.boolean :is_author, :null => false, :default => false
       t.boolean :is_copyright_holder, :null => false, :default => false
+      t.boolean :toggle_author_request, :null => false, :default => false
+      t.boolean :toggle_copyright_holder_request, :null => false, :default => false
+      t.integer :requester_id, :null => false
 
       t.timestamps
     end

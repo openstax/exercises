@@ -45,9 +45,6 @@ Exercises::Application.routes.draw do
   resources :list_exercises
 
   resources :collaborators
-
-  resources :collaborator_requests
-
   resources :question_dependency_pairs
 
   resources :attachments

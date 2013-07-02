@@ -1,3 +1,35 @@
 class Question < ActiveRecord::Base
-  attr_accessible :content, :content_html, :credit, :exercise_id, :order
+  content
+  derivable
+  numberable
+
+  attr_accessible :changes_solution, :credit
+
+  belongs_to :exercise
+
+  has_many :dependent_question_pairs,
+           :class_name => "QuestionDependencyPair",
+           :foreign_key => "independent_question_id",
+           :dependent => :destroy         
+  has_many :dependent_questions,
+           :through => :dependent_question_pairs
+
+  has_many :independent_question_pairs,
+           :class_name => "QuestionDependencyPair",
+           :foreign_key => "dependent_question_id",
+           :dependent => :destroy         
+  has_many :independent_questions,
+           :through => :independent_question_pairs
+
+  has_many :solutions,
+           :multiple_choice_answers,
+           :matching_answers,
+           :fill_in_the_blank_answers,
+           :true_or_false_answers,
+           :short_answers,
+           :free_response_answers
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

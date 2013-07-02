@@ -1,3 +1,13 @@
 class ExerciseCollaborator < ActiveRecord::Base
-  attr_accessible :exercise_collaborator_requests_count, :exercise_id, :is_author, :is_copyright_holder, :order, :user_id
+  numberable
+
+  attr_accessible :toggle_author_request, :toggle_copyright_holder_request
+
+  belongs_to :user
+  belongs_to :collaborable, :polymorphic => true
+  belongs_to :requester, :class_name => 'User'
+
+  ##########################
+  # Access control methods #
+  ##########################
 end

@@ -1,3 +1,12 @@
 class MatchingAnswer < ActiveRecord::Base
-  attr_accessible :content, :content_html, :credit, :match_number, :order, :question_id, :right_column
+  content
+  numberable
+
+  attr_accessible :match_number, :right_column, :credit
+
+  belongs_to :question
+
+  ##########################
+  # Access control methods #
+  ##########################
 end
