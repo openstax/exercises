@@ -21,15 +21,17 @@ class Question < ActiveRecord::Base
   has_many :independent_questions,
            :through => :independent_question_pairs
 
-  has_many :solutions,
-           :multiple_choice_answers,
+  has_many :multiple_choice_answers,
            :matching_answers,
            :fill_in_the_blank_answers,
            :true_or_false_answers,
            :short_answers,
-           :free_response_answers
+           :free_response_answers,
+           :solutions
 
-  ##########################
-  # Access control methods #
-  ##########################
+  validates_presence_of :exercise
+
+  ##################
+  # Access Control #
+  ##################
 end

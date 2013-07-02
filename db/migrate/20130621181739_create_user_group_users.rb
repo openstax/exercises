@@ -1,6 +1,6 @@
-class CreateUserGroupMembers < ActiveRecord::Migration
+class CreateUserGroupUsers < ActiveRecord::Migration
   def change
-    create_table :user_group_members do |t|
+    create_table :user_group_users do |t|
       t.integer :user_group_id, :null => false
       t.integer :user_id, :null => false
       t.boolean :is_manager, :null => false, :default => false
@@ -8,6 +8,6 @@ class CreateUserGroupMembers < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :user_group_members, [:user_group_id, :user_id], :unique => true
+    add_index :user_group_users, [:user_group_id, :user_id], :unique => true
   end
 end

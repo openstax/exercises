@@ -3,13 +3,15 @@ class Solution < ActiveRecord::Base
   collaborable
   content
   derivable
-  publishable
+  publishable(:question)
 
   attr_accessible :summary
 
   belongs_to :question
 
-  ##########################
-  # Access control methods #
-  ##########################
+  validates_presence_of :question
+
+  ##################
+  # Access Control #
+  ##################
 end

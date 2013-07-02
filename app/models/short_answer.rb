@@ -1,12 +1,14 @@
 class ShortAnswer < ActiveRecord::Base
   content
-  numberable
+  numberable(:question)
 
   attr_accessible :short_answer, :credit
 
   belongs_to :question
 
-  ##########################
-  # Access control methods #
-  ##########################
+  validates_presence_of :question
+
+  ##################
+  # Access Control #
+  ##################
 end

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe "ExerciseCollaboratorRequests" do
-  describe "GET /exercise_collaborator_requests" do
+describe "Collaborators" do
+  describe "GET /collaborators" do
     it "works! (now write some real specs)" do
       # Run the generator again with the --webrat flag if you want to use webrat methods/matchers
-      get exercise_collaborator_requests_path
+      get collaborators_path
       response.status.should be(200)
     end
   end

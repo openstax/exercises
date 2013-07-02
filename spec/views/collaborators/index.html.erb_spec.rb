@@ -1,28 +1,28 @@
-require 'spec_helper'
+Hrequire 'spec_helper'
 
-describe "exercise_collaborators/index" do
+describe "collaborators/index" do
   before(:each) do
-    assign(:exercise_collaborators, [
-      stub_model(ExerciseCollaborator,
+    assign(:collaborators, [
+      stub_model(Collaborator,
         :user_id => 1,
         :exercise_id => 2,
         :order => 3,
         :is_author => false,
         :is_copyright_holder => false,
-        :exercise_collaborator_requests_count => 4
+        :collaborator_requests_count => 4
       ),
-      stub_model(ExerciseCollaborator,
+      stub_model(Collaborator,
         :user_id => 1,
         :exercise_id => 2,
         :order => 3,
         :is_author => false,
         :is_copyright_holder => false,
-        :exercise_collaborator_requests_count => 4
+        :collaborator_requests_count => 4
       )
     ])
   end
 
-  it "renders a list of exercise_collaborators" do
+  it "renders a list of collaborators" do
     render
     # Run the generator again with the --webrat flag if you want to use webrat matchers
     assert_select "tr>td", :text => 1.to_s, :count => 2

@@ -1,66 +1,58 @@
 class UserGroup < ActiveRecord::Base
-  attr_accessible :name, :user_group_members_attributes
+  attr_accessible :name, :user_group_users_attributes
 
-  has_many :user_group_members, :dependent => :destroy
-  has_many :users, :through => :user_group_members
+  accepts_nested_attributes_for :user_group_users, :allow_destroy => true
 
   belongs_to :container, :polymorphic => true
-  
-  accepts_nested_attributes_for :user_group_members, :allow_destroy => true
+
+  has_many :user_group_users, :dependent => :destroy
+  has_many :users, :through => :user_group_users
 
   validates_presence_of :name
 
   def managers
     return [] if !container.nil?
-    UserGroupMember.find_all_by_user_group_id_and_is_manager(id, true)
+    UserGroupUser.find_all_by_user_group_id_and_is_manager(id, true)
   end
 
   def full_name
     container.nil? ? name : "#{container.name} #{name}"
   end
   
-  def add_member(user, manager = false)
+  def add_user(user, manager = false)
     return false if user.nil?
-    ugm = UserGroupMember.new(:is_manager => (container.nil? && manager))
-    ugm.user_group = self
-    ugm.user = user
-    return false unless ugm.save
-    ugm
+    ugu = UserGroupUser.new(:is_manager => (container.nil? && manager))
+    ugu.user_group = self
+    ugu.user = user
+    return false unless ugu.save
+    ugu
   end
 
-  def remove_member(user)
+  def remove_user(user)
     return false if user.nil?
-    ugm = UserGroupMember.find_by_user_group_id_and_user_id(id, user.id)
-    return false if ugm.nil?
-    ugm.destroy
+    ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
+    return false if ugu.nil?
+    ugu.destroy
   end
   
-  def is_member?(user)
+  def has_user?(user)
     return false if user.nil?
-    !UserGroupMember.find_by_user_group_id_and_user_id(id, user.id).nil?
+    !UserGroupUser.find_by_user_group_id_and_user_id(id, user.id).nil?
   end
 
-  def is_manager?(user)
+  def has_manager?(user)
     return false if (user.nil? || !container.nil?)
-    user_group_member = UserGroupMember.find_by_user_group_id_and_user_id(id, user.id)
-    return false if user_group_member.nil?
-    user_group_member.is_manager
+    ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
+    return false if ugu.nil?
+    ugu.is_manager
   end
 
-  def update_callback
-    user_group_members.first.update_attribute(:is_manager, true) if (container.nil? && managers.empty?)
-  end
-
-  def destroy_callback
-    destroy if (container.nil? && user_group_members.empty?)
-  end
-  
-  ##########################
-  # Access control methods #
-  ##########################
+  ##################
+  # Access Control #
+  ##################
 
   def can_be_read_by?(user)
-    is_member?(user)
+    has_user?(user)
   end
     
   def can_be_created_by?(user)
@@ -68,10 +60,24 @@ class UserGroup < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    is_manager?(user)
+    has_manager?(user)
   end
   
   def can_be_destroyed_by?(user)
     can_be_updated_by?(user)
+  end
+
+  protected
+
+  #############
+  # Callbacks #
+  #############
+
+  def update_callback
+    user_group_users.first.update_attribute(:is_manager, true) if (container.nil? && managers.empty?)
+  end
+
+  def destroy_callback
+    destroy if (container.nil? && user_group_users.empty?)
   end
 end

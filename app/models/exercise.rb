@@ -12,7 +12,7 @@ class Exercise < ActiveRecord::Base
   has_many :list_exercises, :dependent => :destroy
   has_many :lists, :through => :list_exercises
 
-  ##########################
-  # Access control methods #
-  ##########################
+  ##################
+  # Access Control #
+  ##################
 end

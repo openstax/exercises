@@ -1,0 +1,11 @@
+<table>
+  <tr>
+    <th>User</th>
+    <th>Status</th>
+    <th></th>
+  </tr>
+
+<% user_group_users.each do |user_group_user| %>
+  <%= render :partial => 'user_group_users/show', :locals => {:user_group_user => user_group_user} %>
+<% end %>
+</table>

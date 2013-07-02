@@ -9,13 +9,13 @@
     <th></th>
   </tr>
 
-<% current_user.user_group_members.each do |user_group_member| %>
+<% current_user.user_group_users.each do |user_group_user| %>
   <tr>
-    <td><%= user_group_member.user_group.full_name %></td>
-    <td><%= user_group_member.is_manager ? 'Manager' : 'Member' %></td>
-    <td><%= link_to 'Show', user_group_member.user_group %> |</td>
-    <td><%= link_to 'Edit', edit_user_group_path(user_group_member.user_group) %> |</td>
-    <td><%= link_to 'Leave group', user_group_member, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= user_group_user.user_group.full_name %></td>
+    <td><%= user_group_user.is_manager ? 'Manager' : 'Member' %></td>
+    <td><%= link_to 'Show', user_group_user.user_group %> |</td>
+    <td><%= link_to 'Edit', edit_user_group_path(user_group_user.user_group) %> |</td>
+    <td><%= link_to 'Leave group', user_group_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
 </table>

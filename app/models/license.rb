@@ -1,11 +1,13 @@
 class License < ActiveRecord::Base
   numberable
 
-  attr_accessible :short_name, :long_name, :partial_name, :url
+  attr_accessible :name, :short_name, :url, :partial_name
 
   has_many :exercises, :solutions
 
-  ##########################
-  # Access control methods #
-  ##########################
+  validates_presence_of :name, :short_name, :url, :partial_name
+
+  ##################
+  # Access Control #
+  ##################
 end

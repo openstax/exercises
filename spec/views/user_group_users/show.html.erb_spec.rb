@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe "user_group_members/show" do
+describe "user_group_users/show" do
   before(:each) do
-    @user_group_member = assign(:user_group_member, stub_model(UserGroupMember,
+    @user_group_user = assign(:user_group_user, stub_model(UserGroupUser,
       :user_group_id => 1,
       :user_id => 2,
       :is_group_manager => false

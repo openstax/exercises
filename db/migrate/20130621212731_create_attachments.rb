@@ -2,12 +2,12 @@ class CreateAttachments < ActiveRecord::Migration
   def change
     create_table :attachments do |t|
       t.integer :number, :null => false
+      t.string :attachable_type, :null => false
+      t.integer :attachable_id, :null => false
       t.string :asset, :null => false, :default => ''
+      t.string :local_name, :null => false, :default => ''
       t.text :caption, :null => false, :default => ''
       t.text :alt, :null => false, :default => ''
-      t.integer :attachable_id, :null => false
-      t.string :attachable_type, :null => false
-      t.string :local_name, :null => false, :default => ''
 
       t.timestamps
     end

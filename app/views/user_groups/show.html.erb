@@ -5,10 +5,10 @@
   <%= @user_group.name %>
 </p>
 
-<%= render :partial => 'user_group_members/index', :locals => {:user_group_members => @user_group.user_group_members} %>
+<%= render :partial => 'user_group_users/index', :locals => {:user_group_users => @user_group.user_group_users} %>
 
 <br />
 
-<%= link_to 'Add member', new_user_group_member_path(@user_group) %> |
+<%= link_to 'Add member', new_user_group_user_path(@user_group) %> |
 <%= link_to 'Edit group', edit_user_group_path(@user_group) %> |
 <%= link_to 'Back', user_groups_path %>

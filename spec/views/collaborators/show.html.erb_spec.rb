@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe "exercise_collaborators/show" do
+describe "collaborators/show" do
   before(:each) do
-    @exercise_collaborator = assign(:exercise_collaborator, stub_model(ExerciseCollaborator,
+    @collaborator = assign(:collaborator, stub_model(Collaborator,
       :user_id => 1,
       :exercise_id => 2,
       :order => 3,
       :is_author => false,
       :is_copyright_holder => false,
-      :exercise_collaborator_requests_count => 4
+      :collaborator_requests_count => 4
     ))
   end
 
