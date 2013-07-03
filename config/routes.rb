@@ -16,9 +16,15 @@ Exercises::Application.routes.draw do
 
   resources :user_group_members
 
+  resources :lists
+
+  resources :list_exercises
+
   resources :exercises
 
   resources :questions
+
+  resources :question_dependency_pairs
 
   resources :multiple_choice_answers
 
@@ -34,28 +40,23 @@ Exercises::Application.routes.draw do
 
   resources :solutions
 
+  resources :attachments
+
+  resources :collaborators
+
   resources :licenses do
     collection do
       put 'make_default'
     end
   end
 
-  resources :lists
-
-  resources :list_exercises
-
-  resources :collaborators
-  resources :question_dependency_pairs
-
-  resources :attachments
-
   resources :api_keys, :except => [:new, :edit, :update]
-
-
 
   get 'api', :to => 'static_pages#api'
   get 'copyright', :to => 'static_pages#copyright'
   get 'developers', :to => 'static_pages#developers'
+
+  root :to => "static_pages#home"
 
   namespace :admin do
     resources :users, :only => [:index, :show, :edit, :update] do
@@ -69,6 +70,4 @@ Exercises::Application.routes.draw do
       get 'dummy', :to => 'dummy#index'
     end
   end
-
-  root :to => "static_pages#home"
 end
