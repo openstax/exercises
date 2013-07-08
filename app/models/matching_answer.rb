@@ -1,6 +1,6 @@
 class MatchingAnswer < ActiveRecord::Base
   content
-  numberable(:question)
+  sortable :question_id
 
   attr_accessible :match_number, :right_column, :credit
 

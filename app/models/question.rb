@@ -1,7 +1,7 @@
 class Question < ActiveRecord::Base
   content
   derivable
-  numberable
+  sortable :exercise_id
 
   attr_accessible :changes_solution, :credit
 

@@ -1,5 +1,5 @@
 class License < ActiveRecord::Base
-  numberable
+  sortable
 
   attr_accessible :name, :short_name, :url, :partial_name
 

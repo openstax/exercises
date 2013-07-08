@@ -1,6 +1,6 @@
 class FreeResponseAnswer < ActiveRecord::Base
   content
-  numberable(:question)
+  sortable :question_id
 
   attr_accessible :can_be_sketched, :free_response, :credit
 

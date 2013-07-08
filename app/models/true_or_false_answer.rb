@@ -1,6 +1,6 @@
 class TrueOrFalseAnswer < ActiveRecord::Base
   content
-  numberable(:question)
+  sortable :question_id
 
   attr_accessible :is_true, :credit
 

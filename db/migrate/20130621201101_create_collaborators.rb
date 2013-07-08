@@ -1,7 +1,7 @@
 class CreateCollaborators < ActiveRecord::Migration
   def change
     create_table :collaborators do |t|
-      t.integer :number, :null => false
+      t.integer :position, :null => false
       t.string :collaborable_type, :null => false
       t.integer :collaborable_id, :null => false
       t.integer :user_id, :null => false
@@ -15,7 +15,7 @@ class CreateCollaborators < ActiveRecord::Migration
     end
 
     add_index :collaborators, [:collaborable_type, :collaborable_id, :user_id], :unique => true, :name => "index_c_on_c_type_and_c_id_and_u_id"
-    add_index :collaborators, :number
+    add_index :collaborators, :position
     add_index :collaborators, :user_id
   end
 end

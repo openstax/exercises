@@ -1,6 +1,6 @@
 class ShortAnswer < ActiveRecord::Base
   content
-  numberable(:question)
+  sortable :question_id
 
   attr_accessible :short_answer, :credit
 

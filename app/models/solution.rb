@@ -3,7 +3,7 @@ class Solution < ActiveRecord::Base
   collaborable
   content
   derivable
-  publishable(:question)
+  publishable :question_id
 
   attr_accessible :summary
 

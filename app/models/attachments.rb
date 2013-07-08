@@ -1,6 +1,4 @@
 class Attachments < ActiveRecord::Base
-  numberable(:attachable)
-
   mount_uploader :asset, AssetUploader
 
   attr_accessible :asset, :caption, :alt, :local_name

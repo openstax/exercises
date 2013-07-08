@@ -1,5 +1,5 @@
 class ExerciseCollaborator < ActiveRecord::Base
-  numberable
+  sortable
 
   attr_accessible :toggle_author_request, :toggle_copyright_holder_request
 

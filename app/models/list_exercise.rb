@@ -1,5 +1,5 @@
 class ListExercise < ActiveRecord::Base
-  numberable
+  sortable :list_id
 
   attr_accessible :list, :exercise
 

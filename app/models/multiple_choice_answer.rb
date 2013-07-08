@@ -1,6 +1,6 @@
 class MultipleChoiceAnswer < ActiveRecord::Base
   content
-  numberable(:question)
+  sortable :question_id
 
   attr_accessible :credit
 

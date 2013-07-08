@@ -4,7 +4,7 @@ class CreateQuestions < ActiveRecord::Migration
       t.text :content, :null => false, :default => ''
       t.text :content_cache, :null => false, :default => ''
       t.integer :source_question_id
-      t.integer :number, :null => false
+      t.integer :position, :null => false
       t.integer :exercise_id, :null => false
       t.boolean :changes_solution, :null => false, :default => false
       t.decimal :credit
@@ -12,7 +12,7 @@ class CreateQuestions < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :questions, [:exercise_id, :number], :unique => true
+    add_index :questions, [:exercise_id, :position], :unique => true
     add_index :questions, :source_question_id
   end
 end

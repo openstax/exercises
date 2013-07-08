@@ -1,5 +1,5 @@
 class QuestionDependencyPair < ActiveRecord::Base
-  numberable
+  sortable :dependent_question_id
 
   attr_accessible :dependent_question, :independent_question, :kind
 
