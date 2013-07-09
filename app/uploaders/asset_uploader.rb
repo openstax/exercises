@@ -5,8 +5,12 @@ class AssetUploader < CarrierWave::Uploader::Base
 
   storage :file
 
-  version :thumb do
-    process :resize_to_limit => [100, 150]
+  version :medium do
+    process :resize_to_fit => [350, 350]
+  end
+
+  version :thumb, :from_version => :medium do
+    process :resize_to_fill => [100, 100]
   end
 
   def extension_white_list

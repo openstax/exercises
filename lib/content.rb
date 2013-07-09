@@ -42,8 +42,8 @@ module Content
               next
             end
 
-            parser = OSEParser.new
-            transformer = OSETransformer.new
+            parser = OseParser.new
+            transformer = OseTransformer.new(self)
 
             begin
               transformed_tree = transformer.apply(parser.parse(content_value))
