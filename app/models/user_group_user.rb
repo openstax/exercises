@@ -1,4 +1,6 @@
 class UserGroupUser < ActiveRecord::Base
+  sortable :user_id
+
   attr_accessible :is_manager
 
   belongs_to :user_group

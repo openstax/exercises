@@ -12,4 +12,8 @@ class AssetUploader < CarrierWave::Uploader::Base
   def extension_white_list
     %w(jpg jpeg gif png)
   end
+
+  def store_dir
+    "#{Rails.root}/#{model.attachable_type.to_s.underscore}/assets/#{model.number}"
+  end
 end

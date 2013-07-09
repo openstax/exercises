@@ -5,6 +5,7 @@ require 'utilities'
 require 'shared_application_methods'
 require 'api_constraints'
 require 'sortable'
+require 'content'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"

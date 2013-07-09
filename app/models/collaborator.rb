@@ -1,5 +1,5 @@
-class ExerciseCollaborator < ActiveRecord::Base
-  sortable
+class Collaborator < ActiveRecord::Base
+  sortable [:collaborable_type, :collaborable_id]
 
   attr_accessible :toggle_author_request, :toggle_copyright_holder_request
 

@@ -5,11 +5,12 @@ class Attachments < ActiveRecord::Base
 
   belongs_to :attachable, :polymorphic => true
 
+  before_validation :assign_next_number, :on => :create
   after_destroy :destroy_callback
 
-  validates_presence_of :asset, :caption, :alt, :attachable, :number, :local_name
+  validates_presence_of :number, :attachable, :asset, :local_name, :caption, :alt
+  validates_uniqueness_of :number, :scope => [:attachable_type]
   validates_uniqueness_of :local_name, :scope => [:attachable_type, :attachable_id]
-  validates_uniqueness_of :number, :scope => [:attachable_type, :attachable_id]
 
   ##################
   # Access Control #
@@ -20,6 +21,10 @@ class Attachments < ActiveRecord::Base
   #############
   # Callbacks #
   #############
+
+  def assign_next_number
+    self.number = ((where(:attachable_type => attachable_type).maximum(:number) || -1) + 1) if number.nil?
+  end
 
   def destroy_callback
     remove_asset! if find_by_number(number).nil?

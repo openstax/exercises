@@ -46,11 +46,11 @@ module Sortable
         protected
 
         def sort_scope
-          scope_array.nil? ? scoped : where(Hash[scope_array.map{|s| [s, self.send s]}])
+          scope_array.nil? ? scoped : where(Hash[scope_array.map{|s| [s, send(s)]}])
         end
 
         def assign_next_position
-          self.position = (sort_scope.maximum(:position) || 0) + 1
+          self.position = ((sort_scope.maximum(:position) || -1) + 1) if position.nil?
         end
       end
     end
