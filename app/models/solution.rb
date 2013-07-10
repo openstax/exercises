@@ -1,5 +1,5 @@
 class Solution < ActiveRecord::Base
-  attachable
+  attachable :exercise
   collaborable
   content
   derivable
@@ -8,6 +8,7 @@ class Solution < ActiveRecord::Base
   attr_accessible :summary
 
   belongs_to :question
+  has_one :exercise, :through => :question
 
   validates_presence_of :question
 

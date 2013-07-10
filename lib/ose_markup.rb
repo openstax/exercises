@@ -80,9 +80,9 @@ class OseTransformer < Parslet::Transform
     attachment = @attachable.get_attachment(image_name) if @attachable.respond_to?(:get_attachment)
 
     return "<span class = 'undefined_variable' title='No image with this name could be found!'>#{image_name}</span>" \
-      if attachment.nil?
+      if (attachment.nil? || !attachment.asset.is_image?)
     
-    "<img src=\"#{attachment.medium.url}\">"
+    "<img src=\"#{attachment.asset.medium.url}\">"
   end
 
   rule(:filename => simple(:filename)) { "#{filename}" }

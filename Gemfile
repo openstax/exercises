@@ -19,6 +19,8 @@ gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_utilities', '~> 0.0.5'
 
+gem 'carrierwave'
+
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'commontator'
