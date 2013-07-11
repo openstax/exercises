@@ -1,9 +1,9 @@
 class Attachments < ActiveRecord::Base
   mount_uploader :asset, AssetUploader
 
-  attr_accessible :asset, :caption, :alt, :local_name
-
   belongs_to :attachable, :polymorphic => true
+
+  attr_accessible :asset, :caption, :alt, :local_name
 
   before_validation :assign_next_number, :on => :create
   after_destroy :destroy_callback

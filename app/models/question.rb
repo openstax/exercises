@@ -4,8 +4,6 @@ class Question < ActiveRecord::Base
   derivable
   sortable :exercise_id
 
-  attr_accessible :changes_solution, :credit
-
   belongs_to :exercise
 
   has_many :dependent_question_pairs,
@@ -30,6 +28,8 @@ class Question < ActiveRecord::Base
            :free_response_answers,
            :solutions,
            :dependent => :destroy
+
+  attr_accessible :changes_solution, :credit
 
   validates_presence_of :exercise
 

@@ -1,12 +1,12 @@
 class UserGroup < ActiveRecord::Base
-  attr_accessible :name, :user_group_users_attributes
-
-  accepts_nested_attributes_for :user_group_users, :allow_destroy => true
-
   belongs_to :container, :polymorphic => true
 
   has_many :user_group_users, :dependent => :destroy
   has_many :users, :through => :user_group_users
+
+  accepts_nested_attributes_for :user_group_users, :allow_destroy => true
+
+  attr_accessible :name, :user_group_users_attributes
 
   validates_presence_of :name
 

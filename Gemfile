@@ -20,6 +20,7 @@ gem 'yaml_db'
 gem 'openstax_utilities', '~> 0.0.5'
 
 gem 'carrierwave'
+gem 'parslet', '~> 1.5'
 
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'

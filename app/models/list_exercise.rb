@@ -1,10 +1,10 @@
 class ListExercise < ActiveRecord::Base
   sortable :list_id
 
-  attr_accessible :list, :exercise
-
   belongs_to :list
   belongs_to :exercise
+
+  attr_accessible :list, :exercise
 
   after_destroy :destroy_listless_draft_exercise
 

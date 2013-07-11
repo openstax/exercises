@@ -1,8 +1,4 @@
 class List < ActiveRecord::Base
-  attr_accessible :name, :is_public, :list_exercises_attributes
-
-  accepts_nested_attributes_for :list_exercises, :allow_destroy => true
-
   belongs_to :parent_list, :class_name => 'List'
 
   belongs_to :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
@@ -14,6 +10,10 @@ class List < ActiveRecord::Base
 
   has_many :list_exercises, :dependent => :destroy
   has_many :exercises, :through => :list_exercises
+
+  accepts_nested_attributes_for :list_exercises, :allow_destroy => true
+
+  attr_accessible :name, :is_public, :list_exercises_attributes
 
   before_validation :create_user_groups, :on => :create
   after_create :set_user_groups_container
@@ -29,21 +29,21 @@ class List < ActiveRecord::Base
     return false if user.nil?
     pg = permission_group_for(permission)
     return false if pg.nil?
-    pg.add_member(user)
+    pg.add_user(user)
   end
 
   def remove_permission(user, permission)
     return false if user.nil?
     pg = permission_group_for(permission)
     return false if pg.nil?
-    pg.remove_member(user)
+    pg.remove_user(user)
   end
 
   def has_permission?(user, permission)
     return false if user.nil?
     pg = permission_group_for(permission)
     return false if pg.nil?
-    pg.is_member?(user)
+    pg.has_user?(user)
   end
 
   ##################

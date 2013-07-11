@@ -1,12 +1,12 @@
 class UserProfile < ActiveRecord::Base
-  attr_accessible :announcement_email, :auto_author_subscribe,
-                  :collaborator_request_email, :user_group_member_email
-
   belongs_to :user
 
   belongs_to :default_list, :class_name => 'List'
 
   has_one :deputy_user_group, :class_name => 'UserGroup', :as => 'container', :dependent => :destroy
+
+  attr_accessible :announcement_email, :auto_author_subscribe,
+                  :collaborator_request_email, :user_group_member_email
 
   before_validation :create_default_list, :unless => :default_list
   after_create :create_deputy_user_group

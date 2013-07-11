@@ -1,3 +1,5 @@
+require 'ose_markup'
+
 module Content
   # Set this to true for tests where
   # the content should be parsed,

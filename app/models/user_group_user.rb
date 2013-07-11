@@ -1,10 +1,10 @@
 class UserGroupUser < ActiveRecord::Base
   sortable :user_id
 
-  attr_accessible :is_manager
-
   belongs_to :user_group
   belongs_to :user
+
+  attr_accessible :is_manager
 
   after_update :update_callback
   after_destroy :destroy_callback

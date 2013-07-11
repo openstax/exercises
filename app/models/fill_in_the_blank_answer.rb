@@ -3,10 +3,10 @@ class FillInTheBlankAnswer < ActiveRecord::Base
   content [:pre_content, :post_content]
   sortable :question_id
 
-  attr_accessible :blank_answer, :credit
-
   belongs_to :question
   has_one :exercise, :through => :question
+
+  attr_accessible :blank_answer, :credit
 
   validates_presence_of :question
 

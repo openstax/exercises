@@ -5,8 +5,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :recoverable,
          :rememberable, :trackable, :validatable, :confirmable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me
-
   has_one :user_profile, :dependent => :destroy
   has_one :default_list, :through => :user_profile
   has_one :deputy_user_group, :through => :user_profile
@@ -17,6 +15,8 @@ class User < ActiveRecord::Base
 
   has_many :collaborators, :dependent => :destroy
   has_many :collaborables, :through => :collaborators
+
+  attr_accessible :email, :password, :password_confirmation, :remember_me
 
   before_save :force_active_admin
   after_create :create_user_profile

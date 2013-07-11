@@ -3,10 +3,10 @@ class MultipleChoiceAnswer < ActiveRecord::Base
   content
   sortable :question_id
 
-  attr_accessible :credit
-
   belongs_to :question
   has_one :exercise, :through => :question
+
+  attr_accessible :credit
 
   validates_presence_of :question
 

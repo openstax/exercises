@@ -4,8 +4,12 @@ require File.expand_path('../application', __FILE__)
 require 'utilities'
 require 'shared_application_methods'
 require 'api_constraints'
-require 'sortable'
+
+require 'attachable'
+require 'collaborable'
 require 'content'
+require 'publishable'
+require 'sortable'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"

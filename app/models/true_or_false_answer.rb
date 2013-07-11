@@ -3,10 +3,10 @@ class TrueOrFalseAnswer < ActiveRecord::Base
   content
   sortable :question_id
 
-  attr_accessible :is_true, :credit
-
   belongs_to :question
   has_one :exercise, :through => :question
+
+  attr_accessible :is_true, :credit
 
   validates_presence_of :question
 

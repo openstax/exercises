@@ -6,9 +6,9 @@ module Sortable
   module ClassMethods
     def sortable(scope_symbols = nil)
       class_eval do
-        cattr_accessible :scope_array
-        scope_array = scope_symbols.nil? ? nil : \
-                        (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
+        cattr_accessor :sort_scope_array
+        sort_scope_array = scope_symbols.nil? ? nil : \
+                           (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
         before_validation :assign_next_position, :on => :create
 
@@ -16,12 +16,11 @@ module Sortable
         validates_uniqueness_of :position, :scope => scope_symbols
 
         default_scope order(:position)
-        scope :sort_scope, scope_symbols.nil? ? scoped : where(scope_conditions)
 
         def self.sort(sorted_ids)
-          return false unless sorted_ids.is_a?(Array)
+          return false unless (sorted_ids.is_a?(Array) && !sorted_ids.empty?)
 
-          ss = sort_scope
+          ss = sorted_ids.first.sort_scope
           unsorted_ids = ss.select(:id).all
           sorted_ids = sorted_ids & unsorted_ids
           sorted_ids = sorted_ids | unsorted_ids
@@ -46,7 +45,7 @@ module Sortable
         protected
 
         def sort_scope
-          scope_array.nil? ? scoped : where(Hash[scope_array.map{|s| [s, send(s)]}])
+          sort_scope_array.nil? ? self.class.scoped : self.class.where(Hash[sort_scope_array.map{|s| [s, send(s)]}])
         end
 
         def assign_next_position
