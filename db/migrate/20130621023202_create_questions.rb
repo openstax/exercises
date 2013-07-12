@@ -7,7 +7,7 @@ class CreateQuestions < ActiveRecord::Migration
       t.integer :position, :null => false
       t.integer :exercise_id, :null => false
       t.boolean :changes_solution, :null => false, :default => false
-      t.decimal :credit
+      t.integer :credit
 
       t.timestamps
     end

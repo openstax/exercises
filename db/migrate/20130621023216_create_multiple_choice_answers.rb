@@ -5,7 +5,8 @@ class CreateMultipleChoiceAnswers < ActiveRecord::Migration
       t.string :content_cache, :null => false, :default => ''
       t.integer :position, :null => false
       t.integer :question_id, :null => false
-      t.decimal :credit
+      t.boolean :is_always_last, :null => false, :default => false
+      t.integer :credit
 
       t.timestamps
     end

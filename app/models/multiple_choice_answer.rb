@@ -6,7 +6,7 @@ class MultipleChoiceAnswer < ActiveRecord::Base
   belongs_to :question
   has_one :exercise, :through => :question
 
-  attr_accessible :credit
+  attr_accessible :is_always_last, :credit
 
   validates_presence_of :question
 

@@ -1,6 +1,5 @@
 class Solution < ActiveRecord::Base
-  attachable :exercise
-  collaborable
+  attachable
   content
   publishable :question_id
 
@@ -10,8 +9,10 @@ class Solution < ActiveRecord::Base
   attr_accessible :summary
 
   validates_presence_of :question
+  validates_presence_of :summary
 
   ##################
   # Access Control #
   ##################
+
 end

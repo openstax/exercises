@@ -6,7 +6,6 @@ require 'shared_application_methods'
 require 'api_constraints'
 
 require 'attachable'
-require 'collaborable'
 require 'content'
 require 'publishable'
 require 'sortable'

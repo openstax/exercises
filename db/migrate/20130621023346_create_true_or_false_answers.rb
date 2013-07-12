@@ -6,7 +6,7 @@ class CreateTrueOrFalseAnswers < ActiveRecord::Migration
       t.integer :position, :null => false
       t.integer :question_id, :null => false
       t.boolean :is_true, :null => false, :default => false
-      t.decimal :credit
+      t.integer :credit
 
       t.timestamps
     end

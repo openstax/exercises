@@ -1,7 +1,6 @@
 class Question < ActiveRecord::Base
   attachable :exercise
   content
-  derivable
   sortable :exercise_id
 
   belongs_to :exercise
@@ -36,4 +35,21 @@ class Question < ActiveRecord::Base
   ##################
   # Access Control #
   ##################
+
+  protected
+
+  def has_correct_answers?
+    return false if (multiple_choice_answers.first.nil? && \
+                     matching_answers.first.nil? && \
+                     fill_in_the_blank_answers.first.nil? && \
+                     true_or_false_answers.first.nil? && \
+                     short_answers.first.nil? && \
+                     free_response_answers.first.nil?)
+
+    unless multiple_choice_answers.first.nil?
+      return false if multiple_choice_answers.where{credit > 0}.first.nil?
+    end
+
+    true
+  end
 end

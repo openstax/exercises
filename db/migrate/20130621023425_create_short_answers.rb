@@ -6,7 +6,7 @@ class CreateShortAnswers < ActiveRecord::Migration
       t.integer :position, :null => false
       t.integer :question_id, :null => false
       t.string :short_answer, :null => false, :default => ''
-      t.decimal :credit
+      t.integer :credit
 
       t.timestamps
     end

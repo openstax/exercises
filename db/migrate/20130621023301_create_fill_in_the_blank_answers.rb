@@ -8,7 +8,7 @@ class CreateFillInTheBlankAnswers < ActiveRecord::Migration
       t.integer :position, :null => false
       t.integer :question_id, :null => false
       t.string :blank_answer, :null => false, :default => ''
-      t.decimal :credit
+      t.integer :credit
 
       t.timestamps
     end

@@ -1,15 +1,14 @@
 class MatchingAnswer < ActiveRecord::Base
   attachable :exercise
-  content
+  content [:left_content, :right_content]
   sortable :question_id
 
   belongs_to :question
   has_one :exercise, :through => :question
 
-  attr_accessible :match_number, :right_column, :credit
+  attr_accessible :credit
 
-  validates_presence_of :question, :match_number
-  validates_uniqueness_of :right_column, :scope => [:question_id, :match_number]
+  validates_presence_of :question
 
   ##################
   # Access Control #

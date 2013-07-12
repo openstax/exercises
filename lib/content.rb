@@ -15,16 +15,18 @@ module Content
       names_array = names.is_a?(Array) ? names.collect{|name| name.to_s} : [names.to_s]
 
       class_eval do
-        cattr_accessor :content_field_names
-        self.content_field_names = names_array
-
         names_array.each do |name|
           attr_accessible name.to_sym
         end
 
         before_save :parse_and_cache_content
 
+        validates_presence_of :content
+
         protected
+
+        cattr_accessor :content_field_names
+        self.content_field_names = names_array
 
         def parse_and_cache_content
           return if Rails.env.test? && !Content.enable_test_parser
@@ -34,13 +36,8 @@ module Content
 
             content_value = send(name)
 
-            if content_value.blank?
-              send(name + '_cache=', '')
-              next
-            end
-
             unless content_value == ActionController::Base.helpers.strip_tags(content_value)
-              errors.add(name, "cannot contain HTML")
+              errors.add(name, "cannot contain HTML.")
               next
             end
 
@@ -53,7 +50,7 @@ module Content
               # logger.debug {"Cached #{name}: "  + transformed_tree.inspect.to_s}
             rescue Parslet::ParseFailed => error
               # logger.debug {"Parsing #{name} failed: " + parser.error_tree.inspect.to_s}
-              errors.add(name, "contains a formatting error")
+              errors.add(name, "contains a formatting error.")
             end
           end
 
