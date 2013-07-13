@@ -8,8 +8,7 @@ class CreateListExercises < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :list_exercises, [:list_id, :exercise_id], :unique => true
-    add_index :list_exercises, :position
-    add_index :list_exercises, :exercise_id
+    add_index :list_exercises, [:exercise_id, :list_id], :unique => true
+    add_index :list_exercises, [:list_id, :position], :unique => true
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130624174736) do
+ActiveRecord::Schema.define(:version => 20130713013656) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "number",                          :null => false
@@ -26,12 +26,12 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   end
 
   add_index "attachments", ["attachable_type", "attachable_id", "local_name"], :name => "index_a_on_a_type_and_a_id_and_l_name", :unique => true
-  add_index "attachments", ["number"], :name => "index_attachments_on_number"
+  add_index "attachments", ["attachable_type", "number"], :name => "index_attachments_on_attachable_type_and_number", :unique => true
 
   create_table "collaborators", :force => true do |t|
     t.integer  "position",                                           :null => false
-    t.string   "collaborable_type",                                  :null => false
-    t.integer  "collaborable_id",                                    :null => false
+    t.string   "publishable_type",                                   :null => false
+    t.integer  "publishable_id",                                     :null => false
     t.integer  "user_id",                                            :null => false
     t.boolean  "is_author",                       :default => false, :null => false
     t.boolean  "is_copyright_holder",             :default => false, :null => false
@@ -41,64 +41,63 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",                                         :null => false
   end
 
-  add_index "collaborators", ["collaborable_type", "collaborable_id", "user_id"], :name => "index_c_on_c_type_and_c_id_and_u_id", :unique => true
-  add_index "collaborators", ["position"], :name => "index_collaborators_on_position"
-  add_index "collaborators", ["user_id"], :name => "index_collaborators_on_user_id"
+  add_index "collaborators", ["publishable_type", "publishable_id", "position"], :name => "index_c_on_p_type_and_p_id_and_position", :unique => true
+  add_index "collaborators", ["user_id", "publishable_type", "publishable_id"], :name => "index_c_on_u_id_and_p_type_and_p_id", :unique => true
 
   create_table "commontator_comments", :force => true do |t|
-    t.text     "body"
-    t.integer  "creator_id"
     t.string   "creator_type"
+    t.integer  "creator_id"
+    t.string   "editor_type"
+    t.integer  "editor_id"
+    t.integer  "thread_id",                          :null => false
+    t.text     "body",               :default => "", :null => false
     t.datetime "deleted_at"
-    t.integer  "deleter_id"
-    t.string   "deleter_type"
-    t.integer  "thread_id"
     t.integer  "cached_votes_total", :default => 0
     t.integer  "cached_votes_up",    :default => 0
     t.integer  "cached_votes_down",  :default => 0
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
   end
 
   add_index "commontator_comments", ["cached_votes_down"], :name => "index_commontator_comments_on_cached_votes_down"
   add_index "commontator_comments", ["cached_votes_total"], :name => "index_commontator_comments_on_cached_votes_total"
   add_index "commontator_comments", ["cached_votes_up"], :name => "index_commontator_comments_on_cached_votes_up"
-  add_index "commontator_comments", ["creator_id", "creator_type", "thread_id"], :name => "index_c_c_on_c_id_and_c_type_and_t_id"
+  add_index "commontator_comments", ["creator_type", "creator_id", "thread_id"], :name => "index_c_c_on_c_type_and_c_id_and_t_id"
   add_index "commontator_comments", ["thread_id"], :name => "index_commontator_comments_on_thread_id"
 
   create_table "commontator_subscriptions", :force => true do |t|
-    t.integer  "subscriber_id"
-    t.string   "subscriber_type"
-    t.integer  "thread_id"
-    t.integer  "unread",          :default => 0
+    t.string   "subscriber_type",                :null => false
+    t.integer  "subscriber_id",                  :null => false
+    t.integer  "thread_id",                      :null => false
+    t.integer  "unread",          :default => 0, :null => false
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
   end
 
-  add_index "commontator_subscriptions", ["subscriber_id", "subscriber_type", "thread_id"], :name => "index_c_s_on_s_id_and_s_type_and_t_id", :unique => true
+  add_index "commontator_subscriptions", ["subscriber_type", "subscriber_id", "thread_id"], :name => "index_c_s_on_s_type_and_s_id_and_t_id", :unique => true
   add_index "commontator_subscriptions", ["thread_id"], :name => "index_commontator_subscriptions_on_thread_id"
 
   create_table "commontator_threads", :force => true do |t|
-    t.integer  "commontable_id"
     t.string   "commontable_type"
+    t.integer  "commontable_id"
     t.datetime "closed_at"
-    t.integer  "closer_id"
     t.string   "closer_type"
+    t.integer  "closer_id"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
   end
 
-  add_index "commontator_threads", ["commontable_id", "commontable_type"], :name => "index_commontator_threads_on_commontable_id_and_commontable_type"
+  add_index "commontator_threads", ["commontable_type", "commontable_id"], :name => "index_commontator_threads_on_commontable_type_and_commontable_id", :unique => true
 
   create_table "exercises", :force => true do |t|
     t.text     "content",                :default => "",    :null => false
-    t.text     "content_cache",          :default => "",    :null => false
+    t.text     "content_html",           :default => "",    :null => false
     t.integer  "source_exercise_id"
     t.integer  "number",                                    :null => false
     t.integer  "version",                                   :null => false
     t.datetime "published_at"
     t.integer  "license_id"
-    t.decimal  "credit"
+    t.integer  "credit"
     t.datetime "embargoed_until"
     t.boolean  "only_embargo_solutions", :default => false, :null => false
     t.integer  "locked_by"
@@ -113,28 +112,28 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   add_index "exercises", ["source_exercise_id"], :name => "index_exercises_on_source_exercise_id"
 
   create_table "fill_in_the_blank_answers", :force => true do |t|
-    t.text     "pre_content",        :default => "", :null => false
-    t.text     "pre_content_cache",  :default => "", :null => false
-    t.text     "post_content",       :default => "", :null => false
-    t.text     "post_content_cache", :default => "", :null => false
-    t.integer  "position",                           :null => false
-    t.integer  "question_id",                        :null => false
-    t.string   "blank_answer",       :default => "", :null => false
-    t.decimal  "credit"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.text     "pre_content",       :default => "", :null => false
+    t.text     "pre_content_html",  :default => "", :null => false
+    t.text     "post_content",      :default => "", :null => false
+    t.text     "post_content_html", :default => "", :null => false
+    t.integer  "position",                          :null => false
+    t.integer  "question_id",                       :null => false
+    t.string   "blank_answer",      :default => "", :null => false
+    t.integer  "credit"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   add_index "fill_in_the_blank_answers", ["question_id", "position"], :name => "index_fill_in_the_blank_answers_on_question_id_and_position", :unique => true
 
   create_table "free_response_answers", :force => true do |t|
     t.text     "content",         :default => "",    :null => false
-    t.text     "content_cache",   :default => "",    :null => false
+    t.text     "content_html",    :default => "",    :null => false
     t.integer  "position",                           :null => false
     t.integer  "question_id",                        :null => false
     t.text     "free_response",   :default => "",    :null => false
     t.boolean  "can_be_sketched", :default => false, :null => false
-    t.decimal  "credit"
+    t.integer  "credit"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
   end
@@ -164,9 +163,8 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",  :null => false
   end
 
-  add_index "list_exercises", ["exercise_id"], :name => "index_list_exercises_on_exercise_id"
-  add_index "list_exercises", ["list_id", "exercise_id"], :name => "index_list_exercises_on_list_id_and_exercise_id", :unique => true
-  add_index "list_exercises", ["position"], :name => "index_list_exercises_on_position"
+  add_index "list_exercises", ["exercise_id", "list_id"], :name => "index_list_exercises_on_exercise_id_and_list_id", :unique => true
+  add_index "list_exercises", ["list_id", "position"], :name => "index_list_exercises_on_list_id_and_position", :unique => true
 
   create_table "lists", :force => true do |t|
     t.integer  "parent_list_id"
@@ -183,27 +181,28 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
 
   create_table "matching_answers", :force => true do |t|
-    t.string   "content",       :default => "",    :null => false
-    t.string   "content_cache", :default => "",    :null => false
-    t.integer  "position",                         :null => false
-    t.integer  "question_id",                      :null => false
-    t.integer  "match_number",                     :null => false
-    t.boolean  "right_column",  :default => false, :null => false
-    t.decimal  "credit"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.string   "left_content",       :default => "", :null => false
+    t.string   "left_content_html",  :default => "", :null => false
+    t.string   "right_content",      :default => "", :null => false
+    t.string   "right_content_html", :default => "", :null => false
+    t.integer  "position",                           :null => false
+    t.integer  "question_id",                        :null => false
+    t.integer  "credit"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
   end
 
   add_index "matching_answers", ["question_id", "position"], :name => "index_matching_answers_on_question_id_and_position", :unique => true
 
   create_table "multiple_choice_answers", :force => true do |t|
-    t.string   "content",       :default => "", :null => false
-    t.string   "content_cache", :default => "", :null => false
-    t.integer  "position",                      :null => false
-    t.integer  "question_id",                   :null => false
-    t.decimal  "credit"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.string   "content",        :default => "",    :null => false
+    t.string   "content_html",   :default => "",    :null => false
+    t.integer  "position",                          :null => false
+    t.integer  "question_id",                       :null => false
+    t.boolean  "is_always_last", :default => false, :null => false
+    t.integer  "credit"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   add_index "multiple_choice_answers", ["question_id", "position"], :name => "index_multiple_choice_answers_on_question_id_and_position", :unique => true
@@ -256,18 +255,17 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",              :null => false
   end
 
-  add_index "question_dependency_pairs", ["dependent_question_id", "independent_question_id", "kind"], :name => "index_qdp_on_dq_id_and_iq_id_and_kind", :unique => true
-  add_index "question_dependency_pairs", ["independent_question_id"], :name => "index_question_dependency_pairs_on_independent_question_id"
-  add_index "question_dependency_pairs", ["position"], :name => "index_question_dependency_pairs_on_position"
+  add_index "question_dependency_pairs", ["dependent_question_id", "position"], :name => "index_qdp_on_dq_id_and_position", :unique => true
+  add_index "question_dependency_pairs", ["independent_question_id", "dependent_question_id", "kind"], :name => "index_qdp_on_iq_id_and_dq_id_and_kind", :unique => true
 
   create_table "questions", :force => true do |t|
     t.text     "content",            :default => "",    :null => false
-    t.text     "content_cache",      :default => "",    :null => false
+    t.text     "content_html",       :default => "",    :null => false
     t.integer  "source_question_id"
     t.integer  "position",                              :null => false
     t.integer  "exercise_id",                           :null => false
     t.boolean  "changes_solution",   :default => false, :null => false
-    t.decimal  "credit"
+    t.integer  "credit"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
   end
@@ -276,14 +274,14 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   add_index "questions", ["source_question_id"], :name => "index_questions_on_source_question_id"
 
   create_table "short_answers", :force => true do |t|
-    t.text     "content",       :default => "", :null => false
-    t.text     "content_cache", :default => "", :null => false
-    t.integer  "position",                      :null => false
-    t.integer  "question_id",                   :null => false
-    t.string   "short_answer",  :default => "", :null => false
-    t.decimal  "credit"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.text     "content",      :default => "", :null => false
+    t.text     "content_html", :default => "", :null => false
+    t.integer  "position",                     :null => false
+    t.integer  "question_id",                  :null => false
+    t.string   "short_answer", :default => "", :null => false
+    t.integer  "credit"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "short_answers", ["question_id", "position"], :name => "index_short_answers_on_question_id_and_position", :unique => true
@@ -292,7 +290,7 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.integer  "question_id",                        :null => false
     t.text     "summary",            :default => "", :null => false
     t.text     "content",            :default => "", :null => false
-    t.text     "content_cache",      :default => "", :null => false
+    t.text     "content_html",       :default => "", :null => false
     t.integer  "source_solution_id"
     t.integer  "number",                             :null => false
     t.integer  "version",                            :null => false
@@ -325,14 +323,14 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
   end
 
   create_table "true_or_false_answers", :force => true do |t|
-    t.text     "content",       :default => "",    :null => false
-    t.text     "content_cache", :default => "",    :null => false
-    t.integer  "position",                         :null => false
-    t.integer  "question_id",                      :null => false
-    t.boolean  "is_true",       :default => false, :null => false
-    t.decimal  "credit"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.text     "content",      :default => "",    :null => false
+    t.text     "content_html", :default => "",    :null => false
+    t.integer  "position",                        :null => false
+    t.integer  "question_id",                     :null => false
+    t.boolean  "is_true",      :default => false, :null => false
+    t.integer  "credit"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   add_index "true_or_false_answers", ["question_id", "position"], :name => "index_true_or_false_answers_on_question_id_and_position", :unique => true
@@ -346,8 +344,8 @@ ActiveRecord::Schema.define(:version => 20130624174736) do
     t.datetime "updated_at",                       :null => false
   end
 
-  add_index "user_group_users", ["position"], :name => "index_user_group_users_on_position"
   add_index "user_group_users", ["user_group_id", "user_id"], :name => "index_user_group_users_on_user_group_id_and_user_id", :unique => true
+  add_index "user_group_users", ["user_id", "position"], :name => "index_user_group_users_on_user_id_and_position", :unique => true
 
   create_table "user_groups", :force => true do |t|
     t.integer  "container_id"

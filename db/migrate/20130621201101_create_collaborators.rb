@@ -13,8 +13,7 @@ class CreateCollaborators < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :collaborators, [:publishable_type, :publishable_id, :user_id], :unique => true, :name => "index_c_on_p_type_and_p_id_and_u_id"
-    add_index :collaborators, :position
-    add_index :collaborators, :user_id
+    add_index :collaborators, [:user_id, :publishable_type, :publishable_id], :unique => true, :name => "index_c_on_u_id_and_p_type_and_p_id"
+    add_index :collaborators, [:publishable_type, :publishable_id, :position], :unique => true, :name => "index_c_on_p_type_and_p_id_and_position"
   end
 end

@@ -10,6 +10,6 @@ class CreateUserGroupUsers < ActiveRecord::Migration
     end
 
     add_index :user_group_users, [:user_group_id, :user_id], :unique => true
-    add_index :user_group_users, :position
+    add_index :user_group_users, [:user_id, :position], :unique => true
   end
 end

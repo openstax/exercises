@@ -2,7 +2,7 @@ class CreateExercises < ActiveRecord::Migration
   def change
     create_table :exercises do |t|
       t.text :content, :null => false, :default => ''
-      t.text :content_cache, :null => false, :default => ''
+      t.text :content_html, :null => false, :default => ''
       t.integer :source_exercise_id
       t.integer :number, :null => false
       t.integer :version, :null => false
