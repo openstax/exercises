@@ -40,12 +40,6 @@ class Question < ActiveRecord::Base
       :true_or_false_answers, :short_answers, :free_response_answers, :solutions]
   end
 
-  ##################
-  # Access Control #
-  ##################
-
-  protected
-
   def has_correct_answers?
     return false if (multiple_choice_answers.first.nil? && \
                      matching_answers.first.nil? && \
@@ -60,4 +54,8 @@ class Question < ActiveRecord::Base
 
     true
   end
+
+  ##################
+  # Access Control #
+  ##################
 end

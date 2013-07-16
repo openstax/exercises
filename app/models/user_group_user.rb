@@ -6,8 +6,8 @@ class UserGroupUser < ActiveRecord::Base
 
   attr_accessible :is_manager
 
-  after_update :update_callback
-  after_destroy :destroy_callback
+  after_update :user_group_checks
+  after_destroy :user_group_checks
 
   validates_presence_of :user, :user_group
   validates_uniqueness_of :user_id, :scope => :user_group_id
@@ -34,11 +34,7 @@ class UserGroupUser < ActiveRecord::Base
   # Callbacks #
   #############
 
-  def update_callback
-    user_group.update_callback
-  end
-
-  def destroy_callback
-    user_group.destroy_callback
+  def user_group_checks
+    user_group.destroy_empty_or_force_manager
   end
 end

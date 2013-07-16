@@ -12,7 +12,7 @@ class UserGroup < ActiveRecord::Base
 
   def managers
     return [] if !container.nil?
-    UserGroupUser.find_all_by_user_group_id_and_is_manager(id, true)
+    user_group_users.where(:is_manager => true).all
   end
 
   def full_name
@@ -21,12 +21,12 @@ class UserGroup < ActiveRecord::Base
 
   def has_user?(user)
     return false if user.nil?
-    !UserGroupUser.find_by_user_group_id_and_user_id(id, user.id).nil?
+    !user_group_users.where(:user_id => user.id).first.nil?
   end
 
   def has_manager?(user)
     return false if (user.nil? || !container.nil?)
-    ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
+    ugu = user_group_users.where(:user_id => user.id).first
     return false if ugu.nil?
     ugu.is_manager
   end
@@ -42,9 +42,15 @@ class UserGroup < ActiveRecord::Base
 
   def remove_user(user)
     return false if user.nil?
-    ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
+    ugu = user_group_users.where(:user_id => user.id).first
     return false if ugu.nil?
     ugu.destroy
+  end
+
+  def destroy_empty_or_force_manager
+    return unless container.nil?
+    return destroy if user_group_users.empty?
+    user_group_users.first.update_attribute(:is_manager, true) if managers.empty?
   end
 
   ##################
@@ -65,19 +71,5 @@ class UserGroup < ActiveRecord::Base
   
   def can_be_destroyed_by?(user)
     can_be_updated_by?(user)
-  end
-
-  protected
-
-  #############
-  # Callbacks #
-  #############
-
-  def update_callback
-    user_group_users.first.update_attribute(:is_manager, true) if (container.nil? && managers.empty?)
-  end
-
-  def destroy_callback
-    destroy if (container.nil? && user_group_users.empty?)
   end
 end

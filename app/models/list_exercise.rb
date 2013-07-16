@@ -6,7 +6,7 @@ class ListExercise < ActiveRecord::Base
 
   attr_accessible :list, :exercise
 
-  after_destroy :destroy_listless_draft_exercise
+  after_destroy :destroy_unlisted_draft_exercise
 
   validates_presence_of :list, :exercise
   validates_uniqueness_of :exercise_id, :scope => :list_id
@@ -29,7 +29,7 @@ class ListExercise < ActiveRecord::Base
   # Callbacks #
   #############
 
-  def destroy_listless_draft_exercise
+  def destroy_unlisted_draft_exercise
     exercise.destroy if (!exercise.is_published? && exercise.list_exercises.empty?)
   end
 end

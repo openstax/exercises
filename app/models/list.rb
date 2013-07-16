@@ -23,7 +23,7 @@ class List < ActiveRecord::Base
   validates_uniqueness_of :name, :if => :is_public
 
   def has_exercise?(exercise)
-    !ListExercise.find_by_list_id_and_exercise_id(id, exercise.id).nil?
+    !list_exercises.where(:exercise_id => exercise.id).first.nil?
   end
 
   def add_exercise(exercise)

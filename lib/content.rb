@@ -19,9 +19,9 @@ module Content
           attr_accessible name.to_sym
         end
 
-        before_save :parse_and_cache_content
+        before_validation :parse_and_cache_content
 
-        validates_presence_of :content
+        validates_presence_of :content, :content_html
 
         protected
 
@@ -42,11 +42,11 @@ module Content
             end
 
             parser = OseParser.new
-            transformer = OseTransformer.new(self)
+            transformer = OseHtmlTransformer.new(self)
 
             begin
               transformed_tree = transformer.apply(parser.parse(content_value))
-              send(name + '_cache=', transformed_tree.force_encoding("UTF-8"))
+              send(name + '_html=', transformed_tree.force_encoding("UTF-8"))
               # logger.debug {"Cached #{name}: "  + transformed_tree.inspect.to_s}
             rescue Parslet::ParseFailed => error
               # logger.debug {"Parsing #{name} failed: " + parser.error_tree.inspect.to_s}

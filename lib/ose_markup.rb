@@ -71,7 +71,7 @@ class OseParser < Parslet::Parser
   root(:paragraphs)
 end
 
-class OseTransformer < Parslet::Transform
+class OseHtmlTransformer < Parslet::Transform
   def initialize(attachable)
     @attachable = attachable
   end

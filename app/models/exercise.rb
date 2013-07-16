@@ -23,6 +23,10 @@ class Exercise < ActiveRecord::Base
 
   protected
 
+  ###############
+  # Validations #
+  ###############
+
   def has_questions?
     !questions.first.nil?
   end
