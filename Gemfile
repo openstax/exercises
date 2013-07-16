@@ -24,6 +24,7 @@ gem 'parslet', '~> 1.5'
 
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
+gem 'amoeba'
 gem 'commontator'
 
 # API documentation

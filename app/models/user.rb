@@ -5,23 +5,23 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :recoverable,
          :rememberable, :trackable, :validatable, :confirmable
 
-  has_one :user_profile, :dependent => :destroy
+  has_one :user_profile, :dependent => :destroy, :inverse_of => :user
   has_one :default_list, :through => :user_profile
   has_one :deputy_user_group, :through => :user_profile
   has_many :deputies, :class_name => 'User', :through => :deputy_user_group
 
-  has_many :user_group_users, :dependent => :destroy
+  has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
   has_many :user_groups, :through => :user_group_users
 
-  has_many :collaborators, :dependent => :destroy
+  has_many :collaborators, :dependent => :destroy, :inverse_of => :user
   has_many :collaborables, :through => :collaborators
 
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
+  before_validation :build_user_profile, :unless => :user_profile
   before_save :force_active_admin
-  after_create :create_user_profile
 
-  validates_presence_of :username, :password, :email, :first_name, :last_name
+  validates_presence_of :username, :password, :email, :first_name, :last_name, :user_profile
   validates_uniqueness_of :username, :email
 
   def name
@@ -58,10 +58,9 @@ class User < ActiveRecord::Base
   # Callbacks #
   #############
 
-  def create_user_profile
-    up = UserProfile.new
-    up.user = self
-    up.save
+  def build_user_profile
+    self.user_profile = UserProfile.new
+    user_profile.user = self
   end
 
   def force_active_admin

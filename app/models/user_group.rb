@@ -1,7 +1,7 @@
 class UserGroup < ActiveRecord::Base
   belongs_to :container, :polymorphic => true
 
-  has_many :user_group_users, :dependent => :destroy
+  has_many :user_group_users, :dependent => :destroy, :inverse_of => :user_group
   has_many :users, :through => :user_group_users
 
   accepts_nested_attributes_for :user_group_users, :allow_destroy => true
@@ -18,23 +18,7 @@ class UserGroup < ActiveRecord::Base
   def full_name
     container.nil? ? name : "#{container.name} #{name}"
   end
-  
-  def add_user(user, manager = false)
-    return false if user.nil?
-    ugu = UserGroupUser.new(:is_manager => (container.nil? && manager))
-    ugu.user_group = self
-    ugu.user = user
-    return false unless ugu.save
-    ugu
-  end
 
-  def remove_user(user)
-    return false if user.nil?
-    ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
-    return false if ugu.nil?
-    ugu.destroy
-  end
-  
   def has_user?(user)
     return false if user.nil?
     !UserGroupUser.find_by_user_group_id_and_user_id(id, user.id).nil?
@@ -45,6 +29,22 @@ class UserGroup < ActiveRecord::Base
     ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
     return false if ugu.nil?
     ugu.is_manager
+  end
+  
+  def add_user(user, manager = false)
+    return false if (user.nil? || has_user?(user))
+    ugu = UserGroupUser.new(:is_manager => (container.nil? && manager))
+    ugu.user_group = self
+    ugu.user = user
+    ugu.save!
+    ugu
+  end
+
+  def remove_user(user)
+    return false if user.nil?
+    ugu = UserGroupUser.find_by_user_group_id_and_user_id(id, user.id)
+    return false if ugu.nil?
+    ugu.destroy
   end
 
   ##################

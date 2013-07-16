@@ -1,8 +1,8 @@
 class UserGroupUser < ActiveRecord::Base
   sortable :user_id
 
-  belongs_to :user_group
-  belongs_to :user
+  belongs_to :user_group, :inverse_of => :user_group_users
+  belongs_to :user, :inverse_of => :user_group_users
 
   attr_accessible :is_manager
 

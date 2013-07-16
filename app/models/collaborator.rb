@@ -3,7 +3,7 @@ class Collaborator < ActiveRecord::Base
 
   belongs_to :publishable, :polymorphic => true
 
-  belongs_to :user
+  belongs_to :user, :inverse_of => :collaborators
 
   attr_accessible :toggle_author_request, :toggle_copyright_holder_request
 

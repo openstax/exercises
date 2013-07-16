@@ -1,5 +1,5 @@
 class UserProfile < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, :inverse_of => :user_profile
 
   belongs_to :default_list, :class_name => 'List'
 
@@ -46,6 +46,6 @@ class UserProfile < ActiveRecord::Base
   def create_deputy_user_group
     dug = UserGroup.new(:name => "deputies")
     dug.container = self
-    dug.save
+    dug.save!
   end
 end

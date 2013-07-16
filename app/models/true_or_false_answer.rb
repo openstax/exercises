@@ -3,7 +3,7 @@ class TrueOrFalseAnswer < ActiveRecord::Base
   content
   sortable :question_id
 
-  belongs_to :question
+  belongs_to :question, :inverse_of => :true_or_false_answers
   has_one :exercise, :through => :question
 
   attr_accessible :is_true, :credit

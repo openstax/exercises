@@ -11,20 +11,24 @@ module Publishable
       source_name_id = "#{source_name}_id"
 
       class_eval do
-        belongs_to source_name, :class_name => class_name
+        belongs_to source_name, :class_name => class_name, :inverse_of => derived_names
 
-        has_many derived_names, :class_name => class_name, :foreign_key => source_name_id
+        has_many derived_names, :class_name => class_name, :foreign_key => source_name_id, :inverse_of => source_name
 
         has_many :collaborators, :as => :publishable, :dependent => :destroy
 
-        before_validation :assign_next_number, :on => :create
+        before_validation :assign_next_number, :unless => :number
         before_update :must_not_be_published
 
         validates_presence_of :number, :version
         validates_presence_of :license, :if => :is_published?
         validates_uniqueness_of :version, :scope => ((publish_scope_array || []) << :number)
 
-        default_scope order([:number, :version])
+        default_scope order("number ASC", "version DESC")
+
+        amoeba do
+          nullify :published_at
+        end
 
         def publish
           return if !run_prepublish_checks
@@ -37,11 +41,39 @@ module Publishable
 
         def new_version
           version_scope = publish_scope.where(:number => number)
-          #TODO
+          latest = version_scope.first
+          return latest unless latest.is_published?
+
+          if latest.respond_to?(:amoeba_dup)
+            latest.class.amoeba do
+              clone :collaborators
+            end
+            new_copy = latest.amoeba_dup
+          else
+            new_copy = latest.dup
+          end
+
+          new_copy.version += 1
+          new_copy.save!
+          new_copy
         end
 
-        def derive
-          #TODO
+        def derive_for(user)
+          derived_copy = respond_to?(:amoeba_dup) ? amoeba_dup : dup
+
+          derived_copy.assign_next_number
+          derived_copy.version = 1
+
+          derived_copy.transaction do
+            derived_copy.save!
+
+            c = derived_copy.add_collaborator(user)
+            c.is_author = true
+            c.is_copyright_holder = true
+            c.save!
+          end
+
+          derived_copy
         end
 
         def is_published?
@@ -52,22 +84,22 @@ module Publishable
           !license.nil?
         end
 
-        def collaborator_for(user)
-          collaborators.where(:user_id => user.id).first
+        def has_collaborator?(user)
+          return false if user.nil?
+          !collaborators.where(:user_id => user.id).first.nil?
         end
 
         def add_collaborator(user)
-          return false unless collaborator_for(user).nil?
+          return false if has_collaborator?(user)
 
           c = Collaborator.new
           c.collaborable = self
           c.user = user
-
-          return false unless c.save
+          c.save!
           c
         end
 
-        def add_prepublish_check(method_name, value, error_message)
+        def self.add_prepublish_check(method_name, value, error_message)
           prepublish_checks << [method_name, value, error_message]
         end
 
@@ -87,11 +119,11 @@ module Publishable
         end
 
         def assign_next_number
-          self.number = ((publish_scope.maximum(:number) || -1) + 1) if number.nil?
+          self.number = ((publish_scope.maximum(:number) || -1) + 1)
         end
 
         def must_not_be_published
-          return unless is_published?
+          return if published_at_was.nil?
           errors.add(:base, "Changes cannot be made to a published #{self.class.name.undercase}.")
           false
         end

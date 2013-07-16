@@ -7,7 +7,7 @@ class CreateSolutions < ActiveRecord::Migration
       t.text :content_html, :null => false, :default => ''
       t.integer :source_solution_id
       t.integer :number, :null => false
-      t.integer :version, :null => false
+      t.integer :version, :null => false, :default => 1
       t.datetime :published_at
       t.integer :license_id
 

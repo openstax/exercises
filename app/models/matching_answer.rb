@@ -3,7 +3,7 @@ class MatchingAnswer < ActiveRecord::Base
   content [:left_content, :right_content]
   sortable :question_id
 
-  belongs_to :question
+  belongs_to :question, :inverse_of => :matching_answers
   has_one :exercise, :through => :question
 
   attr_accessible :credit

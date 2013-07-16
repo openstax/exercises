@@ -1,8 +1,8 @@
 class ListExercise < ActiveRecord::Base
   sortable :list_id
 
-  belongs_to :list
-  belongs_to :exercise
+  belongs_to :list, :inverse_of => :list_exercises
+  belongs_to :exercise, :inverse_of => :list_exercises
 
   attr_accessible :list, :exercise
 
@@ -16,6 +16,12 @@ class ListExercise < ActiveRecord::Base
   ##################
   # Access Control #
   ##################
+
+  def can_be_created_by?(user)
+    list.has_permission?(user, :editor) || \
+    list.has_permission?(user, :publisher) || \
+    list.has_permission?(user, :manager)
+  end
 
   protected
 

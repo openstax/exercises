@@ -3,7 +3,7 @@ class MultipleChoiceAnswer < ActiveRecord::Base
   content
   sortable :question_id
 
-  belongs_to :question
+  belongs_to :question, :inverse_of => :multiple_choice_answers
   has_one :exercise, :through => :question
 
   attr_accessible :is_always_last, :credit

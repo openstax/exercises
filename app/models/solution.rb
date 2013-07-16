@@ -3,7 +3,7 @@ class Solution < ActiveRecord::Base
   content
   publishable :question_id
 
-  belongs_to :question
+  belongs_to :question, :inverse_of => :solutions
   has_one :exercise, :through => :question
 
   attr_accessible :summary
@@ -14,5 +14,4 @@ class Solution < ActiveRecord::Base
   ##################
   # Access Control #
   ##################
-
 end

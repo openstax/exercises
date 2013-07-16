@@ -3,7 +3,7 @@ class ShortAnswer < ActiveRecord::Base
   content
   sortable :question_id
 
-  belongs_to :question
+  belongs_to :question, :inverse_of => :short_answers
   has_one :exercise, :through => :question
 
   attr_accessible :short_answer, :credit

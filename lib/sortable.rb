@@ -6,12 +6,16 @@ module Sortable
   module ClassMethods
     def sortable(scope_symbols = nil)
       class_eval do
-        before_validation :assign_next_position, :on => :create
+        before_validation :assign_next_position, :unless => :position
 
         validates_presence_of :position
         validates_uniqueness_of :position, :scope => scope_symbols
 
         default_scope order(:position)
+
+        amoeba do
+          nullify :position
+        end
 
         def self.sort(sorted_ids)
           return false unless (sorted_ids.is_a?(Array) && !sorted_ids.empty?)
@@ -49,7 +53,7 @@ module Sortable
         end
 
         def assign_next_position
-          self.position = ((sort_scope.maximum(:position) || -1) + 1) if position.nil?
+          self.position = ((sort_scope.maximum(:position) || -1) + 1)
         end
       end
     end
