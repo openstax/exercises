@@ -21,8 +21,6 @@ module Content
 
         before_validation :parse_and_cache_content
 
-        validates_presence_of :content, :content_html
-
         protected
 
         cattr_accessor :content_field_names
@@ -35,6 +33,11 @@ module Content
             next if !id.nil? && !send(name + '_changed?')
 
             content_value = send(name)
+
+            if content_value.blank?
+              send(name + '_html=', '')
+              next
+            end
 
             unless content_value == ActionController::Base.helpers.strip_tags(content_value)
               errors.add(name, "cannot contain HTML.")

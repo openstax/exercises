@@ -49,6 +49,28 @@ class Question < ActiveRecord::Base
     true
   end
 
+  def has_blank_content?
+    return true if content.blank?
+
+    true_or_false_answers.each do |a|
+      return true if a.content.blank?
+    end
+
+    multiple_choice_answers.each do |a|
+      return true if a.content.blank?
+    end
+
+    matching_answers.each do |a|
+      return true if a.left_content.blank? || a.right_content.blank?
+    end
+
+    fill_in_the_blank_answers.each do |a|
+      return true if a.pre_content.blank? && a.post_content.blank?
+    end
+
+    false
+  end
+
   ##################
   # Access Control #
   ##################
