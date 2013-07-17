@@ -8,10 +8,6 @@ module Attachable
       class_eval do
         if relation.nil?
           has_many :attachments, :as => :attachable, :dependent => :destroy
-
-          amoeba do
-            include_field :attachments
-          end
         else
           has_many :attachments, :through => relation
         end

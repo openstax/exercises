@@ -21,10 +21,10 @@ class Question < ActiveRecord::Base
   has_many :independent_questions,
            :through => :independent_question_pairs
 
+  has_many :true_or_false_answers, :dependent => :destroy, :inverse_of => :question
   has_many :multiple_choice_answers, :dependent => :destroy, :inverse_of => :question
   has_many :matching_answers, :dependent => :destroy, :inverse_of => :question
   has_many :fill_in_the_blank_answers, :dependent => :destroy, :inverse_of => :question
-  has_many :true_or_false_answers, :dependent => :destroy, :inverse_of => :question
   has_many :short_answers, :dependent => :destroy, :inverse_of => :question
   has_many :free_response_answers, :dependent => :destroy, :inverse_of => :question
 
@@ -33,12 +33,6 @@ class Question < ActiveRecord::Base
   attr_accessible :changes_solution, :credit
 
   validates_presence_of :exercise
-
-  amoeba do
-    include_field [:dependent_question_pairs, :independent_question_pairs,
-      :multiple_choice_answers, :matching_answers, :fill_in_the_blank_answers,
-      :true_or_false_answers, :short_answers, :free_response_answers, :solutions]
-  end
 
   def has_correct_answers?
     return false if (multiple_choice_answers.first.nil? && \

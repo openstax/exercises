@@ -13,10 +13,6 @@ module Sortable
 
         default_scope order(:position)
 
-        amoeba do
-          nullify :position
-        end
-
         def self.sort(sorted_ids)
           return false unless (sorted_ids.is_a?(Array) && !sorted_ids.empty?)
 
@@ -42,6 +38,10 @@ module Sortable
           end
         end
 
+        def assign_next_position
+          self.position = ((sort_scope.maximum(:position) || -1) + 1)
+        end
+
         protected
 
         cattr_accessor :sort_scope_array
@@ -50,10 +50,6 @@ module Sortable
 
         def sort_scope
           sort_scope_array.nil? ? self.class.scoped : self.class.where(Hash[sort_scope_array.map{|s| [s, send(s)]}])
-        end
-
-        def assign_next_position
-          self.position = ((sort_scope.maximum(:position) || -1) + 1)
         end
       end
     end

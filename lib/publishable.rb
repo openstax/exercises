@@ -26,10 +26,6 @@ module Publishable
 
         default_scope order("number ASC", "version DESC")
 
-        amoeba do
-          nullify :published_at
-        end
-
         def publish
           return if !run_prepublish_checks
 
@@ -44,14 +40,7 @@ module Publishable
           latest = version_scope.first
           return latest unless latest.is_published?
 
-          if latest.respond_to?(:amoeba_dup)
-            latest.class.amoeba do
-              clone :collaborators
-            end
-            new_copy = latest.amoeba_dup
-          else
-            new_copy = latest.dup
-          end
+          new_copy = latest.dup(:include => (dup_includes_array << :collaborators), :use_dictionary => true)
 
           new_copy.version += 1
           new_copy.save!
@@ -59,7 +48,7 @@ module Publishable
         end
 
         def derive_for(user)
-          derived_copy = respond_to?(:amoeba_dup) ? amoeba_dup : dup
+          derived_copy = dup(:include => dup_includes_array, :use_dictionary => true)
 
           derived_copy.assign_next_number
           derived_copy.version = 1
@@ -103,23 +92,26 @@ module Publishable
           prepublish_checks << [method_name, value, error_message]
         end
 
+        def assign_next_number
+          self.number = ((publish_scope.maximum(:number) || -1) + 1)
+        end
+
         protected
 
-        cattr_accessor :prepublish_checks, :publish_scope_array
-        prepublish_checks = [[:is_published?, false, "This #{class_name} is already published."],
-                             [:has_license?, true, "A license has not yet been specified for this #{class_name}."],
-                             [:has_all_roles?, true, "The author or copyright holder roles are not filled for this #{class_name}."],
-                             [:has_collaborator_requests?, false, "This #{class_name} has pending role requests."]]
+        cattr_accessor :dup_includes_array, :prepublish_checks_array, :publish_scope_array
+
+        dup_includes_array = []
+
+        prepublish_checks_array = [[:is_published?, false, "This #{class_name} is already published."],
+          [:has_license?, true, "A license has not yet been specified for this #{class_name}."],
+          [:has_all_roles?, true, "The author or copyright holder roles are not filled for this #{class_name}."],
+          [:has_collaborator_requests?, false, "This #{class_name} has pending role requests."]]
 
         publish_scope_array = scope_symbols.nil? ? nil : \
           (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
         def publish_scope
           publish_scope_array.nil? ? self.class.scoped : self.class.where(Hash[publish_scope_array.map{|s| [s, send(s)]}])
-        end
-
-        def assign_next_number
-          self.number = ((publish_scope.maximum(:number) || -1) + 1)
         end
 
         def must_not_be_published
@@ -139,8 +131,8 @@ module Publishable
         end
 
         def run_prepublish_checks
-          prepublish_checks.each do |ec|
-            self.errors.add(:base, ec.third) unless send(ec.first) == ec.second
+          prepublish_checks_array.each do |pc|
+            self.errors.add(:base, pc.third) unless send(pc.first) == pc.second
           end
 
           errors.empty?

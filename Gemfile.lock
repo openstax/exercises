@@ -32,8 +32,6 @@ GEM
       rails (>= 3, < 5)
     acts_as_votable (0.5.0)
       rails (>= 3.0.0)
-    amoeba (2.0.0)
-      activerecord (>= 3.0)
     apipie-rails (0.0.22)
       rails (>= 3.0.10)
     arel (3.0.2)
@@ -114,6 +112,8 @@ GEM
       debugger-ruby_core_source (~> 1.2.0)
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.2.2)
+    deep_cloneable (1.5.3)
+      activerecord (>= 3.2)
     devise (2.2.4)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -292,7 +292,6 @@ PLATFORMS
 DEPENDENCIES
   acts-as-taggable-on
   acts_as_votable
-  amoeba
   apipie-rails
   attribeautiful (= 0.0.6)
   bootstrap-sass (~> 2.3.1.0)
@@ -308,6 +307,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   debugger (~> 1.5.0)
+  deep_cloneable
   devise (~> 2.0)
   doorkeeper (~> 0.6.7)
   exception_notification
