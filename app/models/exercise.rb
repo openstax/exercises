@@ -28,6 +28,24 @@ class Exercise < ActiveRecord::Base
   # Access Control #
   ##################
 
+  def can_be_read_by?(user)
+    is_published? || lists.first.can_be_read_by?(user) || has_collaborator?(user)
+  end
+    
+  def can_be_created_by?(user)
+    !user.nil? && !is_published?
+  end
+  
+  def can_be_updated_by?(user)
+    !is_published? && (lists.first.has_permission?(user, :editor) || \
+    lists.first.has_permission?(user, :publisher) || \
+    lists.first.has_permission?(user, :manager) || has_collaborator?(user))
+  end
+  
+  def can_be_destroyed_by?(user)
+    can_be_updated_by?(user)
+  end
+
   protected
 
   ###############

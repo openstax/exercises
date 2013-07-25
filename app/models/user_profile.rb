@@ -27,7 +27,7 @@ class UserProfile < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    user == self.user
+    can_be_read_by?(user)
   end
 
   protected

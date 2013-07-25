@@ -9,8 +9,4 @@ class MatchingAnswer < ActiveRecord::Base
   attr_accessible :credit
 
   validates_presence_of :question
-
-  ##################
-  # Access Control #
-  ##################
 end

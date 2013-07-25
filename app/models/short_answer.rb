@@ -9,8 +9,4 @@ class ShortAnswer < ActiveRecord::Base
   attr_accessible :short_answer, :credit
 
   validates_presence_of :question
-
-  ##################
-  # Access Control #
-  ##################
 end

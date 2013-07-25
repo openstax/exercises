@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   ##################
 
   def can_be_updated_by?(user)
-    false
+    !user.nil? && user.is_admin?
   end
 
   def can_be_destroyed_by?(user)

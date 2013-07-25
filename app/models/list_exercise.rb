@@ -23,6 +23,10 @@ class ListExercise < ActiveRecord::Base
     list.has_permission?(user, :manager)
   end
 
+  def can_be_destroyed_by?(user)
+    can_be_created_by?(user)
+  end
+
   protected
 
   #############

@@ -20,4 +20,20 @@ class Solution < ActiveRecord::Base
   ##################
   # Access Control #
   ##################
+
+  def can_be_read_by?(user)
+    exercise.can_be_read_by?(user) && (is_published? || has_collaborator?(user))
+  end
+    
+  def can_be_created_by?(user)
+    exercise.can_be_read_by?(user) && !is_published?
+  end
+  
+  def can_be_updated_by?(user)
+    can_be_created_by?(user)
+  end
+  
+  def can_be_destroyed_by?(user)
+    can_be_created_by?(user)
+  end
 end

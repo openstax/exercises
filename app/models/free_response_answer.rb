@@ -9,8 +9,4 @@ class FreeResponseAnswer < ActiveRecord::Base
   attr_accessible :can_be_sketched, :free_response, :credit
 
   validates_presence_of :question
-
-  ##################
-  # Access Control #
-  ##################
 end

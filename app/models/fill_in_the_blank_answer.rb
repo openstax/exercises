@@ -9,8 +9,4 @@ class FillInTheBlankAnswer < ActiveRecord::Base
   attr_accessible :blank_answer, :credit
 
   validates_presence_of :question
-
-  ##################
-  # Access Control #
-  ##################
 end

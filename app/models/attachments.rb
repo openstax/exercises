@@ -16,6 +16,22 @@ class Attachments < ActiveRecord::Base
   # Access Control #
   ##################
 
+  def can_be_read_by?(user)
+    attachable.can_be_read_by?(user)
+  end
+    
+  def can_be_created_by?(user)
+    attachable.can_be_updated_by?(user)
+  end
+  
+  def can_be_updated_by?(user)
+    can_be_created_by?(user)
+  end
+  
+  def can_be_destroyed_by?(user)
+    can_be_created_by?(user)
+  end
+
   protected
 
   #############

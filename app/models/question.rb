@@ -70,8 +70,4 @@ class Question < ActiveRecord::Base
 
     false
   end
-
-  ##################
-  # Access Control #
-  ##################
 end

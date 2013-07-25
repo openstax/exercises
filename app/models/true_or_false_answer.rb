@@ -9,8 +9,4 @@ class TrueOrFalseAnswer < ActiveRecord::Base
   attr_accessible :is_true, :credit
 
   validates_presence_of :question
-
-  ##################
-  # Access Control #
-  ##################
 end

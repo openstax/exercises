@@ -9,8 +9,4 @@ class MultipleChoiceAnswer < ActiveRecord::Base
   attr_accessible :is_always_last, :credit
 
   validates_presence_of :question
-
-  ##################
-  # Access Control #
-  ##################
 end
