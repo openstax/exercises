@@ -6,25 +6,40 @@
 </p>
 
 <p>
-  <b>Reader user group:</b>
-  <%= @list.reader_user_group_id %>
+  <b>Readers:</b>
+  <ul>
+    <% @list.reader_user_group.users.each do |u| %>
+      <li><%= u.name %></li>
+    <% end %>
+  </ul>
 </p>
 
 <p>
-  <b>Editor user group:</b>
-  <%= @list.editor_user_group_id %>
+  <b>Editors:</b>
+  <ul>
+    <% @list.editor_user_group.users.each do |u| %>
+      <li><%= u.name %></li>
+    <% end %>
+  </ul>
 </p>
 
 <p>
-  <b>Publisher user group:</b>
-  <%= @list.publisher_user_group_id %>
+  <b>Publishers:</b>
+  <ul>
+    <% @list.publisher_user_group.users.each do |u| %>
+      <li><%= u.name %></li>
+    <% end %>
+  </ul>
 </p>
 
 <p>
-  <b>Manager user group:</b>
-  <%= @list.manager_user_group_id %>
+  <b>Owners:</b>
+  <ul>
+    <% @list.owner_user_group.users.each do |u| %>
+      <li><%= u.name %></li>
+    <% end %>
+  </ul>
 </p>
-
 
 <%= link_to 'Edit', edit_list_path(@list) %> |
 <%= link_to 'Back', lists_path %>

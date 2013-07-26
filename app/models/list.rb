@@ -4,7 +4,7 @@ class List < ActiveRecord::Base
   belongs_to :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
   belongs_to :editor_user_group, :class_name => 'UserGroup', :dependent => :destroy
   belongs_to :publisher_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  belongs_to :manager_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  belongs_to :owner_user_group, :class_name => 'UserGroup', :dependent => :destroy
 
   has_many :child_lists, :class_name => 'List', :foreign_key => :parent_list_id,
            :dependent => :destroy, :inverse_of => :parent_list
@@ -19,7 +19,7 @@ class List < ActiveRecord::Base
   before_validation :create_user_groups, :on => :create
   after_create :set_user_groups_container
 
-  validates_presence_of :name, :reader_user_group, :editor_user_group, :publisher_user_group, :manager_user_group
+  validates_presence_of :name, :reader_user_group, :editor_user_group, :publisher_user_group, :owner_user_group
   validates_uniqueness_of :name, :if => :is_public
 
   def has_exercise?(exercise)
@@ -58,7 +58,7 @@ class List < ActiveRecord::Base
 
   def can_be_read_by?(user)
     is_public || has_permission?(user, :reader) || has_permission?(user, :editor) || \
-    has_permission?(user, :publisher) || has_permission?(user, :manager)
+    has_permission?(user, :publisher) || has_permission?(user, :owner)
   end
     
   def can_be_created_by?(user)
@@ -66,7 +66,7 @@ class List < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    has_permission?(user, :manager)
+    has_permission?(user, :owner)
   end
   
   def can_be_destroyed_by?(user)
@@ -83,8 +83,8 @@ class List < ActiveRecord::Base
       editor_user_group
     when 'publisher'
       publisher_user_group
-    when 'manager'
-      manager_user_group
+    when 'owner'
+      owner_user_group
     else
       nil
     end
@@ -101,8 +101,8 @@ class List < ActiveRecord::Base
     self.editor_user_group_id = editor_user_group.id
     self.publisher_user_group = UserGroup.create!(:name => 'publishers')
     self.publisher_user_group_id = publisher_user_group.id
-    self.manager_user_group = UserGroup.create!(:name => 'managers')
-    self.manager_user_group_id = manager_user_group.id
+    self.owner_user_group = UserGroup.create!(:name => 'owners')
+    self.owner_user_group_id = owner_user_group.id
   end
 
   def set_user_groups_container
@@ -112,7 +112,7 @@ class List < ActiveRecord::Base
     self.editor_user_group.save!
     self.publisher_user_group.container = self
     self.publisher_user_group.save!
-    self.manager_user_group.container = self
-    self.manager_user_group.save!
+    self.owner_user_group.container = self
+    self.owner_user_group.save!
   end
 end

@@ -13,7 +13,7 @@ class UserGroupUsersController < ApplicationController
   # GET /user_group_users/new
   # GET /user_group_users/new.json
   def new
-    @user_group = params[:user_group_id]
+    @user_group = UserGroup.find(params[:user_group_id])
     @user_group_user = UserGroupUser.new
 
     respond_to do |format|
@@ -38,9 +38,21 @@ class UserGroupUsersController < ApplicationController
     end
   end
 
-  # PUT /user_group_users/1
-  # PUT /user_group_users/1.json
-  def update
+  # DELETE /user_group_users/1
+  # DELETE /user_group_users/1.json
+  def destroy
+    @user_group_user = UserGroupUser.find(params[:id])
+    @user_group_user.destroy
+
+    respond_to do |format|
+      format.html { redirect_to user_groups_url }
+      format.json { head :no_content }
+    end
+  end
+
+  # PUT /user_group_users/1/toggle
+  # PUT /user_group_users/1/toggle.json
+  def toggle
     @user_group_user = UserGroupUser.find(params[:id])
 
     respond_to do |format|
@@ -51,18 +63,6 @@ class UserGroupUsersController < ApplicationController
         format.html { render action: "edit" }
         format.json { render json: @user_group_user.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-  # DELETE /user_group_users/1
-  # DELETE /user_group_users/1.json
-  def destroy
-    @user_group_user = UserGroupUser.find(params[:id])
-    @user_group_user.destroy
-
-    respond_to do |format|
-      format.html { redirect_to user_groups_url }
-      format.json { head :no_content }
     end
   end
 end

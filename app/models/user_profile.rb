@@ -38,7 +38,7 @@ class UserProfile < ActiveRecord::Base
 
   def create_default_list
     dl = List.create!(:name => "#{name}'s default list")
-    dl.add_permission(user, :manager)
+    dl.add_permission(user, :owner)
     self.default_list = dl
     self.default_list_id = dl.id
   end

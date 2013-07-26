@@ -10,11 +10,6 @@ class UserGroup < ActiveRecord::Base
 
   validates_presence_of :name
 
-  def managers
-    return [] if !container.nil?
-    user_group_users.where(:is_manager => true).all
-  end
-
   def full_name
     container.nil? ? name : "#{container.name} #{name}"
   end
@@ -26,9 +21,7 @@ class UserGroup < ActiveRecord::Base
 
   def has_manager?(user)
     return false if (user.nil? || !container.nil?)
-    ugu = user_group_users.where(:user_id => user.id).first
-    return false if ugu.nil?
-    ugu.is_manager
+    !user_group_users.managers.where(:user_id => user.id).first.nil?
   end
   
   def add_user(user, manager = false)
@@ -50,7 +43,7 @@ class UserGroup < ActiveRecord::Base
   def destroy_empty_or_force_manager
     return unless container.nil?
     return destroy if user_group_users.empty?
-    user_group_users.first.update_attribute(:is_manager, true) if managers.empty?
+    user_group_users.first.update_attribute(:is_manager, true) if user_group_users.managers.first.nil?
   end
 
   ##################

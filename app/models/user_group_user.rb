@@ -12,6 +12,8 @@ class UserGroupUser < ActiveRecord::Base
   validates_presence_of :user, :user_group
   validates_uniqueness_of :user_id, :scope => :user_group_id
 
+  scope :managers, where(:is_manager => true)
+
   ##################
   # Access Control #
   ##################

@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.text     "content_html",           :default => "",    :null => false
     t.integer  "source_exercise_id"
     t.integer  "number",                                    :null => false
-    t.integer  "version",                                   :null => false
+    t.integer  "version",                :default => 1,     :null => false
     t.datetime "published_at"
     t.integer  "license_id"
     t.integer  "credit"
@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.integer  "reader_user_group_id",                       :null => false
     t.integer  "editor_user_group_id",                       :null => false
     t.integer  "publisher_user_group_id",                    :null => false
-    t.integer  "manager_user_group_id",                      :null => false
+    t.integer  "owner_user_group_id",                        :null => false
     t.string   "name",                    :default => "",    :null => false
     t.boolean  "is_public",               :default => false, :null => false
     t.datetime "created_at",                                 :null => false
@@ -293,7 +293,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.text     "content_html",       :default => "", :null => false
     t.integer  "source_solution_id"
     t.integer  "number",                             :null => false
-    t.integer  "version",                            :null => false
+    t.integer  "version",            :default => 1,  :null => false
     t.datetime "published_at"
     t.integer  "license_id"
     t.datetime "created_at",                         :null => false

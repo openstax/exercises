@@ -6,7 +6,7 @@
   last ||= false
 %>
 
-<%= link_to target_path do %>
+<%= link_to "/#{target_path}" do %>
   <span id="<%= target_id %>" class="top-nav-link <%= yield target_current_symbol %>">
     <%= target_text.html_safe %>
     <%= target_image %>

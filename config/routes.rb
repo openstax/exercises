@@ -6,49 +6,37 @@ Exercises::Application.routes.draw do
   devise_for :users, :controllers => { :registrations => "registrations" }
 
   resources :users, :only => [] do
-    get 'help'
-    post 'search'
+    collection do
+      get 'help'
+      post 'search'
+    end
   end
 
-  resources :user_profiles
+  resources :user_profiles, :only => [:show, :edit, :update]
 
-  resources :user_groups
+  resources :user_groups do
+    resources :user_group_users, :only => [:new, :create]
+  end
 
-  resources :user_group_members
+  resources :user_group_users, :only => [:destroy] do
+    put 'toggle', :on => :member
+  end
 
   resources :lists
 
-  resources :list_exercises
+  resources :list_exercises, :only => [:new, :create, :destroy]
 
   resources :exercises
 
-  resources :questions
+  resources :questions, :only => [] do
+    resources :solutions, :only => [:index, :new, :create]
+  end
 
-  resources :question_dependency_pairs
-
-  resources :multiple_choice_answers
-
-  resources :matching_answers
-
-  resources :fill_in_the_blank_answers
-
-  resources :true_or_false_answers
-
-  resources :short_answers
-
-  resources :free_response_answers
-
-  resources :solutions
+  resources :solutions, :except => [:index, :new, :create]
 
   resources :attachments
 
   resources :collaborators
-
-  resources :licenses do
-    collection do
-      put 'make_default'
-    end
-  end
 
   resources :api_keys, :except => [:new, :edit, :update]
 
@@ -59,10 +47,16 @@ Exercises::Application.routes.draw do
   root :to => "static_pages#home"
 
   namespace :admin do
-    resources :users, :only => [:index, :show, :edit, :update] do
-      post 'become'
-      post 'confirm'
+    resources :users, :except => [:new, :create] do
+      member do
+        post 'become'
+        post 'confirm'
+      end
     end
+
+    resources :licenses
+
+    resources :user_groups, :only => [:index]
   end
 
   namespace :api, defaults: {format: 'json'} do

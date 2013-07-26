@@ -44,6 +44,7 @@ class ListsController < ApplicationController
 
     respond_to do |format|
       if @list.save
+        @list.add_permission(current_user, :owner)
         format.html { redirect_to @list, notice: 'List was successfully created.' }
         format.json { render json: @list, status: :created, location: @list }
       else

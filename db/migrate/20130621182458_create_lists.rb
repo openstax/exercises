@@ -5,7 +5,7 @@ class CreateLists < ActiveRecord::Migration
       t.integer :reader_user_group_id, :null => false
       t.integer :editor_user_group_id, :null => false
       t.integer :publisher_user_group_id, :null => false
-      t.integer :manager_user_group_id, :null => false
+      t.integer :owner_user_group_id, :null => false
       t.string :name, :null => false, :default => ''
       t.boolean :is_public, :null => false, :default => false
 
