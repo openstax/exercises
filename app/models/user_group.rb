@@ -11,7 +11,7 @@ class UserGroup < ActiveRecord::Base
   validates_presence_of :name
 
   def full_name
-    container.nil? ? name : "#{container.name} #{name}"
+    container.nil? ? name : "#{name.capitalize} of #{container.name}"
   end
 
   def has_user?(user)

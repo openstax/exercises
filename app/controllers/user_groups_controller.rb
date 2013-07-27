@@ -34,7 +34,7 @@ class UserGroupsController < ApplicationController
     respond_to do |format|
       begin
         @user_group.transaction do
-          raise ActiveRecord::RecordInvalid unless @user_group.save
+          @user_group.save!
           raise ActiveRecord::RecordInvalid unless @user_group.add_user(current_user, true)
         end
         format.html { redirect_to @user_group, notice: 'User group was successfully created.' }

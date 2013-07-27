@@ -1,5 +1,7 @@
 <tr>
   <td><%= user_group_user.user.name %></td>
-  <td><%= user_group_user.is_manager ? 'Manager' : 'user' %> (<%= link_to 'Toggle', toggle_user_group_user_path(user_group_user), method: :put, data: { confirm: 'Are you sure?' } %>)</td>
-  <td><%= link_to 'Remove', user_group_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  <td><%= user_group_user.is_manager ? 'Manager' : 'Member' %> (<%= link_to 'Toggle', toggle_user_group_user_path(user_group_user), method: :put, data: {
+    confirm: "Are you sure you want to #{user_group_user.is_manager ? 'demote' : 'promote'} #{user_group_user.user.name} to group #{user_group_user.is_manager ? 'member' : 'manager'}?"
+  } %>)</td>
+  <td><%= link_to 'Remove', user_group_user, method: :delete, data: { confirm: "Are you sure you want to remove #{user_group_user.user.name} from the group?" } %></td>
 </tr>

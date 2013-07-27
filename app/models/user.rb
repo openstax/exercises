@@ -40,6 +40,24 @@ class User < ActiveRecord::Base
     update_attribute(:disabled_at, Time.now)
   end
 
+  def self.search(type, text)
+    case type
+    when 'Name'
+      u = User.scoped
+      text.gsub(/[%,]/, '').split.each do |q|
+        next if q.blank?
+        u = u.where{(first_name =~ q) | (last_name =~ q)}
+      end
+      return u
+    when 'Username'
+      q = text.gsub('%', '')
+      return where{username =~ q}
+    when 'Email'
+      q = text.gsub('%', '') + '%'  
+      return where{email =~ q}
+    end
+  end
+
   ##################
   # Access Control #
   ##################

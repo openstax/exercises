@@ -49,4 +49,14 @@ module ApplicationHelper
   def tf_to_yn(bool)
     bool ? 'Yes' : 'No'
   end
+
+  def hide_email(email)
+    address, domain = email.split('@')
+    tld = domain.split('.')[1]
+
+    adress = '***' if address.nil?
+    tld = '***' if tld.nil?
+
+    "#{address}@***.#{tld}"
+  end
 end

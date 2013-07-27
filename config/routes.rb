@@ -15,7 +15,9 @@ Exercises::Application.routes.draw do
   resources :user_profiles, :only => [:show, :edit, :update]
 
   resources :user_groups do
-    resources :user_group_users, :only => [:new, :create]
+    resources :user_group_users, :only => [:new, :create] do
+      post 'new', :on => :member
+    end
   end
 
   resources :user_group_users, :only => [:destroy] do

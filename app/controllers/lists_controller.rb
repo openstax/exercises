@@ -43,11 +43,14 @@ class ListsController < ApplicationController
     @list = List.new(params[:list])
 
     respond_to do |format|
-      if @list.save
-        @list.add_permission(current_user, :owner)
+      begin
+        @list.transaction do
+          @list.save!
+          raise ActiveRecord::RecordInvalid unless @list.add_permission(current_user, :owner)
+        end
         format.html { redirect_to @list, notice: 'List was successfully created.' }
         format.json { render json: @list, status: :created, location: @list }
-      else
+      rescue ActiveRecord::RecordInvalid
         format.html { render action: "new" }
         format.json { render json: @list.errors, status: :unprocessable_entity }
       end
