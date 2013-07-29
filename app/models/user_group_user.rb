@@ -37,6 +37,6 @@ class UserGroupUser < ActiveRecord::Base
   #############
 
   def user_group_checks
-    user_group.destroy_empty_or_force_manager
+    user_group.user_group_checks
   end
 end

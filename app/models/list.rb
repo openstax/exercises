@@ -2,9 +2,16 @@ class List < ActiveRecord::Base
   belongs_to :parent_list, :class_name => 'List', :inverse_of => :child_lists
 
   belongs_to :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_many :readers, :through => :reader_user_group, :source => :users
+
   belongs_to :editor_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_many :editors, :through => :editor_user_group, :source => :users
+
   belongs_to :publisher_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_many :publishers, :through => :publisher_user_group, :source => :users
+
   belongs_to :owner_user_group, :class_name => 'UserGroup', :dependent => :destroy
+  has_many :owners, :through => :owner_user_group, :source => :users
 
   has_many :child_lists, :class_name => 'List', :foreign_key => :parent_list_id,
            :dependent => :destroy, :inverse_of => :parent_list
@@ -52,6 +59,15 @@ class List < ActiveRecord::Base
     pg.remove_user(user)
   end
 
+  def user_group_checks
+    return if !owners.first.nil?
+
+    new_owner = publishers.first || editors.first || readers.first
+    return destroy if new_owner.nil?
+
+    add_permission(new_owner, :owner)
+  end
+
   ##################
   # Access Control #
   ##################
@@ -68,9 +84,9 @@ class List < ActiveRecord::Base
   def can_be_updated_by?(user)
     has_permission?(user, :owner)
   end
-  
+
   def can_be_destroyed_by?(user)
-    can_be_updated_by?(user)
+    user.is_admin?
   end
 
   protected

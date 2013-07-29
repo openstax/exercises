@@ -6,9 +6,11 @@ class User < ActiveRecord::Base
          :rememberable, :trackable, :validatable, :confirmable
 
   has_one :user_profile, :dependent => :destroy, :inverse_of => :user
+
   has_one :default_list, :through => :user_profile
+
   has_one :deputy_user_group, :through => :user_profile
-  has_many :deputies, :class_name => 'User', :through => :deputy_user_group
+  has_many :deputies, :through => :deputy_user_group, :source => :users
 
   has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
   has_many :user_groups, :through => :user_group_users
