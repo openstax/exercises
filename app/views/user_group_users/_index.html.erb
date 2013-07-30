@@ -1,11 +1,18 @@
+<% # Clients of this partial can override the following variable:
+   hide_status ||= false
+%>
+
 <table>
   <tr>
     <th>User</th>
+  <% unless hide_status %>
     <th>Status</th>
+  <% end %>
     <th></th>
   </tr>
 
 <% user_group_users.each do |user_group_user| %>
-  <%= render :partial => 'user_group_users/show', :locals => {:user_group_user => user_group_user} %>
+  <%= render :partial => 'user_group_users/show', :locals => {:user_group_user => user_group_user,
+                                                              :hide_status => hide_status} %>
 <% end %>
 </table>

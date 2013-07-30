@@ -14,6 +14,7 @@ class AttachmentsController < ApplicationController
   # GET /attachments/new.json
   def new
     @attachment = Attachment.new
+    raise_exception_unless(@attachment.can_be_created_by?(current_user))
 
     respond_to do |format|
       format.html # new.html.erb
@@ -24,12 +25,14 @@ class AttachmentsController < ApplicationController
   # GET /attachments/1/edit
   def edit
     @attachment = Attachment.find(params[:id])
+    raise_exception_unless(@attachment.can_be_updated_by?(current_user))
   end
 
   # POST /attachments
   # POST /attachments.json
   def create
     @attachment = Attachment.new(params[:attachment])
+    raise_exception_unless(@attachment.can_be_created_by?(current_user))
 
     respond_to do |format|
       if @attachment.save
@@ -46,6 +49,7 @@ class AttachmentsController < ApplicationController
   # PUT /attachments/1.json
   def update
     @attachment = Attachment.find(params[:id])
+    raise_exception_unless(@attachment.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @attachment.update_attributes(params[:attachment])
@@ -62,6 +66,8 @@ class AttachmentsController < ApplicationController
   # DELETE /attachments/1.json
   def destroy
     @attachment = Attachment.find(params[:id])
+    raise_exception_unless(@attachment.can_be_destroyed_by?(current_user))
+
     @attachment.destroy
 
     respond_to do |format|

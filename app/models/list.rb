@@ -85,10 +85,6 @@ class List < ActiveRecord::Base
     has_permission?(user, :owner)
   end
 
-  def can_be_destroyed_by?(user)
-    user.is_admin?
-  end
-
   protected
 
   def permission_group_for(permission)

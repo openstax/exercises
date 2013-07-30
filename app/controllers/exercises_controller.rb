@@ -14,6 +14,7 @@ class ExercisesController < ApplicationController
   # GET /exercises/1.json
   def show
     @exercise = Exercise.find(params[:id])
+    raise_exception_unless(@exercise.can_be_read_by?(current_user))
 
     respond_to do |format|
       format.html # show.html.erb
@@ -25,6 +26,7 @@ class ExercisesController < ApplicationController
   # GET /exercises/new.json
   def new
     @exercise = Exercise.new
+    raise_exception_unless(@exercise.can_be_created_by?(current_user))
 
     respond_to do |format|
       format.html # new.html.erb
@@ -35,12 +37,14 @@ class ExercisesController < ApplicationController
   # GET /exercises/1/edit
   def edit
     @exercise = Exercise.find(params[:id])
+    raise_exception_unless(@exercise.can_be_updated_by?(current_user))
   end
 
   # POST /exercises
   # POST /exercises.json
   def create
     @exercise = Exercise.new(params[:exercise])
+    raise_exception_unless(@exercise.can_be_created_by?(current_user))
 
     respond_to do |format|
       if @exercise.save
@@ -57,6 +61,7 @@ class ExercisesController < ApplicationController
   # PUT /exercises/1.json
   def update
     @exercise = Exercise.find(params[:id])
+    raise_exception_unless(@exercise.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @exercise.update_attributes(params[:exercise])
@@ -73,6 +78,8 @@ class ExercisesController < ApplicationController
   # DELETE /exercises/1.json
   def destroy
     @exercise = Exercise.find(params[:id])
+    raise_exception_unless(@exercise.can_be_destroyed_by?(current_user))
+
     @exercise.destroy
 
     respond_to do |format|

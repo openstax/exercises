@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def raise_unless(authorized)
+  def raise_exception_unless(authorized)
     return if authorized || user_is_admin?
     raise SecurityTransgression
   end

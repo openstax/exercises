@@ -16,6 +16,8 @@ class UserGroupUsersController < ApplicationController
   # GET /user_group_users/new.json
   def new
     @user_group_user = UserGroupUser.new
+    @user_group_user.user_group = @user_group
+    raise_exception_unless(@user_group_user.can_be_created_by?(current_user))
 
     @selected_type = params[:selected_type]
     @text_query = params[:text_query]
@@ -31,8 +33,9 @@ class UserGroupUsersController < ApplicationController
   # POST /user_group_users.json
   def create
     @user_group_user = UserGroupUser.new
-    @user_group_user.user_group_id = params[:user_group_id]
+    @user_group_user.user_group = @user_group
     @user_group_user.user_id = params[:user_id]
+    raise_exception_unless(@user_group_user.can_be_created_by?(current_user))
 
     respond_to do |format|
       if @user_group_user.save
@@ -49,10 +52,12 @@ class UserGroupUsersController < ApplicationController
   # DELETE /user_group_users/1.json
   def destroy
     @user_group_user = UserGroupUser.find(params[:id])
+    raise_exception_unless(@user_group_user.can_be_destroyed_by?(current_user))
+
     @user_group_user.destroy
 
     respond_to do |format|
-      format.html { redirect_to user_groups_url }
+      format.html { redirect_to @user_group_user.user_group }
       format.json { head :no_content }
     end
   end
@@ -61,6 +66,7 @@ class UserGroupUsersController < ApplicationController
   # PUT /user_group_users/1/toggle.json
   def toggle
     @user_group_user = UserGroupUser.find(params[:id])
+    raise_exception_unless(@user_group_user.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @user_group_user.update_attribute(:is_manager, !@user_group_user.is_manager)

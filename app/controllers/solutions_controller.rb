@@ -14,6 +14,7 @@ class SolutionsController < ApplicationController
   # GET /solutions/1.json
   def show
     @solution = Solution.find(params[:id])
+    raise_exception_unless(@solution.can_be_read_by?(current_user))
 
     respond_to do |format|
       format.html # show.html.erb
@@ -25,6 +26,7 @@ class SolutionsController < ApplicationController
   # GET /solutions/new.json
   def new
     @solution = Solution.new
+    raise_exception_unless(@solution.can_be_created_by?(current_user))
 
     respond_to do |format|
       format.html # new.html.erb
@@ -35,12 +37,14 @@ class SolutionsController < ApplicationController
   # GET /solutions/1/edit
   def edit
     @solution = Solution.find(params[:id])
+    raise_exception_unless(@solution.can_be_updated_by?(current_user))
   end
 
   # POST /solutions
   # POST /solutions.json
   def create
     @solution = Solution.new(params[:solution])
+    raise_exception_unless(@solution.can_be_created_by?(current_user))
 
     respond_to do |format|
       if @solution.save
@@ -57,6 +61,7 @@ class SolutionsController < ApplicationController
   # PUT /solutions/1.json
   def update
     @solution = Solution.find(params[:id])
+    raise_exception_unless(@solution.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @solution.update_attributes(params[:solution])
@@ -73,6 +78,8 @@ class SolutionsController < ApplicationController
   # DELETE /solutions/1.json
   def destroy
     @solution = Solution.find(params[:id])
+    raise_exception_unless(@solution.can_be_destroyed_by?(current_user))
+
     @solution.destroy
 
     respond_to do |format|

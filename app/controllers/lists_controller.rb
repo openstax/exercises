@@ -14,6 +14,7 @@ class ListsController < ApplicationController
   # GET /lists/1.json
   def show
     @list = List.find(params[:id])
+    raise_exception_unless(@list.can_be_read_by?(current_user))
 
     respond_to do |format|
       format.html # show.html.erb
@@ -25,6 +26,7 @@ class ListsController < ApplicationController
   # GET /lists/new.json
   def new
     @list = List.new
+    raise_exception_unless(@list.can_be_created_by?(current_user))
 
     respond_to do |format|
       format.html # new.html.erb
@@ -35,12 +37,14 @@ class ListsController < ApplicationController
   # GET /lists/1/edit
   def edit
     @list = List.find(params[:id])
+    raise_exception_unless(@list.can_be_updated_by?(current_user))
   end
 
   # POST /lists
   # POST /lists.json
   def create
     @list = List.new(params[:list])
+    raise_exception_unless(@list.can_be_created_by?(current_user))
 
     respond_to do |format|
       begin
@@ -61,6 +65,7 @@ class ListsController < ApplicationController
   # PUT /lists/1.json
   def update
     @list = List.find(params[:id])
+    raise_exception_unless(@list.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @list.update_attributes(params[:list])
@@ -77,6 +82,8 @@ class ListsController < ApplicationController
   # DELETE /lists/1.json
   def destroy
     @list = List.find(params[:id])
+    raise_exception_unless(@list.can_be_destroyed_by?(current_user))
+
     @list.destroy
 
     respond_to do |format|

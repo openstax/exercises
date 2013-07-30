@@ -66,8 +66,4 @@ class UserGroup < ActiveRecord::Base
   def can_be_updated_by?(user)
     has_manager?(user)
   end
-
-  def can_be_destroyed_by?(user)
-    user.is_admin?
-  end
 end

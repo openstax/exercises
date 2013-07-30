@@ -31,6 +31,7 @@ Exercises::Application.routes.draw do
   resources :exercises
 
   resources :questions, :only => [] do
+    resources :question_dependency_pairs, :only => [:new, :create, :destroy]
     resources :solutions, :only => [:index, :new, :create]
   end
 

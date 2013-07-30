@@ -2,12 +2,14 @@ class UserProfilesController < ApplicationController
   # GET /user_profiles/1/edit
   def edit
     @user_profile = UserProfile.find(params[:id])
+    raise_exception_unless(@user_profile.can_be_updated_by?(current_user))
   end
 
   # PUT /user_profiles/1
   # PUT /user_profiles/1.json
   def update
     @user_profile = UserProfile.find(params[:id])
+    raise_exception_unless(@user_profile.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @user_profile.update_attributes(params[:user_profile])

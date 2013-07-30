@@ -2,19 +2,15 @@
 
 <table>
   <tr>
-    <th>Group name</th>
+    <th>Group</th>
     <th>Status</th>
-    <th></th>
-    <th></th>
     <th></th>
   </tr>
 
 <% current_user.user_group_users.each do |user_group_user| %>
   <tr>
-    <td><%= user_group_user.user_group.full_name %></td>
+    <td><%= link_to user_group_user.user_group.full_name, user_group_user.user_group %></td>
     <td><%= user_group_user.is_manager ? 'Manager' : 'Member' %></td>
-    <td><%= link_to 'Show', user_group_user.user_group %> |</td>
-    <td><%= link_to 'Edit', edit_user_group_path(user_group_user.user_group) %> |</td>
     <td><%= link_to 'Leave group', user_group_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
