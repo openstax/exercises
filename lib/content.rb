@@ -15,16 +15,22 @@ module Content
       names_array = names.is_a?(Array) ? names.collect{|name| name.to_s} : [names.to_s]
 
       class_eval do
+        cattr_accessor :content_field_names
+        self.content_field_names = names_array
+
         names_array.each do |name|
           attr_accessible name.to_sym
         end
 
         before_validation :parse_and_cache_content
 
-        protected
+        def summary
+          return "" if content.blank?
+          return content if content.length <= 16
+          "#{content[0..15]} ..."
+        end
 
-        cattr_accessor :content_field_names
-        self.content_field_names = names_array
+        protected
 
         def parse_and_cache_content
           return if Rails.env.test? && !Content.enable_test_parser

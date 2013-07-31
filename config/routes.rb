@@ -28,7 +28,9 @@ Exercises::Application.routes.draw do
 
   resources :list_exercises, :only => [:new, :create, :destroy]
 
-  resources :exercises
+  resources :exercises do
+    get 'quickview', :on => :member
+  end
 
   resources :questions, :only => [] do
     resources :question_dependency_pairs, :only => [:new, :create, :destroy]

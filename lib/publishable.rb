@@ -5,12 +5,32 @@ module Publishable
   
   module ClassMethods
     def publishable(scope_symbols = nil)
-      class_name = self.class.name.undercase
-      derived_names = "derived_#{class_name.pluralize}"
+      class_name = self.class.name.downcase
+      class_name_plural = class_name.pluralize
+      derived_names = "derived_#{class_name_plural}"
       source_name = "source_#{class_name}"
       source_name_id = "#{source_name}_id"
 
+      License.class_eval do
+        has_many class_name_plural, :inverse_of => :license
+      end
+
       class_eval do
+        cattr_accessor :dup_includes_array
+        self.dup_includes_array = []
+
+        cattr_accessor :prepublish_checks_array
+        self.prepublish_checks_array = [[:is_published?, false, "This #{class_name} is already published."],
+          [:has_license?, true, "A license has not yet been specified for this #{class_name}."],
+          [:has_all_roles?, true, "The author or copyright holder roles are not filled for this #{class_name}."],
+          [:has_collaborator_requests?, false, "This #{class_name} has pending role requests."]]
+
+        cattr_accessor :publish_scope_array
+        self.publish_scope_array = scope_symbols.nil? ? nil : \
+          (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
+
+        belongs_to :license, :inverse_of => class_name_plural
+
         belongs_to source_name, :class_name => class_name, :inverse_of => derived_names
 
         has_many derived_names, :class_name => class_name, :foreign_key => source_name_id, :inverse_of => source_name
@@ -89,7 +109,7 @@ module Publishable
         end
 
         def self.add_prepublish_check(method_name, value, error_message)
-          prepublish_checks << [method_name, value, error_message]
+          prepublish_checks_array << [method_name, value, error_message]
         end
 
         def assign_next_number
@@ -97,18 +117,6 @@ module Publishable
         end
 
         protected
-
-        cattr_accessor :dup_includes_array, :prepublish_checks_array, :publish_scope_array
-
-        dup_includes_array = []
-
-        prepublish_checks_array = [[:is_published?, false, "This #{class_name} is already published."],
-          [:has_license?, true, "A license has not yet been specified for this #{class_name}."],
-          [:has_all_roles?, true, "The author or copyright holder roles are not filled for this #{class_name}."],
-          [:has_collaborator_requests?, false, "This #{class_name} has pending role requests."]]
-
-        publish_scope_array = scope_symbols.nil? ? nil : \
-          (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
         def publish_scope
           publish_scope_array.nil? ? self.class.scoped : self.class.where(Hash[publish_scope_array.map{|s| [s, send(s)]}])

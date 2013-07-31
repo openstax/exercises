@@ -72,7 +72,8 @@ class OseParser < Parslet::Parser
 end
 
 class OseHtmlTransformer < Parslet::Transform
-  def initialize(attachable)
+  def initialize(attachable, &block)
+    super(&block)
     @attachable = attachable
   end
 
@@ -90,19 +91,20 @@ class OseHtmlTransformer < Parslet::Transform
 
   rule(:math => simple(:text)) { "#{text}"}
 
-  rule(:bold => sequence(:entries)) { "<b>#{entries.join(' ')}</b>"}
-  rule(:italic => sequence(:entries)) { "<i>#{entries.join(' ')}</i>"}
-  rule(:underline => sequence(:entries)) { "<u>#{entries.join(' ')}</u>"}
+  rule(:bold => sequence(:items)) { "<b>#{items.join(' ')}</b>"}
+  rule(:italic => sequence(:items)) { "<i>#{items.join(' ')}</i>"}
+  rule(:underline => sequence(:items)) { "<u>#{items.join(' ')}</u>"}
 
-  rule(:bullet => sequence(:text)) { "<li>#{text.join}</li>" }
-  rule(:bulleted_list => sequence(:bullets)) { "<ul>#{bullets.join("\n")}</ul>" }
-  rule(:numbered_item => sequence(:text)) { "<li>#{text.join}</li>" }
-  rule(:numbered_list => sequence(:entries)) { "<ol>#{entries.join("\n")}</ol>" }
+  rule(:bulleted_item => sequence(:items)) { "<li>#{items.join}</li>" }
+  rule(:bulleted_list => sequence(:items)) { "<ul>#{items.join("\n")}</ul>" }
+
+  rule(:numbered_item => sequence(:items)) { "<li>#{items.join}</li>" }
+  rule(:numbered_list => sequence(:items)) { "<ol>#{items.join("\n")}</ol>" }
 
   rule(:text => simple(:text)) { "#{text}" }
 
-  rule(:line => sequence(:entries)) { entries.join }
+  rule(:line => sequence(:items)) { items.join }
 
-  rule(:paragraph => sequence(:entries)) { "<p>#{entries.join}</p>" }
-  rule(:paragraphs => sequence(:entries)) { entries.join("\n") }
+  rule(:paragraph => sequence(:items)) { "<p>#{items.join}</p>" }
+  rule(:paragraphs => sequence(:items)) { items.join("\n") }
 end

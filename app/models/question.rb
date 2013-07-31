@@ -30,6 +30,17 @@ class Question < ActiveRecord::Base
 
   has_many :solutions, :dependent => :destroy, :inverse_of => :question
 
+  accepts_nested_attributes_for :dependent_question_pairs, :allow_destroy => true
+
+  accepts_nested_attributes_for :independent_question_pairs, :allow_destroy => true
+
+  accepts_nested_attributes_for :true_or_false_answers, :allow_destroy => true
+  accepts_nested_attributes_for :multiple_choice_answers, :allow_destroy => true
+  accepts_nested_attributes_for :matching_answers, :allow_destroy => true
+  accepts_nested_attributes_for :fill_in_the_blank_answers, :allow_destroy => true
+  accepts_nested_attributes_for :short_answers, :allow_destroy => true
+  accepts_nested_attributes_for :free_response_answers, :allow_destroy => true
+
   attr_accessible :changes_solution, :credit
 
   validates_presence_of :exercise

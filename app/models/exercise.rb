@@ -18,18 +18,31 @@ class Exercise < ActiveRecord::Base
                                         :free_response_answers]}]
 
   has_many :questions, :dependent => :destroy, :inverse_of => :exercise
+  has_many :solutions, :through => :questions
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
 
-  attr_accessible :only_embargo_solutions, :credit
+  accepts_nested_attributes_for :questions, :allow_destroy => true
+
+  attr_accessible :only_embargo_solutions, :credit, :questions_attributes
+
+  def summary
+    summary_string = (content.blank? ? "" : content[0..15] + (content.length > 16 ? ' ...' : ''))
+
+    question_count = questions.count
+    return summary_string if question_count == 0
+    return summary_string + " [#{question_count.to_s} questions]" if question_count > 1
+
+    summary_string + " #{questions.first.summary}"
+  end
 
   ##################
   # Access Control #
   ##################
 
   def can_be_read_by?(user)
-    is_published? || lists.first.can_be_read_by?(user) || has_collaborator?(user)
+    is_published? || (!lists.first.nil? && lists.first.can_be_read_by?(user)) || has_collaborator?(user)
   end
     
   def can_be_created_by?(user)
@@ -37,9 +50,11 @@ class Exercise < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    !is_published? && (lists.first.has_permission?(user, :editor) || \
+    !is_published? && !lists.first.nil? && \
+    (lists.first.has_permission?(user, :editor) || \
     lists.first.has_permission?(user, :publisher) || \
-    lists.first.has_permission?(user, :manager) || has_collaborator?(user))
+    lists.first.has_permission?(user, :manager) || \
+    has_collaborator?(user))
   end
   
   def can_be_destroyed_by?(user)

@@ -1,4 +1,4 @@
-<%= form_for(@exercise) do |f| %>
+<%= nested_form_for(@exercise) do |f| %>
   <% if @exercise.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this exercise from being saved:</h2>
@@ -12,48 +12,19 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :number %><br />
-    <%= f.number_field :number %>
-  </div>
-  <div class="field">
-    <%= f.label :version %><br />
-    <%= f.number_field :version %>
-  </div>
-  <div class="field">
     <%= f.label :content %><br />
     <%= f.text_area :content %>
   </div>
+
+  <%= render :partial => 'questions/form', :locals => {:f => f} %>
+
   <div class="field">
-    <%= f.label :content_html %><br />
-    <%= f.text_area :content_html %>
-  </div>
-  <div class="field">
-    <%= f.label :license_id %><br />
-    <%= f.number_field :license_id %>
-  </div>
-  <div class="field">
-    <%= f.label :locked_by %><br />
-    <%= f.number_field :locked_by %>
-  </div>
-  <div class="field">
-    <%= f.label :locked_at %><br />
-    <%= f.datetime_select :locked_at %>
-  </div>
-  <div class="field">
-    <%= f.label :changes_solution %><br />
-    <%= f.check_box :changes_solution %>
-  </div>
-  <div class="field">
-    <%= f.label :embargoed_until %><br />
-    <%= f.datetime_select :embargoed_until %>
+    <%= f.label :credit %><br />
+    <%= f.text_field :credit %>
   </div>
   <div class="field">
     <%= f.label :only_embargo_solutions %><br />
     <%= f.check_box :only_embargo_solutions %>
-  </div>
-  <div class="field">
-    <%= f.label :suggested_credit %><br />
-    <%= f.text_field :suggested_credit %>
   </div>
   <div class="actions">
     <%= f.submit %>

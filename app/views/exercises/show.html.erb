@@ -1,43 +1,15 @@
-<p id="notice"><%= notice %></p>
-
 <p>
-  <b>Number:</b>
-  <%= @exercise.number %>
+  <b>Exercise:</b>
+  e<%= @exercise.number %>v<%= @exercise.version %>
 </p>
 
 <p>
-  <b>Version:</b>
-  <%= @exercise.version %>
-</p>
-
-<p>
-  <b>Content:</b>
-  <%= @exercise.content %>
-</p>
-
-<p>
-  <b>Content html:</b>
-  <%= @exercise.content_html %>
+  <%= @exercise.content_html.html_safe %>
 </p>
 
 <p>
   <b>License:</b>
-  <%= @exercise.license_id %>
-</p>
-
-<p>
-  <b>Locked by:</b>
-  <%= @exercise.locked_by %>
-</p>
-
-<p>
-  <b>Locked at:</b>
-  <%= @exercise.locked_at %>
-</p>
-
-<p>
-  <b>Changes solution:</b>
-  <%= @exercise.changes_solution %>
+  <%= @exercise.license.try(:name) %>
 </p>
 
 <p>
@@ -52,7 +24,7 @@
 
 <p>
   <b>Suggested credit:</b>
-  <%= @exercise.suggested_credit %>
+  <%= @exercise.credit %>
 </p>
 
 

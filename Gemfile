@@ -18,6 +18,7 @@ gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_utilities', '~> 0.0.5'
+gem 'nested_form'
 
 gem 'carrierwave'
 gem 'parslet', '~> 1.5'

@@ -6,6 +6,10 @@ module Sortable
   module ClassMethods
     def sortable(scope_symbols = nil)
       class_eval do
+        cattr_accessor :sort_scope_array
+        self.sort_scope_array = scope_symbols.nil? ? nil : \
+          (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
+
         before_validation :assign_next_position, :unless => :position
 
         validates_presence_of :position
@@ -43,10 +47,6 @@ module Sortable
         end
 
         protected
-
-        cattr_accessor :sort_scope_array
-        sort_scope_array = scope_symbols.nil? ? nil : \
-                           (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
         def sort_scope
           sort_scope_array.nil? ? self.class.scoped : self.class.where(Hash[sort_scope_array.map{|s| [s, send(s)]}])
