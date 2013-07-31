@@ -1,0 +1,34 @@
+<% # Clients of this partial must supply the following variable:
+   # q %>
+
+<div class="answer_format">
+  <p>
+    <b>Free response answers</b>
+  </p>
+  <%= q.fields_for :free_response_answers do |a| %>
+    <div class="answer">
+      <div class="field">
+        <%= a.label :content %><br />
+        <%= a.text_area :content %>
+      </div>
+      <div class="field">
+        <%= a.label :free_response %><br />
+        <%= a.text_field :free_response %>
+      </div>
+      <div class="field">
+        <%= a.label :can_be_sketched %><br />
+        <%= a.check_box :can_be_sketched %>
+      </div>
+      <div class="field">
+        <%= a.label :credit %><br />
+        <%= a.text_field :credit %>
+      </div>
+
+      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= q.link_to_add "Add free response answer", :free_response_answers %>
+</div>
+
+<br/>

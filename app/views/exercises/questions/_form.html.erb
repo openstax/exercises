@@ -1,0 +1,32 @@
+<% # Clients of this partial must supply the following variable:
+   # f %>
+
+<div class="questions">
+  <%= f.fields_for :questions do |q| %>
+    <div class="question">
+      <p>
+        <b><%= q.object.id ? "Question #{q.object.position + 1}" : 'New question' %></b>
+      </p>
+      <div class="field">
+        <%= q.text_area :content %>
+      </div>
+      <div class="field">
+        <%= q.label :credit %>
+        <%= q.text_field :credit %>
+      </div>
+
+      <%= render :partial => 'exercises/questions/true_or_false_answers/form', :locals => {:q => q} %>
+      <%= render :partial => 'exercises/questions/multiple_choice_answers/form', :locals => {:q => q} %>
+      <%= render :partial => 'exercises/questions/matching_answers/form', :locals => {:q => q} %>
+      <%= render :partial => 'exercises/questions/fill_in_the_blank_answers/form', :locals => {:q => q} %>
+      <%= render :partial => 'exercises/questions/short_answers/form', :locals => {:q => q} %>
+      <%= render :partial => 'exercises/questions/free_response_answers/form', :locals => {:q => q} %>
+
+      <%= q.link_to_remove "Remove this question" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= f.link_to_add "Add question", :questions %>
+</div>
+
+<br/>

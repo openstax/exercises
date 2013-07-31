@@ -1,11 +1,12 @@
 <p>
-  <b>Exercise:</b>
+  <b>Exercise</b>
   e<%= @exercise.number %>v<%= @exercise.version %>
 </p>
 
-<p>
-  <%= @exercise.content_html.html_safe %>
-</p>
+<% if !@exercise.credit.nil? && @exercise.credit > 0 %>(<%= @exercise.credit %> pt): <% end %>
+<%= @exercise.content_html.html_safe %>
+
+<%= render :partial => 'exercises/questions/index', :locals => {:questions => @exercise.questions} %>
 
 <p>
   <b>License:</b>
@@ -21,12 +22,6 @@
   <b>Only embargo solutions:</b>
   <%= @exercise.only_embargo_solutions %>
 </p>
-
-<p>
-  <b>Suggested credit:</b>
-  <%= @exercise.credit %>
-</p>
-
 
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |
 <%= link_to 'Back', exercises_path %>

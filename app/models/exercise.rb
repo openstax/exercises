@@ -37,6 +37,10 @@ class Exercise < ActiveRecord::Base
     summary_string + " #{questions.first.summary}"
   end
 
+  def is_embargoed?
+    !embargoed_until.nil?
+  end
+
   ##################
   # Access Control #
   ##################

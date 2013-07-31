@@ -1,0 +1,30 @@
+<% # Clients of this partial must supply the following variable:
+   # q %>
+
+<div class="answer_format">
+  <p>
+    <b>Matching answers</b>
+  </p>
+  <%= q.fields_for :matching_answers do |a| %>
+    <div class="answer">
+      <div class="field">
+        <%= a.label :left_content %><br />
+        <%= a.text_area :left_content %>
+      </div>
+      <div class="field">
+        <%= a.label :right_content %><br />
+        <%= a.text_area :right_content %>
+      </div>
+      <div class="field">
+        <%= a.label :credit %><br />
+        <%= a.text_field :credit %>
+      </div>
+
+      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= q.link_to_add "Add matching answer", :matching_answers %>
+</div>
+
+<br/>

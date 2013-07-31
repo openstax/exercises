@@ -1,0 +1,5 @@
+<% # Clients of this partial must supply the following variable:
+   # question %>
+
+<% if !question.credit.nil? && question.credit > 0 %>(<%= question.credit %> pt): <% end %>
+<%= question.content_html.html_safe %>

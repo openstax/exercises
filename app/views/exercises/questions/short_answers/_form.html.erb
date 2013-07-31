@@ -1,0 +1,30 @@
+<% # Clients of this partial must supply the following variable:
+   # q %>
+
+<div class="answer_format">
+  <p>
+    <b>Short answers</b>
+  </p>
+  <%= q.fields_for :short_answers do |a| %>
+    <div class="answer">
+      <div class="field">
+        <%= a.label :content %><br />
+        <%= a.text_area :content %>
+      </div>
+      <div class="field">
+        <%= a.label :short_answer %><br />
+        <%= a.text_area :short_answer %>
+      </div>
+      <div class="field">
+        <%= a.label :credit %><br />
+        <%= a.text_field :credit %>
+      </div>
+
+      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= q.link_to_add "Add short answer", :short_answers %>
+</div>
+
+<br/>

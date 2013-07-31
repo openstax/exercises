@@ -11,19 +11,25 @@
     </div>
   <% end %>
 
+  <p>
+    <b><%= @exercise.id ? "Exercise e#{@exercise.number}v#{@exercise.version}" : 'New exercise' %></b>
+  </p>
   <div class="field">
-    <%= f.label :content %><br />
     <%= f.text_area :content %>
   </div>
-
-  <%= render :partial => 'questions/form', :locals => {:f => f} %>
-
   <div class="field">
-    <%= f.label :credit %><br />
+    <%= f.label :credit %>
     <%= f.text_field :credit %>
   </div>
+
+  <%= render :partial => 'exercises/questions/form', :locals => {:f => f} %>
+
   <div class="field">
-    <%= f.label :only_embargo_solutions %><br />
+    <%= label_tag :embargo %>
+    <%= check_box_tag :embargo, @exercise.is_embargoed? %>
+  </div>
+  <div class="field">
+    <%= f.label :only_embargo_solutions %>
     <%= f.check_box :only_embargo_solutions %>
   </div>
   <div class="actions">

@@ -10,10 +10,9 @@ module Sortable
         self.sort_scope_array = scope_symbols.nil? ? nil : \
           (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
-        before_validation :assign_next_position, :unless => :position
+        before_save :assign_next_position, :unless => :position
 
-        validates_presence_of :position
-        validates_uniqueness_of :position, :scope => scope_symbols
+        validates_uniqueness_of :position, :scope => scope_symbols, :allow_nil => true
 
         default_scope order(:position)
 

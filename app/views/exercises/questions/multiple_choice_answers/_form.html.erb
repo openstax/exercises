@@ -1,0 +1,26 @@
+<% # Clients of this partial must supply the following variable:
+   # q %>
+
+<div class="answer_format">
+  <p>
+    <b>Multiple choice answers</b>
+  </p>
+  <%= q.fields_for :multiple_choice_answers do |a| %>
+    <div class="answer">
+      <div class="field">
+        <%= a.label :content %><br />
+        <%= a.text_area :content %>
+      </div>
+      <div class="field">
+        <%= a.label :credit %><br />
+        <%= a.text_field :credit %>
+      </div>
+
+      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= q.link_to_add "Add multiple choice answer", :multiple_choice_answers %>
+</div>
+
+<br/>

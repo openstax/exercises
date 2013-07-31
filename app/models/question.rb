@@ -41,7 +41,8 @@ class Question < ActiveRecord::Base
   accepts_nested_attributes_for :short_answers, :allow_destroy => true
   accepts_nested_attributes_for :free_response_answers, :allow_destroy => true
 
-  attr_accessible :changes_solution, :credit
+  attr_accessible :changes_solution, :credit, :true_or_false_answers_attributes, :multiple_choice_answers_attributes,
+    :matching_answers_attributes, :fill_in_the_blank_answers_attributes, :short_answers_attributes, :free_response_answers_attributes
 
   validates_presence_of :exercise
 

@@ -1,0 +1,34 @@
+<% # Clients of this partial must supply the following variable:
+   # q %>
+
+<div class="answer_format">
+  <p>
+    <b>Fill in the blank answers</b>
+  </p>
+  <%= q.fields_for :fill_in_the_blank_answers do |a| %>
+    <div class="answer">
+      <div class="field">
+        <%= a.label :pre_content %><br />
+        <%= a.text_area :pre_content %>
+      </div>
+      <div class="field">
+        <%= a.label :blank_answer %><br />
+        <%= a.text_field :blank_answer %>
+      </div>
+      <div class="field">
+        <%= a.label :post_content %><br />
+        <%= a.text_area :post_content %>
+      </div>
+      <div class="field">
+        <%= a.label :credit %><br />
+        <%= a.text_field :credit %>
+      </div>
+
+      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= q.link_to_add "Add fill in the blank answer", :fill_in_the_blank_answers %>
+</div>
+
+<br/>

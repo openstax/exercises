@@ -1,0 +1,30 @@
+<% # Clients of this partial must supply the following variable:
+   # q %>
+
+<div class="answer_format">
+  <p>
+    <b>True or false answers</b>
+  </p>
+  <%= q.fields_for :true_or_false_answers do |a| %>
+    <div class="answer">
+      <div class="field">
+        <%= a.label :content %><br />
+        <%= a.text_area :content %>
+      </div>
+      <div class="field">
+        <%= a.label :is_true %><br />
+        <%= a.check_box :is_true %>
+      </div>
+      <div class="field">
+        <%= a.label :credit %><br />
+        <%= a.text_field :credit %>
+      </div>
+
+      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+    </div>
+  <% end %>
+
+  <%= q.link_to_add "Add true or false answer", :true_or_false_answers %>
+</div>
+
+<br/>
