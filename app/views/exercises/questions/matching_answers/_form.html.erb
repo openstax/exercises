@@ -1,12 +1,12 @@
 <% # Clients of this partial must supply the following variable:
    # q %>
 
-<div class="answer_format">
+<div class="answers_form">
   <p>
     <b>Matching answers</b>
   </p>
   <%= q.fields_for :matching_answers do |a| %>
-    <div class="answer">
+    <div class="answer_form">
       <div class="field">
         <%= a.label :left_content %><br />
         <%= a.text_area :left_content %>

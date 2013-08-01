@@ -1,31 +1,14 @@
-<h1>Listing multiple_choice_answers</h1>
+<% # Clients of this partial must supply the following variable:
+   # question %>
 
-<table>
-  <tr>
-    <th>Question</th>
-    <th>Content</th>
-    <th>Content html</th>
-    <th>Order</th>
-    <th>Credit</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<div class="answers">
+  <% unless question.multiple_choice_answers.empty? %>
+    <p>
+      <b>Multiple choice answers</b>
+    </p>
+  <% end %>
 
-<% @multiple_choice_answers.each do |multiple_choice_answer| %>
-  <tr>
-    <td><%= multiple_choice_answer.question_id %></td>
-    <td><%= multiple_choice_answer.content %></td>
-    <td><%= multiple_choice_answer.content_html %></td>
-    <td><%= multiple_choice_answer.order %></td>
-    <td><%= multiple_choice_answer.credit %></td>
-    <td><%= link_to 'Show', multiple_choice_answer %></td>
-    <td><%= link_to 'Edit', edit_multiple_choice_answer_path(multiple_choice_answer) %></td>
-    <td><%= link_to 'Destroy', multiple_choice_answer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Multiple choice answer', new_multiple_choice_answer_path %>
+  <% question.multiple_choice_answers.each do |answer| %>
+    <%= render :partial => 'exercises/questions/multiple_choice_answers/show', :locals => {:answer => answer} %>
+  <% end %>
+</div>

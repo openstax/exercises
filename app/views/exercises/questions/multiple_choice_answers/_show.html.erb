@@ -1,30 +1,11 @@
-<p id="notice"><%= notice %></p>
+<% # Clients of this partial must supply the following variable:
+   # answer %>
 
-<p>
-  <b>Question:</b>
-  <%= @multiple_choice_answer.question_id %>
-</p>
-
-<p>
-  <b>Content:</b>
-  <%= @multiple_choice_answer.content %>
-</p>
-
-<p>
-  <b>Content html:</b>
-  <%= @multiple_choice_answer.content_html %>
-</p>
-
-<p>
-  <b>Order:</b>
-  <%= @multiple_choice_answer.order %>
-</p>
-
-<p>
-  <b>Credit:</b>
-  <%= @multiple_choice_answer.credit %>
-</p>
-
-
-<%= link_to 'Edit', edit_multiple_choice_answer_path(@multiple_choice_answer) %> |
-<%= link_to 'Back', multiple_choice_answers_path %>
+<div class="answer">
+  <table>
+    <tr>
+      <td><%= answer.content_html.html_safe %></td>
+      <td><p>(<%= answer.credit || 0 %> pt)</p></td>
+    </tr>
+  </table>
+</div>

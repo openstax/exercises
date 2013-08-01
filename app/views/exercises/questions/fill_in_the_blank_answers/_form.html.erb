@@ -1,12 +1,12 @@
 <% # Clients of this partial must supply the following variable:
    # q %>
 
-<div class="answer_format">
+<div class="answers_form">
   <p>
     <b>Fill in the blank answers</b>
   </p>
   <%= q.fields_for :fill_in_the_blank_answers do |a| %>
-    <div class="answer">
+    <div class="answer_form">
       <div class="field">
         <%= a.label :pre_content %><br />
         <%= a.text_area :pre_content %>

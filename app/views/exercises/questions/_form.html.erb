@@ -1,9 +1,9 @@
 <% # Clients of this partial must supply the following variable:
    # f %>
 
-<div class="questions">
+<div class="questions_form">
   <%= f.fields_for :questions do |q| %>
-    <div class="question">
+    <div class="question_form">
       <p>
         <b><%= q.object.id ? "Question #{q.object.position + 1}" : 'New question' %></b>
       </p>

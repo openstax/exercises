@@ -1,33 +1,14 @@
-<h1>Listing short_answers</h1>
+<% # Clients of this partial must supply the following variable:
+   # question %>
 
-<table>
-  <tr>
-    <th>Question</th>
-    <th>Content</th>
-    <th>Content html</th>
-    <th>Short answer</th>
-    <th>Order</th>
-    <th>Credit</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<div class="answers">
+  <% unless question.short_answers.empty? %>
+    <p>
+      <b>Short answers</b>
+    </p>
+  <% end %>
 
-<% @short_answers.each do |short_answer| %>
-  <tr>
-    <td><%= short_answer.question_id %></td>
-    <td><%= short_answer.content %></td>
-    <td><%= short_answer.content_html %></td>
-    <td><%= short_answer.short_answer %></td>
-    <td><%= short_answer.order %></td>
-    <td><%= short_answer.credit %></td>
-    <td><%= link_to 'Show', short_answer %></td>
-    <td><%= link_to 'Edit', edit_short_answer_path(short_answer) %></td>
-    <td><%= link_to 'Destroy', short_answer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Short answer', new_short_answer_path %>
+  <% question.short_answers.each do |answer| %>
+    <%= render :partial => 'exercises/questions/short_answers/show', :locals => {:answer => answer} %>
+  <% end %>
+</div>

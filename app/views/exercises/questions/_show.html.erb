@@ -1,5 +1,20 @@
 <% # Clients of this partial must supply the following variable:
    # question %>
 
-<% if !question.credit.nil? && question.credit > 0 %>(<%= question.credit %> pt): <% end %>
-<%= question.content_html.html_safe %>
+<br/>
+
+<div class="question">
+  <p>
+    <b>Question <%= question.position + 1 %></b>
+    <% if !question.credit.nil? && question.credit > 0 %>(<%= question.credit %> pt):<% end %>
+  </p>
+
+  <%= question.content_html.html_safe %>
+
+  <%= render :partial => 'exercises/questions/true_or_false_answers/index', :locals => {:question => question} %>
+  <%= render :partial => 'exercises/questions/multiple_choice_answers/index', :locals => {:question => question} %>
+  <%= render :partial => 'exercises/questions/matching_answers/index', :locals => {:question => question} %>
+  <%= render :partial => 'exercises/questions/fill_in_the_blank_answers/index', :locals => {:question => question} %>
+  <%= render :partial => 'exercises/questions/short_answers/index', :locals => {:question => question} %>
+  <%= render :partial => 'exercises/questions/free_response_answers/index', :locals => {:question => question} %>
+</div>
