@@ -1,4 +1,15 @@
 class UserGroupsController < ApplicationController
+  # GET /user_groups
+  # GET /user_groups.json
+  def index
+    @user_group_users = current_user.user_group_users
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @user_groups_users }
+    end
+  end
+
   # GET /user_groups/1
   # GET /user_groups/1.json
   def show

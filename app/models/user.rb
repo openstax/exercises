@@ -14,9 +14,10 @@ class User < ActiveRecord::Base
 
   has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
   has_many :user_groups, :through => :user_group_users
+  has_many :lists, :through => :user_groups, :source => :container, :source_type => 'List'
+  has_many :listed_exercises, :through => :lists, :source => :exercises
 
   has_many :collaborators, :dependent => :destroy, :inverse_of => :user
-  has_many :collaborables, :through => :collaborators
 
   attr_accessible :email, :password, :password_confirmation, :remember_me
 

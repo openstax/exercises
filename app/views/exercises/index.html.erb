@@ -1,21 +1,7 @@
 <h1>Exercises</h1>
 
-<table>
-  <tr>
-    <th>Exercise</th>
-    <th>Quick View</th>
-    <th>Has solutions?</th>
-  </tr>
+<%= render :partial => 'search' %>
 
-<% @exercises.each do |exercise| %>
-  <tr>
-    <td><%= link_to "e#{exercise.number}v#{exercise.version}", exercise %></td>
-    <td><%= quickview_link(exercise) %></td>
-    <td><%= tf_to_yn(!exercise.solutions.empty?) %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
+<br/>
 
 <%= link_to 'New Exercise', new_exercise_path %>

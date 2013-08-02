@@ -1,23 +1,25 @@
 class List < ActiveRecord::Base
   belongs_to :parent_list, :class_name => 'List', :inverse_of => :child_lists
-
-  belongs_to :reader_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_many :readers, :through => :reader_user_group, :source => :users
-
-  belongs_to :editor_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_many :editors, :through => :editor_user_group, :source => :users
-
-  belongs_to :publisher_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_many :publishers, :through => :publisher_user_group, :source => :users
-
-  belongs_to :owner_user_group, :class_name => 'UserGroup', :dependent => :destroy
-  has_many :owners, :through => :owner_user_group, :source => :users
-
   has_many :child_lists, :class_name => 'List', :foreign_key => :parent_list_id,
            :dependent => :destroy, :inverse_of => :parent_list
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :list
   has_many :exercises, :through => :list_exercises
+
+  has_many :user_groups, :as => 'container', :dependent => :destroy
+  has_many :users, :through => :user_groups
+
+  belongs_to :reader_user_group, :class_name => 'UserGroup'
+  has_many :readers, :through => :reader_user_group, :source => :users
+
+  belongs_to :editor_user_group, :class_name => 'UserGroup'
+  has_many :editors, :through => :editor_user_group, :source => :users
+
+  belongs_to :publisher_user_group, :class_name => 'UserGroup'
+  has_many :publishers, :through => :publisher_user_group, :source => :users
+
+  belongs_to :owner_user_group, :class_name => 'UserGroup'
+  has_many :owners, :through => :owner_user_group, :source => :users
 
   accepts_nested_attributes_for :list_exercises, :allow_destroy => true
 

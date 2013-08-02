@@ -1,17 +1,6 @@
 class UserGroupUsersController < ApplicationController
   before_filter :get_user_group, :only => [:new, :create]
 
-  # GET /user_group_users
-  # GET /user_group_users.json
-  def index
-    @user_group_users = UserGroupUser.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @user_group_users }
-    end
-  end
-
   # GET /user_group_users/new
   # GET /user_group_users/new.json
   def new

@@ -4,10 +4,18 @@ class ExercisesController < ApplicationController
   # GET /exercises
   # GET /exercises.json
   def index
-    @exercises = Exercise.all
+    @per_page = params[:per_page]
+    @query = params[:query]
+    @part = params[:part]
+    @exercise_type = params[:exercise_type]
+    @answer_type = params[:answer_type]
+
+    @exercises = Exercise.search(@query, @part, @exercise_type, @answer_type, current_user)
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html do
+        @exercises = @exercises.paginate(:page => params[:page], :per_page => @per_page)
+      end
       format.json { render json: @exercises }
     end
   end
