@@ -4,6 +4,7 @@ class UserProfile < ActiveRecord::Base
   belongs_to :default_list, :class_name => 'List'
 
   has_one :deputy_user_group, :class_name => 'UserGroup', :as => 'container', :dependent => :destroy
+  has_many :deputies, :through => :deputy_user_group, :source => :users
 
   attr_accessible :announcement_email, :auto_author_subscribe,
                   :collaborator_request_email, :user_group_member_email

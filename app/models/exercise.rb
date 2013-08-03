@@ -20,6 +20,14 @@ class Exercise < ActiveRecord::Base
   has_many :same_number, :class_name => 'Exercise', :primary_key => :number, :foreign_key => :number
 
   has_many :questions, :dependent => :destroy, :inverse_of => :exercise
+
+  has_many :true_or_false_answers, :through => :questions
+  has_many :multiple_choice_answers, :through => :questions
+  has_many :matching_answers, :through => :questions
+  has_many :fill_in_the_blank_answers, :through => :questions
+  has_many :short_answers, :through => :questions
+  has_many :free_response_answers, :through => :questions
+
   has_many :solutions, :through => :questions
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
@@ -35,21 +43,23 @@ class Exercise < ActiveRecord::Base
                    .where{(id == same_number.id) | (same_number.published_at != nil)}
                    .group(:id).having{version >= max(same_number.version)}
 
-  #TODO
   scope :visible_for, lambda { |user|
     return published if user.nil?
 
-    joins{list_exercises.outer.list.outer.user_groups.outer.user_group_users.outer}\
-    .joins{collaborators.outer.user.outer.deputies.outer}\
+    joins{lists.outer.users.outer}\
+    .joins{collaborators.outer.deputies.outer}\
     .where{(published_at == nil) |\
-    (list_exercise.list.user_groups.user_group_users.user_id == user.id) |\
-    (((question_collaborators.user_id == user.id) |\
-    (question_collaborators.user.deputies.id == user.id)) &\
-    ((question_collaborators.is_author == true) |\
-    (question_collaborators.is_copyright_holder == true)))}
+    (list.users.id == user.id) |\
+    (collaborators.user_id == user.id) |\
+    (collaborators.deputies.id == user.id)}
   }
 
-  scope :none, where(:id => nil).where{id != nil}
+  scope :with_true_or_false_answers, joins(:true_or_false_answers)
+  scope :with_multiple_choice_answers, joins(:multiple_choice_answers)
+  scope :with_matching_answers, joins(:matching_answers)
+  scope :with_fill_in_the_blank_answers, joins(:fill_in_the_blank_answers)
+  scope :with_short_answers, joins(:short_answers)
+  scope :with_free_response_answers, joins(:free_response_answers)
 
   def summary
     summary_string = (content.blank? ? "" : content[0..15] + (content.length > 16 ? ' ...' : ''))
@@ -70,21 +80,26 @@ class Exercise < ActiveRecord::Base
     when 'published exercises'
       tscope = published
     when 'draft exercises'
-      tscope = not_published
+      tscope = visible_for(user).not_published
     when 'exercises in my lists'
-      tscope = user.listed_exercises
+      tscope = user.nil? ? none : user.listed_exercises
     else # all exercises
-      tscope = scoped
+      tscope = visible_for(user)
     end
 
-    # TODO
     case answer_type
     when 'true or false answers'
+      ascope = tscope.with_true_or_false_answers
     when 'multiple choice answers'
+      ascope = tscope.with_multiple_choice_answers
     when 'matching answers'
+      ascope = tscope.with_matching_answers
     when 'fill in the blank answers'
+      ascope = tscope.with_fill_in_the_blank_answers
     when 'short answers'
+      ascope = tscope.with_short_answers
     when 'free response answers'
+      ascope = tscope.with_free_response_answers
     else # any answer types
       ascope = tscope
     end
@@ -117,31 +132,51 @@ class Exercise < ActiveRecord::Base
           id_query = $1
           num_query = $1
           qscope = ascope.where{(id == id_query) | (number == num_query)}
-        elsif (text =~ /^\s?e\.?\s?(\d+)(,?\s?v\.?\s?(\d+))?\s?$/)
-          # Format: e(number) or e(number)v(version)
-          num_query = $1
-          qscope = ascope.where(:number => num_query)
-          unless $2.nil?
-            ver_query = $3
+        elsif (text =~ /^\s?(e\.?\s?(\d+))?(,?\s?v\.?\s?(\d+))?\s?$/)
+          # Format: e(number), e(number)v(version) or v(version)
+          qscope = ascope
+          unless $1.nil?
+            num_query = $2
+            qscope = qscope.where(:number => num_query)
+          end
+          unless $3.nil?
+            ver_query = $4
             qscope = qscope.where(:version => ver_query)
           end
         else # Invalid ID/Number
-          return Exercise.none
+          return where(:id => nil) # Empty
         end
-      else # content
+      else # content/answers
         # Search by content
         query = '%' + text + '%'
-        qscope = ascope.where{(content =~ query)}
+        qscope = ascope.joins{questions.outer}
+                   .joins{true_or_false_answers.outer}
+                   .joins{multiple_choice_answers.outer}
+                   .joins{matching_answers.outer}
+                   .joins{fill_in_the_blank_answers.outer}
+                   .joins{short_answers.outer}
+                   .joins{free_response_answers.outer}
+                   .where{(content =~ query) | \
+                     (questions.content =~ query) | \
+                     (true_or_false_answers.content =~ query) | \
+                     (multiple_choice_answers.content =~ query) | \
+                     (matching_answers.left_content =~ query) | \
+                     (matching_answers.right_content =~ query) | \
+                     (fill_in_the_blank_answers.pre_content =~ query) | \
+                     (fill_in_the_blank_answers.blank_answer =~ query) | \
+                     (fill_in_the_blank_answers.post_content =~ query) | \
+                     (short_answers.content =~ query) | \
+                     (short_answers.short_answer =~ query) | \
+                     (free_response_answers.content =~ query) | \
+                     (free_response_answers.free_response =~ query)}
       end
     end
-    
-    # Remove exercises the user can't read and duplicates
-    sscope = qscope.visible_for(user).group(:id)
 
     # Remove old published versions
-    sscope = sscope.latest if latest_only
-    
-    sscope
+    qscope = qscope.latest if latest_only
+
+    # Remove duplicates
+    qscope.group(:id)
   end
 
   ##################

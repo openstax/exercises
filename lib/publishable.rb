@@ -113,7 +113,7 @@ module Publishable
         end
 
         def assign_next_number
-          self.number = ((publish_scope.maximum(:number) || -1) + 1)
+          self.number = ((publish_scope.maximum(:number) || 0) + 1)
         end
 
         protected

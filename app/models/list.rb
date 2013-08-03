@@ -5,6 +5,7 @@ class List < ActiveRecord::Base
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :list
   has_many :exercises, :through => :list_exercises
+  has_many :solutions, :through => :exercises
 
   has_many :user_groups, :as => 'container', :dependent => :destroy
   has_many :users, :through => :user_groups

@@ -23,6 +23,7 @@ gem 'nested_form'
 gem 'carrierwave'
 gem 'parslet', '~> 1.5'
 
+gem 'will_paginate', '~> 3.0'
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'

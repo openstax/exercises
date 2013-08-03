@@ -10,14 +10,18 @@ class User < ActiveRecord::Base
   has_one :default_list, :through => :user_profile
 
   has_one :deputy_user_group, :through => :user_profile
-  has_many :deputies, :through => :deputy_user_group, :source => :users
+  has_many :deputies, :through => :user_profile
+
+  has_many :collaborators, :dependent => :destroy, :inverse_of => :user
 
   has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
   has_many :user_groups, :through => :user_group_users
+
+  has_many :deputizer_profiles, :through => :user_groups, :source => :container, :source_type => 'UserProfile'
+  has_many :deputizers, :through => :deputizer_profiles, :source => :user
+
   has_many :lists, :through => :user_groups, :source => :container, :source_type => 'List'
   has_many :listed_exercises, :through => :lists, :source => :exercises
-
-  has_many :collaborators, :dependent => :destroy, :inverse_of => :user
 
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
