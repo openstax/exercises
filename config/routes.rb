@@ -8,25 +8,24 @@ Exercises::Application.routes.draw do
   resources :users, :only => [] do
     collection do
       get 'help'
-      post 'search'
     end
   end
 
   resources :user_profiles, :only => [:show, :edit, :update]
 
   resources :user_groups do
-    resources :user_group_users, :only => [:new, :create] do
-      post 'new', :on => :member
-    end
+    resources :user_group_users, :only => [:new, :create]
   end
 
   resources :user_group_users, :only => [:destroy] do
     put 'toggle', :on => :member
   end
 
-  resources :lists
+  resources :lists do
+    resources :list_exercises, :only => [:new, :create]
+  end
 
-  resources :list_exercises, :only => [:new, :create, :destroy]
+  resources :list_exercises, :only => [:destroy]
 
   resources :exercises do
     get 'quickview', :on => :member

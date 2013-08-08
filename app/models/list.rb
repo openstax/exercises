@@ -37,29 +37,19 @@ class List < ActiveRecord::Base
   end
 
   def add_exercise(exercise)
-    return false if has_exercise?(exercise)
-    ListExercise.create!(:list => self, :exercise => exercise)
+    ListExercise.create(:list => self, :exercise => exercise)
   end
 
   def has_permission?(user, permission)
-    return false if user.nil?
     pg = permission_group_for(permission)
     return false if pg.nil?
     pg.has_user?(user)
   end
 
   def add_permission(user, permission)
-    return false if user.nil?
     pg = permission_group_for(permission)
     return false if pg.nil?
     pg.add_user(user)
-  end
-
-  def remove_permission(user, permission)
-    return false if user.nil?
-    pg = permission_group_for(permission)
-    return false if pg.nil?
-    pg.remove_user(user)
   end
 
   def user_group_checks
@@ -75,15 +65,28 @@ class List < ActiveRecord::Base
   # Access Control #
   ##################
 
-  def can_be_read_by?(user)
-    is_public || has_permission?(user, :reader) || has_permission?(user, :editor) || \
-    has_permission?(user, :publisher) || has_permission?(user, :owner)
-  end
-    
   def can_be_created_by?(user)
     !user.nil?
   end
+
+  def can_be_read_by?(user)
+    is_public || has_permission?(user, :reader) || \
+    has_permission?(user, :editor) || \
+    has_permission?(user, :publisher) || \
+    has_permission?(user, :owner)
+  end
   
+  def can_be_edited_by?(user)
+    has_permission?(user, :editor) || \
+    has_permission?(user, :publisher) || \
+    has_permission?(user, :owner)
+  end
+
+  def can_be_published_by?(user)
+    has_permission?(user, :publisher) || \
+    has_permission?(user, :owner)
+  end
+
   def can_be_updated_by?(user)
     has_permission?(user, :owner)
   end
@@ -110,13 +113,13 @@ class List < ActiveRecord::Base
   #############
 
   def create_user_groups
-    self.reader_user_group = UserGroup.create!(:name => 'readers')
+    self.reader_user_group = UserGroup.create!(:name => 'Readers')
     self.reader_user_group_id = reader_user_group.id
-    self.editor_user_group = UserGroup.create!(:name => 'editors')
+    self.editor_user_group = UserGroup.create!(:name => 'Editors')
     self.editor_user_group_id = editor_user_group.id
-    self.publisher_user_group = UserGroup.create!(:name => 'publishers')
+    self.publisher_user_group = UserGroup.create!(:name => 'Publishers')
     self.publisher_user_group_id = publisher_user_group.id
-    self.owner_user_group = UserGroup.create!(:name => 'owners')
+    self.owner_user_group = UserGroup.create!(:name => 'Owners')
     self.owner_user_group_id = owner_user_group.id
   end
 

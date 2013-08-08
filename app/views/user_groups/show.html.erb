@@ -9,6 +9,6 @@
 
 <% if @user_group.can_be_updated_by?(current_user) || user_is_admin? %>
 <%= link_to 'Add user', new_user_group_user_group_user_path(@user_group) %> |
-<%= link_to 'Edit group', edit_user_group_path(@user_group) %> |
+<%= link_to 'Rename group', edit_user_group_path(@user_group) %> |
 <% end %>
-<%= link_to 'Back', user_groups_path %>
+<%= link_to 'Back', @user_group.container.nil? ? user_groups_path : @user_group.container %>

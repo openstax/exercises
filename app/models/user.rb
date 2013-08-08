@@ -47,22 +47,30 @@ class User < ActiveRecord::Base
     update_attribute(:disabled_at, Time.now)
   end
 
-  def self.search(type, text)
+  def self.search(text, type)
+    text = text.gsub('%', '')
+    return none if text.blank?
+
     case type
     when 'Name'
-      u = User.scoped
-      text.gsub(/[%,]/, '').split.each do |q|
+      u = scoped
+      text.gsub(',', ' ').split.each do |q|
         next if q.blank?
-        u = u.where{(first_name =~ q) | (last_name =~ q)}
+        query = q + '%'
+        u = u.where{(first_name =~ query) | (last_name =~ query)}
       end
-      return u
+      u
     when 'Username'
-      q = text.gsub('%', '')
-      return where{username =~ q}
+      query = text + '%'
+      where{username =~ query}
     when 'Email'
-      q = text.gsub('%', '') + '%'  
-      return where{email =~ q}
+      query = text + '%'  
+      where{email =~ query}
     end
+  end
+
+  def editable_lists
+    lists.select{|l| l.can_be_edited_by?(self)}
   end
 
   ##################

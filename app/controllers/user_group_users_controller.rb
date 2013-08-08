@@ -4,34 +4,34 @@ class UserGroupUsersController < ApplicationController
   # GET /user_group_users/new
   # GET /user_group_users/new.json
   def new
-    @user_group_user = UserGroupUser.new
-    @user_group_user.user_group = @user_group
-    raise_exception_unless(@user_group_user.can_be_created_by?(current_user))
-
-    @selected_type = params[:selected_type]
-    @text_query = params[:text_query]
-    @users = User.search(@selected_type, @text_query)
+    @query = params[:query] || ''
+    @type = params[:type] || 'Name'
+    @users = User.search(@query, @type)
 
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render json: @user_group_user }
+      format.json { render json: @users }
     end
   end
 
   # POST /user_group_users
   # POST /user_group_users.json
   def create
-    @user_group_user = UserGroupUser.new
-    @user_group_user.user_group = @user_group
-    @user_group_user.user_id = params[:user_id]
-    raise_exception_unless(@user_group_user.can_be_created_by?(current_user))
+    user = User.find(params[:user_id])
 
+    @user_group_user = @user_group.add_user(user)
     respond_to do |format|
-      if @user_group_user.save
+      if @user_group_user.persisted?
         format.html { redirect_to @user_group, notice: 'User was successfully added to group.' }
         format.json { render json: @user_group_user, status: :created, location: @user_group_user }
       else
-        format.html { render action: "new" }
+        format.html do
+          @query = params[:query] || ''
+          @type = params[:type] || 'Name'
+          @users = User.search(@query, @type)
+
+          render action: "new"
+        end
         format.json { render json: @user_group_user.errors, status: :unprocessable_entity }
       end
     end
@@ -69,7 +69,10 @@ class UserGroupUsersController < ApplicationController
     end
   end
 
+  protected
+
   def get_user_group
     @user_group = UserGroup.find(params[:user_group_id])
+    raise_exception_unless(@user_group.can_be_updated_by?(current_user))
   end
 end

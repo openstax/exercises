@@ -1,10 +1,6 @@
-<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
-    License version 3 or later.  See the COPYRIGHT file for details. %>
-
 <%# Clients of this partial must supply the following variables:
-    user_group_user
-    user_group
-    users %>
+    users
+    user_group %>
 
 <table width="100%">
   <tr>
@@ -27,12 +23,11 @@
     <td><%= user.username %>&nbsp;</td>
     <td><%= hide_email(user.email) %>&nbsp;</td>
     <td><% if user_group.has_user?(user) %>
-          <%= label_tag 'Already in group' %>
+          <%= 'Already in group' %>
         <% else %>
-          <%= form_for([@user_group, @user_group_user]) do |f| %>
-            <%= hidden_field_tag 'user_group_id', user_group.id %>
+          <%= form_tag(user_group_user_group_users_path(user_group)) do |f| %>
             <%= hidden_field_tag 'user_id', user.id %>
-            <%= f.submit 'Add user' %>
+            <%= submit_tag 'Add user' %>
           <% end %>
         <% end %></td>
   </tr>

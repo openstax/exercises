@@ -25,19 +25,11 @@ class UserGroup < ActiveRecord::Base
   end
   
   def add_user(user, manager = false)
-    return false if (user.nil? || has_user?(user))
     ugu = UserGroupUser.new(:is_manager => (container.nil? && manager))
     ugu.user_group = self
     ugu.user = user
-    ugu.save!
+    ugu.save
     ugu
-  end
-
-  def remove_user(user)
-    return false if user.nil?
-    ugu = user_group_users.where(:user_id => user.id).first
-    return false if ugu.nil?
-    ugu.destroy
   end
 
   def user_group_checks
@@ -56,7 +48,7 @@ class UserGroup < ActiveRecord::Base
   ##################
 
   def can_be_read_by?(user)
-    has_user?(user)
+    (!container.nil? && container.can_be_read_by?(user)) || has_user?(user)
   end
     
   def can_be_created_by?(user)
@@ -64,6 +56,6 @@ class UserGroup < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    has_manager?(user)
+    (!container.nil? && container.can_be_updated_by?(user)) || has_manager?(user)
   end
 end

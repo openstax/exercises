@@ -1,5 +1,45 @@
-<h1>New list_exercise</h1>
+<% parts = ['content/answers', 'tags', 'author/copyright holder', 'ID/number']
+   answer_types = ['any answer types', 
+                   'true or false answers', 
+                   'multiple choice answers', 
+                   'matching answers', 
+                   'fill in the blank answers', 
+                   'short answers', 
+                   'free response answers'] %>
 
-<%= render 'form' %>
+<h1>Add exercise</h1>
 
-<%= link_to 'Back', list_exercises_path %>
+<%= form_tag(new_list_list_exercise_path(@list), :method => :get) do %>
+  <%= hidden_field_tag :per_page, @per_page %>
+  
+  <table width="100%">
+    <tr>
+      <td><%= label_tag 'Search for' %>&nbsp;</td>
+      <td><%= text_field_tag 'query', @query, :style => "width: 90%;" %>&nbsp;</td>
+
+      <td>&nbsp;<%= label_tag 'in' %>&nbsp;</td>
+      <td><%= select_tag 'part', options_for_select(parts, @part), :style => "width: 90%;" %></td>
+
+      <td rowspan="3" style="vertical-align:middle;"><%= submit_tag 'Search' %></td>
+    </tr>
+    <tr>
+      <td colspan="4"><hr style="float:left; width: 97%; color: lightgray; background-color: lightgray;" /></td>
+    </tr>
+    <tr>
+      <td colspan="3"><%= label_tag 'Restrict to published exercises with' %>&nbsp;</td>
+      <td><%= select_tag 'answer_type', options_for_select(answer_types, @answer_type), :style => "width: 90%;" %></td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="exercises">
+  <%= render :partial => 'exercises_list', 
+             :locals => { :exercises => @exercises,
+                          :list => @list } %>
+</div>
+
+<%= will_paginate @exercises unless @exercises.nil? %>
+
+<br/>
+
+<%= link_to 'Back', @list %>

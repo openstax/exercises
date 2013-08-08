@@ -4,11 +4,11 @@ class ExercisesController < ApplicationController
   # GET /exercises
   # GET /exercises.json
   def index
-    @per_page = params[:per_page]
-    @query = params[:query]
-    @part = params[:part]
-    @exercise_type = params[:exercise_type]
-    @answer_type = params[:answer_type]
+    @per_page = params[:per_page] || 20
+    @query = params[:query] || ''
+    @part = params[:part] || 'content/answers'
+    @exercise_type = params[:exercise_type] || 'all exercises'
+    @answer_type = params[:answer_type] || 'any answer types'
 
     @exercises = Exercise.search(@query, @part, @exercise_type, @answer_type, current_user)
 
@@ -38,6 +38,9 @@ class ExercisesController < ApplicationController
     @exercise = Exercise.new
     raise_exception_unless(@exercise.can_be_created_by?(current_user))
 
+    @lists = current_user.editable_lists
+    @list_id = params[:list_id] || current_user.default_list.id
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @exercise }
@@ -55,12 +58,21 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.new(params[:exercise])
     raise_exception_unless(@exercise.can_be_created_by?(current_user))
+    @list = params[:list_id].nil? ? current_user.default_list : List.find(params[:list_id])
+    raise_exception_unless(@list.can_be_edited_by?(current_user))
+
+    @lists = current_user.editable_lists
+    @list_id = @list.id
 
     respond_to do |format|
-      if @exercise.save
+      begin
+        @exercise.transaction do
+          @exercise.save!
+          raise ActiveRecord::RecordInvalid unless @list.add_exercise(@exercise)
+        end
         format.html { redirect_to @exercise, notice: 'Exercise was successfully created.' }
         format.json { render json: @exercise, status: :created, location: @exercise }
-      else
+      rescue ActiveRecord::RecordInvalid
         format.html { render action: "new" }
         format.json { render json: @exercise.errors, status: :unprocessable_entity }
       end

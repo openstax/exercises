@@ -52,11 +52,12 @@ module ApplicationHelper
 
   def hide_email(email)
     address, domain = email.split('@')
-    tld = domain.split('.')[1]
+    lld, tld = domain.split('.')
 
     adress = '***' if address.nil?
+    lld = '***' if lld.nil?
     tld = '***' if tld.nil?
 
-    "#{address}@***.#{tld}"
+    "***@#{lld}.#{tld}"
   end
 end

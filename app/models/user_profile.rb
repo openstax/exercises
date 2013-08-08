@@ -28,7 +28,7 @@ class UserProfile < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    can_be_read_by?(user)
+    user == self.user
   end
 
   protected
@@ -45,7 +45,7 @@ class UserProfile < ActiveRecord::Base
   end
 
   def create_deputy_user_group
-    dug = UserGroup.new(:name => "deputies")
+    dug = UserGroup.new(:name => "Deputies")
     dug.container = self
     dug.save!
   end

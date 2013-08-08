@@ -25,13 +25,20 @@
   <%= render :partial => 'exercises/questions/form', :locals => {:f => f} %>
 
   <div class="field">
-    <%= label_tag :embargo %>
+    <%= label_tag :embargo, 'Embargo?' %>
     <%= check_box_tag :embargo, @exercise.is_embargoed? %>
   </div>
   <div class="field">
-    <%= f.label :only_embargo_solutions %>
+    <%= f.label :only_embargo_solutions, 'Only embargo solutions?' %>
     <%= f.check_box :only_embargo_solutions %>
   </div>
+  <% if @exercise.new_record? %>
+  <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>
+  <div class="field">
+    <%= label_tag :list_id, "Create on:" %>
+    <%= select_tag :list_id, list_options %>
+  </div>
+  <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>

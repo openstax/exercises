@@ -52,7 +52,7 @@ class ListsController < ApplicationController
       begin
         @list.transaction do
           @list.save!
-          raise ActiveRecord::RecordInvalid unless @list.add_permission(current_user, :owner)
+          raise ActiveRecord::RecordInvalid unless @list.add_permission(current_user, :owner).persisted?
         end
         format.html { redirect_to @list, notice: 'List was successfully created.' }
         format.json { render json: @list, status: :created, location: @list }

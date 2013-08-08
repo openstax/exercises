@@ -1,5 +1,5 @@
 <p>
-  <b>Exercise e<%= @exercise.number %>v<%= @exercise.version %></b>
+  <b>Exercise <%= @exercise.name %></b>
   <% if !@exercise.credit.nil? && @exercise.credit > 0 %>(<%= @exercise.credit %> pt):<% end %>
 </p>
 
@@ -25,4 +25,4 @@
 </p>
 
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |
-<%= link_to 'Back', exercises_path %>
+<%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>

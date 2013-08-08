@@ -10,21 +10,22 @@ class ListExercise < ActiveRecord::Base
 
   validates_presence_of :list, :exercise
   validates_uniqueness_of :exercise_id, :scope => :list_id
-  validates_uniqueness_of :exercise_id, 
-                          :unless => Proc.new { |wq| wq.exercise.is_published? }
+  validates_uniqueness_of :exercise_id, :unless => :is_published?
+
+  def is_published?
+    exercise.is_published?
+  end
 
   ##################
   # Access Control #
   ##################
 
   def can_be_created_by?(user)
-    list.has_permission?(user, :editor) || \
-    list.has_permission?(user, :publisher) || \
-    list.has_permission?(user, :manager)
+    list.can_be_edited_by?(user)
   end
 
   def can_be_destroyed_by?(user)
-    can_be_created_by?(user)
+    list.can_be_edited_by?(user)
   end
 
   protected
@@ -34,6 +35,6 @@ class ListExercise < ActiveRecord::Base
   #############
 
   def destroy_unlisted_draft_exercise
-    exercise.destroy if (!exercise.is_published? && exercise.list_exercises.empty?)
+    exercise.destroy if (!is_published? && exercise.list_exercises.empty?)
   end
 end

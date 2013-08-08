@@ -48,7 +48,7 @@ class Exercise < ActiveRecord::Base
 
     joins{lists.outer.users.outer}\
     .joins{collaborators.outer.deputies.outer}\
-    .where{(published_at == nil) |\
+    .where{(published_at != nil) |\
     (list.users.id == user.id) |\
     (collaborators.user_id == user.id) |\
     (collaborators.deputies.id == user.id)}
@@ -60,6 +60,10 @@ class Exercise < ActiveRecord::Base
   scope :with_fill_in_the_blank_answers, joins(:fill_in_the_blank_answers)
   scope :with_short_answers, joins(:short_answers)
   scope :with_free_response_answers, joins(:free_response_answers)
+
+  def name
+    "e#{number}v#{version}"
+  end
 
   def summary
     summary_string = (content.blank? ? "" : content[0..15] + (content.length > 16 ? ' ...' : ''))
@@ -108,7 +112,8 @@ class Exercise < ActiveRecord::Base
     if text.blank?
       qscope = ascope
     else
-      text = text.gsub("%", "")
+      text = text.gsub('%', '')
+
       case part
       when 'tags'
         # Search by tags
@@ -144,7 +149,7 @@ class Exercise < ActiveRecord::Base
             qscope = qscope.where(:version => ver_query)
           end
         else # Invalid ID/Number
-          return where(:id => nil) # Empty
+          return none
         end
       else # content/answers
         # Search by content
@@ -193,10 +198,7 @@ class Exercise < ActiveRecord::Base
   
   def can_be_updated_by?(user)
     !is_published? && !lists.first.nil? && \
-    (lists.first.has_permission?(user, :editor) || \
-    lists.first.has_permission?(user, :publisher) || \
-    lists.first.has_permission?(user, :manager) || \
-    has_collaborator?(user))
+    (lists.first.can_be_edited_by?(user) || has_collaborator?(user))
   end
   
   def can_be_destroyed_by?(user)

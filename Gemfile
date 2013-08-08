@@ -21,6 +21,7 @@ gem 'openstax_utilities', '~> 0.0.5'
 gem 'nested_form'
 
 gem 'carrierwave'
+gem 'mini_magick'
 gem 'parslet', '~> 1.5'
 
 gem 'will_paginate', '~> 3.0'
