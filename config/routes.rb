@@ -29,18 +29,25 @@ Exercises::Application.routes.draw do
 
   resources :exercises do
     get 'quickview', :on => :member
+
+    resources :collaborators, :only => [:new, :create]
   end
 
   resources :questions, :only => [] do
     resources :question_dependency_pairs, :only => [:new, :create, :destroy]
-    resources :solutions, :only => [:index, :new, :create]
+    resources :solutions, :only => [:new, :create]
   end
 
-  resources :solutions, :except => [:index, :new, :create]
+  resources :solutions, :only => [:edit, :update, :destroy] do
+    resources :collaborators, :only => [:new, :create]
+  end
 
   resources :attachments
 
-  resources :collaborators
+  resources :collaborators, :only => [:destroy] do
+    put 'toggle_author', :on => :member
+    put 'toggle_copyright_holder', :on => :member
+  end
 
   resources :api_keys, :except => [:new, :edit, :update]
 

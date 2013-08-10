@@ -17,9 +17,12 @@
   <tr>
     <td><%= user_group_user.user.name %></td>
   <% unless hide_status %>
-    <td><%= user_group_user.is_manager ? 'Manager' : 'Member' %> (<%= link_to 'Toggle', toggle_user_group_user_path(user_group_user), method: :put, data: {
-      confirm: "Are you sure you want to #{user_group_user.is_manager ? 'demote' : 'promote'} #{user_group_user.user.name} to group #{user_group_user.is_manager ? 'member' : 'manager'}?"
-    } %>)</td>
+    <td><%= user_group_user.is_manager ? 'Manager' : 'Member' %>
+        <% if @user_group.can_be_updated_by?(current_user) || user_is_admin? %>
+          (<%= link_to 'Toggle', toggle_user_group_user_path(user_group_user), method: :put, data: {
+                 confirm: "Are you sure you want to #{user_group_user.is_manager ? 'demote' : 'promote'} #{user_group_user.user.name}#{user_group_user.is_manager ? '' : ' to group manager'}?"
+          } %>)
+        <% end %></td>
   <% end %>
     <td><% if user_group_user.can_be_destroyed_by?(current_user) || user_is_admin? %>
           <%= link_to (user_group_user.user == current_user ? 'Leave Group' : 'Remove'), user_group_user, method: :delete,

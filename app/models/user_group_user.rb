@@ -18,10 +18,6 @@ class UserGroupUser < ActiveRecord::Base
   # Access Control #
   ##################
 
-  def can_be_created_by?(user)
-    user_group.can_be_updated_by?(user)
-  end
-
   def can_be_updated_by?(user)
     can_be_created_by?(user)
   end

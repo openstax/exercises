@@ -4,12 +4,15 @@ class QuestionDependencyPair < ActiveRecord::Base
   belongs_to :dependent_question, :class_name => 'Question', :inverse_of => :independent_question_pairs
   belongs_to :independent_question, :class_name => 'Question', :inverse_of => :dependent_question_pairs
 
-  attr_accessible :dependent_question, :independent_question, :kind
+  attr_accessible :independent_question, :kind
 
   validates_presence_of :dependent_question, :independent_question
   validates_uniqueness_of :kind, :scope => [:dependent_question_id, :independent_question_id]
 
-  validate :valid_kind, :same_exercise
+  validate :valid_kind, :different_questions, :same_exercise
+
+  scope :requirement, where(:kind => 0)
+  scope :support, where(:kind => 1)
 
   def is_requirement?
     kind == 0
@@ -28,6 +31,12 @@ class QuestionDependencyPair < ActiveRecord::Base
   def valid_kind
     return if is_requirement? || is_support?
     errors.add(:base, "This dependency pair must either be a requirement or a support.")
+    false
+  end
+
+  def different_questions
+    return if dependent_question.id != independent_question.id
+    errors.add(:base, "A dependency must be created between 2 different questions.")
     false
   end
 

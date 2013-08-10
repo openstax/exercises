@@ -60,10 +60,10 @@ class UserGroupUsersController < ApplicationController
     respond_to do |format|
       if @user_group_user.update_attribute(:is_manager, !@user_group_user.is_manager)
         format.html { redirect_to @user_group_user.user_group,
-          notice: "#{@user_group_user.user.name} was #{@user_group_user.is_manager ? 'promoted' : 'demoted'} to #{@user_group_user.is_manager ? 'manager' : 'member'}." }
+          notice: "#{@user_group_user.user.name} was #{@user_group_user.is_manager ? 'promoted' : 'demoted'}#{@user_group_user.is_manager ? ' to manager' : ''}." }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
+        format.html { redirect_to @user_group_user.user_group }
         format.json { render json: @user_group_user.errors, status: :unprocessable_entity }
       end
     end

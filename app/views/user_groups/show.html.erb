@@ -1,6 +1,6 @@
-<p>
+<h3>
   <%= @user_group.full_name %>
-</p>
+</h3>
 
 <%= render :partial => 'user_group_users/index', :locals => {:user_group_users => @user_group.user_group_users,
                                                              :hide_status => !@user_group.container.nil?} %>

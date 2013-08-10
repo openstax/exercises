@@ -1,0 +1,32 @@
+<% # Clients of this partial must supply the following variable:
+   # question %>
+
+<div class="dependencies">
+  <% unless question.independent_question_pairs.empty? %>
+    <p>
+      <b>Question dependencies</b>
+    </p>
+  <% end %>
+
+  <% unless question.independent_question_pairs.requirement.empty? %>
+    <p>
+      <b>Requirements:</b>
+    </p>
+  <% end %>
+  <ul>
+    <% question.independent_question_pairs.requirement.each do |dependency| %>
+      <%= render :partial => 'exercises/questions/question_dependency_pairs/show', :locals => {:dependency => dependency} %>
+    <% end %>
+  </ul>
+
+  <% unless question.independent_question_pairs.support.empty? %>
+    <p>
+      <b>Support:</b>
+    </p>
+  <% end %>
+  <ul>
+    <% question.independent_question_pairs.support.each do |dependency| %>
+      <%= render :partial => 'exercises/questions/question_dependency_pairs/show', :locals => {:dependency => dependency} %>
+    <% end %>
+  </ul>
+</div>

@@ -1,5 +1,26 @@
-<h1>New exercise_collaborator</h1>
+<h1>Add collaborator</h1>
 
-<%= render 'form' %>
+<%= form_tag(new_polymorphic_path([@publishable, :collaborator]), :method => :get) do %>
+  <table width="550px" align="center">
+    <tr>
+      <td><%= label_tag 'Search For:' %>&nbsp;</td>
+      <td><%= text_field_tag 'query', @query %>&nbsp;</td>
+      <td><%= label_tag 'in:' %>&nbsp;</td>
+      <td><%= select_tag 'type', 
+              options_for_select(['Name', 'Username', 'Email'], @type) %>
+        &nbsp;
+      </td>
+      <td>
+        <%= submit_tag 'Search' %>
+      </td>
+    </tr>
+  </table>
+<% end %>
 
-<%= link_to 'Back', exercise_collaborators_path %>
+<div id="users_list">
+  <%= render :partial => 'users_list',
+             :locals => {:users => @users,
+                         :publishable => @publishable} %>
+</div>
+
+<%= link_to 'Back', @publishable %>

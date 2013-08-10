@@ -46,7 +46,7 @@ module ApplicationHelper
                      &block)
   end
 
-  def tf_to_yn(bool)
+  def yn(bool)
     bool ? 'Yes' : 'No'
   end
 

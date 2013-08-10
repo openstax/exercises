@@ -9,6 +9,16 @@
 
 <br/>
 
+<%= render :partial => 'collaborators/index', :locals => {:collaborators => @exercise.collaborators} %>
+
+<br/>
+
+<% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
+  <%= link_to 'Add collaborator', new_exercise_collaborator_path(@exercise) %>
+
+  <br/><br/>
+<% end %>
+
 <p>
   <b>License:</b>
   <%= @exercise.license.try(:name) %>

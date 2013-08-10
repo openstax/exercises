@@ -17,19 +17,16 @@ class Collaborator < ActiveRecord::Base
   # Access Control #
   ##################
 
-  def can_be_read_by?(user)
-    publishable.can_be_read_by?(user)
-  end
-    
-  def can_be_created_by?(user)
+  def can_be_updated_by?(user)
     publishable.can_be_updated_by?(user)
   end
-  
-  def can_be_updated_by?(user)
-    can_be_created_by?(user)
+
+  def can_be_accepted_by?(user)
+    user == self.user
   end
   
   def can_be_destroyed_by?(user)
-    can_be_created_by?(user)
+    user == self.user || \
+      (publishable.can_be_updated_by?(user) && !is_author && !is_copyright_holder)
   end
 end

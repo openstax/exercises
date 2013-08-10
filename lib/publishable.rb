@@ -99,10 +99,8 @@ module Publishable
         end
 
         def add_collaborator(user)
-          return false if has_collaborator?(user)
-
           c = Collaborator.new
-          c.collaborable = self
+          c.publishable = self
           c.user = user
           c.save!
           c

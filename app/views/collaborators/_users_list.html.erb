@@ -1,0 +1,38 @@
+<%# Clients of this partial must supply the following variables:
+    users
+    publishable %>
+
+<table width="100%">
+  <tr>
+    <th width="20%">First Name&nbsp;</th>
+    <th width="20%">Last Name&nbsp;</th>
+    <th width="20%">Username&nbsp;</th>
+    <th width="25%">Email&nbsp;</th>
+    <th width="15%"></th>
+  </tr>
+
+<% if users.nil? || users.empty? %>
+  <tr>
+      <td colspan="5">No results</td>
+  </tr>
+<% else %>
+  <% users.each do |user| %>
+  <tr>
+    <td><%= user.first_name %>&nbsp;</td>
+    <td><%= user.last_name %>&nbsp;</td>
+    <td><%= user.username %>&nbsp;</td>
+    <td><%= hide_email(user.email) %>&nbsp;</td>
+    <td><% if publishable.has_collaborator?(user) %>
+          <%= 'Already a collaborator' %>
+        <% else %>
+          <%= form_tag(polymorphic_path([publishable, :collaborators])) do |f| %>
+            <%= hidden_field_tag 'publishable_type', publishable.class.name %>
+            <%= hidden_field_tag 'publishable_id', publishable.id %>
+            <%= hidden_field_tag 'user_id', user.id %>
+            <%= submit_tag 'Add collaborator' %>
+          <% end %>
+        <% end %></td>
+  </tr>
+  <% end %>
+<% end %>
+</table>

@@ -16,7 +16,7 @@
     <td><%= link_to exercise.name, exercise %></td>
     <td><%= quickview_link(exercise) %></td>
     <td><%= exercise.is_published? ? 'Published' : 'Draft' %></td>
-    <td><%= tf_to_yn(!exercise.solutions.empty?) %></td>
+    <td><%= yn(!exercise.solutions.empty?) %></td>
   </tr>
 <% end %>
 </table>

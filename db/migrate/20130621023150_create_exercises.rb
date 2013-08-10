@@ -3,7 +3,6 @@ class CreateExercises < ActiveRecord::Migration
     create_table :exercises do |t|
       t.text :content, :null => false, :default => ''
       t.text :content_html, :null => false, :default => ''
-      t.integer :source_exercise_id
       t.integer :number, :null => false
       t.integer :version, :null => false, :default => 1
       t.datetime :published_at
