@@ -1,6 +1,6 @@
 class QuestionDependencyPairsController < ApplicationController
-  # GET /question_dependency_pairs/new
-  # GET /question_dependency_pairs/new.json
+  # GET /questions/1/question_dependency_pairs/new
+  # GET /questions/1/question_dependency_pairs/new.json
   def new
     @question_dependency_pair = QuestionDependencyPair.new
     raise_exception_unless(@question_dependency_pair.can_be_created_by?(current_user))
@@ -11,8 +11,8 @@ class QuestionDependencyPairsController < ApplicationController
     end
   end
 
-  # POST /question_dependency_pairs
-  # POST /question_dependency_pairs.json
+  # POST /questions/1/question_dependency_pairs
+  # POST /questions/1/question_dependency_pairs.json
   def create
     @question_dependency_pair = QuestionDependencyPair.new(params[:question_dependency_pair])
     raise_exception_unless(@question_dependency_pair.can_be_created_by?(current_user))

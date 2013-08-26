@@ -1,0 +1,31 @@
+<%# Clients of this partial must supply the following variables:
+    solutions
+    derived_solution %>
+
+<table>
+  <tr>
+    <th></th>
+    <th>Solution</th>
+    <th>Quick View</th>
+    <th></th>
+  </tr>
+<% solutions.each do |solution| %>
+  <tr>
+    <td></td>
+    <td><%= link_to solution.name, solution %></td>
+    <td><%= quickview_link(solution) %></td>
+    <td><% if derived_solution.has_source?(solution) %>
+          <%= 'Already in sources list' %>
+        <% else %>
+          <%= form_tag(solution_derivations_path(solution)) do |f| %>
+            <%= hidden_field_tag 'source_publishable_id', solution.id %>
+            <%= submit_tag 'Add source solution' %>
+          <% end %>
+        <% end %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'solutions/quickview_dialog' %>
+
+

@@ -3,7 +3,6 @@ class CreateQuestions < ActiveRecord::Migration
     create_table :questions do |t|
       t.text :content, :null => false, :default => ''
       t.text :content_html, :null => false, :default => ''
-      t.integer :source_question_id
       t.integer :position, :null => false
       t.integer :exercise_id, :null => false
       t.boolean :changes_solution, :null => false, :default => false

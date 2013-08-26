@@ -1,21 +1,14 @@
 class UserGroupUsersController < ApplicationController
   before_filter :get_user_group, :only => [:new, :create]
 
-  # GET /user_group_users/new
-  # GET /user_group_users/new.json
+  # GET /user_groups/1/user_group_users/new
+  # GET /user_groups/1/user_group_users/new.json
   def new
-    @query = params[:query] || ''
-    @type = params[:type] || 'Name'
-    @users = User.search(@query, @type)
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @users }
-    end
+    user_search
   end
 
-  # POST /user_group_users
-  # POST /user_group_users.json
+  # POST /user_groups/1/user_group_users
+  # POST /user_groups/1/user_group_users.json
   def create
     user = User.find(params[:user_id])
 
@@ -25,13 +18,7 @@ class UserGroupUsersController < ApplicationController
         format.html { redirect_to @user_group, notice: 'User was successfully added to group.' }
         format.json { render json: @user_group_user, status: :created, location: @user_group_user }
       else
-        format.html do
-          @query = params[:query] || ''
-          @type = params[:type] || 'Name'
-          @users = User.search(@query, @type)
-
-          render action: "new"
-        end
+        format.html { user_search_error_html }
         format.json { render json: @user_group_user.errors, status: :unprocessable_entity }
       end
     end

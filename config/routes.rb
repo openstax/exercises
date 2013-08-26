@@ -31,15 +31,19 @@ Exercises::Application.routes.draw do
     get 'quickview', :on => :member
 
     resources :collaborators, :only => [:new, :create]
+    resources :derivations, :only => [:new, :create]
   end
 
   resources :questions, :only => [] do
-    resources :question_dependency_pairs, :only => [:new, :create, :destroy]
+    resources :question_dependency_pairs, :only => [:new, :create]
     resources :solutions, :only => [:new, :create]
   end
 
+  resources :question_dependency_pairs, :only => [:destroy]
+
   resources :solutions, :only => [:edit, :update, :destroy] do
     resources :collaborators, :only => [:new, :create]
+    resources :derivations, :only => [:new, :create]
   end
 
   resources :attachments
@@ -48,6 +52,8 @@ Exercises::Application.routes.draw do
     put 'toggle_author', :on => :member
     put 'toggle_copyright_holder', :on => :member
   end
+
+  resources :derivations, :only => [:destroy]
 
   resources :api_keys, :except => [:new, :edit, :update]
 

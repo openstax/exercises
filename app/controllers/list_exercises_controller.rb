@@ -1,26 +1,14 @@
 class ListExercisesController < ApplicationController
   before_filter :get_list, :only => [:new, :create]
 
-  # GET /list_exercises/new
-  # GET /list_exercises/new.json
+  # GET /lists/1/list_exercises/new
+  # GET /lists/1/list_exercises/new.json
   def new
-    @per_page = params[:per_page] || 20
-    @query = params[:query] || ''
-    @part = params[:part] || 'content/answers'
-    @answer_type = params[:answer_type] || 'any answer types'
-
-    @exercises = Exercise.search(@query, @part, 'published exercises', @answer_type, current_user)
-
-    respond_to do |format|
-      format.html do
-        @exercises = @exercises.paginate(:page => params[:page], :per_page => @per_page)
-      end
-      format.json { render json: @exercises }
-    end
+    exercise_search(true)
   end
 
-  # POST /list_exercises
-  # POST /list_exercises.json
+  # POST /lists/1/list_exercises
+  # POST /lists/1/list_exercises.json
   def create
     exercise = Exercise.find(params[:exercise_id])
 
@@ -30,17 +18,7 @@ class ListExercisesController < ApplicationController
         format.html { redirect_to @list, notice: 'Exercise was successfully added to list.' }
         format.json { render json: @list_exercise, status: :created, location: @list_exercise }
       else
-        format.html do
-          @per_page = params[:per_page] || 20
-          @query = params[:query] || ''
-          @part = params[:part] || 'content/answers'
-          @answer_type = params[:answer_type] || 'any answer types'
-
-          @exercises = Exercise.search(@query, @part, 'published exercises', @answer_type, current_user) \
-                               .paginate(:page => params[:page], :per_page => @per_page)
-
-          render action: "new"
-        end
+        format.html { exercise_search_error_html(true) }
         format.json { render json: @list_exercise.errors, status: :unprocessable_entity }
       end
     end

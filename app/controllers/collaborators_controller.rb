@@ -1,21 +1,14 @@
 class CollaboratorsController < ApplicationController
   before_filter :get_publishable, :only => [:new, :create]
 
-  # GET /collaborators/new
-  # GET /collaborators/new.json
+  # GET /publishables/1/collaborators/new
+  # GET /publishables/1/collaborators/new.json
   def new
-    @query = params[:query] || ''
-    @type = params[:type] || 'Name'
-    @users = User.search(@query, @type)
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @users }
-    end
+    user_search
   end
 
-  # POST /collaborators
-  # POST /collaborators.json
+  # POST /publishables/1/collaborators
+  # POST /publishables/1/collaborators.json
   def create
     user = User.find(params[:user_id])
 
@@ -25,13 +18,7 @@ class CollaboratorsController < ApplicationController
         format.html { redirect_to @publishable, notice: 'Collaborator was successfully added.' }
         format.json { render json: @collaborator, status: :created, location: @collaborator }
       else
-        format.html do
-          @query = params[:query] || ''
-          @type = params[:type] || 'Name'
-          @users = User.search(@query, @type)
-
-          render action: "new"
-        end
+        format.html { user_search_error_html }
         format.json { render json: @collaborator.errors, status: :unprocessable_entity }
       end
     end
@@ -51,8 +38,8 @@ class CollaboratorsController < ApplicationController
     end
   end
 
-  # PUT /user_group_users/1/toggle_author
-  # PUT /user_group_users/1/toggle_author.json
+  # PUT /collaborators/1/toggle_author
+  # PUT /collaborators/1/toggle_author.json
   def toggle_author
     @collaborator = Collaborator.find(params[:id])
     raise_exception_unless(@collaborator.can_be_updated_by?(current_user))
@@ -71,8 +58,8 @@ class CollaboratorsController < ApplicationController
     end
   end
 
-  # PUT /user_group_users/1/toggle_copyright_holder
-  # PUT /user_group_users/1/toggle_copyright_holder.json
+  # PUT /collaborators/1/toggle_copyright_holder
+  # PUT /collaborators/1/toggle_copyright_holder.json
   def toggle_copyright_holder
     @collaborator = Collaborator.find(params[:id])
     raise_exception_unless(@collaborator.can_be_updated_by?(current_user))
@@ -91,8 +78,8 @@ class CollaboratorsController < ApplicationController
     end
   end
 
-  # PUT /user_group_users/1/accept_toggle_author
-  # PUT /user_group_users/1/accept_toggle_author.json
+  # PUT /collaborators/1/accept_toggle_author
+  # PUT /collaborators/1/accept_toggle_author.json
   def accept_toggle_author
     @collaborator = Collaborator.find(params[:id])
     raise_exception_unless(@collaborator.can_be_accepted_by?(current_user))
@@ -111,8 +98,8 @@ class CollaboratorsController < ApplicationController
     end
   end
 
-  # PUT /user_group_users/1/accept_toggle_copyright_holder
-  # PUT /user_group_users/1/accept_toggle_copyright_holder.json
+  # PUT /collaborators/1/accept_toggle_copyright_holder
+  # PUT /collaborators/1/accept_toggle_copyright_holder.json
   def accept_toggle_copyright_holder
     @collaborator = Collaborator.find(params[:id])
     raise_exception_unless(@collaborator.can_be_accepted_by?(current_user))

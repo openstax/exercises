@@ -7,9 +7,9 @@
                    'short answers', 
                    'free response answers'] %>
 
-<h1>Add exercise</h1>
+<h1>Add source exercise</h1>
 
-<%= form_tag(new_list_list_exercise_path(@list), :method => :get) do %>
+<%= form_tag(new_exercise_derivation_path(@exercise), :method => :get) do %>
   <%= hidden_field_tag :per_page, @per_page %>
   <%= hidden_field_tag 'exercise_type', 'published exercises' %>
   
@@ -36,11 +36,11 @@
 <div id="exercises">
   <%= render :partial => 'exercises_list', 
              :locals => { :exercises => @exercises,
-                          :list => @list } %>
+                          :derived_exercise => @exercise } %>
 </div>
 
 <%= will_paginate @exercises unless @exercises.nil? %>
 
 <br/>
 
-<%= link_to 'Back', @list %>
+<%= link_to 'Back', @exercise %>

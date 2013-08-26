@@ -8,8 +8,7 @@ module Publishable
       class_name = self.class.name.downcase
       class_name_plural = class_name.pluralize
       derived_names = "derived_#{class_name_plural}"
-      source_name = "source_#{class_name}"
-      source_name_id = "#{source_name}_id"
+      source_names = "source_#{class_name_plural}"
 
       License.class_eval do
         has_many class_name_plural, :inverse_of => :license
@@ -31,9 +30,11 @@ module Publishable
 
         belongs_to :license, :inverse_of => class_name_plural
 
-        belongs_to source_name, :class_name => class_name, :inverse_of => derived_names
+        has_many :sources, :class_name => 'Derivation', :as => :derived_publishable, :dependent => :destroy
+        has_many source_names, :through => :sources, :source => :source_publishable, :source_type => class_name
 
-        has_many derived_names, :class_name => class_name, :foreign_key => source_name_id, :inverse_of => source_name
+        has_many :derivations, :as => :source_publishable, :dependent => :destroy
+        has_many derivation_names, :through => :derivations, :source => :derived_publishable, :source_type => class_name
 
         has_many :collaborators, :as => :publishable, :dependent => :destroy
 
@@ -106,12 +107,17 @@ module Publishable
           c
         end
 
-        def self.add_prepublish_check(method_name, value, error_message)
-          prepublish_checks_array << [method_name, value, error_message]
+        def add_source(publishable)
+          return false if publishable.class != self.class
+          Derivation.create!(:source_publishable => publishable, :derived_publishable => self)
         end
 
         def assign_next_number
           self.number = ((publish_scope.maximum(:number) || 0) + 1)
+        end
+
+        def self.add_prepublish_check(method_name, value, error_message)
+          prepublish_checks_array << [method_name, value, error_message]
         end
 
         protected

@@ -42,7 +42,7 @@ module Sortable
         end
 
         def assign_next_position
-          self.position = ((sort_scope.maximum(:position) || -1) + 1)
+          self.position = ((sort_scope.maximum(:position) || 0) + 1)
         end
 
         protected
