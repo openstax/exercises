@@ -1,6 +1,10 @@
 <% # Clients of this partial must supply the following variable:
-   # dependency %>
+   # question_dependency_pair %>
 
-<div class="dependency">
-  <li><%= dependency.independent_question.id %></li>
+<div class="question_dependency_pair">
+  <li>This question <%= question_dependency_pair.is_requirement? ? 'requires' : 'is supported by' %>
+        question <%= question_dependency_pair.independent_question.position %>. |
+        <%= link_to 'Remove', question_dependency_pair, method: :delete, data: {
+          confirm: "Are you sure you want to remove this question's dependency on question #{question_dependency_pair.independent_question.position}?"
+        } %></li>
 </div>

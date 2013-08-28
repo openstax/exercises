@@ -5,7 +5,14 @@
 
 <div class="question">
   <p>
-    <b>Question <%= question.position + 1 %></b>
+    <b>Question <%= question.position %></b>
+    <%= render :partial => 'question_dependency_pairs/index', :locals => {:question_dependency_pairs => question.independent_question_pairs} %>
+
+    <% if question.can_be_updated_by?(current_user) || user_is_admin? %>
+      <%= link_to 'Add dependency', new_question_question_dependency_pair_path(question) %>
+
+      <br/><br/>
+    <% end %>
     <% if !question.credit.nil? && question.credit > 0 %>(<%= question.credit %> pt):<% end %>
   </p>
 

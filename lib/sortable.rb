@@ -24,20 +24,22 @@ module Sortable
           sorted_ids = sorted_ids & unsorted_ids
           sorted_ids = sorted_ids | unsorted_ids
 
-          index = 0
+          index = 1
           conflict_index = (ss.minimum(:position) || 0) - 1
 
-          sorted_ids.each do |sorted_id|
-            ss.where(:position => index).all.each do |conflict|
-              conflict.position = conflict_index
-              conflict.save!
-              conflict_index -= 1
-            end
+          transaction do
+            sorted_ids.each do |sorted_id|
+              ss.where(:position => index).where{id != sorted_id}.all.each do |conflict|
+                conflict.position = conflict_index
+                conflict.save!
+                conflict_index -= 1
+              end
 
-            obj = find(sorted_id)
-            obj.position = index
-            obj.save!
-            index += 1
+              obj = find(sorted_id)
+              obj.position = index
+              obj.save!
+              index += 1
+            end
           end
         end
 

@@ -96,4 +96,16 @@ class ExercisesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # GET /exercises/1/dependencies
+  # GET /exercises/1/dependencies.json
+  def dependencies
+    @exercise = Exercise.find(params[:id])
+    raise_exception_unless(@exercise.can_be_updated_by?(current_user))
+
+    respond_to do |format|
+      format.html # dependencies.html.erb
+      format.json { render json: @exercise }
+    end
+  end
 end

@@ -1,26 +1,21 @@
-<% # Clients of this partial must supply the following variables:
-   # q %>
+<%= form_for([@question, @question_dependency_pair]) do |f| %>
+  <% if @question_dependency_pair.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@question_dependency_pair.errors.count, "error") %> prohibited this dependency from being saved:</h2>
 
-<div class="dependencies_form">
-  <p>
-    <b>Question dependencies</b>
-  </p>
-  <%= q.fields_for :independent_question_pairs do |a| %>
-    <div class="dependency_form">
-      <div class="field">
-        <%= a.label :independent_question, 'Dependency:' %><br />
-        <%= a.select :independent_question, options_for_select([]) %>
-      </div>
-      <div class="field">
-        <%= a.label :kind %><br />
-        <%= a.number_field :kind %>
-      </div>
-
-      <%= a.link_to_remove "Remove this dependency" %><br/><br/>
+      <ul>
+      <% @question_dependency_pair.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
     </div>
   <% end %>
 
-  <%= q.link_to_add "Add dependency", :independent_question_pairs %>
-</div>
-
-<br/>
+  <div class="field">
+    This question <%= f.select :kind, options_for_select([['requires', 0], ['is supported by', 1]]) %> question
+    <%= f.select :independent_question_id, options_for_select(@question.exercise.questions.reject{|q| q.id == @question.id}.collect{|q| [q.position, q.id]}) %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

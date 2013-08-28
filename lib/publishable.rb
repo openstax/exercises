@@ -34,7 +34,7 @@ module Publishable
         has_many source_names, :through => :sources, :source => :source_publishable, :source_type => class_name
 
         has_many :derivations, :as => :source_publishable, :dependent => :destroy
-        has_many derivation_names, :through => :derivations, :source => :derived_publishable, :source_type => class_name
+        has_many derived_names, :through => :derivations, :source => :derived_publishable, :source_type => class_name
 
         has_many :collaborators, :as => :publishable, :dependent => :destroy
 
@@ -128,7 +128,7 @@ module Publishable
 
         def must_not_be_published
           return if published_at_was.nil?
-          errors.add(:base, "Changes cannot be made to a published #{self.class.name.undercase}.")
+          errors.add(:base, "Changes cannot be made to a published #{self.class.name.downcase}.")
           false
         end
 
