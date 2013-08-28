@@ -4,31 +4,37 @@
 
 <b>Collaborators</b>
 
-<table>
-  <tr>
-    <th>User</th>
-    <th>Author</th>
-    <th>Copyright Holder</th>
-    <th></th>
-  </tr>
+<div class="collaborators">
+  <% if collaborators.empty? %>
+    This exercise has no collaborators.
+  <% else %>
+    <table>
+      <tr>
+        <th>User</th>
+        <th>Author?</th>
+        <th>Copyright Holder?</th>
+        <th></th>
+      </tr>
 
-<% collaborators.each do |collaborator| %>
-  <tr>
-    <td><%= collaborator.user.name %></td>
-    <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
-          <%= yn(collaborator.is_author) %> (<%= link_to 'Toggle', toggle_author_collaborator_path(collaborator), method: :put, data: {
-                confirm: "Are you sure you want to #{collaborator.is_author ? 'un' : ''}set #{collaborator.user.name} as an author?"
-              } %>)</td>
-        <% end %>
-    <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
-          <%= yn(collaborator.is_copyright_holder) %> (<%= link_to 'Toggle', toggle_copyright_holder_collaborator_path(collaborator), method: :put, data: {
-                confirm: "Are you sure you want to #{collaborator.is_copyright_holder ? 'un' : ''}set #{collaborator.user.name} as a copyright holder?"
-              } %>)</td>
-        <% end %>
-    <td><% if collaborator.can_be_destroyed_by?(current_user) || user_is_admin? %>
-          <%= link_to 'Remove', collaborator, method: :delete,
-                data: { confirm: "Are you sure you want to remove #{collaborator.user.name} as a collaborator?" } %>
-        <% end %></td>
-  </tr>
-<% end %>
-</table>
+    <% collaborators.each do |collaborator| %>
+      <tr>
+        <td><%= collaborator.user.name %></td>
+        <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
+              <%= yn(collaborator.is_author) %> (<%= link_to 'Toggle', toggle_author_collaborator_path(collaborator), method: :put, data: {
+                    confirm: "Are you sure you want to #{collaborator.is_author ? 'un' : ''}set #{collaborator.user.name} as an author?"
+                  } %>)</td>
+            <% end %>
+        <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
+              <%= yn(collaborator.is_copyright_holder) %> (<%= link_to 'Toggle', toggle_copyright_holder_collaborator_path(collaborator), method: :put, data: {
+                    confirm: "Are you sure you want to #{collaborator.is_copyright_holder ? 'un' : ''}set #{collaborator.user.name} as a copyright holder?"
+                  } %>)</td>
+            <% end %>
+        <td><% if collaborator.can_be_destroyed_by?(current_user) || user_is_admin? %>
+              <%= link_to 'Remove', collaborator, method: :delete,
+                    data: { confirm: "Are you sure you want to remove #{collaborator.user.name} as a collaborator?" } %>
+            <% end %></td>
+      </tr>
+    <% end %>
+    </table>
+  <% end %>
+</div>
