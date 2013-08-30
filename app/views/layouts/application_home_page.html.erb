@@ -19,7 +19,7 @@
   <div id="application-home-page-create">
     <h3>Create</h3>
     <p>Contribute free-form, multiple choice, matching,<br/>true or false and more exercises in any subject area!</p>
-    <%= link_to "Write an exercise >", nil, :class => 'link_button' %>    
+    <%= link_to "Write an exercise >", new_exercise_path, :class => 'link_button' %>    
   </div>
   
   <div id="application-home-page-use" class='application-home-page-right-box'>
@@ -31,7 +31,7 @@
   <div id="application-home-page-find" class='application-home-page-right-box'>
     <h3>Find</h3>
     <p>Search for exercises related to e-texts, concepts, interactive simulations, or other exercises.</p>
-    <%= link_to "Search for questions >", nil, :class => 'link_button' %>
+    <%= link_to "Search for exercises >", exercises_path, :class => 'link_button' %>
   </div>
 
   <div id="application-home-page-share" class='application-home-page-right-box last'>

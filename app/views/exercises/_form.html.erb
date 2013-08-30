@@ -24,13 +24,15 @@
 
   <%= render :partial => 'exercises/questions/form', :locals => {:f => f} %>
 
-  <div class="field">
-    <%= label_tag :embargo, 'Embargo?' %>
-    <%= check_box_tag :embargo, @exercise.is_embargoed? %>
-  </div>
-  <div class="field">
-    <%= f.label :only_embargo_solutions, 'Only embargo solutions?' %>
-    <%= f.check_box :only_embargo_solutions %>
+  <div class="embargo_form">
+    <div class="field">
+      <%= f.label :embargoed_until %>
+      <%= f.text_field :embargoed_until %>
+    </div>
+    <div class="field">
+      <%= f.label :only_embargo_solutions, 'Only embargo solutions?' %>
+      <%= f.check_box :only_embargo_solutions %>
+    </div>
   </div>
   <% if @exercise.new_record? %>
   <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>
