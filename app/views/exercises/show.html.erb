@@ -21,17 +21,12 @@
 
 <p>
   <b>License:</b>
-  <%= @exercise.license.try(:name) %>
+  <%= @exercise.license.nil? ? 'Not yet selected.' : @exercise.license.name %>
 </p>
 
 <p>
-  <b>Embargoed until:</b>
-  <%= @exercise.embargoed_until %>
-</p>
-
-<p>
-  <b>Only embargo solutions:</b>
-  <%= @exercise.only_embargo_solutions %>
+  <b>Embargo:</b>
+  <%= @exercise.embargo_status %>
 </p>
 
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |

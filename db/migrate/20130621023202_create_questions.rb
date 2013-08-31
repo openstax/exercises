@@ -12,6 +12,5 @@ class CreateQuestions < ActiveRecord::Migration
     end
 
     add_index :questions, [:exercise_id, :position], :unique => true
-    add_index :questions, :source_question_id
   end
 end

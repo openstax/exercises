@@ -8,7 +8,7 @@ class CreateExercises < ActiveRecord::Migration
       t.datetime :published_at
       t.integer :license_id
       t.integer :credit
-      t.datetime :embargoed_until
+      t.integer :embargo_days, :null => false, :default => 0
       t.boolean :only_embargo_solutions, :null => false, :default => false
       t.integer :locked_by
       t.datetime :locked_at
@@ -17,7 +17,6 @@ class CreateExercises < ActiveRecord::Migration
     end
 
     add_index :exercises, [:number, :version], :unique => true
-    add_index :exercises, :source_exercise_id
     add_index :exercises, :published_at
     add_index :exercises, :license_id
   end

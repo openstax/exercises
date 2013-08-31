@@ -35,7 +35,9 @@ class Exercise < ActiveRecord::Base
 
   accepts_nested_attributes_for :questions, :allow_destroy => true
 
-  attr_accessible :only_embargo_solutions, :credit, :questions_attributes
+  attr_accessible :embargo_days, :only_embargo_solutions, :credit, :questions_attributes
+
+  validate :valid_embargo
 
   scope :not_published, where(:published_at => nil)
   scope :published, where{published_at != nil}
@@ -76,7 +78,30 @@ class Exercise < ActiveRecord::Base
   end
 
   def is_embargoed?
-    !embargoed_until.nil?
+    embargo_days > 0 && (published_at.nil? || published_at.midnight + embargo_days.days > Time.now)
+  end
+
+  def embargo_status
+    if is_published?
+      if embargo_days > 0
+        if published_at.midnight + embargo_days.days > Time.now
+          (only_embargo_solutions ? 'Solutions for this exercise are' : 'This exercise is') +
+          " embargoed until #{published_at.midnight + embargo_days.days}."
+        else
+          (only_embargo_solutions ? 'Solution' : 'Exercise') +
+          " embargo expired on #{published_at.midnight + embargo_days.days}."
+        end
+      else
+        'This exercise was not embargoed.'
+      end
+    else
+      if embargo_days > 0
+        (only_embargo_solutions ? 'Solutions for this' : 'This') +
+        " exercise will be embargoed until #{Time.now.midnight + embargo_days.days} if published today."
+      else
+        'This exercise will not be embargoed.'
+      end
+    end
   end
 
   def self.search(text, part, type, answer_type, user)
@@ -233,5 +258,11 @@ class Exercise < ActiveRecord::Base
     end
 
     true
+  end
+
+  def valid_embargo
+    return if embargo_days.between?(0, 180)
+    errors.add(:base, "Embargoes can only last from 0 to 180 days.")
+    false
   end
 end

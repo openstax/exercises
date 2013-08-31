@@ -14,7 +14,6 @@ class CreateSolutions < ActiveRecord::Migration
     end
 
     add_index :solutions, [:question_id, :number, :version], :unique => true
-    add_index :solutions, :source_solution_id
     add_index :solutions, :published_at
     add_index :solutions, :license_id
   end

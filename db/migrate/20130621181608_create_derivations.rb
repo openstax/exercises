@@ -9,7 +9,7 @@ class CreateDerivations < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :derivations, [:publishable_type, :source_publishable_id, :derived_publishable_id], :unique => true
-    add_index :derivations, [:publishable_type, :derived_publishable_id, :position], :unique => true
+    add_index :derivations, [:publishable_type, :source_publishable_id, :derived_publishable_id], :unique => true, :name => "index_d_on_p_type_and_s_p_id_and_d_p_id"
+    add_index :derivations, [:publishable_type, :derived_publishable_id, :position], :unique => true, :name => "index_d_on_p_type_and_d_p_id_and_position"
   end
 end
