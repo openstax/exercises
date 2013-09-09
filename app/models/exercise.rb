@@ -41,19 +41,22 @@ class Exercise < ActiveRecord::Base
 
   scope :not_published, where(:published_at => nil)
   scope :published, where{published_at != nil}
+  scope :not_embargoed, where{(embargoed_until == nil) | (embargoed_until < Date.current)}
   scope :latest, joins{same_number}
                    .where{(id == same_number.id) | (same_number.published_at != nil)}
                    .group(:id).having{version >= max(same_number.version)}
 
   scope :visible_for, lambda { |user|
-    return published if user.nil?
+    return published.not_embargoed if user.nil?
 
     joins{lists.outer.users.outer}\
     .joins{collaborators.outer.deputies.outer}\
-    .where{(published_at != nil) |\
-    (list.users.id == user.id) |\
+    .where{((published_at != nil) &\
+    ((embargoed_until == nil) |\
+    (embargoed_until < Date.current))) |\
+    ((list.users.id == user.id) |\
     (collaborators.user_id == user.id) |\
-    (collaborators.deputies.id == user.id)}
+    (collaborators.deputies.id == user.id))}
   }
 
   scope :with_true_or_false_answers, joins(:true_or_false_answers)
@@ -78,28 +81,28 @@ class Exercise < ActiveRecord::Base
   end
 
   def is_embargoed?
-    embargo_days > 0 && (published_at.nil? || published_at.midnight + embargo_days.days > Time.now)
+    !embargoed_until.nil? && (embargoed_until >= Date.current)
   end
 
   def embargo_status
     if is_published?
-      if embargo_days > 0
-        if published_at.midnight + embargo_days.days > Time.now
+      if embargoed_until.nil?
+        'This exercise was not embargoed.'
+      else
+        if embargoed_until >= Date.current
           (only_embargo_solutions ? 'Solutions for this exercise are' : 'This exercise is') +
-          " embargoed until #{published_at.midnight + embargo_days.days}."
+          " embargoed until #{embargoed_until}."
         else
           (only_embargo_solutions ? 'Solution' : 'Exercise') +
-          " embargo expired on #{published_at.midnight + embargo_days.days}."
+          " embargo expired on #{embargoed_until}."
         end
-      else
-        'This exercise was not embargoed.'
       end
     else
-      if embargo_days > 0
-        (only_embargo_solutions ? 'Solutions for this' : 'This') +
-        " exercise will be embargoed until #{Time.now.midnight + embargo_days.days} if published today."
-      else
+      if embargo_days == 0
         'This exercise will not be embargoed.'
+      else
+        (only_embargo_solutions ? 'Solutions for this' : 'This') +
+        " exercise will be embargoed until #{Date.current + embargo_days.days} if published today."
       end
     end
   end
@@ -107,7 +110,7 @@ class Exercise < ActiveRecord::Base
   def self.search(text, part, type, answer_type, user)
     case type
     when 'published exercises'
-      tscope = published
+      tscope = visible_for(user).published
     when 'draft exercises'
       tscope = visible_for(user).not_published
     when 'exercises in my lists'
@@ -214,7 +217,7 @@ class Exercise < ActiveRecord::Base
   ##################
 
   def can_be_read_by?(user)
-    is_published? || (!lists.first.nil? && lists.first.can_be_read_by?(user)) || has_collaborator?(user)
+    (is_published? && !is_embargoed?) || (!lists.first.nil? && lists.first.can_be_read_by?(user)) || has_collaborator?(user)
   end
     
   def can_be_created_by?(user)
@@ -261,7 +264,10 @@ class Exercise < ActiveRecord::Base
   end
 
   def valid_embargo
-    return if embargo_days.between?(0, 180)
+    if embargo_days.between?(0, 180)
+      embargoed_until = (embargo_days == 0 ? nil : ((published_at.nil? ? Date.current : published_at) + embargo_days.days))
+      return
+    end
     errors.add(:base, "Embargoes can only last from 0 to 180 days.")
     false
   end

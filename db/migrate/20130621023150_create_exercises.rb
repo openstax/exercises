@@ -9,6 +9,7 @@ class CreateExercises < ActiveRecord::Migration
       t.integer :license_id
       t.integer :credit
       t.integer :embargo_days, :null => false, :default => 0
+      t.date :embargoed_until
       t.boolean :only_embargo_solutions, :null => false, :default => false
       t.integer :locked_by
       t.datetime :locked_at

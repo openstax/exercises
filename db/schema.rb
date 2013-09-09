@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.integer  "license_id"
     t.integer  "credit"
     t.integer  "embargo_days",           :default => 0,     :null => false
+    t.date     "embargoed_until"
     t.boolean  "only_embargo_solutions", :default => false, :null => false
     t.integer  "locked_by"
     t.datetime "locked_at"
