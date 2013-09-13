@@ -20,12 +20,14 @@
       <tr>
         <td><%= collaborator.user.name %></td>
         <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
-              <%= yn(collaborator.is_author) %> (<%= link_to 'Toggle', toggle_author_collaborator_path(collaborator), method: :put, data: {
+              <%= collaborator.toggle_author_request ? "Change requested - #{yn(!collaborator.is_author)}" :
+                  yn(collaborator.is_author) %> (<%= link_to 'Toggle', toggle_author_collaborator_path(collaborator), method: :put, data: {
                     confirm: "Are you sure you want to #{collaborator.is_author ? 'un' : ''}set #{collaborator.user.name} as an author?"
                   } %>)</td>
             <% end %>
         <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
-              <%= yn(collaborator.is_copyright_holder) %> (<%= link_to 'Toggle', toggle_copyright_holder_collaborator_path(collaborator), method: :put, data: {
+              <%= collaborator.toggle_copyright_holder_request ? "Change requested - #{yn(!collaborator.is_copyright_holder)}" :
+                  yn(collaborator.is_copyright_holder) %> (<%= link_to 'Toggle', toggle_copyright_holder_collaborator_path(collaborator), method: :put, data: {
                     confirm: "Are you sure you want to #{collaborator.is_copyright_holder ? 'un' : ''}set #{collaborator.user.name} as a copyright holder?"
                   } %>)</td>
             <% end %>

@@ -7,11 +7,12 @@
     <th></th>
   </tr>
 
-<% @user_group_users.each do |user_group_user| %>
+<% @user_groups.each do |user_group| %>
+  <% user_group_user = user_group.user_group_user_for(current_user) %>
   <tr>
-    <td><%= link_to user_group_user.user_group.full_name, user_group_user.user_group %></td>
-    <td><%= user_group_user.is_manager ? 'Manager' : 'Member' %></td>
-    <td><%= link_to 'Leave group', user_group_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to user_group.full_name, user_group %></td>
+    <td><%= (user_group_user.is_manager ? 'Manager' : 'Member') unless user_group_user.nil? %></td>
+    <td><%= link_to('Leave group', user_group_user, method: :delete, data: { confirm: 'Are you sure?' }) unless user_group_user.nil? %></td>
   </tr>
 <% end %>
 </table>

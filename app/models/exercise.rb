@@ -48,8 +48,9 @@ class Exercise < ActiveRecord::Base
 
   scope :visible_for, lambda { |user|
     return published.not_embargoed if user.nil?
+    return scoped if user.is_admin?
 
-    joins{lists.outer.users.outer}\
+    joins{lists.outer.users.outer.deputies.outer}\
     .joins{collaborators.outer.deputies.outer}\
     .where{((published_at != nil) &\
     ((embargoed_until == nil) |\

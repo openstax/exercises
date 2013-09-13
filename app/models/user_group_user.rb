@@ -19,11 +19,11 @@ class UserGroupUser < ActiveRecord::Base
   ##################
 
   def can_be_updated_by?(user)
-    can_be_created_by?(user)
+    user_group.can_be_updated_by?(user)
   end
   
   def can_be_destroyed_by?(user)
-    can_be_created_by?(user) || user == self.user
+    can_be_updated_by?(user) || user == self.user
   end
 
   protected

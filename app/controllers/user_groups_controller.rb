@@ -2,11 +2,11 @@ class UserGroupsController < ApplicationController
   # GET /user_groups
   # GET /user_groups.json
   def index
-    @user_group_users = current_user.user_group_users
+    @user_groups = UserGroup.visible_for(current_user)
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @user_groups_users }
+      format.json { render json: @user_groups }
     end
   end
 

@@ -4,7 +4,7 @@ class ListsController < ApplicationController
   # GET /lists
   # GET /lists.json
   def index
-    @lists = List.all
+    @lists = List.visible_for(current_user)
 
     respond_to do |format|
       format.html # index.html.erb

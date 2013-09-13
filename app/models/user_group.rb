@@ -10,18 +10,32 @@ class UserGroup < ActiveRecord::Base
 
   validates_presence_of :name
 
+  scope :visible_for, lambda { |user|
+    return none if user.nil?
+    return scoped if user.is_admin?
+
+    joins{users.deputies.outer}\
+    .where{(users.id == user.id) |\
+           (users.deputies.id == user.id)}
+  }
+
   def full_name
     container.nil? ? name : "#{name.capitalize} of #{container.name}"
   end
 
+  def user_group_user_for(user, manager = false)
+    uscope = manager ? user_group_users.managers : user_group_users
+    uscope.where(:user_id => user.id).first
+  end
+
   def has_user?(user)
     return false if user.nil?
-    !user_group_users.where(:user_id => user.id).first.nil?
+    !user_group_user_for(user).nil?
   end
 
   def has_manager?(user)
     return false if (user.nil? || !container.nil?)
-    !user_group_users.managers.where(:user_id => user.id).first.nil?
+    !user_group_user_for(user, true).nil?
   end
   
   def add_user(user, manager = false)

@@ -32,6 +32,17 @@ class List < ActiveRecord::Base
   validates_presence_of :name, :reader_user_group, :editor_user_group, :publisher_user_group, :owner_user_group
   validates_uniqueness_of :name, :if => :is_public
 
+  scope :publicly_visible, where(:is_public => true)
+  scope :visible_for, lambda { |user|
+    return publicly_visible if user.nil?
+    return scoped if user.is_admin?
+
+    joins{users.deputies.outer}\
+    .where{(is_public == true) |\
+           (users.id == user.id) |\
+           (users.deputies.id == user.id)}
+  }
+
   def has_exercise?(exercise)
     !list_exercises.where(:exercise_id => exercise.id).first.nil?
   end

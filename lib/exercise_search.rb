@@ -3,7 +3,7 @@ module ExerciseSearch
     @per_page = params[:per_page] || 20
     @query = params[:query] || ''
     @part = params[:part] || 'content/answers'
-    @exercise_type = published_only ? 'published_exercises' : (params[:exercise_type] || 'all exercises')
+    @exercise_type = published_only ? 'published exercises' : (params[:exercise_type] || 'all exercises')
     @answer_type = params[:answer_type] || 'any answer types'
 
     @exercises = Exercise.search(@query, @part, @exercise_type, @answer_type, current_user)
@@ -20,7 +20,7 @@ module ExerciseSearch
     @per_page = params[:per_page] || 20
     @query = params[:query] || ''
     @part = params[:part] || 'content/answers'
-    @exercise_type = published_only ? 'published_exercises' : (params[:exercise_type] || 'all exercises')
+    @exercise_type = published_only ? 'published exercises' : (params[:exercise_type] || 'all exercises')
     @answer_type = params[:answer_type] || 'any answer types'
 
     @exercises = Exercise.search(@query, @part, @exercise_type, @answer_type, current_user) \
