@@ -23,7 +23,7 @@ module ApplicationHelper
                                              " [#{options[:sub_heading_text]}]")
     
     @page_title = options[:title_text]
-    @page_title.sub!(SITE_NAME,"").strip! if @page_title.include?(SITE_NAME) && options[:take_out_site_name]
+    @page_title.sub!(SITE_NAME, "").strip! if @page_title.include?(SITE_NAME) && options[:take_out_site_name]
     
     return if heading_text.blank?
     

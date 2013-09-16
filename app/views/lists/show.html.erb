@@ -1,8 +1,6 @@
 <% can_update = @list.can_be_updated_by?(current_user) %>
 
-<h3>
-  <%= @list.name %>
-</h3>
+<%= page_heading @list.name %>
 
 <%= render :partial => 'list_exercises/index', :locals => {:list_exercises => @list.list_exercises} %>
 

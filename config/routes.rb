@@ -74,6 +74,8 @@ Exercises::Application.routes.draw do
     resources :licenses
 
     resources :user_groups, :only => [:index]
+
+    root :to => "admin#index"
   end
 
   namespace :api, defaults: {format: 'json'} do

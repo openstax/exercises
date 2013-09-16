@@ -11,9 +11,14 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def raise_exception_unless(authorized)
-    return if authorized || user_is_admin?
+  def raise_exception_unless_admin
+    return if user_is_admin?
     raise SecurityTransgression
+  end
+
+  def raise_exception_unless(authorized)
+    return if authorized
+    raise_exception_unless_admin
   end
 
   private

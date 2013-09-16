@@ -1,6 +1,4 @@
-<div class="span16">
-  <h2>Authorize <%= @pre_auth.client.name %> to use your account?</h2>
-</div>
+<%= page_heading "Authorize #{@pre_auth.client.name} to use your account?" %>
 
 <div class="span16">
   <% if @pre_auth.scopes %>

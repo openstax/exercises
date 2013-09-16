@@ -1,7 +1,4 @@
-<p>
-  <b>Exercise <%= @exercise.name %></b>
-  <% if !@exercise.credit.nil? && @exercise.credit > 0 %>(<%= @exercise.credit %> pt):<% end %>
-</p>
+<%= page_heading "Exercise #{@exercise.to_param}" %>
 
 <%= @exercise.content_html.html_safe %>
 

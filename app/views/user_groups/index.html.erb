@@ -1,4 +1,8 @@
-<h3>You are a member of the following groups:</h1>
+<%= page_heading 'User groups' %>
+
+<% unless user_is_admin? %>
+  <p>You are a member of the following groups:</p>
+<% end %>
 
 <table>
   <tr>

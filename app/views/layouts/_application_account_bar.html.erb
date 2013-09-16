@@ -7,6 +7,10 @@
   <div id="account-bar-content">
   
     <% if user_signed_in? %>
+      <% if user_is_admin? %>
+        [ <%= link_to("Admin", admin_root_path) %> ]&nbsp;&nbsp;
+      <% end %>
+
       <span class="<%= account_bar_classes %> welcome-message" data-test-user-welcome><%= salutation current_user %></span>
       <%= link_to "My Account", edit_user_registration_path, :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
       <%= vertical_bar(:id => "account-bar-vertical-bar",    :class => "#{account_bar_classes}") %>

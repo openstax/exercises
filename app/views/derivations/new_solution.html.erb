@@ -1,6 +1,6 @@
 <% parts = ['content/answers', 'tags', 'author/copyright holder', 'ID/number'] %>
 
-<h1>Add source solution</h1>
+<%= page_heading 'Add source solution' %>
 
 <%= form_tag(new_solution_derivation_path(@solution), :method => :get) do %>
   <%= hidden_field_tag :per_page, @per_page %>

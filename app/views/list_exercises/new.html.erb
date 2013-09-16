@@ -7,7 +7,7 @@
                    'short answers', 
                    'free response answers'] %>
 
-<h1>Add exercise</h1>
+<%= page_heading 'Add exercise' %>
 
 <%= form_tag(new_list_list_exercise_path(@list), :method => :get) do %>
   <%= hidden_field_tag :per_page, @per_page %>

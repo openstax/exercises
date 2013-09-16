@@ -9,7 +9,7 @@
                    'short answers', 
                    'free response answers'] %>
 
-<h1>Exercises</h1>
+<%= page_heading 'Exercises' %>
 
 <%= form_tag(exercises_path, :method => :get) do %>
   <%= hidden_field_tag :per_page, @per_page %>
