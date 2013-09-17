@@ -60,4 +60,12 @@ module ApplicationHelper
 
     "***@#{lld}.#{tld}"
   end
+
+  def submit_classes
+    "ui-state-default ui-corner-all submitButton"
+  end
+
+  def please_wait
+    '$(this).blur().hide().parent().append("Please wait...");'
+  end
 end

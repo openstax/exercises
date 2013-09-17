@@ -5,7 +5,7 @@ class CreateLicenses < ActiveRecord::Migration
       t.string :name, :null => false, :default => ''
       t.string :short_name, :null => false, :default => ''
       t.string :url, :null => false, :default => ''
-      t.string :partial_name, :null => false, :default => ''
+      t.string :partial_filename, :null => false, :default => ''
 
       t.timestamps
     end

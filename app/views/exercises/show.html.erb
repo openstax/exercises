@@ -6,6 +6,16 @@
 
 <br/>
 
+<p>
+  <b>License:</b>
+  <%= @exercise.license.name %>
+</p>
+
+<p>
+  <b>Embargo:</b>
+  <%= @exercise.embargo_status %>
+</p>
+
 <%= render :partial => 'collaborators/index', :locals => {:collaborators => @exercise.collaborators} %>
 
 <br/>
@@ -15,16 +25,6 @@
 
   <br/><br/>
 <% end %>
-
-<p>
-  <b>License:</b>
-  <%= @exercise.license.nil? ? 'Not yet selected.' : @exercise.license.name %>
-</p>
-
-<p>
-  <b>Embargo:</b>
-  <%= @exercise.embargo_status %>
-</p>
 
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |
 <%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>

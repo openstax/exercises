@@ -24,23 +24,32 @@
 
   <%= render :partial => 'exercises/questions/form', :locals => {:f => f} %>
 
-  <div class="embargo_form">
-    <table class="fields">
-      <tr>
-        <td><%= f.label :only_embargo_solutions, 'Embargo' %></td>
-        <td><%= f.select :only_embargo_solutions, options_for_select([['whole exercise', 0], ['solutions only', 1]]) %></td>
-      </tr>
-      <tr>
-        <td><%= f.label :embargo_days, 'for' %></td>
-        <td><%= f.number_field :embargo_days, maxlength: 3, size: 3 %></td>
-        <td>days after publication (max 180)</td>
-      </tr>
-    </table>
+  <div class="license">
+    <%= f.label :license_id, 'License' %>
+    <%= f.select :license_id, License.options %>
   </div>
 
-  <%= link_to_function 'Show embargo options', 'window.Exercise.show_embargo_form();', class: 'embargo_link' %>
+  <div class="embargo">
+    <div class="embargo_form">
+      <table class="fields">
+        <tr>
+          <td><%= f.label :only_embargo_solutions, 'Embargo' %></td>
+          <td><%= f.select :only_embargo_solutions, [['whole exercise', 0], ['solutions only', 1]] %></td>
+        </tr>
+        <tr>
+          <td><%= f.label :embargo_days, 'for' %></td>
+          <td><%= f.number_field :embargo_days, maxlength: 3, size: 3 %></td>
+          <td>days after publication (max 180)</td>
+        </tr>
+      </table>
+    </div>
 
-  <%= javascript_tag 'window.Exercise.hide_embargo_form();' unless @exercise.is_embargoed? %>
+    <%= link_to_function 'Show embargo options', 'window.Exercise.show_embargo_form();', class: 'embargo_link' %>
+
+    <%= javascript_tag 'window.Exercise.hide_embargo_form();' unless @exercise.is_embargoed? %>
+  </div>
+
+  <br/>
 
   <% if @exercise.new_record? %>
   <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>

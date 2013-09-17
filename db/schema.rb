@@ -107,7 +107,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.integer  "number",                                    :null => false
     t.integer  "version",                :default => 1,     :null => false
     t.datetime "published_at"
-    t.integer  "license_id"
+    t.integer  "license_id",                                :null => false
     t.integer  "credit"
     t.integer  "embargo_days",           :default => 0,     :null => false
     t.date     "embargoed_until"
@@ -152,13 +152,13 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
   add_index "free_response_answers", ["question_id", "position"], :name => "index_free_response_answers_on_question_id_and_position", :unique => true
 
   create_table "licenses", :force => true do |t|
-    t.integer  "position",                     :null => false
-    t.string   "name",         :default => "", :null => false
-    t.string   "short_name",   :default => "", :null => false
-    t.string   "url",          :default => "", :null => false
-    t.string   "partial_name", :default => "", :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.integer  "position",                         :null => false
+    t.string   "name",             :default => "", :null => false
+    t.string   "short_name",       :default => "", :null => false
+    t.string   "url",              :default => "", :null => false
+    t.string   "partial_filename", :default => "", :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   add_index "licenses", ["name"], :name => "index_licenses_on_name", :unique => true
@@ -303,7 +303,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.integer  "number",                       :null => false
     t.integer  "version",      :default => 1,  :null => false
     t.datetime "published_at"
-    t.integer  "license_id"
+    t.integer  "license_id",                   :null => false
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
   end

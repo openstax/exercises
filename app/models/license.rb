@@ -1,9 +1,16 @@
 class License < ActiveRecord::Base
   sortable
 
-  attr_accessible :name, :short_name, :url, :partial_name
+  has_many :exercises, :inverse_of => :license
+  has_many :solutions, :inverse_of => :license
 
-  validates_presence_of :name, :short_name, :url, :partial_name
+  attr_accessible :name, :short_name, :url, :partial_filename
+
+  validates_presence_of :name, :short_name, :url, :partial_filename
+
+  def self.options
+    all.collect{|l| [l.short_name, l.id]}
+  end
 
   ##################
   # Access Control #

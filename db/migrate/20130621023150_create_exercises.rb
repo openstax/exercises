@@ -6,7 +6,7 @@ class CreateExercises < ActiveRecord::Migration
       t.integer :number, :null => false
       t.integer :version, :null => false, :default => 1
       t.datetime :published_at
-      t.integer :license_id
+      t.integer :license_id, :null => false
       t.integer :credit
       t.integer :embargo_days, :null => false, :default => 0
       t.date :embargoed_until

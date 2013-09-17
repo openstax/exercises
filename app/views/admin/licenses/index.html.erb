@@ -1,0 +1,29 @@
+<%= page_heading 'Licenses' %>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Short name</th>
+    <th>Url</th>
+    <th>Partial filename</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @licenses.each do |license| %>
+  <tr>
+    <td><%= license.name %></td>
+    <td><%= license.short_name %></td>
+    <td><%= license.url %></td>
+    <td><%= license.partial_filename %></td>
+    <td><%= link_to 'Show', admin_license_path(license) %></td>
+    <td><%= link_to('Edit', edit_admin_license_path(license)) if license.can_be_updated_by?(current_user) %></td>
+    <td><%= link_to('Destroy', admin_license_path(license), method: :delete, data: { confirm: 'Are you sure?' }) if license.can_be_destroyed_by?(current_user) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New License', new_admin_license_path %>

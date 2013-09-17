@@ -5,14 +5,10 @@ module Publishable
   
   module ClassMethods
     def publishable(scope_symbols = nil)
-      class_name = self.class.name.downcase
+      class_name = self.name.downcase
       class_name_plural = class_name.pluralize
       derived_names = "derived_#{class_name_plural}"
       source_names = "source_#{class_name_plural}"
-
-      License.class_eval do
-        has_many class_name_plural, :inverse_of => :license
-      end
 
       class_eval do
         cattr_accessor :dup_includes_array
@@ -28,7 +24,7 @@ module Publishable
         self.publish_scope_array = scope_symbols.nil? ? nil : \
           (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
-        belongs_to :license, :inverse_of => class_name_plural
+        belongs_to :license, :inverse_of => class_name_plural.to_sym
 
         has_many :sources, :class_name => 'Derivation', :as => :derived_publishable, :dependent => :destroy
         has_many source_names, :through => :sources, :source => :source_publishable, :source_type => class_name
@@ -38,11 +34,12 @@ module Publishable
 
         has_many :collaborators, :as => :publishable, :dependent => :destroy
 
+        attr_accessible :license_id
+
         before_validation :assign_next_number, :unless => :number
         before_update :must_not_be_published
 
-        validates_presence_of :number, :version
-        validates_presence_of :license, :if => :is_published?
+        validates_presence_of :number, :version, :license
         validates_uniqueness_of :version, :scope => ((publish_scope_array || []) << :number)
 
         default_scope order("number ASC", "version DESC")
