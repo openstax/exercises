@@ -5,8 +5,8 @@
 
 <table class="list" width="100%">
   <tr>
-    <th>First Name</th>
     <th>Last Name</th>
+    <th>First Name</th>
     <th>Username</th>
     <th>Email</th>
     <th>Admin?</th>
@@ -18,8 +18,8 @@
 
 <% @users.each do |user| %>
   <tr>
-    <td><%= user.first_name %></td>
     <td><%= user.last_name %></td>
+    <td><%= user.first_name %></td>
     <td><%= user.username %></td>
     <td><%= user.email %></td>
     <td><%= yn(user.is_admin?) %></td>

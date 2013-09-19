@@ -24,6 +24,7 @@ class ExercisesController < ApplicationController
   def new
     @exercise = Exercise.new
     raise_exception_unless(@exercise.can_be_created_by?(current_user))
+    @exercise.questions << Question.new
 
     current_user.ensure_default_list
     @lists = current_user.editable_lists
@@ -57,6 +58,7 @@ class ExercisesController < ApplicationController
           @exercise.save!
           raise ActiveRecord::RecordInvalid unless @list.add_exercise(@exercise)
         end
+        @exercise.add_default_collaborator(current_user)
         format.html { redirect_to @exercise, notice: 'Exercise was successfully created.' }
         format.json { render json: @exercise, status: :created, location: @exercise }
       rescue ActiveRecord::RecordInvalid

@@ -23,7 +23,7 @@ module ExerciseSearch
     @exercise_type = published_only ? 'published exercises' : (params[:exercise_type] || 'all exercises')
     @answer_type = params[:answer_type] || 'any answer types'
 
-    @exercises = Exercise.search(@query, @part, @exercise_type, @answer_type, current_user) \
+    @exercises = Exercise.search(@query, @part, @exercise_type, @answer_type, current_user)\
                          .paginate(:page => params[:page], :per_page => @per_page)
 
     render action: error_action

@@ -1,48 +1,7 @@
-<% parts = ['content/answers', 'tags', 'author/copyright holder', 'ID/number']
-   exercise_types = ['all exercises', 'published exercises']
-   exercise_types.push('draft exercises', 'exercises in my lists') if user_signed_in?
-   answer_types = ['any answer types', 
-                   'true or false answers', 
-                   'multiple choice answers', 
-                   'matching answers', 
-                   'fill in the blank answers', 
-                   'short answers', 
-                   'free response answers'] %>
-
 <%= page_heading 'Exercises' %>
 
-<%= form_tag(exercises_path, :method => :get) do %>
-  <%= hidden_field_tag :per_page, @per_page %>
-  
-  <table width="100%">
-    <tr>
-      <td><%= label_tag 'Search for' %>&nbsp;</td>
-      <td><%= text_field_tag 'query', @query, :style => "width: 90%;" %>&nbsp;</td>
-
-      <td>&nbsp;<%= label_tag 'in' %>&nbsp;</td>
-      <td><%= select_tag 'part', options_for_select(parts, @part), :style => "width: 90%;" %></td>
-
-      <td rowspan="3" style="vertical-align:middle;"><%= submit_tag 'Search' %></td>
-    </tr>
-    <tr>
-      <td colspan="4"><hr style="float:left; width: 97%; color: lightgray; background-color: lightgray;" /></td>
-    </tr>
-    <tr>
-      <td><%= label_tag 'Restrict to' %>&nbsp;</td>
-      <td><%= select_tag 'exercise_type', options_for_select(exercise_types, @exercise_type), :style => "width: 90%;" %></td>
-
-      <td>&nbsp;<%= label_tag 'with' %>&nbsp;</td>
-      <td><%= select_tag 'answer_type', options_for_select(answer_types, @answer_type), :style => "width: 90%;" %></td>
-    </tr>
-  </table>
-<% end %>
-
-<div id="exercises">
-  <%= render :partial => 'index', 
-             :locals => { :exercises => @exercises } %>
-</div>
-
-<%= will_paginate @exercises unless @exercises.nil? %>
+<%= render :partial => 'shared/exercises_search', 
+           :locals => { :current_path => exercises_path } %>
 
 <br/>
 

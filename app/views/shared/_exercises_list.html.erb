@@ -1,0 +1,43 @@
+<% # Clients of this partial must supply the following variable:
+   # exercises
+   # Additionally, they can override the following variables:
+   container ||= nil
+   presence_check_method ||= ''
+   already_present_text ||= 'Already present'
+   form_action_path ||= root_path
+   hidden_field_name ||= 'exercise_id'
+   submit_text ||= 'Add exercise' %>
+
+<table>
+  <tr>
+    <th></th>
+    <th>Exercise</th>
+    <th>Quick View</th>
+    <th>Status</th>
+    <th>Has solutions?</th>
+    <th></th>
+  </tr>
+<% exercises.each do |exercise| %>
+  <tr>
+    <td></td>
+    <td><%= link_to exercise.name, exercise %></td>
+    <td><%= quickview_link(exercise) %></td>
+    <td><%= exercise.is_published? ? 'Published' : 'Draft' %></td>
+    <td><%= yn(!exercise.solutions.empty?) %></td>
+    <td><% unless container.nil? %>
+          <% if !presence_check_method.blank? && container.send(presence_check_method, exercise) %>
+            <%= already_present_text %>
+          <% else %>
+            <%= form_tag(form_action_path) do %>
+              <%= hidden_field_tag hidden_field_name, exercise.id %>
+              <%= submit_tag submit_text %>
+            <% end %>
+          <% end %>
+        <% end %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/exercise_quickview_dialog' %>
+
+

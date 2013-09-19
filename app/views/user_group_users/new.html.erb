@@ -1,26 +1,12 @@
 <%= page_heading 'Add user' %>
 
-<%= form_tag(new_user_group_user_group_user_path(@user_group), :method => :get) do %>
-  <table width="550px" align="center">
-    <tr>
-      <td><%= label_tag 'Search For:' %>&nbsp;</td>
-      <td><%= text_field_tag 'query', @query %>&nbsp;</td>
-      <td><%= label_tag 'in:' %>&nbsp;</td>
-      <td><%= select_tag 'type', 
-              options_for_select(['Name', 'Username', 'Email'], @type) %>
-        &nbsp;
-      </td>
-      <td>
-        <%= submit_tag 'Search' %>
-      </td>
-    </tr>
-  </table>
-<% end %>
+<%= render :partial => 'shared/users_search',
+           :locals => { :current_path => new_user_group_user_group_user_path(@user_group),
+                        :container => @user_group,
+                        :presence_check_method => 'has_user?',
+                        :already_present_text => 'Already in group',
+                        :form_action_path => user_group_user_group_users_path(@user_group) } %>
 
-<div id="users_list">
-  <%= render :partial => 'users_list',
-             :locals => {:users => @users,
-                         :user_group => @user_group} %>
-</div>
+<br/>
 
 <%= link_to 'Back', user_group_path(@user_group) %>

@@ -31,6 +31,8 @@ class User < ActiveRecord::Base
   validates_presence_of :username, :password, :email, :first_name, :last_name, :user_profile
   validates_uniqueness_of :username, :email
 
+  default_scope order(:last_name, :first_name)
+
   def name
     "#{first_name} #{last_name}"
   end

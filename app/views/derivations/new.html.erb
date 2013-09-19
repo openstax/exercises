@@ -1,45 +1,14 @@
-<% parts = ['content/answers', 'tags', 'author/copyright holder', 'ID/number']
-   answer_types = ['any answer types', 
-                   'true or false answers', 
-                   'multiple choice answers', 
-                   'matching answers', 
-                   'fill in the blank answers', 
-                   'short answers', 
-                   'free response answers'] %>
-
 <%= page_heading 'Add source exercise' %>
 
-<%= form_tag(new_exercise_derivation_path(@exercise), :method => :get) do %>
-  <%= hidden_field_tag :per_page, @per_page %>
-  <%= hidden_field_tag 'exercise_type', 'published exercises' %>
-  
-  <table width="100%">
-    <tr>
-      <td><%= label_tag 'Search for' %>&nbsp;</td>
-      <td><%= text_field_tag 'query', @query, :style => "width: 90%;" %>&nbsp;</td>
-
-      <td>&nbsp;<%= label_tag 'in' %>&nbsp;</td>
-      <td><%= select_tag 'part', options_for_select(parts, @part), :style => "width: 90%;" %></td>
-
-      <td rowspan="3" style="vertical-align:middle;"><%= submit_tag 'Search' %></td>
-    </tr>
-    <tr>
-      <td colspan="4"><hr style="float:left; width: 97%; color: lightgray; background-color: lightgray;" /></td>
-    </tr>
-    <tr>
-      <td colspan="3"><%= label_tag 'Restrict to published exercises with' %>&nbsp;</td>
-      <td><%= select_tag 'answer_type', options_for_select(answer_types, @answer_type), :style => "width: 90%;" %></td>
-    </tr>
-  </table>
-<% end %>
-
-<div id="exercises">
-  <%= render :partial => 'exercises_list', 
-             :locals => { :exercises => @exercises,
-                          :derived_exercise => @exercise } %>
-</div>
-
-<%= will_paginate @exercises unless @exercises.nil? %>
+<%= render :partial => 'shared/exercises_search', 
+           :locals => { :current_path => new_exercise_derivation_path(@exercise),
+                        :exercise_types => 'published exercises',
+                        :container => @exercise,
+                        :presence_check_method => 'has_source?',
+                        :already_present_text => 'Already a source',
+                        :form_action_path => exercise_derivations_path(derived_exercise),
+                        :hidden_field_name => 'source_publishable_id',
+                        :submit_text => 'Add source exercise' } %>
 
 <br/>
 

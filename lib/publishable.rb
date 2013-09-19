@@ -97,6 +97,16 @@ module Publishable
           c
         end
 
+        def add_default_collaborator(user)
+          c = Collaborator.new
+          c.publishable = self
+          c.user = user
+          c.is_author = true
+          c.is_copyright_holder = true
+          c.save!
+          c
+        end
+
         def add_source(publishable)
           return false if publishable.class != self.class
           Derivation.create!(:source_publishable => publishable, :derived_publishable => self)
