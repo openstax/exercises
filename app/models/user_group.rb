@@ -13,9 +13,9 @@ class UserGroup < ActiveRecord::Base
   scope :without_container, where(:container_id => nil)
   scope :visible_for, lambda { |user|
     return none if user.nil?
-    return without_container if user.is_admin?
+    return scoped if user.is_admin?
 
-    without_container.joins{users.deputies.outer}\
+    joins{users.deputies.outer}\
     .where{(users.id == user.id) |\
            (users.deputies.id == user.id)}
   }

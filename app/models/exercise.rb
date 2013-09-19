@@ -5,7 +5,7 @@ class Exercise < ActiveRecord::Base
 
   add_prepublish_check(:has_questions?, true, 'This exercise does not contain any questions.')
   add_prepublish_check(:has_correct_answers?, true, 'Some questions in this exercise do not have correct answers.')
-  add_prepublish_check(:has_blank_content?, false, 'Some questions in this exercise have blank contents or answers.')
+  add_prepublish_check(:has_blank_content?, false, 'This exercise or some of its questions have blank content or answers.')
 
   dup_includes_array = [:attachments,
                         {:questions => [{:dependent_question_pairs => :dependent_question},
@@ -67,8 +67,16 @@ class Exercise < ActiveRecord::Base
   scope :with_short_answers, joins(:short_answers)
   scope :with_free_response_answers, joins(:free_response_answers)
 
+  def to_param
+    if is_published?
+      "e#{number}v#{version}"
+    else
+      "e#{id}d"
+    end
+  end
+
   def name
-    "e#{number}v#{version}"
+    to_param
   end
 
   def summary
@@ -106,6 +114,27 @@ class Exercise < ActiveRecord::Base
         " exercise will be embargoed until #{Date.current + embargo_days.days} if published today."
       end
     end
+  end
+
+  def self.from_param(param)
+    if (param =~ /^e(\d+)d$/)
+      e = not_published.where(:id => $1.to_i)
+    elsif (param =~ /^e(\d+)(v(\d+))?$/)
+      e = published.where(:number => $1.to_i)
+      if $2.nil?
+        e = e.latest
+      else
+        e = e.where(:version => $3.to_i)
+      end
+    elsif (param =~ /^(\d+)$/)
+      e = where(:id => $1.to_i)
+    else
+      raise SecurityTransgression
+    end
+
+    e = e.first
+    raise ActiveRecord::RecordNotFound if e.nil?
+    e
   end
 
   def self.search(text, part, type, answer_type, user)
@@ -255,8 +284,6 @@ class Exercise < ActiveRecord::Base
   end
 
   def has_correct_answers?
-    return unless has_questions?
-
     questions.each do |q|
       return false unless q.has_correct_answers?
     end
@@ -266,10 +293,10 @@ class Exercise < ActiveRecord::Base
 
   def valid_embargo
     if embargo_days.between?(0, 180)
-      embargoed_until = (embargo_days == 0 ? nil : ((published_at.nil? ? Date.current : published_at) + embargo_days.days))
+      self.embargoed_until = (embargo_days == 0 ? nil : ((published_at.nil? ? Date.current : published_at) + embargo_days.days))
       return
     end
-    errors.add(:base, "Embargoes can only last from 0 to 180 days.")
+    errors.add(:embargo_days, "out of allowed range.")
     false
   end
 end

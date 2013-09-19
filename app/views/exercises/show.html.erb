@@ -26,5 +26,10 @@
   <br/><br/>
 <% end %>
 
+<% if @exercise.can_be_published_by?(current_user) || user_is_admin? %>
+<%= link_to 'Publish', publication_agreement_publishables_path(:exercise_id => @exercise.id) %> |
+<% end %>
+<% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |
+<% end %>
 <%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>

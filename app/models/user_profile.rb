@@ -19,6 +19,12 @@ class UserProfile < ActiveRecord::Base
     user.name
   end
 
+  def ensure_default_list
+    return unless default_list.nil?
+    create_default_list
+    save!
+  end
+
   ##################
   # Access Control #
   ##################

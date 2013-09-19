@@ -1,5 +1,6 @@
 class ExercisesController < ApplicationController
   skip_before_filter :authenticate_user!, :only => :index
+  before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, :dependencies]
 
   # GET /exercises
   # GET /exercises.json
@@ -10,7 +11,6 @@ class ExercisesController < ApplicationController
   # GET /exercises/1
   # GET /exercises/1.json
   def show
-    @exercise = Exercise.find(params[:id])
     raise_exception_unless(@exercise.can_be_read_by?(current_user))
 
     respond_to do |format|
@@ -25,6 +25,7 @@ class ExercisesController < ApplicationController
     @exercise = Exercise.new
     raise_exception_unless(@exercise.can_be_created_by?(current_user))
 
+    current_user.ensure_default_list
     @lists = current_user.editable_lists
     @list_id = params[:list_id] || current_user.default_list.id
 
@@ -36,7 +37,6 @@ class ExercisesController < ApplicationController
 
   # GET /exercises/1/edit
   def edit
-    @exercise = Exercise.find(params[:id])
     raise_exception_unless(@exercise.can_be_updated_by?(current_user))
   end
 
@@ -69,7 +69,6 @@ class ExercisesController < ApplicationController
   # PUT /exercises/1
   # PUT /exercises/1.json
   def update
-    @exercise = Exercise.find(params[:id])
     raise_exception_unless(@exercise.can_be_updated_by?(current_user))
 
     respond_to do |format|
@@ -86,7 +85,6 @@ class ExercisesController < ApplicationController
   # DELETE /exercises/1
   # DELETE /exercises/1.json
   def destroy
-    @exercise = Exercise.find(params[:id])
     raise_exception_unless(@exercise.can_be_destroyed_by?(current_user))
 
     @exercise.destroy
@@ -107,5 +105,11 @@ class ExercisesController < ApplicationController
       format.html # dependencies.html.erb
       format.json { render json: @exercise }
     end
+  end
+
+  protected
+
+  def get_exercise
+    @exercise = Exercise.from_param(params[:id])
   end
 end

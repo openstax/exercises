@@ -16,8 +16,8 @@ module Publishable
 
         cattr_accessor :prepublish_checks_array
         self.prepublish_checks_array = [[:is_published?, false, "This #{class_name} is already published."],
-          [:has_license?, true, "A license has not yet been specified for this #{class_name}."],
           [:has_all_roles?, true, "The author or copyright holder roles are not filled for this #{class_name}."],
+          [:has_roleless_collaborators?, false, "This #{class_name} has collaborators with no roles."],
           [:has_collaborator_requests?, false, "This #{class_name} has pending role requests."]]
 
         cattr_accessor :publish_scope_array
@@ -26,10 +26,10 @@ module Publishable
 
         belongs_to :license, :inverse_of => class_name_plural.to_sym
 
-        has_many :sources, :class_name => 'Derivation', :as => :derived_publishable, :dependent => :destroy
+        has_many :sources, :class_name => 'Derivation', :as => :publishable, :foreign_key => 'derived_publishable_id', :dependent => :destroy
         has_many source_names, :through => :sources, :source => :source_publishable, :source_type => class_name
 
-        has_many :derivations, :as => :source_publishable, :dependent => :destroy
+        has_many :derivations, :as => :publishable, :foreign_key => 'source_publishable_id', :dependent => :destroy
         has_many derived_names, :through => :derivations, :source => :derived_publishable, :source_type => class_name
 
         has_many :collaborators, :as => :publishable, :dependent => :destroy
@@ -37,20 +37,17 @@ module Publishable
         attr_accessible :license_id
 
         before_validation :assign_next_number, :unless => :number
-        before_update :must_not_be_published
 
         validates_presence_of :number, :version, :license
         validates_uniqueness_of :version, :scope => ((publish_scope_array || []) << :number)
+        validate :valid_license
 
         default_scope order("number ASC", "version DESC")
 
-        def publish
-          return if !run_prepublish_checks
-
-          collaborators.roleless.all.each { |rc| rc.destroy }
-          
+        def publish!
           self.published_at = Time.now
-          self.save
+          
+          save!
         end
 
         def new_version
@@ -87,10 +84,6 @@ module Publishable
           !published_at.nil?
         end
 
-        def has_license?
-          !license.nil?
-        end
-
         def has_collaborator?(user)
           return false if user.nil?
           !collaborators.where(:user_id => user.id).first.nil?
@@ -113,6 +106,18 @@ module Publishable
           self.number = ((publish_scope.maximum(:number) || 0) + 1)
         end
 
+        def can_be_published_by?(user)
+          published_at.nil? && can_be_updated_by?(user)
+        end
+
+        def run_prepublish_checks
+          prepublish_checks_array.each do |pc|
+            self.errors.add(:base, pc.third) unless send(pc.first) == pc.second
+          end
+
+          errors.empty?
+        end
+
         def self.add_prepublish_check(method_name, value, error_message)
           prepublish_checks_array << [method_name, value, error_message]
         end
@@ -123,10 +128,13 @@ module Publishable
           publish_scope_array.nil? ? self.class.scoped : self.class.where(Hash[publish_scope_array.map{|s| [s, send(s)]}])
         end
 
-        def must_not_be_published
-          return if published_at_was.nil?
-          errors.add(:base, "Changes cannot be made to a published #{self.class.name.downcase}.")
-          false
+        def has_all_roles?
+          !collaborators.where(:is_author => true).first.nil? && \
+            !collaborators.where(:is_copyright_holder => true).first.nil?
+        end
+
+        def has_roleless_collaborators?
+          !collaborators.roleless.first.nil?
         end
 
         def has_collaborator_requests?
@@ -134,17 +142,10 @@ module Publishable
             !collaborators.where(:toggle_copyright_holder_request => true).first.nil?
         end
 
-        def has_all_roles?
-          !collaborators.where(:is_author => true).first.nil? && \
-            !collaborators.where(:is_copyright_holder => true).first.nil?
-        end
-
-        def run_prepublish_checks
-          prepublish_checks_array.each do |pc|
-            self.errors.add(:base, pc.third) unless send(pc.first) == pc.second
-          end
-
-          errors.empty?
+        def valid_license
+          return if license.valid_for?(self)
+          errors.add(:license_id, "specified cannot be used for #{self.class.name.downcase.pluralize}.")
+          false
         end
       end
     end

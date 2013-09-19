@@ -15,5 +15,15 @@
   <%= @license.partial_filename %>
 </p>
 
+<p>
+  <b>Exercises allowed?</b>
+  <%= yn(@license.allow_exercises) %>
+</p>
+
+<p>
+  <b>Solutions allowed?</b>
+  <%= yn(@license.allow_solutions) %>
+</p>
+
 <%= link_to 'Edit', edit_admin_license_path(@license) %> |
 <%= link_to 'Back', admin_licenses_path %>

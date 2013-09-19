@@ -50,6 +50,10 @@ module ApplicationHelper
     bool ? 'Yes' : 'No'
   end
 
+  def name_link(object)
+    link_to object.name, object
+  end
+
   def hide_email(email)
     address, domain = email.split('@')
     lld, tld = domain.split('.')

@@ -27,6 +27,14 @@
     <%= f.label :partial_filename %><br />
     <%= f.text_field :partial_filename %>
   </div>
+  <div class="field">
+    <%= f.label :allow_exercises %><br />
+    <%= f.check_box :allow_exercises %>
+  </div>
+  <div class="field">
+    <%= f.label :allow_solutions %><br />
+    <%= f.check_box :allow_solutions %>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

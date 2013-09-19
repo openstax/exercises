@@ -6,6 +6,15 @@ class StaticPagesController < ApplicationController
 
   skip_before_filter :authenticate_user!
 
+  def api
+  end
+
+  def copyright
+  end
+
+  def developers
+  end
+
   protected
 
   def resolve_layout

@@ -82,7 +82,8 @@ class UserGroupsController < ApplicationController
   # DELETE /user_groups/1.json
   def destroy
     @user_group = UserGroup.find(params[:id])
-    raise_exception_unless(@user_group.can_be_destroyed_by?(current_user))
+    raise_exception_unless_admin
+    raise SecurityTransgression unless @user_group.container.nil?
 
     @user_group.destroy
 

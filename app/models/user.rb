@@ -47,6 +47,18 @@ class User < ActiveRecord::Base
     update_attribute(:disabled_at, Time.now)
   end
 
+  def ensure_default_list
+    user_profile.ensure_default_list
+  end
+
+  def editable_lists
+    lists.select{|l| l.can_be_edited_by?(self)}
+  end
+
+  def owned_lists
+    lists.select{|l| l.can_be_updated_by?(self)}
+  end
+
   def self.search(text, type)
     text = text.gsub('%', '')
     return none if text.blank?
@@ -67,10 +79,6 @@ class User < ActiveRecord::Base
       query = text + '%'  
       where{email =~ query}
     end
-  end
-
-  def editable_lists
-    lists.select{|l| l.can_be_edited_by?(self)}
   end
 
   ##################

@@ -54,8 +54,8 @@ class DerivationsController < ApplicationController
   protected
 
   def get_publishable
-    @publishable = params[:exercise_id] ? Exercise.find(params[:exercise_id]) :
-                   (params[:solution_id] ? Solution.find(params[:solution_id]) : nil)
+    @publishable = params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) :
+                   (params[:solution_id] ? Solution.from_param(params[:solution_id]) : nil)
     raise_exception_unless(!@publishable.nil? && @publishable.can_be_updated_by?(current_user))
     publishable_type = @publishable.class.name
   end

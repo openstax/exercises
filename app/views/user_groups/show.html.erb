@@ -1,5 +1,9 @@
 <%= page_heading @user_group.full_name %>
 
+<% unless @user_group.container.nil? %>
+<p>This group belongs to <%= name_link(@user_group.container) %></p>
+<% end %>
+
 <%= render :partial => 'user_group_users/index', :locals => {:user_group_users => @user_group.user_group_users,
                                                              :hide_status => !@user_group.container.nil?} %>
 

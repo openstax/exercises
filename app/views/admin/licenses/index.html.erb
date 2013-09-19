@@ -6,6 +6,8 @@
     <th>Short name</th>
     <th>Url</th>
     <th>Partial filename</th>
+    <th>Exercises allowed?</th>
+    <th>Solutions allowed?</th>
     <th></th>
     <th></th>
     <th></th>
@@ -17,9 +19,10 @@
     <td><%= license.short_name %></td>
     <td><%= license.url %></td>
     <td><%= license.partial_filename %></td>
+    <td><%= yn(license.allow_exercises) %></td>
+    <td><%= yn(license.allow_solutions) %></td>
     <td><%= link_to 'Show', admin_license_path(license) %></td>
-    <td><%= link_to('Edit', edit_admin_license_path(license)) if license.can_be_updated_by?(current_user) %></td>
-    <td><%= link_to('Destroy', admin_license_path(license), method: :delete, data: { confirm: 'Are you sure?' }) if license.can_be_destroyed_by?(current_user) %></td>
+    <td><%= link_to('Delete', admin_license_path(license), method: :delete, data: { confirm: "Are you sure you want to delete #{license.name}?" }) if license.can_be_destroyed_by?(current_user) %></td>
   </tr>
 <% end %>
 </table>

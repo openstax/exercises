@@ -33,7 +33,7 @@ class UserGroupUsersController < ApplicationController
     @user_group_user.destroy
 
     respond_to do |format|
-      format.html { redirect_to @user_group_user.user_group }
+      format.html { redirect_to user_groups_path }
       format.json { head :no_content }
     end
   end

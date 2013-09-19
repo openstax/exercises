@@ -5,7 +5,7 @@
   <%= f.fields_for :questions do |q| %>
     <div class="question_form">
       <p>
-        <b><%= q.object.id ? "Question #{q.object.position + 1}" : 'New question' %></b>
+        <b><%= q.object.id ? "Question #{q.object.position}" : 'New question' %></b>
       </p>
       <div class="field">
         <%= q.text_area :content %>

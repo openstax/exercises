@@ -84,7 +84,7 @@ class ListsController < ApplicationController
   # DELETE /lists/1.json
   def destroy
     @list = List.find(params[:id])
-    raise_exception_unless(@list.can_be_destroyed_by?(current_user))
+    raise_exception_unless_admin
 
     @list.destroy
 

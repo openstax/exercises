@@ -13,8 +13,42 @@ class Solution < ActiveRecord::Base
   validates_presence_of :question
   validates_presence_of :summary
 
+  def to_param
+    if is_published?
+      "s#{number}v#{version}"
+    else
+      "s#{id}d"
+    end
+  end
+
+  def name
+    to_param
+  end
+
   def has_blank_content?
     content.blank?
+  end
+
+  def self.from_param(exercise, param)
+    escope = where(:exercise_id => exercise.id)
+    if (param =~ /^s(\d+)d$/)
+      s = escope.not_published.where(:id => $1.to_i)
+    elsif (param =~ /^s(\d+)(v(\d+))?$/)
+      s = escope.published.where(:number => $1.to_i)
+      if $2.nil?
+        s = s.latest
+      else
+        s = s.where(:version => $3.to_i)
+      end
+    elsif (param =~ /^(\d+)$/)
+      s = where(:id => $1.to_i)
+    else
+      raise SecurityTransgression
+    end
+    
+    s = s.first
+    raise ActiveRecord::RecordNotFound if s.nil?
+    s
   end
 
   ##################

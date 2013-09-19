@@ -1,4 +1,4 @@
-<% can_update = @list.can_be_updated_by?(current_user) %>
+<% can_update = @list.can_be_updated_by?(current_user) || user_is_admin? %>
 
 <%= page_heading @list.name %>
 
@@ -51,7 +51,7 @@
 
 <br/>
 
-<% if @list.can_be_updated_by?(current_user) || user_is_admin? %>
+<% if can_update %>
 <%= link_to 'Edit List', edit_list_path(@list) %> |
 <% end %>
 <%= link_to 'Back', lists_path %>

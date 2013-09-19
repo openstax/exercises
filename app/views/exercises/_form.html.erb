@@ -25,8 +25,8 @@
   <%= render :partial => 'exercises/questions/form', :locals => {:f => f} %>
 
   <div class="license">
-    <%= f.label :license_id, 'License' %>
-    <%= f.select :license_id, License.options %>
+    <%= f.label :license_id, 'License (effective when published)' %>
+    <%= f.select :license_id, License.options_for(@exercise) %>
   </div>
 
   <div class="embargo">
@@ -39,7 +39,7 @@
         <tr>
           <td><%= f.label :embargo_days, 'for' %></td>
           <td><%= f.number_field :embargo_days, maxlength: 3, size: 3 %></td>
-          <td>days after publication (max 180)</td>
+          <td>days after publication (0 - 180)</td>
         </tr>
       </table>
     </div>

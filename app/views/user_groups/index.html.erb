@@ -16,7 +16,9 @@
   <tr>
     <td><%= link_to user_group.full_name, user_group %></td>
     <td><%= (user_group_user.is_manager ? 'Manager' : 'Member') unless user_group_user.nil? %></td>
-    <td><%= link_to('Leave group', user_group_user, method: :delete, data: { confirm: 'Are you sure?' }) unless user_group_user.nil? %></td>
+    <td><%= user_group_user.nil? ? \
+              (link_to('Delete', user_group, method: :delete, data: { confirm: "Are you sure you want to delete #{user_group.full_name}?" }) if user_group.container.nil?) : \
+              link_to('Leave group', user_group_user, method: :delete, data: { confirm: "Are you sure you want to leave #{user_group.full_name}?" }) %></td>
   </tr>
 <% end %>
 </table>

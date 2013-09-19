@@ -45,15 +45,27 @@ class CollaboratorsController < ApplicationController
     raise_exception_unless(@collaborator.can_be_updated_by?(current_user))
 
     respond_to do |format|
-      if @collaborator.update_attribute(:toggle_author_request, !@collaborator.toggle_author_request)
-        format.html { redirect_to @collaborator.publishable,
-          notice: @collaborator.toggle_author_request ? \
-            "A message was sent to #{@collaborator.user.name} requesting permission to make this change." : \
-            "Author request cancelled" }
-        format.json { head :no_content }
+      if @collaborator.user == current_user
+        if @collaborator.update_attribute(:is_author, !@collaborator.is_author)
+          @collaborator.update_attribute(:toggle_author_request, false)
+          format.html { redirect_to @collaborator.publishable,
+            notice: "You are #{@collaborator.is_author ? 'now' : 'no longer'} an author for #{@collaborator.publishable.name}." }
+          format.json { head :no_content }
+        else
+          format.html { redirect_to @collaborator.publishable }
+          format.json { render json: @collaborator.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { redirect_to @collaborator.publishable }
-        format.json { render json: @collaborator.errors, status: :unprocessable_entity }
+        if @collaborator.update_attribute(:toggle_author_request, !@collaborator.toggle_author_request)
+          format.html { redirect_to @collaborator.publishable,
+            notice: @collaborator.toggle_author_request ? \
+              "A message was sent to #{@collaborator.user.name} requesting permission to make this change." : \
+              "Author request cancelled" }
+          format.json { head :no_content }
+        else
+          format.html { redirect_to @collaborator.publishable }
+          format.json { render json: @collaborator.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -65,15 +77,27 @@ class CollaboratorsController < ApplicationController
     raise_exception_unless(@collaborator.can_be_updated_by?(current_user))
 
     respond_to do |format|
-      if @collaborator.update_attribute(:toggle_copyright_holder_request, !@collaborator.toggle_copyright_holder_request)
-        format.html { redirect_to @collaborator.publishable,
-          notice: @collaborator.toggle_copyright_holder_request ? \
-            "A message was sent to #{@collaborator.user.name} requesting permission to make this change." : \
-            "Copyright holder request cancelled" }
-        format.json { head :no_content }
+      if @collaborator.user == current_user
+        if @collaborator.update_attribute(:is_copyright_holder, !@collaborator.is_copyright_holder)
+          @collaborator.update_attribute(:toggle_copyright_holder_request, false)
+          format.html { redirect_to @collaborator.publishable,
+            notice: "You are #{@collaborator.is_copyright_holder ? 'now' : 'no longer'} a copyright holder for #{@collaborator.publishable.name}." }
+          format.json { head :no_content }
+        else
+          format.html { redirect_to @collaborator.publishable }
+          format.json { render json: @collaborator.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { redirect_to @collaborator.publishable }
-        format.json { render json: @collaborator.errors, status: :unprocessable_entity }
+        if @collaborator.update_attribute(:toggle_copyright_holder_request, !@collaborator.toggle_copyright_holder_request)
+          format.html { redirect_to @collaborator.publishable,
+            notice: @collaborator.toggle_copyright_holder_request ? \
+              "A message was sent to #{@collaborator.user.name} requesting permission to make this change." : \
+              "Copyright holder request cancelled" }
+          format.json { head :no_content }
+        else
+          format.html { redirect_to @collaborator.publishable }
+          format.json { render json: @collaborator.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -121,8 +145,9 @@ class CollaboratorsController < ApplicationController
   protected
 
   def get_publishable
-    @publishable = params[:exercise_id] ? Exercise.find(params[:exercise_id]) :
-                   (params[:solution_id] ? Solution.find(params[:solution_id]) : nil)
+    @publishable = params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) :
+                   (params[:solution_id] ? Solution.from_param(params[:solution_id]) : nil)
     raise_exception_unless(!@publishable.nil? && @publishable.can_be_updated_by?(current_user))
+    publishable_type = @publishable.class.name
   end
 end

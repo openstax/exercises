@@ -5,6 +5,11 @@ Exercises::Application.routes.draw do
 
   devise_for :users, :controllers => { :registrations => "registrations" }
 
+  def publishable
+    resources :collaborators, :only => [:new, :create]
+    resources :derivations, :only => [:new, :create]
+  end
+
   resources :users, :only => [] do
     collection do
       get 'help'
@@ -30,8 +35,7 @@ Exercises::Application.routes.draw do
   resources :exercises do
     get 'quickview', :on => :member
 
-    resources :collaborators, :only => [:new, :create]
-    resources :derivations, :only => [:new, :create]
+    publishable
   end
 
   resources :questions, :only => [] do
@@ -42,8 +46,7 @@ Exercises::Application.routes.draw do
   resources :question_dependency_pairs, :only => [:destroy]
 
   resources :solutions, :only => [:edit, :update, :destroy] do
-    resources :collaborators, :only => [:new, :create]
-    resources :derivations, :only => [:new, :create]
+    publishable
   end
 
   resources :attachments
@@ -55,13 +58,20 @@ Exercises::Application.routes.draw do
 
   resources :derivations, :only => [:destroy]
 
+  resources :publishables, :only => [] do
+    collection do
+      get 'publication_agreement'
+      post 'publish'
+    end
+  end
+
   resources :api_keys, :except => [:new, :edit, :update]
 
   get 'api', :to => 'static_pages#api'
   get 'copyright', :to => 'static_pages#copyright'
   get 'developers', :to => 'static_pages#developers'
 
-  root :to => "static_pages#home"
+  root :to => 'static_pages#home'
 
   namespace :admin do
     resources :users, :except => [:new, :create] do
@@ -75,7 +85,7 @@ Exercises::Application.routes.draw do
 
     resources :user_groups, :only => [:index]
 
-    root :to => "console#index"
+    root :to => 'console#index'
   end
 
   namespace :api, defaults: {format: 'json'} do
