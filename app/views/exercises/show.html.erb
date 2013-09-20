@@ -16,15 +16,27 @@
   <%= @exercise.embargo_status %>
 </p>
 
-<%= render :partial => 'collaborators/index', :locals => {:collaborators => @exercise.collaborators} %>
-
-<br/>
+<%= render :partial => 'collaborators/index', :locals => { :collaborators => @exercise.collaborators } %>
 
 <% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
   <%= link_to 'Add collaborator', new_exercise_collaborator_path(@exercise) %>
 
-  <br/><br/>
+  <br/>
 <% end %>
+
+<br/>
+
+<%= render :partial => 'derivations/index', :locals => { :derivations => @exercise.sources } %>
+
+<br/>
+
+<% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
+  <%= link_to 'Add source', new_exercise_derivation_path(@exercise) %>
+
+  <br/>
+<% end %>
+
+<br/>
 
 <% if @exercise.can_be_published_by?(current_user) || user_is_admin? %>
 <%= link_to 'Publish', publication_agreement_publishables_path(:exercise_id => @exercise.id) %> |

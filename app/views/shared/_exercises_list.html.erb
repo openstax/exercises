@@ -2,9 +2,11 @@
    # exercises
    # Additionally, they can override the following variables:
    container ||= nil
+   exclude_id ||= nil
+   exclude_text ||= 'Cannot add'
    presence_check_method ||= ''
    already_present_text ||= 'Already present'
-   form_action_path ||= root_path
+   form_action_path ||= nil
    hidden_field_name ||= 'exercise_id'
    submit_text ||= 'Add exercise' %>
 
@@ -25,7 +27,9 @@
     <td><%= exercise.is_published? ? 'Published' : 'Draft' %></td>
     <td><%= yn(!exercise.solutions.empty?) %></td>
     <td><% unless container.nil? %>
-          <% if !presence_check_method.blank? && container.send(presence_check_method, exercise) %>
+          <% if exercise.id == exclude_id %>
+            <%= exclude_text %>
+          <% elsif !presence_check_method.blank? && container.send(presence_check_method, exercise) %>
             <%= already_present_text %>
           <% else %>
             <%= form_tag(form_action_path) do %>

@@ -1,12 +1,14 @@
 <%= page_heading 'Add source exercise' %>
 
 <%= render :partial => 'shared/exercises_search', 
-           :locals => { :current_path => new_exercise_derivation_path(@exercise),
+           :locals => { :current_path => new_exercise_derivation_path(@publishable),
                         :exercise_types => 'published exercises',
-                        :container => @exercise,
+                        :container => @publishable,
+                        :exclude_id => @publishable.id,
+                        :exclude_text => 'Cannot add itself',
                         :presence_check_method => 'has_source?',
-                        :already_present_text => 'Already a source',
-                        :form_action_path => exercise_derivations_path(derived_exercise),
+                        :already_present_text => 'Already a source exercise',
+                        :form_action_path => exercise_derivations_path(@publishable),
                         :hidden_field_name => 'source_publishable_id',
                         :submit_text => 'Add source exercise' } %>
 

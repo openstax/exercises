@@ -12,6 +12,8 @@
                      'short answers', 
                      'free response answers']
    container ||= nil
+   exclude_id ||= nil
+   exclude_text ||= 'Cannot add'
    presence_check_method ||= ''
    already_present_text ||= 'Already present'
    form_action_path ||= nil
@@ -58,6 +60,8 @@
   <%= render :partial => 'shared/exercises_list', 
              :locals => { :exercises => @exercises,
                           :container => container,
+                          :exclude_id => exclude_id,
+                          :exclude_text => exclude_text,
                           :presence_check_method => presence_check_method,
                           :already_present_text => already_present_text,
                           :form_action_path => form_action_path,

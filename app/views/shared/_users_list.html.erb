@@ -2,9 +2,11 @@
    # users
    # Additionally, they can override the following variables:
    container ||= nil
+   exclude_id ||= nil
+   exclude_text ||= 'Cannot add'
    presence_check_method ||= ''
    already_present_text ||= 'Already present'
-   form_action_path ||= root_path
+   form_action_path ||= nil
    hidden_field_name ||= 'user_id'
    submit_text ||= 'Add user' %>
 
@@ -29,7 +31,9 @@
     <td><%= user.username %>&nbsp;</td>
     <td><%= hide_email(user.email) %>&nbsp;</td>
     <td><% unless container.nil? %>
-          <% if !presence_check_method.blank? && container.send(presence_check_method, user) %>
+          <% if user.id == exclude_id %>
+            <%= exclude_text %>
+          <% elsif !presence_check_method.blank? && container.send(presence_check_method, user) %>
             <%= already_present_text %>
           <% else %>
             <%= form_tag(form_action_path) do %>

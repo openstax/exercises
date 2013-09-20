@@ -112,6 +112,11 @@ module Publishable
           Derivation.create!(:source_publishable => publishable, :derived_publishable => self)
         end
 
+        def has_source?(publishable)
+          return false if publishable.class != self.class
+          !sources.where(:source_publishable_id => publishable.id).first.nil?
+        end
+
         def assign_next_number
           self.number = ((publish_scope.maximum(:number) || 0) + 1)
         end

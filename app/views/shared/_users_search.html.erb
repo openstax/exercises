@@ -3,11 +3,13 @@
    # Additionally, they can override the following variables:
    types ||= ['Name', 'Username', 'Email']
    container ||= nil
+   exclude_id ||= nil
+   exclude_text ||= 'Cannot add'
    presence_check_method ||= ''
    already_present_text ||= 'Already present'
    form_action_path ||= nil
    hidden_field_name ||= 'user_id'
-   submit_text ||= 'Add exercise' %>
+   submit_text ||= 'Add user' %>
 
 <%= form_tag(current_path, :method => :get) do %>
   <table width="100%" align="center">
@@ -27,6 +29,8 @@
   <%= render :partial => 'shared/users_list',
              :locals => { :users => @users,
                           :container => container,
+                          :exclude_id => exclude_id,
+                          :exclude_text => exclude_text,
                           :presence_check_method => presence_check_method,
                           :already_present_text => already_present_text,
                           :form_action_path => form_action_path,

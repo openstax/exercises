@@ -4,7 +4,7 @@ class DerivationsController < ApplicationController
   # GET /publishables/1/derivations/new
   # GET /publishables/1/derivations/new.json
   def new
-    case publishable_type
+    case @publishable.class.name
     when 'Exercise'
       exercise_search
     when 'Solution'
@@ -15,17 +15,16 @@ class DerivationsController < ApplicationController
   # POST /publishables/1/derivations
   # POST /publishables/1/derivations.json
   def create
-    publishable_class = @publishable.class
-    source_publishable = publishable_class.find(params[:source_publishable_id])
+    source_publishable = @publishable.class.find(params[:source_publishable_id])
 
     @derivation = @publishable.add_source(source_publishable)
     respond_to do |format|
       if @derivation.persisted?
-        format.html { redirect_to @publishable, notice: 'Source was successfully added to list.' }
+        format.html { redirect_to @publishable, notice: 'Source was successfully added.' }
         format.json { render json: @derivation, status: :created, location: @derivation }
       else
         format.html do
-          case publishable_class.name
+          case @publishable.class.name
           when 'Exercise'
             exercise_search_error_html
           when 'Solution'
@@ -57,6 +56,5 @@ class DerivationsController < ApplicationController
     @publishable = params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) :
                    (params[:solution_id] ? Solution.from_param(params[:solution_id]) : nil)
     raise_exception_unless(!@publishable.nil? && @publishable.can_be_updated_by?(current_user))
-    publishable_type = @publishable.class.name
   end
 end
