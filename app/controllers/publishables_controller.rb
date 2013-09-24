@@ -1,6 +1,7 @@
 class PublishablesController < ApplicationController
   before_filter :get_publishables
 
+  # GET /publishables/1/publication_agreement
   def publication_agreement
     @license = @publishables.first.license
     @licenses_differ = @publishables.any?{|p| p.license != @license}
@@ -11,6 +12,7 @@ class PublishablesController < ApplicationController
     end
   end
 
+  # POST /publishables/1/publish
   def publish
     unless @errors.blank?
       respond_to do |format|

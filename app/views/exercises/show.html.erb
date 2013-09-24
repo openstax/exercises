@@ -1,3 +1,5 @@
+<% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>
+
 <%= page_heading "Exercise #{@exercise.to_param}" %>
 
 <%= @exercise.content_html.html_safe %>
@@ -38,10 +40,41 @@
 
 <br/>
 
+<% if @exercise.is_published? && (@exercise.can_be_derived_by?(current_user) || user_is_admin?) %>
+<b>Create a derived exercise:</b>
+<%= form_tag derive_exercise_path(@exercise) do %>
+  <div class="field">
+    <%= label_tag :list_id, 'Create in:' %>
+    <%= select_tag :list_id, list_options %>
+  </div>
+  <div class="actions">
+    <%= submit_tag 'Create derivation', :class => submit_classes %>
+  </div>
+<% end %>
+<% end %>
+
+<% if @exercise.is_published? && (@exercise.new_version_can_be_created_by?(current_user) || user_is_admin?) %>
+<b>New version:</b>
+<%= form_tag new_version_exercise_path(@exercise) do %>
+  <div class="field">
+    <%= label_tag :list_id, 'Create in:' %>
+    <%= select_tag :list_id, list_options %>
+  </div>
+  <div class="actions">
+    <%= submit_tag 'Create new version', :class => submit_classes %>
+  </div>
+<% end %>
+<% end %>
+
 <% if @exercise.can_be_published_by?(current_user) || user_is_admin? %>
 <%= link_to 'Publish', publication_agreement_publishables_path(:exercise_id => @exercise.id) %> |
 <% end %>
 <% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |
+<% end %>
+<% if @exercise.can_be_destroyed_by?(current_user) || user_is_admin? %>
+<%= link_to 'Delete', @exercise, method: :delete, data: {
+      confirm: 'Are you sure you want to delete this exercise?'
+} %> |
 <% end %>
 <%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>

@@ -1,6 +1,6 @@
 class ExercisesController < ApplicationController
-  skip_before_filter :authenticate_user!, :only => :index
-  before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, :dependencies]
+  skip_before_filter :authenticate_user!, :only => [:index, :show]
+  before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, :dependencies, :derive, :new_version]
 
   # GET /exercises
   # GET /exercises.json
@@ -12,6 +12,9 @@ class ExercisesController < ApplicationController
   # GET /exercises/1.json
   def show
     raise_exception_unless(@exercise.can_be_read_by?(current_user))
+
+    @lists = current_user.editable_lists
+    @list_id = params[:list_id] || current_user.default_list.id
 
     respond_to do |format|
       format.html # show.html.erb
@@ -106,6 +109,50 @@ class ExercisesController < ApplicationController
     respond_to do |format|
       format.html # dependencies.html.erb
       format.json { render json: @exercise }
+    end
+  end
+
+  # POST /exercises/1/derive
+  # POST /exercises/1/derive.json
+  def derive
+    raise_exception_unless(@exercise.can_be_derived_by?(current_user))
+    @list = params[:list_id].nil? ? current_user.default_list : List.find(params[:list_id])
+    raise_exception_unless(@list.can_be_edited_by?(current_user))
+
+    respond_to do |format|
+      #begin
+        Exercise.transaction do
+          @derived_exercise = @exercise.derive_for(current_user)
+          raise ActiveRecord::RecordInvalid.new(@exercise) unless @list.add_exercise(@derived_exercise)
+        end
+        format.html { redirect_to @derived_exercise, notice: "Derivation of #{@exercise.name} was successfully created." }
+        format.json { render json: @derived_exercise, status: :created, location: @derived_exercise }
+      #rescue ActiveRecord::RecordInvalid
+        format.html { redirect_to @exercise, alert: "Derivation could not be created." }
+        format.json { render json: @exercise.errors, status: :unprocessable_entity }
+      #end
+    end
+  end
+
+  # POST /exercises/1/new_version
+  # POST /exercises/1/new_version.json
+  def new_version
+    raise_exception_unless(@exercise.new_version_can_be_created_by?(current_user))
+    @list = params[:list_id].nil? ? current_user.default_list : List.find(params[:list_id])
+    raise_exception_unless(@list.can_be_edited_by?(current_user))
+
+    respond_to do |format|
+      begin
+        Exercise.transaction do
+          @new_version = @exercise.new_version
+          raise ActiveRecord::RecordInvalid.new(@exercise) unless @list.add_exercise(@new_version)
+        end
+        format.html { redirect_to @new_version, notice: "New version of #{@exercise.name} was successfully created." }
+        format.json { render json: @new_version, status: :created, location: @new_version }
+      rescue ActiveRecord::RecordInvalid
+        format.html { redirect_to @exercise, alert: "New version could not be created." }
+        format.json { render json: @exercise.errors, status: :unprocessable_entity }
+      end
     end
   end
 

@@ -24,7 +24,7 @@
     <td></td>
     <td><%= link_to exercise.name, exercise %></td>
     <td><%= quickview_link(exercise) %></td>
-    <td><%= exercise.is_published? ? 'Published' : 'Draft' %></td>
+    <td><%= exercise.is_published? ? (exercise.is_embargoed? ? 'Embargoed' : 'Published') : 'Draft' %></td>
     <td><%= yn(!exercise.solutions.empty?) %></td>
     <td><% unless container.nil? %>
           <% if exercise.id == exclude_id %>

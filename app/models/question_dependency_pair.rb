@@ -43,7 +43,7 @@ class QuestionDependencyPair < ActiveRecord::Base
   end
 
   def different_questions
-    return if dependent_question.id != independent_question.id
+    return if dependent_question != independent_question
     errors.add(:base, "A dependency must be created between 2 different questions.")
     false
   end

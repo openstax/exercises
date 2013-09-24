@@ -7,17 +7,14 @@ class Exercise < ActiveRecord::Base
   add_prepublish_check(:has_correct_answers?, true, 'Some questions in this exercise do not have correct answers.')
   add_prepublish_check(:has_blank_content?, false, 'This exercise or some of its questions have blank content or answers.')
 
-  dup_includes_array = [:attachments,
-                        {:questions => [{:dependent_question_pairs => :dependent_question},
-                                        {:independent_question_pairs => :independent_question},
-                                        :true_or_false_answers,
-                                        :multiple_choice_answers,
-                                        :matching_answers,
-                                        :fill_in_the_blank_answers,
-                                        :short_answers,
-                                        :free_response_answers]}]
-
-  has_many :same_number, :class_name => 'Exercise', :primary_key => :number, :foreign_key => :number
+  add_dup_field({:questions => [{:dependent_question_pairs => :dependent_question},
+                                {:independent_question_pairs => :independent_question},
+                                 :true_or_false_answers,
+                                 :multiple_choice_answers,
+                                 :matching_answers,
+                                 :fill_in_the_blank_answers,
+                                 :short_answers,
+                                 :free_response_answers]})
 
   has_many :questions, :dependent => :destroy, :inverse_of => :exercise
 
@@ -39,12 +36,7 @@ class Exercise < ActiveRecord::Base
 
   validate :valid_embargo
 
-  scope :not_published, where(:published_at => nil)
-  scope :published, where{published_at != nil}
   scope :not_embargoed, where{(embargoed_until == nil) | (embargoed_until < Date.current)}
-  scope :latest, joins{same_number}
-                   .where{(id == same_number.id) | (same_number.published_at != nil)}
-                   .group(:id).having{version >= max(same_number.version)}
 
   scope :visible_for, lambda { |user|
     return published.not_embargoed if user.nil?
@@ -251,16 +243,25 @@ class Exercise < ActiveRecord::Base
   end
     
   def can_be_created_by?(user)
-    !user.nil? && !is_published?
+    !user.nil? && (number == nil || (!same_number.latest.first.nil? && same_number.latest.first.can_be_edited_by?(user)))
   end
   
   def can_be_updated_by?(user)
-    !is_published? && !lists.first.nil? && \
-    (lists.first.can_be_edited_by?(user) || has_collaborator?(user))
+    !is_published? && ((!lists.first.nil? && \
+    lists.first.can_be_edited_by?(user)) || \
+    has_collaborator?(user))
   end
   
   def can_be_destroyed_by?(user)
     can_be_updated_by?(user)
+  end
+
+  def can_be_derived_by?(user)
+    !user.nil? && can_be_read_by?(user)
+  end
+
+  def new_version_can_be_created_by?(user)
+    is_published? && has_collaborator?(user)
   end
 
   protected

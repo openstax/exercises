@@ -3,4 +3,10 @@
 
 <%= page_heading("Publishing") %>
 
-<p>Your items have been successfully published.</p>
+<p>The following items have been successfully published:</p>
+
+<ul>
+<% @publishables.each do |p| %>
+  <li><%= link_to p.name, p %></li>
+<% end %>
+</ul>

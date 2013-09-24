@@ -6,6 +6,11 @@ Exercises::Application.routes.draw do
   devise_for :users, :controllers => { :registrations => "registrations" }
 
   def publishable
+    member do
+      post 'derive'
+      post 'new_version'
+    end
+
     resources :collaborators, :only => [:new, :create]
     resources :derivations, :only => [:new, :create]
   end
@@ -33,9 +38,9 @@ Exercises::Application.routes.draw do
   resources :list_exercises, :only => [:destroy]
 
   resources :exercises do
-    get 'quickview', :on => :member
-
     publishable
+
+    get 'quickview', :on => :member
   end
 
   resources :questions, :only => [] do
