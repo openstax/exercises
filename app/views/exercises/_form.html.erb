@@ -12,21 +12,20 @@
   <% end %>
 
   <p>
-    <b><%= @exercise.id ? "Exercise e#{@exercise.number}v#{@exercise.version}" : 'New exercise' %></b>
+    <b><%= @exercise.id ? "Exercise e#{@exercise.number}v#{@exercise.version}" : 'New exercise' %> (Suggested credit: <%= f.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
   </p>
 
   <div class="field">
     <%= f.text_area :content %>
   </div>
   <div class="field">
-    <%= f.label :credit %>
-    <%= f.text_field :credit %>
+
   </div>
 
   <%= render :partial => 'exercises/questions/form', :locals => {:f => f} %>
 
   <div class="license">
-    <%= f.label :license_id, 'License (effective when published)' %>
+    <%= f.label :license_id, 'License (effective when published):' %>
     <%= f.select :license_id, License.options_for(@exercise) %>
   </div>
 

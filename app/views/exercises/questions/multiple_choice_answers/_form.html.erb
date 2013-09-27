@@ -3,24 +3,25 @@
 
 <div class="answers_form">
   <p>
-    <b>Multiple choice answers</b>
+    <b>Multiple choice</b>
   </p>
   <%= q.fields_for :multiple_choice_answers do |a| %>
     <div class="answer_form">
+      <p>
+        <b><%= q.object.id ? "Multiple choice #{q.object.position}" : 'New multiple choice' %>
+        - Credit*: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %></b>
+      </p>
+
       <div class="field">
         <%= a.label :content %><br />
         <%= a.text_area :content %>
       </div>
-      <div class="field">
-        <%= a.label :credit %><br />
-        <%= a.text_field :credit %>
-      </div>
 
-      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+      <%= a.link_to_remove "Remove this multiple choice", confirm: 'Are you sure you wish to remove this multiple choice and all associated content?' %><br/><br/>
     </div>
   <% end %>
 
-  <%= q.link_to_add "Add multiple choice answer", :multiple_choice_answers %>
+  <%= q.link_to_add "Add multiple choice", :multiple_choice_answers %>
 </div>
 
 <br/>

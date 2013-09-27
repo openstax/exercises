@@ -3,32 +3,33 @@
 
 <div class="answers_form">
   <p>
-    <b>Free response answers</b>
+    <b>Free response</b>
   </p>
   <%= q.fields_for :free_response_answers do |a| %>
     <div class="answer_form">
+      <p>
+        <b><%= q.object.id ? "Free response #{q.object.position}" : 'New free response' %>
+        (Suggested credit: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
+      </p>
+
       <div class="field">
         <%= a.label :content %><br />
         <%= a.text_area :content %>
       </div>
       <div class="field">
         <%= a.label :free_response %><br />
-        <%= a.text_field :free_response %>
+        <%= a.text_area :free_response %>
       </div>
       <div class="field">
-        <%= a.label :can_be_sketched %><br />
-        <%= a.check_box :can_be_sketched %>
-      </div>
-      <div class="field">
-        <%= a.label :credit %><br />
-        <%= a.text_field :credit %>
+        <%= a.label :can_be_sketched, 'Can be sketched?', :class => 'float-left' %>
+        <%= a.check_box :can_be_sketched, :class => 'inline' %>
       </div>
 
-      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+      <%= a.link_to_remove "Remove this free response", confirm: 'Are you sure you wish to remove this free response and all associated content?' %><br/><br/>
     </div>
   <% end %>
 
-  <%= q.link_to_add "Add free response answer", :free_response_answers %>
+  <%= q.link_to_add "Add free response", :free_response_answers %>
 </div>
 
 <br/>

@@ -6,6 +6,7 @@ class CreateFreeResponseAnswers < ActiveRecord::Migration
       t.integer :position, :null => false
       t.integer :question_id, :null => false
       t.text :free_response, :null => false, :default => ''
+      t.text :free_response_html, :null => false, :default => ''
       t.boolean :can_be_sketched, :null => false, :default => false
       t.integer :credit
 

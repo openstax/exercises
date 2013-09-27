@@ -7,6 +7,11 @@
   </p>
   <%= q.fields_for :short_answers do |a| %>
     <div class="answer_form">
+      <p>
+        <b><%= q.object.id ? "Short answer #{q.object.position}" : 'New short answer' %>
+        (Suggested credit: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
+      </p>
+
       <div class="field">
         <%= a.label :content %><br />
         <%= a.text_area :content %>
@@ -15,12 +20,8 @@
         <%= a.label :short_answer %><br />
         <%= a.text_area :short_answer %>
       </div>
-      <div class="field">
-        <%= a.label :credit %><br />
-        <%= a.text_field :credit %>
-      </div>
 
-      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+      <%= a.link_to_remove "Remove this short answer", confirm: 'Are you sure you wish to remove this short answer and all associated content?' %><br/><br/>
     </div>
   <% end %>
 

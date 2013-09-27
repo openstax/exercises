@@ -4,5 +4,5 @@
 <div class="answer">
   <% if !answer.credit.nil? && answer.credit > 0 %>(<%= answer.credit %> pt): <% end %>
   <%= answer.content_html.html_safe %>
-  <%= answer.free_response %>
+  <%= answer.free_response_html.html_safe %>
 </div>

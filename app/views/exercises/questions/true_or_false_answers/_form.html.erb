@@ -3,28 +3,30 @@
 
 <div class="answers_form">
   <p>
-    <b>True or false answers</b>
+    <b>True or false</b>
   </p>
+
   <%= q.fields_for :true_or_false_answers do |a| %>
     <div class="answer_form">
+      <p>
+        <b><%= q.object.id ? "True or false #{q.object.position}" : 'New true or false' %>
+        (Suggested credit: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
+      </p>
+
       <div class="field">
         <%= a.label :content %><br />
         <%= a.text_area :content %>
       </div>
       <div class="field">
-        <%= a.label :is_true %><br />
-        <%= a.check_box :is_true %>
-      </div>
-      <div class="field">
-        <%= a.label :credit %><br />
-        <%= a.text_field :credit %>
+        <%= a.label :is_true, 'Is this true?', :class => 'float-left' %>
+        <%= a.check_box :is_true, :class => 'inline' %>
       </div>
 
-      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+      <%= a.link_to_remove "Remove this true or false", confirm: 'Are you sure you wish to remove this true or false and all associated content?' %><br/><br/>
     </div>
   <% end %>
 
-  <%= q.link_to_add "Add true or false answer", :true_or_false_answers %>
+  <%= q.link_to_add "Add true or false", :true_or_false_answers %>
 </div>
 
 <br/>

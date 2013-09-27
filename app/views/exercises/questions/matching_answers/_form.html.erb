@@ -3,28 +3,37 @@
 
 <div class="answers_form">
   <p>
-    <b>Matching answers</b>
+    <b>Matching pairs</b>
   </p>
+
   <%= q.fields_for :matching_answers do |a| %>
     <div class="answer_form">
-      <div class="field">
-        <%= a.label :left_content %><br />
+      <p>
+        <b><%= q.object.id ? "Matching pair #{q.object.position}" : 'New matching pair' %>
+        (Suggested credit: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
+      </p>
+
+      <div class="field inline-block">
+        <%= a.label :left_content, 'Left half' %><br/>
         <%= a.text_area :left_content %>
       </div>
-      <div class="field">
-        <%= a.label :right_content %><br />
-        <%= a.text_area :right_content %>
-      </div>
-      <div class="field">
-        <%= a.label :credit %><br />
-        <%= a.text_field :credit %>
+
+      <div class="inline-block" style="width: 100px;">
+        <hr style="width: 100%; height: 3px; color: darkgray; background-color: darkgray;" />
       </div>
 
-      <%= a.link_to_remove "Remove this answer" %><br/><br/>
+      <div class="field inline-block">
+        <%= a.label :right_content, 'Right half' %><br/>
+        <%= a.text_area :right_content %>
+      </div>
+
+      <div class="clear">
+        <%= a.link_to_remove "Remove this matching pair", confirm: 'Are you sure you wish to remove this matching pair and all associated content?' %><br/><br/>
+      </div>
     </div>
   <% end %>
 
-  <%= q.link_to_add "Add matching answer", :matching_answers %>
+  <%= q.link_to_add "Add matching pair", :matching_answers %>
 </div>
 
 <br/>

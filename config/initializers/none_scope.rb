@@ -2,6 +2,6 @@
 
 class ActiveRecord::Base
    def self.none
-     where("1 == 0")
+     where('0=1')
    end
 end

@@ -27,3 +27,27 @@ p {
    text-decoration: none
   }
 }
+
+input[type="text"].inline,
+input[type="number"].inline {
+  width: 25px;
+  height: 15px;
+  margin-bottom: 3px;
+}
+
+input[type="checkbox"].inline {
+  margin-top: 0px;
+}
+
+.float-left {
+  float: left;
+  margin-right: 5px;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.clear {
+  clear: both;
+}

@@ -5,14 +5,10 @@
   <%= f.fields_for :questions do |q| %>
     <div class="question_form">
       <p>
-        <b><%= q.object.id ? "Question #{q.object.position}" : 'New question' %></b>
+        <b><%= q.object.id ? "Question #{q.object.position}" : 'New question' %> (Suggested credit: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
       </p>
       <div class="field">
         <%= q.text_area :content %>
-      </div>
-      <div class="field">
-        <%= q.label :credit %>
-        <%= q.text_field :credit %>
       </div>
 
       <%= render :partial => 'exercises/questions/true_or_false_answers/form', :locals => {:q => q} %>
@@ -22,7 +18,7 @@
       <%= render :partial => 'exercises/questions/short_answers/form', :locals => {:q => q} %>
       <%= render :partial => 'exercises/questions/free_response_answers/form', :locals => {:q => q} %>
 
-      <%= q.link_to_remove "Remove this question" %><br/><br/>
+      <%= q.link_to_remove "Remove this question", confirm: 'Are you sure you wish to remove this question and all associated content?' %><br/><br/>
     </div>
   <% end %>
 
