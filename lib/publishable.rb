@@ -4,7 +4,7 @@ module Publishable
   end
   
   module ClassMethods
-    def publishable(scope_symbols = nil)
+    def publishable
       class_name = self.name
       class_name_plural = class_name.downcase.pluralize
       derived_names = "derived_#{class_name_plural}"
@@ -19,10 +19,6 @@ module Publishable
           [:has_all_roles?, true, "The author or copyright holder roles are not filled for this #{class_name}."],
           [:has_roleless_collaborators?, false, "This #{class_name} has collaborators with no roles."],
           [:has_collaborator_requests?, false, "This #{class_name} has pending role requests."]]
-
-        cattr_accessor :publish_scope_array
-        self.publish_scope_array = scope_symbols.nil? ? nil : \
-          (scope_symbols.is_a?(Array) ? scope_symbols : [scope_symbols])
 
         belongs_to :license, :inverse_of => class_name_plural.to_sym
 
@@ -41,7 +37,7 @@ module Publishable
         before_validation :assign_next_number, :unless => :number
 
         validates_presence_of :number, :version, :license
-        validates_uniqueness_of :version, :scope => ((publish_scope_array || []) << :number)
+        validates_uniqueness_of :version, :scope => :number
         validate :valid_license
 
         default_scope order("number ASC", "version DESC")
@@ -62,7 +58,7 @@ module Publishable
         end
 
         def new_version
-          version_scope = publish_scope.where(:number => number)
+          version_scope = where(:number => number)
           latest_version = version_scope.first
           return latest_version unless latest_version.is_published?
 
@@ -132,7 +128,7 @@ module Publishable
         end
 
         def assign_next_number
-          self.number = (publish_scope.maximum(:number) || 0) + 1
+          self.number = (self.class.maximum(:number) || 0) + 1
         end
 
         def run_prepublish_checks
@@ -152,10 +148,6 @@ module Publishable
         end
 
         protected
-
-        def publish_scope
-          publish_scope_array.nil? ? self.class.scoped : self.class.where(Hash[publish_scope_array.map{|s| [s, send(s)]}])
-        end
 
         def has_all_roles?
           !collaborators.where(:is_author => true).first.nil? && \

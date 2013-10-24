@@ -138,15 +138,16 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
   add_index "fill_in_the_blank_answers", ["question_id", "position"], :name => "index_fill_in_the_blank_answers_on_question_id_and_position", :unique => true
 
   create_table "free_response_answers", :force => true do |t|
-    t.text     "content",         :default => "",    :null => false
-    t.text     "content_html",    :default => "",    :null => false
-    t.integer  "position",                           :null => false
-    t.integer  "question_id",                        :null => false
-    t.text     "free_response",   :default => "",    :null => false
-    t.boolean  "can_be_sketched", :default => false, :null => false
+    t.text     "content",            :default => "",    :null => false
+    t.text     "content_html",       :default => "",    :null => false
+    t.integer  "position",                              :null => false
+    t.integer  "question_id",                           :null => false
+    t.text     "free_response",      :default => "",    :null => false
+    t.text     "free_response_html", :default => "",    :null => false
+    t.boolean  "can_be_sketched",    :default => false, :null => false
     t.integer  "credit"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
   end
 
   add_index "free_response_answers", ["question_id", "position"], :name => "index_free_response_answers_on_question_id_and_position", :unique => true
@@ -298,7 +299,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
   add_index "short_answers", ["question_id", "position"], :name => "index_short_answers_on_question_id_and_position", :unique => true
 
   create_table "solutions", :force => true do |t|
-    t.integer  "question_id",                  :null => false
+    t.integer  "exercise_id",                  :null => false
     t.text     "summary",      :default => "", :null => false
     t.text     "content",      :default => "", :null => false
     t.text     "content_html", :default => "", :null => false
@@ -310,9 +311,9 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.datetime "updated_at",                   :null => false
   end
 
+  add_index "solutions", ["exercise_id", "number", "version"], :name => "index_solutions_on_exercise_id_and_number_and_version", :unique => true
   add_index "solutions", ["license_id"], :name => "index_solutions_on_license_id"
   add_index "solutions", ["published_at"], :name => "index_solutions_on_published_at"
-  add_index "solutions", ["question_id", "number", "version"], :name => "index_solutions_on_question_id_and_number_and_version", :unique => true
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"

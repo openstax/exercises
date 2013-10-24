@@ -16,7 +16,8 @@ class UserGroup < ActiveRecord::Base
       .where{q = (users.id == user.id) |\
                  (users.deputies.id == user.id)
              q |= (container_id == nil) if user.is_admin?
-             q}
+             q}\
+      .group(:id)
   }
 
   def full_name

@@ -1,0 +1,69 @@
+<% # Clients of this partial must supply the following variable:
+   # current_path
+   # Additionally, they can override the following variables:
+   exercise_id ||= nil
+   parts ||= ['summary/detailed explanation', 'tags', 'author/copyright holder', 'ID/number']
+   solution_types ||= ['all solutions', 'published solutions', 'draft solutions', 'solutions for exercises in my lists'] if user_signed_in?
+   solution_types ||= ['all solutions', 'published solutions']
+   locations ||= ['all exercises', 'current_exercise'] if exercise_id
+   locations ||= ['all exercises']
+   container ||= nil
+   exclude_id ||= nil
+   exclude_text ||= 'Cannot add'
+   presence_check_method ||= ''
+   already_present_text ||= 'Already present'
+   form_action_path ||= nil
+   hidden_field_name ||= 'solution_id'
+   submit_text ||= 'Add solution' %>
+
+<%= form_tag(current_path, :method => :get) do %>
+  <%= hidden_field_tag :exercise_id, exercise_id %>
+  <%= hidden_field_tag :per_page, @per_page %>
+  
+  <table width="100%">
+    <tr>
+      <td><%= label_tag 'Search for' %></td>
+      <td><%= text_field_tag 'query', @query, :style => "width: 90%;" %>&nbsp;</td>
+
+      <td><%= label_tag 'in' %></td>
+      <td><%= select_tag 'part', options_for_select(parts, @part), :style => "width: 90%;" %></td>
+
+      <td rowspan="3" style="vertical-align:middle;"><%= submit_tag 'Search' %></td>
+    </tr>
+    <tr>
+      <td colspan="4"><hr style="float:left; width: 97%; color: lightgray; background-color: lightgray;" /></td>
+    </tr>
+    <tr>
+      <td><%= label_tag 'Restrict to' %></td>
+      <td><% if solution_types.is_a? Array %>
+            <%= select_tag 'solution_type', options_for_select(solution_types, @solution_type), :style => "width: 90%;" %>
+          <% else %>
+            <%= label_tag solution_types %>
+            <%= hidden_field_tag 'solution_type', solution_types %>
+          <% end %></td>
+
+      <td><%= label_tag 'for' %></td>
+      <td><% if locations.is_a? Array %>
+            <%= select_tag 'location', options_for_select(locations, @location), :style => "width: 90%;" %>
+          <% else %>
+            <%= label_tag locations %>
+            <%= hidden_field_tag 'location', locations %>
+          <% end %></td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="exercises">
+  <%= render :partial => 'shared/solutions_list', 
+             :locals => { :solutions => @solutions,
+                          :container => container,
+                          :exclude_id => exclude_id,
+                          :exclude_text => exclude_text,
+                          :presence_check_method => presence_check_method,
+                          :already_present_text => already_present_text,
+                          :form_action_path => form_action_path,
+                          :hidden_field_name => hidden_field_name,
+                          :submit_text => submit_text } %>
+</div>
+
+<%= will_paginate @solutions unless @solutions.nil? %>

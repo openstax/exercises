@@ -1,11 +1,8 @@
-<% # Clients of this partial must supply the following variable:
-   # collaborators %>
-
-<b>Collaborators</b>
+<%= page_heading "Collaborators for #{@publishable.class.name} #{@publishable.name}" %>
 
 <div class="collaborators">
-  <% if collaborators.empty? %>
-    This exercise has no collaborators.
+  <% if @collaborators.empty? %>
+    No collaborators
   <% else %>
     <table>
       <tr>
@@ -15,7 +12,7 @@
         <th></th>
       </tr>
 
-    <% collaborators.each do |collaborator| %>
+    <% @collaborators.each do |collaborator| %>
       <tr>
         <td><%= collaborator.user.name %></td>
         <td><% if collaborator.can_be_updated_by?(current_user) || user_is_admin? %>
@@ -39,3 +36,8 @@
     </table>
   <% end %>
 </div>
+
+<br/>
+
+<%= link_to 'Add collaborator', new_polymorphic_path([@publishable, :collaborator]) %> |
+<%= link_to 'Back', @publishable %>

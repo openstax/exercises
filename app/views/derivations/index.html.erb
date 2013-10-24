@@ -1,14 +1,11 @@
-<% # Clients of this partial must supply the following variable:
-   # derivations %>
-
-<b>Sources</b>
+<%= page_heading "Sources for #{@publishable.class.name} #{@publishable.name}" %>
 
 <div class="sources">
-  <% if derivations.empty? %>
-    This exercise has no sources.
+  <% if @derivations.empty? %>
+    No sources
   <% else %>
     <table>
-    <% derivations.each do |derivation| %>
+    <% @derivations.each do |derivation| %>
       <% source = derivation.source_publishable %>
       <tr>
         <td><%= link_to source.name, source %></td>
@@ -22,3 +19,8 @@
     </table>
   <% end %>
 </div>
+
+<br/>
+
+<%= link_to 'Add source', new_polymorphic_path([@publishable, :derivation]) %> |
+<%= link_to 'Back', @publishable %>

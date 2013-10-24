@@ -1,4 +1,4 @@
-<%= form_for(@solution) do |f| %>
+<%= form_for([@exercise, @solution]) do |f| %>
   <% if @solution.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@solution.errors.count, "error") %> prohibited this solution from being saved:</h2>
@@ -12,33 +12,19 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :number %><br />
-    <%= f.number_field :number %>
-  </div>
-  <div class="field">
-    <%= f.label :version %><br />
-    <%= f.number_field :version %>
-  </div>
-  <div class="field">
-    <%= f.label :content %><br />
-    <%= f.text_area :content %>
-  </div>
-  <div class="field">
-    <%= f.label :content_html %><br />
-    <%= f.text_area :content_html %>
-  </div>
-  <div class="field">
     <%= f.label :summary %><br />
     <%= f.text_area :summary %>
   </div>
   <div class="field">
-    <%= f.label :question_id %><br />
-    <%= f.number_field :question_id %>
+    <%= f.label :content, 'Detailed Explanation' %><br />
+    <%= f.text_area :content %>
   </div>
-  <div class="field">
-    <%= f.label :creator_id %><br />
-    <%= f.number_field :creator_id %>
+
+  <div class="license">
+    <%= f.label :license_id, 'License (effective when published):' %>
+    <%= f.select :license_id, License.options_for(@solution) %>
   </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>

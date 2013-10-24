@@ -25,7 +25,7 @@ class Exercise < ActiveRecord::Base
   has_many :short_answers, :through => :questions
   has_many :free_response_answers, :through => :questions
 
-  has_many :solutions, :through => :questions
+  has_many :solutions, :dependent => :destroy, :inverse_of => :exercise
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
@@ -43,13 +43,14 @@ class Exercise < ActiveRecord::Base
     return scoped if user.is_admin?
 
     joins{lists.outer.users.outer.deputies.outer}\
-    .joins{collaborators.outer.deputies.outer}\
-    .where{((published_at != nil) &\
-    ((embargoed_until == nil) |\
-    (embargoed_until < Date.current))) |\
-    ((list.users.id == user.id) |\
-    (collaborators.user_id == user.id) |\
-    (collaborators.deputies.id == user.id))}
+      .joins{collaborators.outer.deputies.outer}\
+      .where{((published_at != nil) &\
+      ((embargoed_until == nil) |\
+      (embargoed_until < Date.current))) |\
+      ((list.users.id == user.id) |\
+      (collaborators.user_id == user.id) |\
+      (collaborators.deputies.id == user.id))}\
+      .group(:id)
   }
 
   scope :with_true_or_false_answers, joins(:true_or_false_answers)
@@ -187,6 +188,9 @@ class Exercise < ActiveRecord::Base
           id_query = $1
           num_query = $1
           qscope = ascope.where{(id == id_query) | (number == num_query)}
+        elsif (text =~ /^\s?e(\d+)d\s?$/) # Format: e(id)d
+          id_query = $1
+          qscope = ascope.where{(id == id_query)}
         elsif (text =~ /^\s?(e\.?\s?(\d+))?(,?\s?v\.?\s?(\d+))?\s?$/)
           # Format: e(number), e(number)v(version) or v(version)
           qscope = ascope

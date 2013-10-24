@@ -11,8 +11,8 @@ Exercises::Application.routes.draw do
       post 'new_version'
     end
 
-    resources :collaborators, :only => [:new, :create]
-    resources :derivations, :only => [:new, :create]
+    resources :collaborators, :only => [:index, :new, :create]
+    resources :derivations, :only => [:index, :new, :create]
   end
 
   resources :users, :only => [] do
@@ -40,17 +40,18 @@ Exercises::Application.routes.draw do
   resources :exercises do
     publishable
 
+    resources :solutions, :only => [:index, :new, :create]
+
     get 'quickview', :on => :member
   end
 
   resources :questions, :only => [] do
     resources :question_dependency_pairs, :only => [:new, :create]
-    resources :solutions, :only => [:new, :create]
   end
 
   resources :question_dependency_pairs, :only => [:destroy]
 
-  resources :solutions, :only => [:edit, :update, :destroy] do
+  resources :solutions, :only => [:show, :edit, :update, :destroy] do
     publishable
   end
 

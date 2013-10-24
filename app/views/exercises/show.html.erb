@@ -1,6 +1,6 @@
-<% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>
+<% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) unless @lists.nil? %>
 
-<%= page_heading "Exercise #{@exercise.to_param}" %>
+<%= page_heading "Exercise #{@exercise.name}" %>
 
 <%= @exercise.content_html.html_safe %>
 
@@ -17,28 +17,6 @@
   <b>Embargo:</b>
   <%= @exercise.embargo_status %>
 </p>
-
-<%= render :partial => 'collaborators/index', :locals => { :collaborators => @exercise.collaborators } %>
-
-<% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
-  <%= link_to 'Add collaborator', new_exercise_collaborator_path(@exercise) %>
-
-  <br/>
-<% end %>
-
-<br/>
-
-<%= render :partial => 'derivations/index', :locals => { :derivations => @exercise.sources } %>
-
-<br/>
-
-<% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
-  <%= link_to 'Add source', new_exercise_derivation_path(@exercise) %>
-
-  <br/>
-<% end %>
-
-<br/>
 
 <% if @exercise.is_published? && (@exercise.can_be_derived_by?(current_user) || user_is_admin?) %>
 <b>Create a derived exercise:</b>
@@ -66,15 +44,22 @@
 <% end %>
 <% end %>
 
+<%= link_to 'Solutions', exercise_solutions_path(@exercise) %> |
+
 <% if @exercise.can_be_published_by?(current_user) || user_is_admin? %>
 <%= link_to 'Publish', publication_agreement_publishables_path(:exercise_id => @exercise.id) %> |
 <% end %>
+
 <% if @exercise.can_be_updated_by?(current_user) || user_is_admin? %>
 <%= link_to 'Edit', edit_exercise_path(@exercise) %> |
+<%= link_to 'Manage collaborators', exercise_collaborators_path(@exercise) %> |
+<%= link_to 'Manage sources', exercise_derivations_path(@exercise) %> |
 <% end %>
+
 <% if @exercise.can_be_destroyed_by?(current_user) || user_is_admin? %>
 <%= link_to 'Delete', @exercise, method: :delete, data: {
       confirm: 'Are you sure you want to delete this exercise and all associated content?'
 } %> |
 <% end %>
+
 <%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>

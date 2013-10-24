@@ -28,7 +28,7 @@ class Question < ActiveRecord::Base
   has_many :short_answers, :dependent => :destroy, :inverse_of => :question
   has_many :free_response_answers, :dependent => :destroy, :inverse_of => :question
 
-  has_many :solutions, :dependent => :destroy, :inverse_of => :question
+  has_many :solutions, :through => :exercise
 
   accepts_nested_attributes_for :true_or_false_answers, :allow_destroy => true
   accepts_nested_attributes_for :multiple_choice_answers, :allow_destroy => true

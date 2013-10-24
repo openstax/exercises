@@ -1,8 +1,12 @@
 class SolutionsController < ApplicationController
-  # GET /solutions
-  # GET /solutions.json
+  skip_before_filter :authenticate_user!, :only => [:index, :show]
+  before_filter :get_solution, :only => [:show, :edit, :update, :destroy, :derive, :new_version]
+  before_filter :get_exercise, :only => [:index, :new, :create]
+
+  # GET /exercise/1/solutions
+  # GET /exercise/1/solutions.json
   def index
-    @solutions = Solution.all
+    @solutions = @exercise.solutions
 
     respond_to do |format|
       format.html # index.html.erb
@@ -13,20 +17,17 @@ class SolutionsController < ApplicationController
   # GET /solutions/1
   # GET /solutions/1.json
   def show
-    @solution = Solution.find(params[:id])
-    raise_exception_unless(@solution.can_be_read_by?(current_user))
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @solution }
     end
   end
 
-  # GET /solutions/new
-  # GET /solutions/new.json
+  # GET /exercise/1/solutions/new
+  # GET /exercise/1/solutions/new.json
   def new
     @solution = Solution.new
-    raise_exception_unless(@solution.can_be_created_by?(current_user))
+    @solution.exercise = @exercise
 
     respond_to do |format|
       format.html # new.html.erb
@@ -36,19 +37,18 @@ class SolutionsController < ApplicationController
 
   # GET /solutions/1/edit
   def edit
-    @solution = Solution.find(params[:id])
     raise_exception_unless(@solution.can_be_updated_by?(current_user))
   end
 
-  # POST /solutions
-  # POST /solutions.json
+  # POST /exercise/1/solutions
+  # POST /exercise/1/solutions.json
   def create
     @solution = Solution.new(params[:solution])
-    raise_exception_unless(@solution.can_be_created_by?(current_user))
+    @solution.exercise = @exercise
 
     respond_to do |format|
       if @solution.save
-        format.html { redirect_to @solution, notice: 'Solution was successfully created.' }
+        format.html { redirect_to exercise_solutions_path(@exercise), notice: 'Solution was successfully created.' }
         format.json { render json: @solution, status: :created, location: @solution }
       else
         format.html { render action: "new" }
@@ -60,12 +60,11 @@ class SolutionsController < ApplicationController
   # PUT /solutions/1
   # PUT /solutions/1.json
   def update
-    @solution = Solution.find(params[:id])
     raise_exception_unless(@solution.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @solution.update_attributes(params[:solution])
-        format.html { redirect_to @solution, notice: 'Solution was successfully updated.' }
+        format.html { redirect_to exercise_solutions_path(@solution.exercise), notice: 'Solution was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -77,14 +76,24 @@ class SolutionsController < ApplicationController
   # DELETE /solutions/1
   # DELETE /solutions/1.json
   def destroy
-    @solution = Solution.find(params[:id])
     raise_exception_unless(@solution.can_be_destroyed_by?(current_user))
 
     @solution.destroy
 
     respond_to do |format|
-      format.html { redirect_to solutions_url }
+      format.html { redirect_to @solution.exercise }
       format.json { head :no_content }
     end
+  end
+
+  protected
+
+  def get_solution
+    @solution = Solution.from_param(params[:id])
+  end
+
+  def get_exercise
+    @exercise = Exercise.from_param(params[:exercise_id])
+    raise_exception_unless(!@exercise.nil? && @exercise.can_be_read_by?(current_user))
   end
 end

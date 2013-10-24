@@ -13,8 +13,8 @@ class ExercisesController < ApplicationController
   def show
     raise_exception_unless(@exercise.can_be_read_by?(current_user))
 
-    @lists = current_user.editable_lists
-    @list_id = params[:list_id] || current_user.default_list.id
+    @lists = current_user.try(:editable_lists)
+    @list_id = params[:list_id] || current_user.try(:default_list).try(:id)
 
     respond_to do |format|
       format.html # show.html.erb

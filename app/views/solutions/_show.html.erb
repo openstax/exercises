@@ -1,0 +1,28 @@
+<% # Clients of this partial must supply the following variable:
+   # solution %>
+
+<p>
+  <b>Solution <%= solution.name %></b>
+</p>
+
+<p>
+  <b>Summary:</b>
+  <%= solution.summary %>
+</p>
+
+<p>
+  <b>Detailed Explanation:</b>
+  <%= solution.content_html.html_safe %>
+</p>
+
+<% if solution.can_be_updated_by?(current_user) || user_is_admin? %>
+<%= link_to 'Edit', edit_solution_path(solution) %> |
+<%= link_to 'Manage collaborators', solution_collaborators_path(solution) %> |
+<%= link_to 'Manage sources', solution_derivations_path(solution) %>
+<% end %>
+
+<% if solution.can_be_destroyed_by?(current_user) || user_is_admin? %>
+| <%= link_to 'Delete', solution, method: :delete, data: {
+      confirm: "Are you sure you want to delete #{solution.name}?"
+    } %>
+<% end %>

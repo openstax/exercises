@@ -38,9 +38,10 @@ class List < ActiveRecord::Base
     return scoped if user.is_admin?
 
     joins{users.deputies.outer}\
-    .where{(is_public == true) |\
-           (users.id == user.id) |\
-           (users.deputies.id == user.id)}
+      .where{(is_public == true) |\
+             (users.id == user.id) |\
+             (users.deputies.id == user.id)}\
+      .group(:id)
   }
 
   def has_exercise?(exercise)

@@ -1,35 +1,19 @@
-<%= page_heading 'Solutions' %>
+<%= page_heading "Solutions for Exercise #{@exercise.name}" %>
 
-<table>
-  <tr>
-    <th>Number</th>
-    <th>Version</th>
-    <th>Content</th>
-    <th>Content html</th>
-    <th>Summary</th>
-    <th>Question</th>
-    <th>Creator</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<div class="solutions">
+  <% if @solutions.empty? %>
+    This exercise has no solutions.
+  <% else %>
+    <% @solutions.each do |solution| %>
+      <div class="solution">
+        <%= render :partial => 'solutions/show', :locals => {:solution => solution} %>
+      </div>
+      <br/>
+    <% end %>
+  <% end %>
+</div>
 
-<% @solutions.each do |solution| %>
-  <tr>
-    <td><%= solution.number %></td>
-    <td><%= solution.version %></td>
-    <td><%= solution.content %></td>
-    <td><%= solution.content_html %></td>
-    <td><%= solution.summary %></td>
-    <td><%= solution.question_id %></td>
-    <td><%= solution.creator_id %></td>
-    <td><%= link_to 'Show', solution %></td>
-    <td><%= link_to 'Edit', edit_solution_path(solution) %></td>
-    <td><%= link_to 'Destroy', solution, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
+<br/>
 
-<br />
-
-<%= link_to 'New Solution', new_solution_path %>
+<%= link_to 'New solution', new_exercise_solution_path(@exercise) %> |
+<%= link_to 'Back', @exercise %>

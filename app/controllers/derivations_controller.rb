@@ -1,14 +1,26 @@
 class DerivationsController < ApplicationController
-  before_filter :get_publishable, :only => [:new, :create]
+  before_filter :get_publishable, :only => [:index, :new, :create]
+
+  # GET /publishables/1/derivations
+  # GET /publishables/1/derivations.json
+  def index
+    @derivations = @publishable.sources
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @derivations }
+    end
+  end
 
   # GET /publishables/1/derivations/new
   # GET /publishables/1/derivations/new.json
   def new
-    case @publishable.class.name
-    when 'Exercise'
-      exercise_search
-    when 'Solution'
-      solution_search
+    @publishable_class = @publishable.class.name.downcase
+    case @publishable_class
+    when 'exercise'
+      exercise_search(true)
+    when 'solution'
+      solution_search(true)
     end
   end
 
@@ -20,7 +32,7 @@ class DerivationsController < ApplicationController
     @derivation = @publishable.add_source(source_publishable)
     respond_to do |format|
       if @derivation.persisted?
-        format.html { redirect_to @publishable, notice: 'Source was successfully added.' }
+        format.html { redirect_to polymorphic_path([@publishable, :derivations]), notice: 'Source was successfully added.' }
         format.json { render json: @derivation, status: :created, location: @derivation }
       else
         format.html do
@@ -45,7 +57,7 @@ class DerivationsController < ApplicationController
     @derivation.destroy
 
     respond_to do |format|
-      format.html { redirect_to @derivation.derived_publishable }
+      format.html { redirect_to polymorphic_path([@derivation.derived_publishable, :derivations]) }
       format.json { head :no_content }
     end
   end
@@ -53,8 +65,8 @@ class DerivationsController < ApplicationController
   protected
 
   def get_publishable
-    @publishable = params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) :
-                   (params[:solution_id] ? Solution.from_param(params[:solution_id]) : nil)
+    @publishable = params[:solution_id] ? Solution.from_param(params[:solution_id]) :
+                   (params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) : nil)
     raise_exception_unless(!@publishable.nil? && @publishable.can_be_updated_by?(current_user))
   end
 end

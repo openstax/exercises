@@ -1,6 +1,5 @@
-<%= page_heading 'Editing solution' %>
+<%= page_heading "Editing solution #{@solution.name}" %>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @solution %> |
-<%= link_to 'Back', solutions_path %>
+<%= link_to 'Back', exercise_solutions_path(@solution.exercise) %>

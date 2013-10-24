@@ -1,30 +1,5 @@
-<%= page_heading "Solution #{@solution.to_param}" %>
+<%= page_heading "Solution #{@solution.name}" %>
 
-<p>
-  <b>Content:</b>
-  <%= @solution.content %>
-</p>
+<%= render :partial => 'solutions/show', :locals => {:solution => @solution} %>
 
-<p>
-  <b>Content html:</b>
-  <%= @solution.content_html %>
-</p>
-
-<p>
-  <b>Summary:</b>
-  <%= @solution.summary %>
-</p>
-
-<p>
-  <b>Question:</b>
-  <%= @solution.question_id %>
-</p>
-
-<p>
-  <b>Creator:</b>
-  <%= @solution.creator_id %>
-</p>
-
-
-<%= link_to 'Edit', edit_solution_path(@solution) %> |
-<%= link_to 'Back', solutions_path %>
+<%= link_to 'Back', exercise_solutions_path(@solution.exercise) %>
