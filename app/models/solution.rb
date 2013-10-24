@@ -13,7 +13,16 @@ class Solution < ActiveRecord::Base
   validates_presence_of :summary
 
   scope :visible_for, lambda { |user|
-    where(:exercise_id => Exercise.visible_for(user).collect{|e| e.id}) # TODO
+    escope = where{exercise_id.in my{Exercise.visible_for(user).collect{|e| e.id}}}
+
+    return escope.published if user.nil?
+    return escope if user.is_admin?
+
+    escope.joins{collaborators.outer.deputies.outer}\
+      .where{(published_at != nil) |\
+      (collaborators.user_id == user.id) |\
+      (collaborators.deputies.id == user.id)}\
+      .group(:id)
   }
 
   def to_param
@@ -136,7 +145,7 @@ class Solution < ActiveRecord::Base
   end
   
   def can_be_updated_by?(user)
-    exercise.can_be_read_by?(user) && !is_published?
+    exercise.can_be_read_by?(user) && (!is_published? || has_collaborator?(user))
   end
   
   def can_be_destroyed_by?(user)

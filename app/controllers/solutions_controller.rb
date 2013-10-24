@@ -6,7 +6,7 @@ class SolutionsController < ApplicationController
   # GET /exercise/1/solutions
   # GET /exercise/1/solutions.json
   def index
-    @solutions = @exercise.solutions
+    @solutions = @exercise.solutions.visible_for(current_user)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -48,6 +48,7 @@ class SolutionsController < ApplicationController
 
     respond_to do |format|
       if @solution.save
+        @solution.add_default_collaborator(current_user)
         format.html { redirect_to exercise_solutions_path(@exercise), notice: 'Solution was successfully created.' }
         format.json { render json: @solution, status: :created, location: @solution }
       else
