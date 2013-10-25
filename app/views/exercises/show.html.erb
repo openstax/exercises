@@ -18,7 +18,8 @@
   <%= @exercise.embargo_status %>
 </p>
 
-<% if @exercise.is_published? && (@exercise.can_be_derived_by?(current_user) || user_is_admin?) %>
+<% if @exercise.is_published? %>
+<% if @exercise.can_be_derived_by?(current_user) || user_is_admin? %>
 <b>Create a derived exercise:</b>
 <%= form_tag derive_exercise_path(@exercise) do %>
   <div class="field">
@@ -31,7 +32,7 @@
 <% end %>
 <% end %>
 
-<% if @exercise.is_published? && (@exercise.new_version_can_be_created_by?(current_user) || user_is_admin?) %>
+<% if @exercise.new_version_can_be_created_by?(current_user) || user_is_admin? %>
 <b>New version:</b>
 <%= form_tag new_version_exercise_path(@exercise) do %>
   <div class="field">
@@ -42,6 +43,9 @@
     <%= submit_tag 'Create new version', :class => submit_classes %>
   </div>
 <% end %>
+<% end %>
+<% else %>
+<p>This exercise has not been published yet.</p>
 <% end %>
 
 <%= link_to 'Solutions', exercise_solutions_path(@exercise) %> |

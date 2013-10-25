@@ -260,14 +260,6 @@ class Exercise < ActiveRecord::Base
     can_be_updated_by?(user)
   end
 
-  def can_be_derived_by?(user)
-    !user.nil? && can_be_read_by?(user)
-  end
-
-  def new_version_can_be_created_by?(user)
-    is_published? && has_collaborator?(user)
-  end
-
   protected
 
   ###############

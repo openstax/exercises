@@ -58,7 +58,7 @@ module Publishable
         end
 
         def new_version
-          version_scope = where(:number => number)
+          version_scope = self.class.where(:number => number)
           latest_version = version_scope.first
           return latest_version unless latest_version.is_published?
 
@@ -147,7 +147,23 @@ module Publishable
           dup_fields_array << field
         end
 
+        ##################
+        # Access Control #
+        ##################
+
+        def can_be_derived_by?(user)
+          !user.nil? && can_be_read_by?(user)
+        end
+
+        def new_version_can_be_created_by?(user)
+          is_published? && has_collaborator?(user)
+        end
+
         protected
+
+        ###############
+        # Validations #
+        ###############
 
         def has_all_roles?
           !collaborators.where(:is_author => true).first.nil? && \

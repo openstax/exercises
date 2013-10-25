@@ -6,7 +6,7 @@ class SolutionsController < ApplicationController
   # GET /exercise/1/solutions
   # GET /exercise/1/solutions.json
   def index
-    @solutions = @exercise.solutions.visible_for(current_user)
+    @solutions = @exercise.solutions.visible_for(current_user).latest.all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -84,6 +84,40 @@ class SolutionsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @solution.exercise }
       format.json { head :no_content }
+    end
+  end
+
+  # POST /solutions/1/derive
+  # POST /solutions/1/derive.json
+  def derive
+    raise_exception_unless(@solution.can_be_derived_by?(current_user))
+
+    respond_to do |format|
+      begin
+        @derived_solution = @solution.derive_for(current_user)
+        format.html { redirect_to @derived_solution, notice: "Derivation of #{@solution.name} was successfully created." }
+        format.json { render json: @derived_solution, status: :created, location: @derived_solution }
+      rescue ActiveRecord::RecordInvalid
+        format.html { redirect_to @solution, alert: "Derivation could not be created." }
+        format.json { render json: @solution.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # POST /solutions/1/new_version
+  # POST /solutions/1/new_version.json
+  def new_version
+    raise_exception_unless(@solution.new_version_can_be_created_by?(current_user))
+
+    respond_to do |format|
+      begin
+        @new_version = @solution.new_version
+        format.html { redirect_to @new_version, notice: "New version of #{@solution.name} was successfully created." }
+        format.json { render json: @new_version, status: :created, location: @new_version }
+      rescue ActiveRecord::RecordInvalid
+        format.html { redirect_to @solution, alert: "New version could not be created." }
+        format.json { render json: @solution.errors, status: :unprocessable_entity }
+      end
     end
   end
 

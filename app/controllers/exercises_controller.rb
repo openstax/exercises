@@ -120,17 +120,17 @@ class ExercisesController < ApplicationController
     raise_exception_unless(@list.can_be_edited_by?(current_user))
 
     respond_to do |format|
-      #begin
+      begin
         Exercise.transaction do
           @derived_exercise = @exercise.derive_for(current_user)
           raise ActiveRecord::RecordInvalid.new(@exercise) unless @list.add_exercise(@derived_exercise)
         end
         format.html { redirect_to @derived_exercise, notice: "Derivation of #{@exercise.name} was successfully created." }
         format.json { render json: @derived_exercise, status: :created, location: @derived_exercise }
-      #rescue ActiveRecord::RecordInvalid
+      rescue ActiveRecord::RecordInvalid
         format.html { redirect_to @exercise, alert: "Derivation could not be created." }
         format.json { render json: @exercise.errors, status: :unprocessable_entity }
-      #end
+      end
     end
   end
 
