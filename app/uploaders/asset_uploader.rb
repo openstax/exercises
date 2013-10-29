@@ -16,10 +16,10 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def store_dir
-    "#{Rails.root}/#{model.attachable_type.to_s.underscore}/assets/#{model.number}"
+    "uploads/#{model.attachable_type.to_s.underscore}/attachments/#{model.number}"
   end
 
-  def is_image?
-    filename != '.pdf'
+  def is_image?(imgfile = file)
+    imgfile.extension != 'pdf'
   end
 end

@@ -11,8 +11,14 @@ Exercises::Application.routes.draw do
       post 'new_version'
     end
 
-    resources :collaborators, :only => [:index, :new, :create]
-    resources :derivations, :only => [:index, :new, :create]
+    resources :attachments, :only => [:new, :create, :edit, :update, :destroy], :shallow => true
+    resources :collaborators, :only => [:index, :new, :create, :destroy], :shallow => true do
+      member do
+        put 'toggle_author'
+        put 'toggle_copyright_holder'
+      end
+    end
+    resources :derivations, :only => [:index, :new, :create, :destroy], :shallow => true
   end
 
   resources :users, :only => [] do
@@ -24,45 +30,28 @@ Exercises::Application.routes.draw do
   resources :user_profiles, :only => [:show, :edit, :update]
 
   resources :user_groups do
-    resources :user_group_users, :only => [:new, :create]
-  end
-
-  resources :user_group_users, :only => [:destroy] do
-    put 'toggle', :on => :member
+    resources :user_group_users, :only => [:new, :create, :destroy], :shallow => true do
+      put 'toggle', :on => :member
+    end
   end
 
   resources :lists do
-    resources :list_exercises, :only => [:new, :create]
+    resources :list_exercises, :only => [:new, :create, :destroy], :shallow => true
   end
-
-  resources :list_exercises, :only => [:destroy]
 
   resources :exercises do
     publishable
 
-    resources :solutions, :only => [:index, :new, :create]
+    resources :solutions, :shallow => true do
+      publishable
+    end
 
     get 'quickview', :on => :member
   end
 
   resources :questions, :only => [] do
-    resources :question_dependency_pairs, :only => [:new, :create]
+    resources :question_dependency_pairs, :only => [:new, :create, :destroy], :shallow => true
   end
-
-  resources :question_dependency_pairs, :only => [:destroy]
-
-  resources :solutions, :only => [:show, :edit, :update, :destroy] do
-    publishable
-  end
-
-  resources :attachments
-
-  resources :collaborators, :only => [:destroy] do
-    put 'toggle_author', :on => :member
-    put 'toggle_copyright_holder', :on => :member
-  end
-
-  resources :derivations, :only => [:destroy]
 
   resources :publishables, :only => [] do
     collection do

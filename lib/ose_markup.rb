@@ -72,22 +72,18 @@ class OseParser < Parslet::Parser
 end
 
 class OseHtmlTransformer < Parslet::Transform
-  def initialize(attachable, &block)
-    super(&block)
-    @attachable = attachable
-  end
-
-  def make_image_tag(image_name)
-    attachment = @attachable.get_attachment(image_name) if @attachable.respond_to?(:get_attachment)
+  def self.make_image_tag(attachable, image_name)
+    attachment = attachable.get_attachment(image_name) if attachable.respond_to?(:get_attachment)
 
     return "<span class = 'undefined_variable' title='No image with this name could be found!'>#{image_name}</span>" \
       if (attachment.nil? || !attachment.asset.is_image?)
     
-    "<img src=\"#{attachment.asset.medium.url}\">"
+    "<img src=\"#{attachment.asset.medium.url}\" alt=\"#{attachment.alt}\">" + \
+      (attachment.caption.blank? ? "" : "<p>#{attachment.caption}</p>")
   end
 
   rule(:filename => simple(:filename)) { "#{filename}" }
-  rule(:image => simple(:filename)) { "<center>#{make_image_tag(filename)}</center>" }
+  rule(:image => simple(:filename)) { |dictionary| "<center>#{make_image_tag(dictionary[:attachable], dictionary[:filename])}</center>" }
 
   rule(:math => simple(:text)) { "#{text}"}
 

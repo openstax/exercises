@@ -1,35 +1,34 @@
-<%= form_for(@attachable_asset) do |f| %>
-  <% if @attachable_asset.errors.any? %>
+<%= form_for([@attachable, @attachment]) do |f| %>
+  <% if @attachment.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@attachable_asset.errors.count, "error") %> prohibited this attachable_asset from being saved:</h2>
+      <h2><%= pluralize(@attachment.errors.count, "error") %> prohibited this attachment from being saved:</h2>
 
       <ul>
-      <% @attachable_asset.errors.full_messages.each do |msg| %>
+      <% @attachment.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
+  <% unless @attachment.persisted? %>
   <div class="field">
-    <%= f.label :attachable_id %><br />
-    <%= f.number_field :attachable_id %>
+    <%= f.label 'Asset' %>
+    <%= f.file_field :asset %>
+    <%= f.hidden_field :asset_cache %>
   </div>
-  <div class="field">
-    <%= f.label :asset_id %><br />
-    <%= f.number_field :asset_id %>
-  </div>
+  <% end %>
   <div class="field">
     <%= f.label :local_name %><br />
     <%= f.text_field :local_name %>
   </div>
   <div class="field">
-    <%= f.label :description %><br />
-    <%= f.text_area :description %>
+    <%= f.label :caption %><br />
+    <%= f.text_area :caption %>
   </div>
   <div class="field">
-    <%= f.label :attachable_type %><br />
-    <%= f.text_field :attachable_type %>
+    <%= f.label :alt, 'Alt text' %><br />
+    <%= f.text_area :alt %>
   </div>
   <div class="actions">
     <%= f.submit %>

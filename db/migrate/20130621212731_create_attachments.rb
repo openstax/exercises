@@ -13,6 +13,7 @@ class CreateAttachments < ActiveRecord::Migration
     end
 
     add_index :attachments, [:attachable_type, :attachable_id, :local_name], :unique => true, :name => "index_a_on_a_type_and_a_id_and_l_name"
-    add_index :attachments, [:attachable_type, :number], :unique => true
+    add_index :attachments, [:attachable_type, :attachable_id, :number], :unique => true, :name => "index_a_on_a_type_and_a_id_and_number"
+    add_index :attachments, [:attachable_type, :number]
   end
 end

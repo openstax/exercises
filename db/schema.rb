@@ -26,7 +26,8 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
   end
 
   add_index "attachments", ["attachable_type", "attachable_id", "local_name"], :name => "index_a_on_a_type_and_a_id_and_l_name", :unique => true
-  add_index "attachments", ["attachable_type", "number"], :name => "index_attachments_on_attachable_type_and_number", :unique => true
+  add_index "attachments", ["attachable_type", "attachable_id", "number"], :name => "index_a_on_a_type_and_a_id_and_number", :unique => true
+  add_index "attachments", ["attachable_type", "number"], :name => "index_attachments_on_attachable_type_and_number"
 
   create_table "collaborators", :force => true do |t|
     t.integer  "position",                                           :null => false
