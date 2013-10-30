@@ -1,3 +1,5 @@
+@import "common";
+
 #upper-corner-console {
   position: absolute;
   top: 0;
@@ -6,4 +8,8 @@
   #clock.highlight {
     color: #ff00ff;
   }
+}
+
+table.std-list-1 {
+  @include std-table-list-1;
 }
