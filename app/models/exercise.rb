@@ -7,14 +7,15 @@ class Exercise < ActiveRecord::Base
   add_prepublish_check(:has_correct_answers?, true, 'Some questions in this exercise do not have correct answers.')
   add_prepublish_check(:has_blank_content?, false, 'This exercise or some of its questions have blank content or answers.')
 
-  add_dup_field({:questions => [{:dependent_question_pairs => :dependent_question},
-                                {:independent_question_pairs => :independent_question},
-                                 :true_or_false_answers,
-                                 :multiple_choice_answers,
-                                 :matching_answers,
-                                 :fill_in_the_blank_answers,
-                                 :short_answers,
-                                 :free_response_answers]})
+  add_dup_include({:questions => [{:dependent_question_pairs => :dependent_question},
+                                  {:independent_question_pairs => :independent_question},
+                                   :true_or_false_answers,
+                                   :multiple_choice_answers,
+                                   :matching_answers,
+                                   :fill_in_the_blank_answers,
+                                   :short_answers,
+                                   :free_response_answers]})
+  add_dup_exception(:changes_solutions)
 
   has_many :questions, :dependent => :destroy, :inverse_of => :exercise
 
@@ -32,7 +33,7 @@ class Exercise < ActiveRecord::Base
 
   accepts_nested_attributes_for :questions, :allow_destroy => true
 
-  attr_accessible :embargo_days, :only_embargo_solutions, :credit, :questions_attributes
+  attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions, :credit, :questions_attributes
 
   validate :valid_embargo
 
@@ -107,6 +108,13 @@ class Exercise < ActiveRecord::Base
         " exercise will be embargoed until #{Date.current + embargo_days.days} if published today."
       end
     end
+  end
+
+  def solutions_bucket
+    same_number_changes_solutions = Exercise.where(:number => number).where(:changes_solutions => true)
+    minimum_version = same_number_changes_solutions.where{version <= my{version}}.first.try(:version)
+    maximum_version = same_number_changes_solutions.where{version > my{version}}.last.try(:version)
+    [minimum_version, maximum_version]
   end
 
   def self.from_param(param)

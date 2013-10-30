@@ -5,7 +5,6 @@ class CreateQuestions < ActiveRecord::Migration
       t.text :content_html, :null => false, :default => ''
       t.integer :position, :null => false
       t.integer :exercise_id, :null => false
-      t.boolean :changes_solution, :null => false, :default => false
       t.integer :credit
 
       t.timestamps

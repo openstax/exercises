@@ -25,6 +25,14 @@ class Solution < ActiveRecord::Base
       .group(:id)
   }
 
+  scope :valid_for, lambda { |e|
+    sb = e.solutions_bucket
+    vscope = joins(:exercise).where(:exercise => {:number => e.number})
+    vscope = vscope.where{exercise.version >= my{sb.first}} unless sb.first.nil?
+    vscope = vscope.where{exercise.version < my{sb.last}} unless sb.last.nil?
+    vscope
+  }
+
   def to_param
     if is_published?
       "s#{number}v#{version}"

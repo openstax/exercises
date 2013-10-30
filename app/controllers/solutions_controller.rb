@@ -6,7 +6,7 @@ class SolutionsController < ApplicationController
   # GET /exercise/1/solutions
   # GET /exercise/1/solutions.json
   def index
-    @solutions = @exercise.solutions.visible_for(current_user).latest.all
+    @solutions = Solution.valid_for(@exercise).visible_for(current_user).latest.all
 
     respond_to do |format|
       format.html # index.html.erb

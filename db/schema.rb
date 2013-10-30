@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
     t.integer  "embargo_days",           :default => 0,     :null => false
     t.date     "embargoed_until"
     t.boolean  "only_embargo_solutions", :default => false, :null => false
+    t.boolean  "changes_solutions",      :default => false, :null => false
     t.integer  "locked_by"
     t.datetime "locked_at"
     t.datetime "created_at",                                :null => false
@@ -274,14 +275,13 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
   add_index "question_dependency_pairs", ["independent_question_id", "dependent_question_id", "kind"], :name => "index_qdp_on_iq_id_and_dq_id_and_kind", :unique => true
 
   create_table "questions", :force => true do |t|
-    t.text     "content",          :default => "",    :null => false
-    t.text     "content_html",     :default => "",    :null => false
-    t.integer  "position",                            :null => false
-    t.integer  "exercise_id",                         :null => false
-    t.boolean  "changes_solution", :default => false, :null => false
+    t.text     "content",      :default => "", :null => false
+    t.text     "content_html", :default => "", :null => false
+    t.integer  "position",                     :null => false
+    t.integer  "exercise_id",                  :null => false
     t.integer  "credit"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "questions", ["exercise_id", "position"], :name => "index_questions_on_exercise_id_and_position", :unique => true

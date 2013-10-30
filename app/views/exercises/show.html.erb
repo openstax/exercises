@@ -18,6 +18,10 @@
   <%= @exercise.embargo_status %>
 </p>
 
+<% if @exercise.version > 1 %>
+<p>This version <%= @exercise.changes_solutions ? 'changes' : 'does not change' %> the exercise's solutions.</p>
+<% end %>
+
 <% if @exercise.is_published? %>
 <% if @exercise.can_be_derived_by?(current_user) || user_is_admin? %>
 <b>Create a derived exercise:</b>

@@ -51,6 +51,12 @@
 
   <br/>
 
+  <% if @exercise.version > 1 %>
+    <%= f.check_box :changes_solutions %>
+    <%= f.label :changes_solutions,
+          "This version changes the exercise's solutions. Do not reuse previous solutions." %>
+  <% end %>
+
   <% if @exercise.new_record? %>
   <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>
   <div class="field">
