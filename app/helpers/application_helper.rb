@@ -72,4 +72,22 @@ module ApplicationHelper
   def please_wait
     '$(this).blur().hide().parent().append("Please wait...");'
   end
+
+  def unless_errors(options={}, &block)
+    errors = @handler_result.errors.each do |error|
+      add_local_error_alert now: true, content: error.translate
+    end
+
+    @handler_result.errors.any? ?
+      js_refresh_alerts(options) : 
+      js_refresh_alerts(options) + capture(&block).html_safe
+  end
+
+  def js_refresh_alerts(options={})
+    options[:alerts_html_id] ||= 'local-alerts'
+    options[:alerts_partial] ||= 'shared/local_alerts'
+    options[:trigger] ||= 'alerts-updated'    
+
+    "$('##{options[:alerts_html_id]}').html('#{ j(render options[:alerts_partial]) }').trigger('#{options[:trigger]}');".html_safe
+  end
 end

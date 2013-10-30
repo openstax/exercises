@@ -1,0 +1,23 @@
+@import 'common';
+
+.modal-backdrop {
+  opacity: 0.6;
+}
+
+.modal-footer {
+  background-color: white;
+  border-top: none;
+}
+
+.modal-header {
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: normal;
+    color: $os_gray;
+  }
+}
+
+.nav.tight-bottom {
+  margin-bottom: 0px;
+}

@@ -1,9 +1,10 @@
 Exercises::Application.routes.draw do
+
+  mount OpenStax::Connect::Engine, at: "/connect"
+
   apipie
 
   use_doorkeeper
-
-  devise_for :users, :controllers => { :registrations => "registrations" }
 
   def publishable
     member do
@@ -15,10 +16,48 @@ Exercises::Application.routes.draw do
     resources :derivations, :only => [:index, :new, :create]
   end
 
+  namespace 'dev' do
+    get "/", to: 'base#index'
+
+    namespace 'users' do
+      post 'search'
+      post 'create'
+      post 'generate'
+    end
+  end
+
+  namespace 'admin' do 
+
+    get '/', to: 'base#index'
+
+    put "cron",                         to: 'base#cron', :as => "cron"
+    get "raise_security_transgression", to: 'base#raise_security_transgression'
+    get "raise_record_not_found",       to: 'base#raise_record_not_found'
+    get "raise_routing_error",          to: 'base#raise_routing_error'
+    get "raise_unknown_controller",     to: 'base#raise_unknown_controller'
+    get "raise_unknown_action",         to: 'base#raise_unknown_action'
+    get "raise_missing_template",       to: 'base#raise_missing_template'
+    get "raise_not_yet_implemented",    to: 'base#raise_not_yet_implemented'
+    get "raise_illegal_argument",       to: 'base#raise_illegal_argument'
+
+    resources :users, only: [:show, :update, :edit] do
+      post 'search', on: :collection
+    end
+
+    # namespace 'users' do
+    #   post 'search'
+    #   # need show, destroy, edit, update
+    # end
+
+    resources :licenses
+    resources :user_groups, :only => [:index]
+  end
+
   resources :users, :only => [] do
     collection do
       get 'help'
     end
+    post 'become', on: :member
   end
 
   resources :user_profiles, :only => [:show, :edit, :update]
@@ -78,21 +117,6 @@ Exercises::Application.routes.draw do
   get 'developers', :to => 'static_pages#developers'
 
   root :to => 'static_pages#home'
-
-  namespace :admin do
-    resources :users, :except => [:new, :create] do
-      member do
-        post 'become'
-        post 'confirm'
-      end
-    end
-
-    resources :licenses
-
-    resources :user_groups, :only => [:index]
-
-    root :to => 'console#index'
-  end
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do

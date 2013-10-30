@@ -2,7 +2,7 @@
    # current_path
    # Additionally, they can override the following variables:
    parts ||= ['content/answers', 'tags', 'author/copyright holder', 'ID/number']
-   exercise_types ||= ['all exercises', 'published exercises', 'draft exercises', 'exercises in my lists'] if user_signed_in?
+   exercise_types ||= ['all exercises', 'published exercises', 'draft exercises', 'exercises in my lists'] if signed_in?
    exercise_types ||= ['all exercises', 'published exercises']
    answer_types ||= ['any answer types', 
                      'true or false answers', 

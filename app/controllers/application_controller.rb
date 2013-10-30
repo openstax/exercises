@@ -21,6 +21,10 @@ class ApplicationController < ActionController::Base
     raise_exception_unless_admin
   end
 
+  def authenticate_admin!
+    raise SecurityTransgression unless signed_in? && current_user.is_admin?
+  end
+
   private
 
   def layout

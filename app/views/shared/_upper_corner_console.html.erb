@@ -15,7 +15,7 @@
   <% if clock_is_enabled %>
     <span id="clock" class="<%= 'highlight' if !clock_is_normally_enabled %>">
       <% time = Time.zone.now %>
-      <%= standard_time(time) %><br/>(on last refresh)
+      <%= osu.standard_time(time) %><br/>(on last refresh)
     </span>
   <% end %>
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130713013656) do
+ActiveRecord::Schema.define(:version => 20131030005616) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "number",                          :null => false
@@ -260,6 +260,18 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
 
   add_index "oauth_applications", ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
 
+  create_table "openstax_connect_users", :force => true do |t|
+    t.integer  "openstax_uid"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "username"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "openstax_connect_users", ["openstax_uid"], :name => "index_openstax_connect_users_on_openstax_uid", :unique => true
+  add_index "openstax_connect_users", ["username"], :name => "index_openstax_connect_users_on_username", :unique => true
+
   create_table "question_dependency_pairs", :force => true do |t|
     t.integer  "position",                :null => false
     t.integer  "dependent_question_id",   :null => false
@@ -382,40 +394,22 @@ ActiveRecord::Schema.define(:version => 20130713013656) do
   add_index "user_profiles", ["user_id"], :name => "index_user_profiles_on_user_id", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "",    :null => false
-    t.string   "encrypted_password",     :default => "",    :null => false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
-    t.integer  "failed_attempts",        :default => 0
-    t.string   "unlock_token"
-    t.datetime "locked_at"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
-    t.string   "username",               :default => "",    :null => false
-    t.string   "first_name",             :default => "",    :null => false
-    t.string   "last_name",              :default => "",    :null => false
-    t.boolean  "is_admin",               :default => false, :null => false
+    t.boolean  "is_registered"
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
+    t.string   "username",                 :default => "",    :null => false
+    t.string   "first_name",               :default => "",    :null => false
+    t.string   "last_name",                :default => "",    :null => false
+    t.boolean  "is_admin",                 :default => false, :null => false
     t.datetime "disabled_at"
+    t.integer  "openstax_connect_user_id"
   end
 
-  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["disabled_at"], :name => "index_users_on_disabled_at"
-  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["first_name"], :name => "index_users_on_first_name"
   add_index "users", ["is_admin"], :name => "index_users_on_is_admin"
   add_index "users", ["last_name"], :name => "index_users_on_last_name"
-  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-  add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
+  add_index "users", ["openstax_connect_user_id"], :name => "index_users_on_openstax_connect_user_id", :unique => true
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
   create_table "votes", :force => true do |t|

@@ -5,7 +5,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 
-gem 'devise', '~> 2.0'
 gem 'jquery-rails', '2.3.0'
 gem 'thin'
 gem 'squeel'
@@ -17,8 +16,8 @@ gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
-# gem 'openstax_connect', '~> 0.0.6'
-gem 'openstax_utilities', '~> 1.0.2'
+gem 'openstax_connect', '~> 0.0.6'
+gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities'  #'~> 1.0.2'
 gem 'nested_form'
 
 gem 'carrierwave'

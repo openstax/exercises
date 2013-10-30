@@ -3,7 +3,7 @@
    # Additionally, they can override the following variables:
    exercise_id ||= nil
    parts ||= ['summary/detailed explanation', 'tags', 'author/copyright holder', 'ID/number']
-   solution_types ||= ['all solutions', 'published solutions', 'draft solutions', 'solutions for exercises in my lists'] if user_signed_in?
+   solution_types ||= ['all solutions', 'published solutions', 'draft solutions', 'solutions for exercises in my lists'] if signed_in?
    solution_types ||= ['all solutions', 'published solutions']
    locations ||= ['all exercises', 'current_exercise'] if exercise_id
    locations ||= ['all exercises']

@@ -1,9 +1,11 @@
 class User < ActiveRecord::Base
-  # Include default devise modules. Others available are:
-  # :token_authenticatable, :lockable,
-  # :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable,
-         :rememberable, :trackable, :validatable, :confirmable
+
+  belongs_to :openstax_connect_user, 
+             class_name: "OpenStax::Connect::User",
+             dependent: :destroy
+
+  delegate :username, :first_name, :last_name, :name, :casual_name,
+           to: :openstax_connect_user
 
   has_one :user_profile, :dependent => :destroy, :inverse_of => :user
 
@@ -23,19 +25,15 @@ class User < ActiveRecord::Base
   has_many :lists, :through => :user_groups, :source => :container, :source_type => 'List'
   has_many :listed_exercises, :through => :lists, :source => :exercises
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me
-
   before_validation :build_user_profile, :unless => :user_profile
   before_save :force_active_admin
 
-  validates_presence_of :username, :password, :email, :first_name, :last_name, :user_profile
-  validates_uniqueness_of :username, :email
+  validates_presence_of :user_profile
 
   default_scope order(:last_name, :first_name)
 
-  def name
-    "#{first_name} #{last_name}"
-  end
+  scope :registered, where(is_registered: true)
+  scope :unregistered, where{is_registered != true}
 
   def is_admin?
     is_admin
@@ -61,26 +59,66 @@ class User < ActiveRecord::Base
     lists.select{|l| l.can_be_updated_by?(self)}
   end
 
-  def self.search(text, type)
-    text = text.gsub('%', '')
-    return none if text.blank?
+  # def self.search(text, type)
+  #   text = text.gsub('%', '')
+  #   return none if text.blank?
 
-    case type
-    when 'Name'
-      u = scoped
-      text.gsub(',', ' ').split.each do |q|
-        next if q.blank?
-        query = q + '%'
-        u = u.where{(first_name =~ query) | (last_name =~ query)}
-      end
-      u
-    when 'Username'
-      query = text + '%'
-      where{username =~ query}
-    when 'Email'
-      query = text + '%'  
-      where{email =~ query}
+  #   case type
+  #   when 'Name'
+  #     u = scoped
+  #     text.gsub(',', ' ').split.each do |q|
+  #       next if q.blank?
+  #       query = q + '%'
+  #       u = u.where{(first_name =~ query) | (last_name =~ query)}
+  #     end
+  #     u
+  #   when 'Username'
+  #     query = text + '%'
+  #     where{username =~ query}
+  #   when 'Email'
+  #     query = text + '%'  
+  #     where{email =~ query}
+  #   end
+  # end
+
+  def is_registered?
+    is_registered == true
+  end
+
+  def is_anonymous?
+    is_anonymous == true
+  end
+
+  #
+  # Anonymous User stuff
+  #
+
+  attr_accessor :is_anonymous
+
+  def self.anonymous
+    @@anonymous ||= AnonymousUser.new
+  end
+
+  class AnonymousUser < User
+    before_save { false } 
+    def initialize(attributes=nil)
+      super
+      self.is_anonymous          = true
+      self.is_registered         = false
+      self.openstax_connect_user = OpenStax::Connect::User.anonymous
     end
+  end
+
+  #
+  # OpenStax Connect "user_provider" methods
+  #
+
+  def self.connect_user_to_app_user(connect_user)
+    GetOrCreateUserFromConnectUser.call(connect_user).outputs.user
+  end
+
+  def self.app_user_to_connect_user(app_user)
+    app_user.is_anonymous? ? OpenStax::Connect::User.anonymous : app_user.openstax_connect_user
   end
 
   ##################
