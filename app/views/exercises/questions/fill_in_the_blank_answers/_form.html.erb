@@ -14,7 +14,7 @@
 
       <div class="field inline-block">
         <%= a.label :pre_content, 'Content before the blank:' %><br/>
-        <%= a.text_area :pre_content %>
+        <%= a.text_area :pre_content, :class => "markItUp" %>
       </div>
       <div class="field inline-block">
         <%= a.label :blank_answer, 'Acceptable answers for blank:' %><br/>
@@ -22,7 +22,7 @@
       </div>
       <div class="field inline-block">
         <%= a.label :post_content, 'Content after the blank:' %><br/>
-        <%= a.text_area :post_content %>
+        <%= a.text_area :post_content, :class => "markItUp" %>
       </div>
 
       <div class="clear">

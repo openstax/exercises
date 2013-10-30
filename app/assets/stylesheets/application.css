@@ -17,5 +17,6 @@
  *= require jquery-ui
  *= require main
  *= require openstax_utilities
+ *= require markitup
  *= require_tree .
  */

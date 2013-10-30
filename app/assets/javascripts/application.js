@@ -18,4 +18,5 @@
 //= require jquery-ui
 //= require jquery_nested_form
 //= require bootstrap
+//= require markitup
 //= require_tree .
