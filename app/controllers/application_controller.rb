@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   include SharedApplicationMethods
 
-  helper OpenStax::Utilities::Engine.helpers
+  include Lev::HandleWith
 
   layout :layout
 

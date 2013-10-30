@@ -1,0 +1,32 @@
+<div id="dev_console_dialog" 
+     class="modal hide" 
+     style="width:900px; min-height: 500px"
+     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <div class="modal-header" style="border-bottom: none">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <ul class="nav nav-tabs tight-bottom">
+      <li class="active"><a href="#search-users-tab" data-toggle="tab">Search Users</a></li>
+      <li><a href="#create-users-tab" data-toggle="tab">Create Users</a></li>
+      <li><a href="#time-tab" data-toggle="tab">Time</a></li>
+    </ul>
+  </div>
+
+  <div class="modal-body">
+    <div id="dialog-local-alerts"></div>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="search-users-tab">
+        <%= render 'admin/base/users', override_search_path: dev_users_search_path %>
+      </div>
+      <div class="tab-pane" id="create-users-tab">
+        <%= render 'create_users' %>
+      </div>
+      <div class="tab-pane" id="time-tab">
+        Time manipulation stuff
+      </div>
+    </div>
+    
+  </div>
+  
+</div>

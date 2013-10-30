@@ -10,14 +10,15 @@ gem 'jquery-rails', '2.3.0'
 gem 'thin'
 gem 'squeel'
 
-gem 'attribeautiful', '0.0.6'
+gem 'lev', "~> 2.0.4"
 
 gem 'jbuilder'
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
-gem 'openstax_utilities', '~> 0.0.5'
+# gem 'openstax_connect', '~> 0.0.6'
+gem 'openstax_utilities', '~> 1.0.2'
 gem 'nested_form'
 
 gem 'carrierwave'
@@ -29,6 +30,7 @@ gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
 gem 'commontator'
+gem 'fine_print', path: '/Users/jps/dev/fine_print'
 
 # API documentation
 gem 'apipie-rails'

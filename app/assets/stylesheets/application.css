@@ -18,4 +18,5 @@
  *= require main
  *= require openstax_utilities
  *= require_tree .
+ *= require modern-buttons
  */
