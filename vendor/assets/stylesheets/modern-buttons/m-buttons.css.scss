@@ -682,3 +682,7 @@ input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-s
   display: block;
   margin-top: 1px;
 }
+
+@mixin m-btn-blue-mixin {
+  @extend .m-btn;
+}

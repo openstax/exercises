@@ -1,13 +1,16 @@
 <%# Renderer's of this partial can direct the form's target with 'override_search_path' %>
 
-<%= lev_form_for :search, url: (override_search_path ||= search_admin_users_path), remote: true do |f| %>
+<%= lev_form_for :search, 
+                 url: (override_search_path ||= search_admin_users_path), 
+                 remote: true,
+                 html: {class: 'form-inline'} do |f| %>
 
   Search for 
-  <%= f.search_field :search_terms, style: 'width:300px', class: 'm-wrap' %> 
+  <%= f.search_field :search_terms, style: 'width:300px' %> 
   in         
-  <%= f.select :search_type, ['Any', 'Name', 'Username'], {}, {class: 'm-wrap'} %>
+  <%= f.select :search_type, ['Any', 'Name', 'Username'], {}, {style: 'width: 150px'} %>
 
-  <%= f.submit 'Search', class: 'm-btn blue' %>
+  <%= f.submit 'Search', class: 'btn btn-primary' %>
 
 <% end %>
 

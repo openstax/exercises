@@ -56,7 +56,7 @@ GEM
       activesupport (~> 3.0)
       eager_beaver (~> 0.0.4)
     blankslate (2.1.2.4)
-    bootstrap-sass (2.3.1.3)
+    bootstrap-sass (3.0.0.0.rc2)
       sass (~> 3.2)
     brakeman (2.0.0)
       erubis (~> 2.6)
@@ -342,7 +342,7 @@ DEPENDENCIES
   acts-as-taggable-on
   acts_as_votable
   apipie-rails
-  bootstrap-sass (~> 2.3.1.0)
+  bootstrap-sass (~> 3.0.0.0.rc)
   brakeman
   capybara (< 2.1.0)
   capybara-screenshot

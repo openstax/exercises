@@ -1,0 +1,26 @@
+@import "common";
+// @import "modern-buttons/m-buttons";
+
+h1.fine_print {
+  @include page-heading;
+}
+
+ul.fine_print {
+  margin-left: 25px;
+}
+
+table.fine_print {
+  @include std-table-list-1;
+}
+
+label.fine_print {
+  font-weight: bold;
+}
+
+
+// input[type="submit"].fine_print {
+//   @extend .m-btn, .m-btn.blue;
+//   &:hover, &:active, &:focus {
+//     color: white;
+//   }
+// }

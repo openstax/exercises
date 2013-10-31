@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131030005616) do
+ActiveRecord::Schema.define(:version => 20131030231630) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "number",                          :null => false
@@ -136,6 +136,30 @@ ActiveRecord::Schema.define(:version => 20131030005616) do
   end
 
   add_index "fill_in_the_blank_answers", ["question_id", "position"], :name => "index_fill_in_the_blank_answers_on_question_id_and_position", :unique => true
+
+  create_table "fine_print_contracts", :force => true do |t|
+    t.string   "name",                          :null => false
+    t.integer  "version"
+    t.string   "title",                         :null => false
+    t.text     "content",                       :null => false
+    t.boolean  "is_latest",  :default => false, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "fine_print_contracts", ["name", "is_latest"], :name => "index_fine_print_contracts_on_name_and_is_latest"
+  add_index "fine_print_contracts", ["name"], :name => "index_fine_print_contracts_on_name"
+
+  create_table "fine_print_signatures", :force => true do |t|
+    t.integer  "contract_id", :null => false
+    t.integer  "user_id",     :null => false
+    t.string   "user_type",   :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
+  add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
 
   create_table "free_response_answers", :force => true do |t|
     t.text     "content",            :default => "",    :null => false

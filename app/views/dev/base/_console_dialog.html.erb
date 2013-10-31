@@ -1,7 +1,7 @@
-<div id="dev_console_dialog" 
-     class="modal hide" 
-     style="width:900px; min-height: 500px"
-     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<%= osu.block_to_partial 'shared/modal',
+                         html_id: 'dev_console_dialog',
+                         width: '900px',
+                         height: '500px' do %>
 
   <div class="modal-header" style="border-bottom: none">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -25,8 +25,7 @@
       <div class="tab-pane" id="time-tab">
         Time manipulation stuff
       </div>
-    </div>
-    
+    </div>    
   </div>
-  
-</div>
+
+<% end %>

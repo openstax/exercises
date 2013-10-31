@@ -1,7 +1,8 @@
-<div id="admin_console_dialog" 
-     class="modal hide" 
-     style="width:800px; min-height: 400px"
-     tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<%= osu.block_to_partial 'shared/modal',
+                         html_id: 'admin_console_dialog',
+                         width: '900px',
+                         height: '500px' do %>
 
   <div class="modal-header" style="border-bottom: none">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -27,4 +28,4 @@
     
   </div>
 
-</div>
+<% end %>

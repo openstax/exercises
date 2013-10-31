@@ -18,5 +18,4 @@
 //= require jquery-ui
 //= require jquery_nested_form
 //= require bootstrap
-//= require modern-buttons
 //= require_tree .

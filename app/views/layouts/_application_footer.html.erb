@@ -11,9 +11,9 @@
     </div>
 
     <div id="footer-copyright">
-      <%= link_to Utilities::copyright_text, copyright_path %> |
+      <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
       <%= link_to "Terms of Use", "#" %> |
-      <%= link_to "Developers", developers_path %> |
+      <%= link_to "Developers", main_app.developers_path %> |
       <%= link_to "Contact Us",   "#" %>
       <br/>
 
