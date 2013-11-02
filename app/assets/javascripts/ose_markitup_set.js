@@ -8,7 +8,7 @@ mySettings = {
 	  {name:'Italic', key:'I', openWith:'\'\'', closeWith:'\'\''  },
 	  {name:'Underline', key:'U', openWith:'\_\_', closeWith:'\_\_'},
 	  {name:'Picture', key:'P', replaceWith:function (markItUp) {
-        openAddImageDialog(markItUp);
+        openAttachmentsDialog(markItUp);
         return false;
       }
     },

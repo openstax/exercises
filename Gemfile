@@ -29,6 +29,7 @@ gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
 gem 'commontator'
+gem 'remotipart', '~> 1.2'
 
 # API documentation
 gem 'apipie-rails'

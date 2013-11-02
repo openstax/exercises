@@ -1,8 +1,8 @@
 class AttachmentsController < ApplicationController
   before_filter :get_attachable, :only => [:new, :create]
 
-  # GET /attachments/new
-  # GET /attachments/new.json
+  # GET /attachables/1/attachments/new
+  # GET /attachables/1/attachments/new.json
   def new
     @attachment = Attachment.new
 
@@ -18,8 +18,9 @@ class AttachmentsController < ApplicationController
     raise_exception_unless(@attachment.can_be_updated_by?(current_user))
   end
 
-  # POST /attachments
-  # POST /attachments.json
+  # POST /attachables/1/attachments
+  # POST /attachables/1/attachments.js
+  # POST /attachables/1/attachments.json
   def create
     asset = params[:attachment].delete(:asset)
     @attachment = Attachment.new(params[:attachment])
@@ -29,9 +30,11 @@ class AttachmentsController < ApplicationController
     respond_to do |format|
       if @attachment.save
         format.html { redirect_to @attachable, notice: 'Attachment was successfully created.' }
+        format.js # create.js.erb
         format.json { render json: @attachment, status: :created, location: @attachment }
       else
         format.html { render action: "new" }
+        format.js { render action: "errors" }
         format.json { render json: @attachment.errors, status: :unprocessable_entity }
       end
     end
