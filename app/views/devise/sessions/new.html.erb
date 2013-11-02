@@ -11,7 +11,7 @@
     <div><%= f.check_box :remember_me, :style => 'float:left; margin-right:10px' %><%= f.label :remember_me %></div>
   <% end -%>
 
-  <div><%= f.submit "Sign in" %></div>
+  <div><%= f.submit "Sign in", :class => submit_classes %></div>
 <% end %>
 
 <%= render "devise/shared/links" %>

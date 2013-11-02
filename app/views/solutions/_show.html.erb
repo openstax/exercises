@@ -39,6 +39,12 @@
 <p>This solution has not been published yet.</p>
 <% end %>
 
+
+<b>Attachments:</b>
+<%= render :partial => 'attachments/index', :locals => {:attachable => solution} %>
+
+<br/><br/>
+
 <% if solution.can_be_published_by?(current_user) || user_is_admin? %>
 <%= link_to 'Publish', publication_agreement_publishables_path(:solution_id => solution.id) %> |
 <% end %>

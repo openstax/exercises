@@ -6,7 +6,7 @@
   <div><%= f.label :username %><br />
   <%= f.text_field :username, :autofocus => true %></div>
 
-  <div><%= f.submit "Send me reset password instructions" %></div>
+  <div><%= f.submit "Send me reset password instructions", :class => submit_classes %></div>
 <% end %>
 
 <%= render "devise/shared/links" %>

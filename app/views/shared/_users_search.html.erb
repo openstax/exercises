@@ -19,7 +19,7 @@
       <td><%= label_tag 'in:' %></td>
       <td><%= select_tag 'type', options_for_select(types, @type) %></td>
       <td>
-        <%= submit_tag 'Search' %>
+        <%= submit_tag 'Search', :class => submit_classes %>
       </td>
     </tr>
   </table>

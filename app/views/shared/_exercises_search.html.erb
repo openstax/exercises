@@ -31,7 +31,7 @@
       <td><%= label_tag 'in' %></td>
       <td><%= select_tag 'part', options_for_select(parts, @part), :style => "width: 90%;" %></td>
 
-      <td rowspan="3" style="vertical-align:middle;"><%= submit_tag 'Search' %></td>
+      <td rowspan="3" style="vertical-align:middle;"><%= submit_tag 'Search', :class => submit_classes %></td>
     </tr>
     <tr>
       <td colspan="4"><hr style="float:left; width: 97%; color: lightgray; background-color: lightgray;" /></td>
