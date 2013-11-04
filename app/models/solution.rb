@@ -1,16 +1,13 @@
 class Solution < ActiveRecord::Base
   attachable
-  content
+  content [:summary, :content]
   publishable
 
   add_prepublish_check(:has_blank_content?, false, 'The contents of this solution are blank.')
 
   belongs_to :exercise, :inverse_of => :solutions
 
-  attr_accessible :summary
-
   validates_presence_of :exercise
-  validates_presence_of :summary
 
   scope :visible_for, lambda { |user|
     escope = where{exercise_id.in my{Exercise.visible_for(user).collect{|e| e.id}}}

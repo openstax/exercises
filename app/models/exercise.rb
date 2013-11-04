@@ -1,5 +1,6 @@
 class Exercise < ActiveRecord::Base
   attachable
+  credit
   content
   publishable
 
@@ -33,7 +34,7 @@ class Exercise < ActiveRecord::Base
 
   accepts_nested_attributes_for :questions, :allow_destroy => true
 
-  attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions, :credit, :questions_attributes
+  attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions, :questions_attributes
 
   validate :valid_embargo
 

@@ -1,3 +1,5 @@
+require 'publishable_migration'
+
 module Publishable
   def self.included(base)
     base.extend(ClassMethods)

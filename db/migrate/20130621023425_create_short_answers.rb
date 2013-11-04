@@ -1,16 +1,15 @@
 class CreateShortAnswers < ActiveRecord::Migration
   def change
     create_table :short_answers do |t|
-      t.text :content, :null => false, :default => ''
-      t.text :content_html, :null => false, :default => ''
-      t.integer :position, :null => false
-      t.integer :question_id, :null => false
-      t.string :short_answer, :null => false, :default => ''
-      t.integer :credit
+      t.content
+      t.credit
+      t.sortable
+      t.belongs_to :question, null: false
+      t.string :short_answer, null: false, default: ''
 
       t.timestamps
     end
 
-    add_index :short_answers, [:question_id, :position], :unique => true
+    add_sortable_index :short_answers, :question_id
   end
 end

@@ -39,3 +39,4 @@ class CreateDoorkeeperTables < ActiveRecord::Migration
     add_index :oauth_access_tokens, :refresh_token, :unique => true
   end
 end
+

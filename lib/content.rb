@@ -1,4 +1,5 @@
 require 'ose_markup'
+require 'content_migration'
 
 module Content
   # Set this to true for tests where

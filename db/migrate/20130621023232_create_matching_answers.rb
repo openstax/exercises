@@ -1,17 +1,14 @@
 class CreateMatchingAnswers < ActiveRecord::Migration
   def change
     create_table :matching_answers do |t|
-      t.string :left_content, :null => false, :default => ''
-      t.string :left_content_html, :null => false, :default => ''
-      t.string :right_content, :null => false, :default => ''
-      t.string :right_content_html, :null => false, :default => ''
-      t.integer :position, :null => false
-      t.integer :question_id, :null => false
-      t.integer :credit
+      t.content [:left_content, :right_content]
+      t.credit
+      t.sortable
+      t.belongs_to :question, null: false
 
       t.timestamps
     end
 
-    add_index :matching_answers, [:question_id, :position], :unique => true
+    add_sortable_index :matching_answers, :question_id
   end
 end
