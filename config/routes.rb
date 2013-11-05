@@ -3,73 +3,59 @@ Exercises::Application.routes.draw do
 
   use_doorkeeper
 
-  devise_for :users, :controllers => { :registrations => "registrations" }
+  devise_for :users, controllers: { registrations: "registrations" }
 
-  def publishable
-    member do
-      post 'derive'
-      post 'new_version'
-    end
-
-    resources :attachments, :only => [:new, :create, :edit, :update, :destroy], :shallow => true
-    resources :collaborators, :only => [:index, :new, :create, :destroy], :shallow => true do
-      member do
-        put 'toggle_author'
-        put 'toggle_copyright_holder'
-      end
-    end
-    resources :derivations, :only => [:index, :new, :create, :destroy], :shallow => true
-  end
-
-  resources :users, :only => [] do
+  resources :users, only: [] do
     collection do
       get 'help'
     end
   end
 
-  resources :user_profiles, :only => [:show, :edit, :update]
+  resources :user_profiles, only: [:show, :edit, :update]
 
   resources :user_groups do
-    resources :user_group_users, :only => [:new, :create, :destroy], :shallow => true do
-      put 'toggle', :on => :member
+    resources :user_group_users, only: [:new, :create, :destroy], shallow: true do
+      put 'toggle', on: :member
     end
   end
 
   resources :lists do
-    resources :list_exercises, :only => [:new, :create, :destroy], :shallow => true
+    resources :list_exercises, only: [:new, :create, :destroy], shallow: true
   end
 
   resources :exercises do
     publishable
 
-    resources :solutions, :shallow => true do
-      publishable
-    end
+    resources :solutions, shallow: true
 
-    get 'quickview', :on => :member
+    get 'quickview', on: :member
   end
 
-  resources :questions, :only => [] do
-    resources :question_dependency_pairs, :only => [:new, :create, :destroy], :shallow => true
+  resources :questions, only: [] do
+    resources :question_dependency_pairs, only: [:new, :create, :destroy], shallow: true
   end
 
-  resources :publishables, :only => [] do
+  resources :solutions, only: [] do
+    publishable
+  end
+
+  resources :publishables, only: [] do
     collection do
       get 'publication_agreement'
       post 'publish'
     end
   end
 
-  resources :api_keys, :except => [:new, :edit, :update]
+  resources :api_keys, except: [:new, :edit, :update]
 
-  get 'api', :to => 'static_pages#api'
-  get 'copyright', :to => 'static_pages#copyright'
-  get 'developers', :to => 'static_pages#developers'
+  get 'api', to: 'static_pages#api'
+  get 'copyright', to: 'static_pages#copyright'
+  get 'developers', to: 'static_pages#developers'
 
-  root :to => 'static_pages#home'
+  root to: 'static_pages#home'
 
   namespace :admin do
-    resources :users, :except => [:new, :create] do
+    resources :users, except: [:new, :create] do
       member do
         post 'become'
         post 'confirm'
@@ -78,14 +64,14 @@ Exercises::Application.routes.draw do
 
     resources :licenses
 
-    resources :user_groups, :only => [:index]
+    resources :user_groups, only: :index
 
-    root :to => 'console#index'
+    root to: 'console#index'
   end
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
-      get 'dummy', :to => 'dummy#index'
+      get 'dummy', to: 'dummy#index'
     end
   end
 end

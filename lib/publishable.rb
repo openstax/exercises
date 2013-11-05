@@ -1,4 +1,5 @@
 require 'publishable_migration'
+require 'publishable_routes'
 
 module Publishable
   def self.included(base)

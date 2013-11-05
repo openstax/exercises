@@ -18,20 +18,20 @@
 </p>
 
 <% if solution.is_published? %>
-<% if solution.can_be_derived_by?(current_user) || user_is_admin? %>
-<b>Create a derived solution:</b>
-<%= form_tag derive_solution_path(solution) do %>
+<% if solution.new_version_can_be_created_by?(current_user) || user_is_admin? %>
+<%= form_tag solution_new_version_path(solution) do %>
+  <b>New version:</b>
   <div class="actions">
-    <%= submit_tag 'Create derivation', :class => submit_classes %>
+    <%= submit_tag 'Create new version', :class => submit_classes %>
   </div>
 <% end %>
 <% end %>
 
-<% if solution.new_version_can_be_created_by?(current_user) || user_is_admin? %>
-<b>New version:</b>
-<%= form_tag new_version_solution_path(solution) do %>
+<% if solution.can_be_derived_by?(current_user) || user_is_admin? %>
+<%= form_tag solution_derive_path(solution) do %>
+  <b>Create a derived solution:</b>
   <div class="actions">
-    <%= submit_tag 'Create new version', :class => submit_classes %>
+    <%= submit_tag 'Create derivation', :class => submit_classes %>
   </div>
 <% end %>
 <% end %>
@@ -60,3 +60,5 @@
       confirm: "Are you sure you want to delete #{solution.name}?"
     } %>
 <% end %>
+
+<br/>
