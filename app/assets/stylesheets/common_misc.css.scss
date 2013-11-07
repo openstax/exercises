@@ -2,6 +2,7 @@
 // License version 3 or later.  See the COPYRIGHT file for details.
 
 @import "common_colors";
+// @import "modern-buttons/m-buttons";
 
 @mixin vertical-bar-common {
   display:      inline;
@@ -20,4 +21,49 @@
   padding: 10px;
 }
 
+@mixin page-heading {
+  padding: 10px 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  font-style: normal;
+  color: $os_gray;
+}
+
+@mixin std-table-list-1 {
+  width: 100%;
+  font-size: 13px;
+  font-weight: normal;
+  font-color: #000000;
+  margin-top:5px;
+  text-align: left;
+  padding: 2px;
+  border-spacing: 2px;
+  border-width: 0px 0px 0px 0px;
+  border-style: outset outset outset outset;
+  border-color: gray gray gray gray;
+  border-collapse: collapse;
+
+  th {
+    font-weight: bold;
+    text-align: left;
+    border-bottom: 1px solid black;    
+  }
+
+  tr {
+    border-bottom:1px solid #ddd;
+
+    &.odd {
+      background-color: #fefefe;
+    }
+  }
+}
+
+
+
+@mixin m-btn-standard {
+  @extend .m-btn, .m-btn.blue;
+  &:hover, &:active, &:focus {
+    color: white;
+  }
+}
 

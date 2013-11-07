@@ -3,13 +3,21 @@ class ApplicationController < ActionController::Base
 
   include SharedApplicationMethods
 
-  helper OpenStax::Utilities::Engine.helpers
+  include Lev::HandleWith
 
   layout :layout
 
   before_filter :authenticate_user!
+  before_filter :require_registration!
 
-  protected
+  fine_print_get_signatures :general_terms_of_use, 
+                            :privacy_policy
+
+protected
+
+  def require_registration!
+    redirect_to users_registration_path if signed_in? && !current_user.is_registered?
+  end
 
   def raise_exception_unless_admin
     return if user_is_admin?
@@ -19,6 +27,10 @@ class ApplicationController < ActionController::Base
   def raise_exception_unless(authorized)
     return if authorized
     raise_exception_unless_admin
+  end
+
+  def authenticate_admin!
+    raise SecurityTransgression unless signed_in? && current_user.is_admin?
   end
 
   private

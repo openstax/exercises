@@ -1,0 +1,9 @@
+<%= page_heading "Site Terms" %>
+
+<p>The use of OpenStax Tutor is governed by the following terms and policies.  Acceptance of these terms and policies is required in order to access certain sections of this site.</p>
+
+<ul class="normal">
+  <% @agreements.each do |agreement| %>
+    <li><%= link_to agreement.title, show_terms_path(agreement) %></li>
+  <% end %>
+</ul>

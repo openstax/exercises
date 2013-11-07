@@ -50,9 +50,9 @@ $create_image_height: 384px;
   $padding_and_border_space: 2*10px + 2*1px;
   @include white-box;
   float: right;
-  width: 170px - $padding_and_border_space;
+  width: 170px;
   margin-bottom: $bottom_margin;
-  height: ($create_image_height - 2*$bottom_margin)/3 - $padding_and_border_space;
+  height: ($create_image_height - 2*$bottom_margin)/3;
 
   &.last {
     margin-bottom: 0px;

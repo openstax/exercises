@@ -6,6 +6,11 @@
 #application-body {
   min-height: 300px;
   clear:both;
+
+  // Sometimes UL's are used not as bulleted lists
+  ul.normal {
+    margin-left: 25px;
+  }
 }
 
 #application-body a {

@@ -6,19 +6,16 @@
 <div id="account-bar-frame" class="<%= account_bar_classes %>" >
   <div id="account-bar-content">
   
-    <% if user_signed_in? %>
-      <% if user_is_admin? %>
-        [ <%= link_to("Admin", admin_root_path) %> ]&nbsp;&nbsp;
-      <% end %>
+    <% if signed_in? %>
 
       <span class="<%= account_bar_classes %> welcome-message" data-test-user-welcome><%= salutation current_user %></span>
-      <%= link_to "My Account", edit_user_registration_path, :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
+      <%= link_to "My Account", nil, :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
       <%= vertical_bar(:id => "account-bar-vertical-bar",    :class => "#{account_bar_classes}") %>
-      <%= link_to "Sign out", destroy_user_session_path,     :class => "#{account_bar_classes}", :'data-test-link-sign-out' => "", :method => :delete %>
+      <%= link_to "Sign out", openstax_connect.logout_path,     :class => "#{account_bar_classes}", :'data-test-link-sign-out' => "", :method => :delete %>
     <% else %>
-      <%= link_to "Join now", new_user_registration_path, :class => "#{account_bar_classes}", :'data-test-link-join' => "" %> 
+      <%= link_to "Join now", openstax_connect.login_path, :class => "#{account_bar_classes}", :'data-test-link-join' => "" %> 
       <%= vertical_bar(:id => "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
-      <%= link_to "Sign in",  new_user_session_path,      :class => "#{account_bar_classes}", :'data-test-link-sign-in' => "" %>
+      <%= link_to "Sign in",  openstax_connect.login_path,      :class => "#{account_bar_classes}", :'data-test-link-sign-in' => "" %>
     <% end %>
 
     <%= link_to "http://www.facebook.com/openstaxtutor", :id => "facebook-link" do %>

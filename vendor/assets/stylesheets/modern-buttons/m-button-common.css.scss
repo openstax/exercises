@@ -1,0 +1,6 @@
+@import 'common_colors';
+
+// $m-blue: desaturate(darken($os_green, 10%), 10%);
+$m-blue: $os_green;
+$m-blue-darker: darken($m-blue, 0.12%); //#4787ed;
+$m-blue-darkest: desaturate(darken($m-blue, 12%), 10%); //#0072bb;

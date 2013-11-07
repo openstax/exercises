@@ -1,0 +1,44 @@
+@import "common";
+
+h1.fine_print {
+  @include page-heading;
+}
+
+ul.fine_print {
+  margin-left: 25px;
+}
+
+table.fine_print.top_heading {
+  @include std-table-list-1;
+}
+
+.fine_print.show_contract {
+  table.left_heading {
+    th {
+      width: 100px;
+    }
+  }
+}
+
+.fine_print.links {
+  margin-top: 15px;
+}
+
+label.fine_print {
+  font-weight: bold;
+}
+
+textarea.fine_print {
+  width: 100%
+}
+
+.fine_print.field_help {
+  font-size: 12px;
+  padding-top: 5px;
+  padding-bottom: 20px;
+  font-style: italic;
+}
+
+input[type='submit'].fine_print {
+  margin-top: 15px;
+}

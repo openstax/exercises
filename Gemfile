@@ -5,19 +5,19 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 
-gem 'devise', '~> 2.0'
 gem 'jquery-rails', '2.3.0'
 gem 'thin'
 gem 'squeel'
 
-gem 'attribeautiful', '0.0.6'
+gem 'lev', "~> 2.0.4"
 
 gem 'jbuilder'
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
-gem 'openstax_utilities', '~> 0.0.5'
+gem 'openstax_connect', '~> 0.0.6'
+gem 'openstax_utilities', '~> 1.1.0'
 gem 'nested_form'
 
 gem 'carrierwave'
@@ -29,6 +29,7 @@ gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
 gem 'commontator'
+gem 'fine_print', git: 'git://github.com/lml/fine_print.git', ref: 'c75c3d4e76e7ddbd6319956efed8270c36b9f36c'
 gem 'remotipart', '~> 1.2'
 
 # API documentation
@@ -44,7 +45,8 @@ group :assets do
   gem 'sass-rails',     '~> 3.2.3'
   gem 'coffee-rails',   '~> 3.2.1'
   gem 'sass-rails',     '~> 3.2.3'
-  gem 'bootstrap-sass', '~> 2.3.1.0'
+  # gem 'bootstrap-sass', '~> 2.3.1.0'
+  gem 'bootstrap-sass', '~> 3.0.1.0.rc'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
   gem 'compass-rails'

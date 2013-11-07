@@ -1,0 +1,19 @@
+@import "common";
+
+#upper-corner-console {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  #clock.highlight {
+    color: #ff00ff;
+  }
+}
+
+table.std-list-1 {
+  @include std-table-list-1;
+}
+
+div.not-full-width {
+  width: 60%;
+}
