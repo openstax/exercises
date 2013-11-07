@@ -1,5 +1,4 @@
 @import "common";
-// @import "modern-buttons/m-buttons";
 
 h1.fine_print {
   @include page-heading;
@@ -17,10 +16,17 @@ label.fine_print {
   font-weight: bold;
 }
 
+textarea.fine_print {
+  width: 100%
+}
 
-// input[type="submit"].fine_print {
-//   @extend .m-btn, .m-btn.blue;
-//   &:hover, &:active, &:focus {
-//     color: white;
-//   }
-// }
+.fine_print.field_help {
+  font-size: 12px;
+  padding-top: 5px;
+  padding-bottom: 20px;
+  font-style: italic;
+}
+
+input[type='submit'].fine_print {
+  margin-top: 15px;
+}

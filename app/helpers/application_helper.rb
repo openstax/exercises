@@ -91,34 +91,4 @@ module ApplicationHelper
     "$('##{options[:alerts_html_id]}').html('#{ j(render options[:alerts_partial]) }').trigger('#{options[:trigger]}');".html_safe
   end
 
-  # def form_group(options={})
-
-  #   raise IllegalArgument, "Must specify a :label" if !options[:label] 
-  #   raise IllegalArgument, "Must specify a :type" if !options[:type] 
-  #   raise IllegalArgument, "Must specify a :form" if !options[:form] 
-  #   raise IllegalArgument, "Must specify a :name" if !options[:name] 
-
-  #   options[:options] ||= {}
-  #   options[:options][:class] ||= ''
-  #   options[:options][:class] += ' form-control'
-  #   options[:label_classes] ||= ''
-  #   options[:field_classes] ||= ''
-
-
-  #   content_tag :div, class: 'form-group' do
-  #     (content_tag :label, class: 'control-label ' + options[:label_classes] do
-  #             options[:label]
-  #     end) + 
-  #     (content_tag :div, class: 'form-input ' + options[:field_classes] do
-  #       case options[:type] 
-  #       when :text_field
-  #         options[:form].text_field(options[:name], options[:options])
-  #       when :password_field
-  #         options[:form].password_field(options[:name], options[:options])
-  #       else
-  #         raise IllegalArgument, "Unknown field type #{options[:type]}"
-  #       end
-  #     end)
-  #   end
-  # end
 end

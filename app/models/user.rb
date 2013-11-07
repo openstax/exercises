@@ -30,8 +30,6 @@ class User < ActiveRecord::Base
 
   validates_presence_of :user_profile
 
-  default_scope order(:last_name, :first_name)
-
   scope :registered, where(is_registered: true)
   scope :unregistered, where{is_registered != true}
 
@@ -58,28 +56,6 @@ class User < ActiveRecord::Base
   def owned_lists
     lists.select{|l| l.can_be_updated_by?(self)}
   end
-
-  # def self.search(text, type)
-  #   text = text.gsub('%', '')
-  #   return none if text.blank?
-
-  #   case type
-  #   when 'Name'
-  #     u = scoped
-  #     text.gsub(',', ' ').split.each do |q|
-  #       next if q.blank?
-  #       query = q + '%'
-  #       u = u.where{(first_name =~ query) | (last_name =~ query)}
-  #     end
-  #     u
-  #   when 'Username'
-  #     query = text + '%'
-  #     where{username =~ query}
-  #   when 'Email'
-  #     query = text + '%'  
-  #     where{email =~ query}
-  #   end
-  # end
 
   def is_registered?
     is_registered == true

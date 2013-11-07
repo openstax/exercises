@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131030231630) do
+ActiveRecord::Schema.define(:version => 20131031201230) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "number",                          :null => false
@@ -421,20 +421,14 @@ ActiveRecord::Schema.define(:version => 20131030231630) do
     t.boolean  "is_registered"
     t.datetime "created_at",                                  :null => false
     t.datetime "updated_at",                                  :null => false
-    t.string   "username",                 :default => "",    :null => false
-    t.string   "first_name",               :default => "",    :null => false
-    t.string   "last_name",                :default => "",    :null => false
     t.boolean  "is_admin",                 :default => false, :null => false
     t.datetime "disabled_at"
     t.integer  "openstax_connect_user_id"
   end
 
   add_index "users", ["disabled_at"], :name => "index_users_on_disabled_at"
-  add_index "users", ["first_name"], :name => "index_users_on_first_name"
   add_index "users", ["is_admin"], :name => "index_users_on_is_admin"
-  add_index "users", ["last_name"], :name => "index_users_on_last_name"
   add_index "users", ["openstax_connect_user_id"], :name => "index_users_on_openstax_connect_user_id", :unique => true
-  add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
   create_table "votes", :force => true do |t|
     t.integer  "votable_id"

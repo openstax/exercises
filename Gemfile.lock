@@ -1,15 +1,10 @@
-PATH
-  remote: /Users/jps/dev/fine_print
+GIT
+  remote: git://github.com/jpslav/fine_print.git
+  revision: 84d2bd22a4c68ca1c5e656f799bd46bf436f8931
+  tag: v1.0.0.unreleased
   specs:
-    fine_print (1.0.0.alpha)
+    fine_print (1.0.0)
       jquery-rails
-      rails (>= 3.1)
-
-PATH
-  remote: /Users/jps/dev/openstax_utilities
-  specs:
-    openstax_utilities (1.0.3.alpha)
-      attribeautiful (~> 0.0.7)
       rails (>= 3.1)
 
 GEM
@@ -56,7 +51,7 @@ GEM
       activesupport (~> 3.0)
       eager_beaver (~> 0.0.4)
     blankslate (2.1.2.4)
-    bootstrap-sass (3.0.0.0.rc2)
+    bootstrap-sass (3.0.1.0.rc)
       sass (~> 3.2)
     brakeman (2.0.0)
       erubis (~> 2.6)
@@ -212,6 +207,9 @@ GEM
       omniauth-oauth2 (~> 1.1.1)
       rails (~> 3.2.13)
       squeel
+    openstax_utilities (1.1.0)
+      attribeautiful (~> 0.0.7)
+      rails (>= 3.1)
     pager (1.0.1)
     parslet (1.5.0)
       blankslate (~> 2.0)
@@ -276,7 +274,7 @@ GEM
     ruby_parser (3.1.3)
       sexp_processor (~> 4.1)
     rubyzip (0.9.9)
-    sass (3.2.9)
+    sass (3.2.12)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -342,7 +340,7 @@ DEPENDENCIES
   acts-as-taggable-on
   acts_as_votable
   apipie-rails
-  bootstrap-sass (~> 3.0.0.0.rc)
+  bootstrap-sass (~> 3.0.1.0.rc)
   brakeman
   capybara (< 2.1.0)
   capybara-screenshot
@@ -371,7 +369,7 @@ DEPENDENCIES
   newrelic_rpm
   nifty-generators
   openstax_connect (~> 0.0.6)
-  openstax_utilities!
+  openstax_utilities (~> 1.1.0)
   parslet (~> 1.5)
   quiet_assets
   rack-test

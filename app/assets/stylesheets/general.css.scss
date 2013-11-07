@@ -13,3 +13,7 @@
 table.std-list-1 {
   @include std-table-list-1;
 }
+
+div.not-full-width {
+  width: 60%;
+}

@@ -27,6 +27,16 @@ Ui = do () ->
       modalDialog.css('margin-top', #center it if it does fit
                       (userScreenHeight / 2) - (modalHeight / 2)) 
 
+  enableOnChecked: (targetSelector, sourceSelector) ->
+      $(document).ready ->
+        Exercises.Ui.disableButton(targetSelector)
+
+      $(sourceSelector).on 'click', ->
+        if $(this).is(':checked')
+          Exercises.Ui.enableButton(targetSelector)
+        else
+          Exercises.Ui.disableButton(targetSelector)
+
 
 (exports = this).Exercises ?= {}
 exports.Exercises.Ui = Ui

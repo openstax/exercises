@@ -17,7 +17,7 @@ gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_connect', '~> 0.0.6'
-gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities'  #'~> 1.0.2'
+gem 'openstax_utilities', '~> 1.1.0'
 gem 'nested_form'
 
 gem 'carrierwave'
@@ -29,7 +29,7 @@ gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
 gem 'commontator'
-gem 'fine_print', path: '/Users/jps/dev/fine_print'
+gem 'fine_print', git: 'git://github.com/jpslav/fine_print.git', tag: 'v1.0.0.unreleased'
 
 # API documentation
 gem 'apipie-rails'
@@ -45,7 +45,7 @@ group :assets do
   gem 'coffee-rails',   '~> 3.2.1'
   gem 'sass-rails',     '~> 3.2.3'
   # gem 'bootstrap-sass', '~> 2.3.1.0'
-  gem 'bootstrap-sass', '~> 3.0.0.0.rc'
+  gem 'bootstrap-sass', '~> 3.0.1.0.rc'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
   gem 'compass-rails'

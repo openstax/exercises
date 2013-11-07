@@ -1,6 +1,6 @@
 <ul class="normal">
   <li><%= link_to "Run cron tasks", admin_cron_path, :method => :put, :test => "run_cron_tasks" %></li>
-  <li><%= link_to "Manage Site Terms", nil %></li><%# #fine_print.root_path %>
+  <li><%= link_to "Manage Site Terms", fine_print.root_path %></li>
   <li><%= link_to "Content Licenses", admin_licenses_path %></li>
   <li>Raise an Exception:
     <ul class="normal">

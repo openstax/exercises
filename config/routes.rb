@@ -45,11 +45,6 @@ Exercises::Application.routes.draw do
       post 'search', on: :collection
     end
 
-    # namespace 'users' do
-    #   post 'search'
-    #   # need show, destroy, edit, update
-    # end
-
     resources :licenses
     resources :user_groups, :only => [:index]
   end
@@ -57,14 +52,14 @@ Exercises::Application.routes.draw do
   get "terms", to: "terms#index"
   get "terms/:id/show", to: "terms#show", as: "show_terms"
   get "terms/pose", to: "terms#pose", as: "pose_terms"
-  post "terms/:id/agree", to: "terms#agree", as: "agree_to_terms"
+  post "terms/agree", to: "terms#agree", as: "agree_to_terms"
 
   resources :users, :only => [] do
-    collection do
-      get 'help'
-    end
     post 'become', on: :member
   end
+
+  get "users/registration" 
+  put "users/register"
 
   resources :user_profiles, :only => [:show, :edit, :update]
 
