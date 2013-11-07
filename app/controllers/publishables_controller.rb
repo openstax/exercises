@@ -1,5 +1,6 @@
 class PublishablesController < ApplicationController
-  before_filter :get_publishables
+  before_filter :get_publishables, :only => [:publication_agreement, :publish]
+  before_filter :get_publishable, :only => [:new_version, :derive]
 
   # GET /publishables/1/publication_agreement
   def publication_agreement
@@ -42,6 +43,46 @@ class PublishablesController < ApplicationController
     end
   end
 
+  # POST /publishables/1/new_version
+  # POST /publishables/1/new_version.json
+  def new_version
+    raise_exception_unless(@publishable.new_version_can_be_created_by?(current_user))
+
+    respond_to do |format|
+      begin
+        @publishable.transaction do
+          @new_version = @publishable.new_version
+          raise ActiveRecord::RecordInvalid.new(@publishable) unless @list.nil? || @list.add_exercise(@new_version)
+        end
+        format.html { redirect_to @new_version, notice: "New version of #{@publishable.name} was successfully created." }
+        format.json { render json: @new_version, status: :created, location: @new_version }
+      rescue ActiveRecord::RecordInvalid
+        format.html { redirect_to @publishable, alert: "New version could not be created." }
+        format.json { render json: @publishable.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # POST /publishables/1/derive
+  # POST /publishables/1/derive.json
+  def derive
+    raise_exception_unless(@publishable.can_be_derived_by?(current_user))
+
+    respond_to do |format|
+      begin
+        @publishable.transaction do
+          @derived_publishable = @publishable.derive_for(current_user)
+          raise ActiveRecord::RecordInvalid.new(@publishable) unless @list.nil? || @list.add_exercise(@derived_publishable)
+        end
+        format.html { redirect_to @derived_publishable, notice: "Derivation of #{@publishable.name} was successfully created." }
+        format.json { render json: @derived_publishable, status: :created, location: @derived_publishable }
+      rescue ActiveRecord::RecordInvalid
+        format.html { redirect_to @publishable, alert: "Derivation could not be created." }
+        format.json { render json: @publishable.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   protected
 
   def merge_errors(publishables)
@@ -52,6 +93,16 @@ class PublishablesController < ApplicationController
     end
 
     errors
+  end
+
+  def get_publishable
+    @publishable = params[:solution_id] ? Solution.from_param(params[:solution_id]) :
+                   (params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) : nil)
+    raise_exception_unless(!@publishable.nil?)
+    if @publishable.class == Exercise
+      @list = params[:list_id].nil? ? current_user.default_list : List.find(params[:list_id])
+      raise_exception_unless(@list.can_be_edited_by?(current_user))
+    end
   end
 
   def get_publishables

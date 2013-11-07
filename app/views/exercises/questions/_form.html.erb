@@ -8,7 +8,7 @@
         <b><%= q.object.id ? "Question #{q.object.position}" : 'New question' %> (Suggested credit: <%= q.number_field :credit, :size => 3, :maxlength => 3, :class => 'inline' %>)</b>
       </p>
       <div class="field">
-        <%= q.text_area :content %>
+        <%= q.text_area :content, :class => "markItUp" %>
       </div>
 
       <%= render :partial => 'exercises/questions/true_or_false_answers/form', :locals => {:q => q} %>

@@ -1,0 +1,27 @@
+/* Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+   License version 3 or later.  See the COPYRIGHT file for details.*/
+
+.markItUp .markItUpButton1 a {
+	background-image:url(markitup/sets/default/images/bold.png);
+}
+.markItUp .markItUpButton2 a {
+	background-image:url(markitup/sets/default/images/italic.png);
+}
+.markItUp .markItUpButton3 a {
+	background-image:url(markitup/sets/default/images/stroke.png);
+}
+
+.markItUp .markItUpButton4 a {
+	background-image:url(markitup/sets/default/images/picture.png); 
+}
+
+.markItUp .markItUpButton5 a {
+	background-image:url(markitup/sets/default/images/list-bullet.png); 
+}
+.markItUp .markItUpButton6 a {
+	background-image:url(markitup/sets/default/images/list-numeric.png);
+}
+
+.markItUp .markItUpButton7 a {
+	background-image:url(math.png);
+}

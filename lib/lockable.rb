@@ -1,0 +1,1 @@
+require 'lockable_migration'

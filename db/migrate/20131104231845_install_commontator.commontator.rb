@@ -1,5 +1,5 @@
 # This migration comes from commontator (originally 0)
-class CommontatorInstall < ActiveRecord::Migration
+class InstallCommontator < ActiveRecord::Migration
   def change
     create_table "commontator_comments" do |t|
       t.string   "creator_type"
@@ -7,7 +7,7 @@ class CommontatorInstall < ActiveRecord::Migration
       t.string   "editor_type"
       t.integer  "editor_id"
       t.integer  "thread_id", :null => false
-      t.text     "body", :null => false, :default => ''
+      t.text     "body", :null => false
       t.datetime "deleted_at"
       
       t.integer  "cached_votes_total", :default => 0

@@ -1,20 +1,10 @@
 class AttachmentsController < ApplicationController
-  # GET /attachments
-  # GET /attachments.json
-  def index
-    @attachments = Attachment.all
+  before_filter :get_attachable, :only => [:new, :create]
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @attachments }
-    end
-  end
-
-  # GET /attachments/new
-  # GET /attachments/new.json
+  # GET /attachables/1/attachments/new
+  # GET /attachables/1/attachments/new.json
   def new
     @attachment = Attachment.new
-    raise_exception_unless(@attachment.can_be_created_by?(current_user))
 
     respond_to do |format|
       format.html # new.html.erb
@@ -28,18 +18,23 @@ class AttachmentsController < ApplicationController
     raise_exception_unless(@attachment.can_be_updated_by?(current_user))
   end
 
-  # POST /attachments
-  # POST /attachments.json
+  # POST /attachables/1/attachments
+  # POST /attachables/1/attachments.js
+  # POST /attachables/1/attachments.json
   def create
+    asset = params[:attachment].delete(:asset)
     @attachment = Attachment.new(params[:attachment])
-    raise_exception_unless(@attachment.can_be_created_by?(current_user))
+    @attachment.attachable = @attachable
+    @attachment.asset = asset
 
     respond_to do |format|
       if @attachment.save
-        format.html { redirect_to @attachment, notice: 'Attachment was successfully created.' }
+        format.html { redirect_to @attachable, notice: 'Attachment was successfully created.' }
+        format.js # create.js.erb
         format.json { render json: @attachment, status: :created, location: @attachment }
       else
         format.html { render action: "new" }
+        format.js { render action: "errors" }
         format.json { render json: @attachment.errors, status: :unprocessable_entity }
       end
     end
@@ -53,7 +48,7 @@ class AttachmentsController < ApplicationController
 
     respond_to do |format|
       if @attachment.update_attributes(params[:attachment])
-        format.html { redirect_to @attachment, notice: 'Attachment was successfully updated.' }
+        format.html { redirect_to @attachment.attachable, notice: 'Attachment was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -71,8 +66,16 @@ class AttachmentsController < ApplicationController
     @attachment.destroy
 
     respond_to do |format|
-      format.html { redirect_to attachments_url }
+      format.html { redirect_to @attachment.attachable }
       format.json { head :no_content }
     end
+  end
+
+  protected
+
+  def get_attachable
+    @attachable = params[:solution_id] ? Solution.from_param(params[:solution_id]) :
+                  (params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) : nil)
+    raise_exception_unless(!@attachable.nil? && @attachable.can_be_updated_by?(current_user))
   end
 end

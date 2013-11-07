@@ -16,7 +16,7 @@
   </p>
 
   <div class="field">
-    <%= f.text_area :content %>
+    <%= f.text_area :content, :class => "markItUp" %>
   </div>
   <div class="field">
 
@@ -51,6 +51,12 @@
 
   <br/>
 
+  <% if @exercise.version > 1 %>
+    <%= f.check_box :changes_solutions %>
+    <%= f.label :changes_solutions,
+          "This version changes the exercise's solutions. Do not reuse previous solutions." %>
+  <% end %>
+
   <% if @exercise.new_record? %>
   <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) %>
   <div class="field">
@@ -59,6 +65,8 @@
   </div>
   <% end %>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit :class => submit_classes %>
   </div>
 <% end %>
+
+<%= render :partial => 'attachments/dialog', :locals => {:attachable => @exercise} %>

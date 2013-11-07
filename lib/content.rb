@@ -1,4 +1,5 @@
 require 'ose_markup'
+require 'content_migration'
 
 module Content
   # Set this to true for tests where
@@ -30,13 +31,11 @@ module Content
           "#{content[0..15]} ..."
         end
 
-        protected
-
-        def parse_and_cache_content
+        def parse_and_cache_content(force = false)
           return if Rails.env.test? && !Content.enable_test_parser
 
           content_field_names.each do |name|
-            next if !id.nil? && !send(name + '_changed?')
+            next if !id.nil? && !send(name + '_changed?') && !force
 
             content_value = send(name)
 
@@ -51,10 +50,10 @@ module Content
             end
 
             parser = OseParser.new
-            transformer = OseHtmlTransformer.new(self)
+            transformer = OseHtmlTransformer.new
 
             begin
-              transformed_tree = transformer.apply(parser.parse(content_value))
+              transformed_tree = transformer.apply(parser.parse(content_value), {:attachable => self})
               send(name + '_html=', transformed_tree.force_encoding("UTF-8"))
               # logger.debug {"Cached #{name}: "  + transformed_tree.inspect.to_s}
             rescue Parslet::ParseFailed => error

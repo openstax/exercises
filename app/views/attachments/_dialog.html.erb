@@ -1,0 +1,39 @@
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% # Clients of this partial must supply the following variable:
+   # attachable %>
+
+<div id="attachments_dialog" style="display:none;" title="Add an image">
+<% if !attachable.persisted? %>
+  <p>Images cannot be added to this resource until it has been saved.</p>
+
+  <p>Please close this window and then save the resource before trying to add images again.</p>
+<% else %>
+  <%= form_for([attachable, Attachment.new], :remote => true) do |f| %>
+    <div id="errors"></div>
+
+    <div class="field">
+      <%= f.label :asset, 'Upload a new image' %>
+      <%= f.file_field :asset, :id => 'asset_field' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :local_name %>
+      <%= f.text_field :local_name, :id => 'local_name_field' %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit 'Upload', :class => submit_classes %>
+    </div>
+  <% end %>
+
+  <div class="clear">Double-click an image below to add it</div>
+  <div id="image_selection">
+    <% attachable.attachments.each do |attachment| %>
+      <%= render :partial => 'attachments/image_thumb', 
+                 :locals => {:attachment => attachment} %>
+    <% end %>
+  </div>
+<% end %>
+</div>

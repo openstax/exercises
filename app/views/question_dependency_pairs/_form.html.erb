@@ -16,6 +16,6 @@
     <%= f.select :independent_question_id, options_for_select(@question.exercise.questions.reject{|q| q.id == @question.id}.collect{|q| [q.position, q.id]}) %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit :class => submit_classes %>
   </div>
 <% end %>

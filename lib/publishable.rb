@@ -1,3 +1,6 @@
+require 'publishable_migration'
+require 'publishable_routes'
+
 module Publishable
   def self.included(base)
     base.extend(ClassMethods)
@@ -11,8 +14,11 @@ module Publishable
       source_names = "source_#{class_name_plural}"
 
       class_eval do
-        cattr_accessor :dup_fields_array
-        self.dup_fields_array = [:attachments]
+        cattr_accessor :dup_includes_array
+        self.dup_includes_array = [:attachments]
+
+        cattr_accessor :dup_exceptions_array
+        self.dup_exceptions_array = [:published_at]
 
         cattr_accessor :prepublish_checks_array
         self.prepublish_checks_array = [[:is_published?, false, "This #{class_name} is already published."],
@@ -62,7 +68,7 @@ module Publishable
           latest_version = version_scope.first
           return latest_version unless latest_version.is_published?
 
-          new_version = latest_version.dup(:include => (dup_fields_array + [:collaborators, :sources]), :except => :published_at, :use_dictionary => true)
+          new_version = latest_version.dup(:include => dup_includes_array + [:collaborators, :sources], :except => dup_exceptions_array, :use_dictionary => true)
 
           new_version.version += 1
           new_version.save!
@@ -71,7 +77,7 @@ module Publishable
         end
 
         def derive_for(user)
-          derived_copy = dup(:include => dup_fields_array, :except => :published_at, :use_dictionary => true)
+          derived_copy = dup(:include => dup_includes_array, :except => dup_exceptions_array, :use_dictionary => true)
 
           derived_copy.assign_next_number
           derived_copy.version = 1
@@ -143,8 +149,12 @@ module Publishable
           prepublish_checks_array << [method_name, value, error_message]
         end
 
-        def self.add_dup_field(field)
-          dup_fields_array << field
+        def self.add_dup_include(field_name)
+          dup_includes_array << field_name
+        end
+
+        def self.add_dup_exception(field_name)
+          dup_exceptions_array << field_name
         end
 
         ##################

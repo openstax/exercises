@@ -13,11 +13,11 @@
 
   <div class="field">
     <%= f.label :summary %><br />
-    <%= f.text_area :summary %>
+    <%= f.text_area :summary, :class => "markItUp" %>
   </div>
   <div class="field">
     <%= f.label :content, 'Detailed Explanation' %><br />
-    <%= f.text_area :content %>
+    <%= f.text_area :content, :class => "markItUp" %>
   </div>
 
   <div class="license">
@@ -26,6 +26,8 @@
   </div>
 
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit :class => submit_classes %>
   </div>
 <% end %>
+
+<%= render :partial => 'attachments/dialog', :locals => {:attachable => @solution} %>

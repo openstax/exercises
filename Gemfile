@@ -30,6 +30,7 @@ gem 'acts_as_votable'
 gem 'deep_cloneable'
 gem 'commontator'
 gem 'fine_print', git: 'git://github.com/jpslav/fine_print.git', tag: 'v1.0.0.unreleased'
+gem 'remotipart', '~> 1.2'
 
 # API documentation
 gem 'apipie-rails'

@@ -15,7 +15,9 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.remotipart
 //= require jquery-ui
 //= require jquery_nested_form
 //= require bootstrap
+//= require markitup
 //= require_tree .

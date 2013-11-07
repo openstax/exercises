@@ -1,16 +1,15 @@
 class CreateMultipleChoiceAnswers < ActiveRecord::Migration
   def change
     create_table :multiple_choice_answers do |t|
-      t.string :content, :null => false, :default => ''
-      t.string :content_html, :null => false, :default => ''
-      t.integer :position, :null => false
-      t.integer :question_id, :null => false
-      t.boolean :is_always_last, :null => false, :default => false
-      t.integer :credit
+      t.content
+      t.credit
+      t.sortable
+      t.belongs_to :question, null: false
+      t.boolean :is_always_last, null: false, default: false
 
       t.timestamps
     end
 
-    add_index :multiple_choice_answers, [:question_id, :position], :unique => true
+    add_sortable_index :multiple_choice_answers, :question_id
   end
 end

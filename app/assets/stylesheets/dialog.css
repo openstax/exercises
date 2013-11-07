@@ -1,0 +1,21 @@
+/* Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+   License version 3 or later.  See the COPYRIGHT file for details.*/
+
+#attachments_dialog .field {
+	float: left;
+}
+
+#attachments_dialog .actions {
+  margin-top:30px;
+  margin-right: 10px;
+  float:right;
+}
+
+#attachments_dialog .clear {
+	clear:both;
+}
+
+#attachments_dialog .image_thumb {
+	margin:5px;
+  float:left;
+}

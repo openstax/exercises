@@ -18,23 +18,14 @@
   <%= @exercise.embargo_status %>
 </p>
 
-<% if @exercise.is_published? %>
-<% if @exercise.can_be_derived_by?(current_user) || user_is_admin? %>
-<b>Create a derived exercise:</b>
-<%= form_tag derive_exercise_path(@exercise) do %>
-  <div class="field">
-    <%= label_tag :list_id, 'Create in:' %>
-    <%= select_tag :list_id, list_options %>
-  </div>
-  <div class="actions">
-    <%= submit_tag 'Create derivation', :class => submit_classes %>
-  </div>
-<% end %>
+<% if @exercise.version > 1 %>
+<p>This version <%= @exercise.changes_solutions ? 'changes' : 'does not change' %> the exercise's solutions.</p>
 <% end %>
 
+<% if @exercise.is_published? %>
 <% if @exercise.new_version_can_be_created_by?(current_user) || user_is_admin? %>
-<b>New version:</b>
-<%= form_tag new_version_exercise_path(@exercise) do %>
+<%= form_tag exercise_new_version_path(@exercise) do %>
+  <b>New version:</b>
   <div class="field">
     <%= label_tag :list_id, 'Create in:' %>
     <%= select_tag :list_id, list_options %>
@@ -44,9 +35,27 @@
   </div>
 <% end %>
 <% end %>
+
+<% if @exercise.can_be_derived_by?(current_user) || user_is_admin? %>
+<%= form_tag exercise_derive_path(@exercise) do %>
+  <b>Create a derived exercise:</b>
+  <div class="field">
+    <%= label_tag :list_id, 'Create in:' %>
+    <%= select_tag :list_id, list_options %>
+  </div>
+  <div class="actions">
+    <%= submit_tag 'Create derivation', :class => submit_classes %>
+  </div>
+<% end %>
+<% end %>
 <% else %>
 <p>This exercise has not been published yet.</p>
 <% end %>
+
+<b>Attachments:</b>
+<%= render :partial => 'attachments/index', :locals => {:attachable => @exercise} %>
+
+<br/><br/>
 
 <%= link_to 'Solutions', exercise_solutions_path(@exercise) %> |
 

@@ -29,6 +29,9 @@ config/deploy_settings.yml
 cucumber_rerun.txt
 rspec.failures
 
+# Ignore uploaded files
+public/uploads/**/*
+
 .vagrant*
 brakeman.html
 

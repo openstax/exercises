@@ -11,12 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131031201230) do
+ActiveRecord::Schema.define(:version => 20131104231845) do
 
   create_table "attachments", :force => true do |t|
-    t.integer  "number",                          :null => false
-    t.string   "attachable_type",                 :null => false
     t.integer  "attachable_id",                   :null => false
+    t.string   "attachable_type",                 :null => false
+    t.integer  "number",                          :null => false
     t.string   "asset",           :default => "", :null => false
     t.string   "local_name",      :default => "", :null => false
     t.text     "caption",         :default => "", :null => false
@@ -26,12 +26,13 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   end
 
   add_index "attachments", ["attachable_type", "attachable_id", "local_name"], :name => "index_a_on_a_type_and_a_id_and_l_name", :unique => true
-  add_index "attachments", ["attachable_type", "number"], :name => "index_attachments_on_attachable_type_and_number", :unique => true
+  add_index "attachments", ["attachable_type", "attachable_id", "number"], :name => "index_a_on_a_type_and_a_id_and_number", :unique => true
+  add_index "attachments", ["attachable_type", "number"], :name => "index_attachments_on_attachable_type_and_number"
 
   create_table "collaborators", :force => true do |t|
     t.integer  "position",                                           :null => false
-    t.string   "publishable_type",                                   :null => false
     t.integer  "publishable_id",                                     :null => false
+    t.string   "publishable_type",                                   :null => false
     t.integer  "user_id",                                            :null => false
     t.boolean  "is_author",                       :default => false, :null => false
     t.boolean  "is_copyright_holder",             :default => false, :null => false
@@ -49,14 +50,14 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
     t.integer  "creator_id"
     t.string   "editor_type"
     t.integer  "editor_id"
-    t.integer  "thread_id",                          :null => false
-    t.text     "body",               :default => "", :null => false
+    t.integer  "thread_id",                         :null => false
+    t.text     "body",                              :null => false
     t.datetime "deleted_at"
     t.integer  "cached_votes_total", :default => 0
     t.integer  "cached_votes_up",    :default => 0
     t.integer  "cached_votes_down",  :default => 0
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   add_index "commontator_comments", ["cached_votes_down"], :name => "index_commontator_comments_on_cached_votes_down"
@@ -104,16 +105,17 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   create_table "exercises", :force => true do |t|
     t.text     "content",                :default => "",    :null => false
     t.text     "content_html",           :default => "",    :null => false
+    t.integer  "credit"
+    t.integer  "locker_id"
+    t.datetime "locked_at"
     t.integer  "number",                                    :null => false
     t.integer  "version",                :default => 1,     :null => false
-    t.datetime "published_at"
     t.integer  "license_id",                                :null => false
-    t.integer  "credit"
+    t.datetime "published_at"
     t.integer  "embargo_days",           :default => 0,     :null => false
     t.date     "embargoed_until"
     t.boolean  "only_embargo_solutions", :default => false, :null => false
-    t.integer  "locked_by"
-    t.datetime "locked_at"
+    t.boolean  "changes_solutions",      :default => false, :null => false
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
   end
@@ -127,10 +129,10 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
     t.text     "pre_content_html",  :default => "", :null => false
     t.text     "post_content",      :default => "", :null => false
     t.text     "post_content_html", :default => "", :null => false
+    t.integer  "credit"
     t.integer  "position",                          :null => false
     t.integer  "question_id",                       :null => false
     t.string   "blank_answer",      :default => "", :null => false
-    t.integer  "credit"
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
   end
@@ -164,12 +166,12 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   create_table "free_response_answers", :force => true do |t|
     t.text     "content",            :default => "",    :null => false
     t.text     "content_html",       :default => "",    :null => false
-    t.integer  "position",                              :null => false
-    t.integer  "question_id",                           :null => false
     t.text     "free_response",      :default => "",    :null => false
     t.text     "free_response_html", :default => "",    :null => false
-    t.boolean  "can_be_sketched",    :default => false, :null => false
     t.integer  "credit"
+    t.integer  "position",                              :null => false
+    t.integer  "question_id",                           :null => false
+    t.boolean  "can_be_sketched",    :default => false, :null => false
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
   end
@@ -219,13 +221,13 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
 
   create_table "matching_answers", :force => true do |t|
-    t.string   "left_content",       :default => "", :null => false
-    t.string   "left_content_html",  :default => "", :null => false
-    t.string   "right_content",      :default => "", :null => false
-    t.string   "right_content_html", :default => "", :null => false
+    t.text     "left_content",       :default => "", :null => false
+    t.text     "left_content_html",  :default => "", :null => false
+    t.text     "right_content",      :default => "", :null => false
+    t.text     "right_content_html", :default => "", :null => false
+    t.integer  "credit"
     t.integer  "position",                           :null => false
     t.integer  "question_id",                        :null => false
-    t.integer  "credit"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
   end
@@ -233,12 +235,12 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   add_index "matching_answers", ["question_id", "position"], :name => "index_matching_answers_on_question_id_and_position", :unique => true
 
   create_table "multiple_choice_answers", :force => true do |t|
-    t.string   "content",        :default => "",    :null => false
-    t.string   "content_html",   :default => "",    :null => false
+    t.text     "content",        :default => "",    :null => false
+    t.text     "content_html",   :default => "",    :null => false
+    t.integer  "credit"
     t.integer  "position",                          :null => false
     t.integer  "question_id",                       :null => false
     t.boolean  "is_always_last", :default => false, :null => false
-    t.integer  "credit"
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
   end
@@ -309,14 +311,13 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   add_index "question_dependency_pairs", ["independent_question_id", "dependent_question_id", "kind"], :name => "index_qdp_on_iq_id_and_dq_id_and_kind", :unique => true
 
   create_table "questions", :force => true do |t|
-    t.text     "content",          :default => "",    :null => false
-    t.text     "content_html",     :default => "",    :null => false
-    t.integer  "position",                            :null => false
-    t.integer  "exercise_id",                         :null => false
-    t.boolean  "changes_solution", :default => false, :null => false
+    t.text     "content",      :default => "", :null => false
+    t.text     "content_html", :default => "", :null => false
     t.integer  "credit"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.integer  "position",                     :null => false
+    t.integer  "exercise_id",                  :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "questions", ["exercise_id", "position"], :name => "index_questions_on_exercise_id_and_position", :unique => true
@@ -324,10 +325,10 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   create_table "short_answers", :force => true do |t|
     t.text     "content",      :default => "", :null => false
     t.text     "content_html", :default => "", :null => false
+    t.integer  "credit"
     t.integer  "position",                     :null => false
     t.integer  "question_id",                  :null => false
     t.string   "short_answer", :default => "", :null => false
-    t.integer  "credit"
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
   end
@@ -335,20 +336,22 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   add_index "short_answers", ["question_id", "position"], :name => "index_short_answers_on_question_id_and_position", :unique => true
 
   create_table "solutions", :force => true do |t|
-    t.integer  "exercise_id",                  :null => false
     t.text     "summary",      :default => "", :null => false
+    t.text     "summary_html", :default => "", :null => false
     t.text     "content",      :default => "", :null => false
     t.text     "content_html", :default => "", :null => false
     t.integer  "number",                       :null => false
     t.integer  "version",      :default => 1,  :null => false
-    t.datetime "published_at"
     t.integer  "license_id",                   :null => false
+    t.datetime "published_at"
+    t.integer  "exercise_id",                  :null => false
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
   end
 
-  add_index "solutions", ["exercise_id", "number", "version"], :name => "index_solutions_on_exercise_id_and_number_and_version", :unique => true
+  add_index "solutions", ["exercise_id"], :name => "index_solutions_on_exercise_id"
   add_index "solutions", ["license_id"], :name => "index_solutions_on_license_id"
+  add_index "solutions", ["number", "version"], :name => "index_solutions_on_number_and_version", :unique => true
   add_index "solutions", ["published_at"], :name => "index_solutions_on_published_at"
 
   create_table "taggings", :force => true do |t|
@@ -371,10 +374,10 @@ ActiveRecord::Schema.define(:version => 20131031201230) do
   create_table "true_or_false_answers", :force => true do |t|
     t.text     "content",      :default => "",    :null => false
     t.text     "content_html", :default => "",    :null => false
+    t.integer  "credit"
     t.integer  "position",                        :null => false
     t.integer  "question_id",                     :null => false
     t.boolean  "is_true",      :default => false, :null => false
-    t.integer  "credit"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
   end

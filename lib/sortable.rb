@@ -1,3 +1,5 @@
+require 'sortable_migration'
+
 module Sortable
   def self.included(base)
     base.extend(ClassMethods)

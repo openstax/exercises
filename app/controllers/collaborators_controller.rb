@@ -159,6 +159,5 @@ class CollaboratorsController < ApplicationController
     @publishable = params[:solution_id] ? Solution.from_param(params[:solution_id]) :
                    (params[:exercise_id] ? Exercise.from_param(params[:exercise_id]) : nil)
     raise_exception_unless(!@publishable.nil? && @publishable.can_be_updated_by?(current_user))
-    publishable_type = @publishable.class.name
   end
 end

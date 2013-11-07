@@ -32,7 +32,7 @@
           <% else %>
             <%= form_tag(form_action_path) do %>
               <%= hidden_field_tag hidden_field_name, solution.id %>
-              <%= submit_tag submit_text %>
+              <%= submit_tag submit_text, :class => submit_classes %>
             <% end %>
           <% end %>
         <% end %></td>
