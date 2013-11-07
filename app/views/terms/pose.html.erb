@@ -2,7 +2,7 @@
 
 <div class="not-full-width">
 
-  <% if @contract.any_version_accepted_by?(current_user) %>
+  <% if FinePrint::Utilities.any_signed_contract_version?(@contract,current_user) %>
     <p>There have been changes to the <%= @contract.title %>.  Please review them and then click "I agree" at the bottom of this page to continue.</p>
   <% else %>
     <p>To continue, please review and agree to the following site terms by clicking "I agree" at the bottom of this page.</p>

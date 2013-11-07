@@ -1,7 +1,7 @@
 GIT
-  remote: git://github.com/jpslav/fine_print.git
-  revision: 84d2bd22a4c68ca1c5e656f799bd46bf436f8931
-  tag: v1.0.0.unreleased
+  remote: git://github.com/lml/fine_print.git
+  revision: c75c3d4e76e7ddbd6319956efed8270c36b9f36c
+  ref: c75c3d4e76e7ddbd6319956efed8270c36b9f36c
   specs:
     fine_print (1.0.0)
       jquery-rails
@@ -313,14 +313,14 @@ GEM
     thor (0.18.1)
     tilt (1.4.1)
     timecop (0.6.1)
-    treetop (1.4.15)
     transaction_isolation (1.0.3)
       activerecord (>= 3.0.11)
     transaction_retry (1.0.2)
       activerecord (>= 3.0.11)
-      transaction_isolation (>= 1.0.2)
       polyglot
       polyglot (>= 0.3.1)
+      transaction_isolation (>= 1.0.2)
+    treetop (1.4.15)
     tzinfo (0.3.38)
     uglifier (2.1.1)
       execjs (>= 0.3.0)

@@ -4,8 +4,8 @@
   <p>To activate your account on <%= SITE_NAME %>, please review and accept the following site terms by checking the box below and then clicking "Register".</p>
 
 <%
-  contracts = [FinePrint::Contract.latest_named(:general_terms_of_use),
-               FinePrint::Contract.latest_named(:privacy_policy)]
+  contracts = [FinePrint::Utilities.latest_contract_named(:general_terms_of_use),
+               FinePrint::Utilities.latest_contract_named(:privacy_policy)]
 
   contract_links = contracts.collect do |contract|
     link_to contract.title, show_terms_path(contract), remote: true

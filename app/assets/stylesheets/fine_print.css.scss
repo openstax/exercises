@@ -8,8 +8,20 @@ ul.fine_print {
   margin-left: 25px;
 }
 
-table.fine_print {
+table.fine_print.top_heading {
   @include std-table-list-1;
+}
+
+.fine_print.show_contract {
+  table.left_heading {
+    th {
+      width: 100px;
+    }
+  }
+}
+
+.fine_print.links {
+  margin-top: 15px;
 }
 
 label.fine_print {

@@ -18,7 +18,7 @@ class TermsController < ApplicationController
   end
 
   def pose
-    @contract = FinePrint::Contract.latest_named(params['terms'].first)
+    @contract = FinePrint::Utilities.latest_contract_named(params['terms'].first)
   end
 
   def agree
