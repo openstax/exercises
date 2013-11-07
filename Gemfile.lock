@@ -201,7 +201,7 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
-    openstax_connect (0.0.6)
+    openstax_connect (0.0.7)
       lev (~> 2.0.1)
       omniauth (~> 1.1)
       omniauth-oauth2 (~> 1.1.1)
@@ -369,7 +369,7 @@ DEPENDENCIES
   nested_form
   newrelic_rpm
   nifty-generators
-  openstax_connect (~> 0.0.6)
+  openstax_connect (~> 0.0.7)
   openstax_utilities (~> 1.1.0)
   parslet (~> 1.5)
   quiet_assets
