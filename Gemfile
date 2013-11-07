@@ -16,7 +16,7 @@ gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
-gem 'openstax_connect', '~> 0.0.6'
+gem 'openstax_connect', '~> 0.0.7'
 gem 'openstax_utilities', '~> 1.1.0'
 gem 'nested_form'
 

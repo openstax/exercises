@@ -1,29 +1,24 @@
 class ExercisesController < ApplicationController
   skip_before_filter :authenticate_user!, :only => [:index, :show]
-  before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, :dependencies, :derive, :new_version]
 
-  # GET /exercises
-  # GET /exercises.json
+  fine_print_skip_signatures :general_terms_of_use, 
+                             :privacy_policy,
+                             only: [:index, :show]
+
+  before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, 
+                                         :dependencies, :derive, :new_version]
+
   def index
     exercise_search
   end
 
-  # GET /exercises/1
-  # GET /exercises/1.json
   def show
     raise_exception_unless(@exercise.can_be_read_by?(current_user))
 
     @lists = current_user.try(:editable_lists)
     @list_id = params[:list_id] || current_user.try(:default_list).try(:id)
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @exercise }
-    end
   end
 
-  # GET /exercises/new
-  # GET /exercises/new.json
   def new
     @exercise = Exercise.new
     raise_exception_unless(@exercise.can_be_created_by?(current_user))
@@ -33,19 +28,12 @@ class ExercisesController < ApplicationController
     @lists = current_user.editable_lists
     @list_id = params[:list_id] || current_user.default_list.id
 
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @exercise }
-    end
   end
 
-  # GET /exercises/1/edit
   def edit
     raise_exception_unless(@exercise.can_be_updated_by?(current_user))
   end
 
-  # POST /exercises
-  # POST /exercises.json
   def create
     @exercise = Exercise.new(params[:exercise])
     raise_exception_unless(@exercise.can_be_created_by?(current_user))
@@ -63,56 +51,36 @@ class ExercisesController < ApplicationController
         end
         @exercise.add_default_collaborator(current_user)
         format.html { redirect_to @exercise, notice: 'Exercise was successfully created.' }
-        format.json { render json: @exercise, status: :created, location: @exercise }
       rescue ActiveRecord::RecordInvalid
         format.html { render action: "new" }
-        format.json { render json: @exercise.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PUT /exercises/1
-  # PUT /exercises/1.json
   def update
     raise_exception_unless(@exercise.can_be_updated_by?(current_user))
 
     respond_to do |format|
       if @exercise.update_attributes(params[:exercise])
         format.html { redirect_to @exercise, notice: 'Exercise was successfully updated.' }
-        format.json { head :no_content }
       else
         format.html { render action: "edit" }
-        format.json { render json: @exercise.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /exercises/1
-  # DELETE /exercises/1.json
   def destroy
     raise_exception_unless(@exercise.can_be_destroyed_by?(current_user))
-
     @exercise.destroy
-
-    respond_to do |format|
-      format.html { redirect_to exercises_url }
-      format.json { head :no_content }
-    end
+    redirect_to exercises_url
   end
 
-  # GET /exercises/1/dependencies
-  # GET /exercises/1/dependencies.json
   def dependencies
     @exercise = Exercise.find(params[:id])
     raise_exception_unless(@exercise.can_be_updated_by?(current_user))
-
-    respond_to do |format|
-      format.html # dependencies.html.erb
-      format.json { render json: @exercise }
-    end
   end
 
-  protected
+protected
 
   def get_exercise
     @exercise = Exercise.from_param(params[:id])
