@@ -40,3 +40,6 @@ notes
 Berksfile.lock
 
 .vagrant_setup.json
+
+# Ignore ERD diagrams
+erd*.pdf
