@@ -73,7 +73,7 @@ group :development, :test do
   gem 'cucumber-rails', :require => false
   gem 'nifty-generators'
   gem 'rack-test', require: "rack/test"
-  gem 'factory_girl'
+  gem 'factory_girl_rails'
 end
 
 group :production do

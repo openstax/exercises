@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131104231845) do
+ActiveRecord::Schema.define(:version => 20131112204653) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -90,6 +90,16 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
 
   add_index "commontator_threads", ["commontable_type", "commontable_id"], :name => "index_commontator_threads_on_commontable_type_and_commontable_id", :unique => true
 
+  create_table "contents", :force => true do |t|
+    t.text     "markup"
+    t.text     "html"
+    t.integer  "attachable_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "contents", ["attachable_id"], :name => "index_contents_on_attachable_id"
+
   create_table "derivations", :force => true do |t|
     t.integer  "position",               :null => false
     t.string   "publishable_type",       :null => false
@@ -103,9 +113,6 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
   add_index "derivations", ["publishable_type", "source_publishable_id", "derived_publishable_id"], :name => "index_d_on_p_type_and_s_p_id_and_d_p_id", :unique => true
 
   create_table "exercises", :force => true do |t|
-    t.text     "content",                :default => "",    :null => false
-    t.text     "content_html",           :default => "",    :null => false
-    t.integer  "credit"
     t.integer  "locker_id"
     t.datetime "locked_at"
     t.integer  "number",                                    :null => false
@@ -118,8 +125,10 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
     t.boolean  "changes_solutions",      :default => false, :null => false
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
+    t.integer  "background_id"
   end
 
+  add_index "exercises", ["background_id"], :name => "index_exercises_on_background_id"
   add_index "exercises", ["license_id"], :name => "index_exercises_on_license_id"
   add_index "exercises", ["number", "version"], :name => "index_exercises_on_number_and_version", :unique => true
   add_index "exercises", ["published_at"], :name => "index_exercises_on_published_at"
@@ -199,6 +208,7 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
     t.integer  "exercise_id", :null => false
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.float    "credit"
   end
 
   add_index "list_exercises", ["exercise_id", "list_id"], :name => "index_list_exercises_on_exercise_id_and_list_id", :unique => true
@@ -296,6 +306,18 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
   add_index "openstax_connect_users", ["openstax_uid"], :name => "index_openstax_connect_users_on_openstax_uid", :unique => true
   add_index "openstax_connect_users", ["username"], :name => "index_openstax_connect_users_on_username", :unique => true
 
+  create_table "parts", :force => true do |t|
+    t.integer  "exercise_id"
+    t.integer  "background_id"
+    t.integer  "position"
+    t.float    "credit"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "parts", ["background_id"], :name => "index_parts_on_background_id"
+  add_index "parts", ["exercise_id"], :name => "index_parts_on_exercise_id"
+
   create_table "question_dependency_pairs", :force => true do |t|
     t.integer  "position",                :null => false
     t.integer  "dependent_question_id",   :null => false
@@ -309,13 +331,11 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
   add_index "question_dependency_pairs", ["independent_question_id", "dependent_question_id", "kind"], :name => "index_qdp_on_iq_id_and_dq_id_and_kind", :unique => true
 
   create_table "questions", :force => true do |t|
-    t.text     "content",      :default => "", :null => false
-    t.text     "content_html", :default => "", :null => false
     t.integer  "credit"
-    t.integer  "position",                     :null => false
-    t.integer  "exercise_id",                  :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.integer  "position",    :null => false
+    t.integer  "exercise_id", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "questions", ["exercise_id", "position"], :name => "index_questions_on_exercise_id_and_position", :unique => true
@@ -334,23 +354,23 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
   add_index "short_answers", ["question_id", "position"], :name => "index_short_answers_on_question_id_and_position", :unique => true
 
   create_table "solutions", :force => true do |t|
-    t.text     "summary",      :default => "", :null => false
-    t.text     "summary_html", :default => "", :null => false
-    t.text     "content",      :default => "", :null => false
-    t.text     "content_html", :default => "", :null => false
-    t.integer  "number",                       :null => false
-    t.integer  "version",      :default => 1,  :null => false
-    t.integer  "license_id",                   :null => false
+    t.integer  "number",                      :null => false
+    t.integer  "version",      :default => 1, :null => false
+    t.integer  "license_id",                  :null => false
     t.datetime "published_at"
-    t.integer  "exercise_id",                  :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+    t.integer  "part_id"
+    t.integer  "details_id"
+    t.integer  "summary_id"
   end
 
-  add_index "solutions", ["exercise_id"], :name => "index_solutions_on_exercise_id"
+  add_index "solutions", ["details_id"], :name => "index_solutions_on_details_id"
   add_index "solutions", ["license_id"], :name => "index_solutions_on_license_id"
   add_index "solutions", ["number", "version"], :name => "index_solutions_on_number_and_version", :unique => true
+  add_index "solutions", ["part_id"], :name => "index_solutions_on_part_id"
   add_index "solutions", ["published_at"], :name => "index_solutions_on_published_at"
+  add_index "solutions", ["summary_id"], :name => "index_solutions_on_summary_id"
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"

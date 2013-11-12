@@ -1,7 +1,7 @@
 class Exercise < ActiveRecord::Base
   attachable
-  credit
-  content
+  # credit
+  # content
   publishable
 
   add_prepublish_check(:has_questions?, true, 'This exercise does not contain any questions.')
@@ -18,16 +18,17 @@ class Exercise < ActiveRecord::Base
                                    :free_response_answers]})
   add_dup_exception(:changes_solutions)
 
-  has_many :questions, :dependent => :destroy, :inverse_of => :exercise
+  # has_many :questions, :dependent => :destroy, :inverse_of => :exercise
+  has_many :parts, dependent: :destroy, inverse_of: :exercise
 
-  has_many :true_or_false_answers, :through => :questions
-  has_many :multiple_choice_answers, :through => :questions
-  has_many :matching_answers, :through => :questions
-  has_many :fill_in_the_blank_answers, :through => :questions
-  has_many :short_answers, :through => :questions
-  has_many :free_response_answers, :through => :questions
+  # has_many :true_or_false_answers, :through => :questions
+  # has_many :multiple_choice_answers, :through => :questions
+  # has_many :matching_answers, :through => :questions
+  # has_many :fill_in_the_blank_answers, :through => :questions
+  # has_many :short_answers, :through => :questions
+  # has_many :free_response_answers, :through => :questions
 
-  has_many :solutions, :dependent => :destroy, :inverse_of => :exercise
+  # has_many :solutions, :dependent => :destroy, :inverse_of => :exercise
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
@@ -38,9 +39,13 @@ class Exercise < ActiveRecord::Base
 
   validate :valid_embargo
 
-  scope :not_embargoed, where{(embargoed_until == nil) | (embargoed_until < Date.current)}
+  # TODO Date.current evaluates to right value? or need this to be in a static method?
 
-  scope :visible_for, lambda { |user|
+  def self.not_embargoed
+    where{(embargoed_until == nil) | (embargoed_until < Date.current)}
+  end
+
+  def self.visible_for(user)
     return published.not_embargoed if user.nil?
     return scoped if user.is_admin?
 
@@ -53,7 +58,7 @@ class Exercise < ActiveRecord::Base
       (collaborators.user_id == user.id) |\
       (collaborators.deputies.id == user.id))}\
       .group(:id)
-  }
+  end
 
   scope :with_true_or_false_answers, joins(:true_or_false_answers)
   scope :with_multiple_choice_answers, joins(:multiple_choice_answers)
