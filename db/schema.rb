@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131112204653) do
+ActiveRecord::Schema.define(:version => 20131113015255) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -255,6 +255,16 @@ ActiveRecord::Schema.define(:version => 20131112204653) do
 
   add_index "multiple_choice_answers", ["question_id", "position"], :name => "index_multiple_choice_answers_on_question_id_and_position", :unique => true
 
+  create_table "multiple_choice_questions", :force => true do |t|
+    t.integer  "stem_id",             :null => false
+    t.boolean  "can_select_multiple", :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "multiple_choice_questions", ["can_select_multiple"], :name => "index_multiple_choice_questions_on_can_select_multiple"
+  add_index "multiple_choice_questions", ["stem_id"], :name => "index_multiple_choice_questions_on_stem_id"
+
   create_table "oauth_access_grants", :force => true do |t|
     t.integer  "resource_owner_id", :null => false
     t.integer  "application_id",    :null => false
@@ -316,6 +326,7 @@ ActiveRecord::Schema.define(:version => 20131112204653) do
   end
 
   add_index "parts", ["background_id"], :name => "index_parts_on_background_id"
+  add_index "parts", ["exercise_id", "position"], :name => "index_parts_on_exercise_id_and_position", :unique => true
   add_index "parts", ["exercise_id"], :name => "index_parts_on_exercise_id"
 
   create_table "question_dependency_pairs", :force => true do |t|
@@ -331,14 +342,19 @@ ActiveRecord::Schema.define(:version => 20131112204653) do
   add_index "question_dependency_pairs", ["independent_question_id", "dependent_question_id", "kind"], :name => "index_qdp_on_iq_id_and_dq_id_and_kind", :unique => true
 
   create_table "questions", :force => true do |t|
-    t.integer  "credit"
-    t.integer  "position",    :null => false
-    t.integer  "exercise_id", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer  "position",                       :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.integer  "part_id"
+    t.boolean  "is_default",  :default => false, :null => false
+    t.string   "format_type", :default => "",    :null => false
+    t.integer  "format_id",   :default => 0,     :null => false
   end
 
-  add_index "questions", ["exercise_id", "position"], :name => "index_questions_on_exercise_id_and_position", :unique => true
+  add_index "questions", ["format_id", "format_type"], :name => "index_questions_on_format_id_and_format_type", :unique => true
+  add_index "questions", ["is_default"], :name => "index_questions_on_is_default"
+  add_index "questions", ["part_id", "position"], :name => "index_questions_on_part_id_and_position", :unique => true
+  add_index "questions", ["part_id"], :name => "index_questions_on_part_id"
 
   create_table "short_answers", :force => true do |t|
     t.text     "content",      :default => "", :null => false
@@ -352,6 +368,19 @@ ActiveRecord::Schema.define(:version => 20131112204653) do
   end
 
   add_index "short_answers", ["question_id", "position"], :name => "index_short_answers_on_question_id_and_position", :unique => true
+
+  create_table "simple_choices", :force => true do |t|
+    t.integer  "content_id"
+    t.integer  "position"
+    t.float    "credit"
+    t.integer  "multiple_choice_question_id"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "simple_choices", ["content_id"], :name => "index_simple_choices_on_content_id"
+  add_index "simple_choices", ["multiple_choice_question_id", "position"], :name => "index_simple_choices_on_multiple_choice_question_id_and_position", :unique => true
+  add_index "simple_choices", ["multiple_choice_question_id"], :name => "index_simple_choices_on_multiple_choice_question_id"
 
   create_table "solutions", :force => true do |t|
     t.integer  "number",                      :null => false
