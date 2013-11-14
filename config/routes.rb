@@ -1,5 +1,4 @@
 Exercises::Application.routes.draw do
-
   mount OpenStax::Connect::Engine, at: "/connect"
   mount FinePrint::Engine => "/admin/fine_print"
 
@@ -42,7 +41,6 @@ Exercises::Application.routes.draw do
     resources :user_groups, :only => [:index]
   end
 
-  get "terms", to: "terms#index"
   get "terms/:id/show", to: "terms#show", as: "show_terms"
   get "terms/pose", to: "terms#pose", as: "pose_terms"
   post "terms/agree", to: "terms#agree", as: "agree_to_terms"

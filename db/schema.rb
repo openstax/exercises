@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131104231845) do
+ActiveRecord::Schema.define(:version => 20131113015850) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20131104231845) do
   end
 
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
-  add_index "fine_print_signatures", ["user_type", "user_id", "contract_id"], :name => "index_fine_print_s_on_u_type_and_u_id_and_c_id", :unique => true
+  add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
 
   create_table "free_response_answers", :force => true do |t|
     t.text     "content",            :default => "",    :null => false

@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-
   belongs_to :openstax_connect_user, 
              class_name: "OpenStax::Connect::User",
              dependent: :destroy
