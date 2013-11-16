@@ -1,3 +1,10 @@
+PATH
+  remote: ../fine_print
+  specs:
+    fine_print (1.2.0)
+      jquery-rails
+      rails (>= 3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -134,9 +141,6 @@ GEM
       multipart-post (~> 1.2.0)
     fastercsv (1.5.5)
     ffi (1.9.0)
-    fine_print (1.1.1)
-      jquery-rails
-      rails (>= 3.1)
     fssm (0.2.10)
     gherkin (2.12.0)
       multi_json (~> 1.3)
@@ -353,7 +357,7 @@ DEPENDENCIES
   exception_notification
   factory_girl
   faker
-  fine_print (~> 1.1.1)
+  fine_print!
   jbuilder
   jquery-rails (= 2.3.0)
   lev (~> 2.0.4)
