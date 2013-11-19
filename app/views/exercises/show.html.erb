@@ -1,3 +1,16 @@
+
+
+<div id='exercise-header'>
+  <div id='exercise-heading'></div>
+  <div id='exercise-nav'></div>
+</div>
+
+<div class='exercise-frame'>
+
+</div>
+
+<% if false ############################################################################## %>
+
 <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) unless @lists.nil? %>
 
 <%= page_heading "Exercise #{@exercise.name}" %>
@@ -15,7 +28,7 @@
 
 <p>
   <b>Embargo:</b>
-  <%= @exercise.embargo_status %>
+  <%= exercise_embargo_status(@exercise) %>
 </p>
 
 <% if @exercise.version > 1 %>
@@ -76,3 +89,5 @@
 <% end %>
 
 <%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>
+
+<% end ############################################################################## %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131113015255) do
+ActiveRecord::Schema.define(:version => 20131118234333) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -44,6 +44,26 @@ ActiveRecord::Schema.define(:version => 20131113015255) do
 
   add_index "collaborators", ["publishable_type", "publishable_id", "position"], :name => "index_c_on_p_type_and_p_id_and_position", :unique => true
   add_index "collaborators", ["user_id", "publishable_type", "publishable_id"], :name => "index_c_on_u_id_and_p_type_and_p_id", :unique => true
+
+  create_table "combo_choices", :force => true do |t|
+    t.float    "credit"
+    t.integer  "multiple_choice_question_id"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "combo_choices", ["multiple_choice_question_id"], :name => "index_combo_choices_on_multiple_choice_question_id"
+
+  create_table "combo_simple_choices", :force => true do |t|
+    t.integer  "combo_choice_id"
+    t.integer  "simple_choice_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "combo_simple_choices", ["combo_choice_id", "simple_choice_id"], :name => "index_combo_simple_choices_cc_id_and_sc_id", :unique => true
+  add_index "combo_simple_choices", ["combo_choice_id"], :name => "index_combo_simple_choices_on_combo_choice_id"
+  add_index "combo_simple_choices", ["simple_choice_id"], :name => "index_combo_simple_choices_on_simple_choice_id"
 
   create_table "commontator_comments", :force => true do |t|
     t.string   "creator_type"
@@ -186,15 +206,15 @@ ActiveRecord::Schema.define(:version => 20131113015255) do
   add_index "free_response_answers", ["question_id", "position"], :name => "index_free_response_answers_on_question_id_and_position", :unique => true
 
   create_table "licenses", :force => true do |t|
-    t.integer  "position",                           :null => false
-    t.string   "name",             :default => "",   :null => false
-    t.string   "short_name",       :default => "",   :null => false
-    t.string   "url",              :default => "",   :null => false
-    t.string   "partial_filename", :default => "",   :null => false
-    t.boolean  "allow_exercises",  :default => true, :null => false
-    t.boolean  "allow_solutions",  :default => true, :null => false
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.integer  "position",                                   :null => false
+    t.string   "name",                     :default => "",   :null => false
+    t.string   "short_name",               :default => "",   :null => false
+    t.string   "url",                      :default => "",   :null => false
+    t.boolean  "allow_exercises",          :default => true, :null => false
+    t.boolean  "allow_solutions",          :default => true, :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+    t.string   "publishing_contract_name"
   end
 
   add_index "licenses", ["name"], :name => "index_licenses_on_name", :unique => true

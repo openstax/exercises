@@ -9,6 +9,6 @@ class CreateComboSimpleChoices < ActiveRecord::Migration
 
     add_index :combo_simple_choices, :combo_choice_id
     add_index :combo_simple_choices, :simple_choice_id
-    add_index :combo_simple_choices, [:combo_choice_id, :simple_choice_id], unique: true
+    add_index :combo_simple_choices, [:combo_choice_id, :simple_choice_id], name: 'index_combo_simple_choices_cc_id_and_sc_id', unique: true
   end
 end

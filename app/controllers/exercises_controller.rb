@@ -20,13 +20,15 @@ class ExercisesController < ApplicationController
   end
 
   def new
-    @exercise = Exercise.new
-    raise_exception_unless(@exercise.can_be_created_by?(current_user))
-    @exercise.questions << Question.new
+    redirect_to Exercise.create
 
-    current_user.ensure_default_list
-    @lists = current_user.editable_lists
-    @list_id = params[:list_id] || current_user.default_list.id
+    # @exercise = Exercise.new
+    # raise_exception_unless(@exercise.can_be_created_by?(current_user))
+    # @exercise.questions << Question.new
+
+    # current_user.ensure_default_list
+    # @lists = current_user.editable_lists
+    # @list_id = params[:list_id] || current_user.default_list.id
 
   end
 
