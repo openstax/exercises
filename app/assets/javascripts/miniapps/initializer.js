@@ -9,6 +9,13 @@ Backbone.sync = function(method, model, options) {
   sync(method, model, options);
 };
 
+// https://github.com/marionettejs/backbone.marionette/wiki/Using-jst-templates-with-marionette
+Backbone.Marionette.Renderer.render = function(template, data){
+  var theTemplate = JST['miniapps/exercise_editor/templates/' + template];
+  if (!theTemplate) throw "Template '" + template + "' not found!";
+  return theTemplate(data);
+}
+
 var apiGet = function(url) {
   jQuery.ajax({
     url:url,

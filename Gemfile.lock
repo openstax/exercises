@@ -129,6 +129,7 @@ GEM
     doorkeeper (0.6.7)
       railties (~> 3.1)
     eager_beaver (0.0.4)
+    ejs (1.1.1)
     erubis (2.7.0)
     eventmachine (1.0.3)
     exception_notification (3.0.1)
@@ -359,6 +360,7 @@ DEPENDENCIES
   debugger (~> 1.5.0)
   deep_cloneable
   doorkeeper (~> 0.6.7)
+  ejs
   exception_notification
   factory_girl_rails
   faker
