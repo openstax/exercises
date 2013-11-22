@@ -99,6 +99,7 @@ Exercises::Application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       get 'dummy', to: 'dummy#index'
+      resources :exercises, only: [:show]
     end
   end
 end

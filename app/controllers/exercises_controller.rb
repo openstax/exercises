@@ -9,18 +9,21 @@ class ExercisesController < ApplicationController
                                          :dependencies, :derive, :new_version]
 
   def index
-    exercise_search
+    # exercise_search
+    @exercises = []
   end
 
   def show
     raise_exception_unless(@exercise.can_be_read_by?(current_user))
 
-    @lists = current_user.try(:editable_lists)
-    @list_id = params[:list_id] || current_user.try(:default_list).try(:id)
+    # @lists = current_user.try(:editable_lists)
+    # @list_id = params[:list_id] || current_user.try(:default_list).try(:id)
   end
 
   def new
-    redirect_to Exercise.create
+    handle_with(ExercisesNew,
+                complete: lambda { redirect_to @handler_result.outputs[:exercise] })
+
 
     # @exercise = Exercise.new
     # raise_exception_unless(@exercise.can_be_created_by?(current_user))

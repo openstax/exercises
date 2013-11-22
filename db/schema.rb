@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131118234333) do
+ActiveRecord::Schema.define(:version => 20131119002521) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -473,29 +473,20 @@ ActiveRecord::Schema.define(:version => 20131118234333) do
 
   add_index "user_groups", ["container_type", "container_id"], :name => "index_user_groups_on_container_type_and_container_id"
 
-  create_table "user_profiles", :force => true do |t|
-    t.integer  "user_id",                                       :null => false
-    t.integer  "default_list_id",                               :null => false
-    t.boolean  "auto_author_subscribe",      :default => false, :null => false
-    t.boolean  "announcement_email",         :default => false, :null => false
-    t.boolean  "collaborator_request_email", :default => false, :null => false
-    t.boolean  "user_group_member_email",    :default => false, :null => false
-    t.datetime "created_at",                                    :null => false
-    t.datetime "updated_at",                                    :null => false
-  end
-
-  add_index "user_profiles", ["default_list_id"], :name => "index_user_profiles_on_default_list_id"
-  add_index "user_profiles", ["user_id"], :name => "index_user_profiles_on_user_id", :unique => true
-
   create_table "users", :force => true do |t|
     t.boolean  "is_registered"
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
-    t.boolean  "is_admin",                 :default => false, :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+    t.boolean  "is_admin",                   :default => false, :null => false
     t.datetime "disabled_at"
     t.integer  "openstax_connect_user_id"
+    t.integer  "default_list_id",                               :null => false
+    t.boolean  "auto_author_subscribe",      :default => false, :null => false
+    t.boolean  "collaborator_request_email", :default => false, :null => false
+    t.boolean  "user_group_member_email",    :default => false, :null => false
   end
 
+  add_index "users", ["default_list_id"], :name => "index_users_on_default_list_id"
   add_index "users", ["disabled_at"], :name => "index_users_on_disabled_at"
   add_index "users", ["is_admin"], :name => "index_users_on_is_admin"
   add_index "users", ["openstax_connect_user_id"], :name => "index_users_on_openstax_connect_user_id", :unique => true

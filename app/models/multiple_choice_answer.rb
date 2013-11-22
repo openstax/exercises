@@ -1,12 +1,12 @@
 class MultipleChoiceAnswer < ActiveRecord::Base
-  attachable :exercise
-  content
-  sortable :question_id
+  # attachable :exercise
+  # content
+  # sortable :question_id
 
-  belongs_to :question, :inverse_of => :multiple_choice_answers
-  has_one :exercise, :through => :question
+  # belongs_to :question, :inverse_of => :multiple_choice_answers
+  # has_one :exercise, :through => :question
 
-  attr_accessible :is_always_last, :credit
+  # attr_accessible :is_always_last, :credit
 
-  validates_presence_of :question
+  # validates_presence_of :question
 end

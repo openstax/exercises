@@ -1,5 +1,9 @@
-<%= page_heading 'Editing exercise' %>
+<% content_for :javascript_includes do %>
+  <%= javascript_include_tag 'miniapps/exercise_editor' %>
+<% end %>
 
-<%= render 'form' %>
+<div class='exercise-edit'>
 
-<%= link_to 'Back', @exercise %>
+  <%= render 'header', exercise: @exercise %>
+
+</div>

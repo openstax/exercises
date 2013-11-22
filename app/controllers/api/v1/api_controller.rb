@@ -5,12 +5,18 @@ module Api
       respond_to :json
       rescue_from Exception, :with => :rescue_from_exception
       
+      # TODO doorkeeper users (or rather users who have doorkeeper applications) need to agree to 
+      # API terms of use (need to have agreed to it at one time, can't require them to agree when 
+      # terms change since their apps are doing the talking) -- this needs more thought
+
     private
 
       def current_user
         @current_user ||= doorkeeper_token ? 
                           User.find(doorkeeper_token.resource_owner_id) : 
-                          AnonymousUser.instance
+                          super
+        # TODO maybe freak out if current user is anonymous (require we know who person/app is
+        # so we can do things like throttling, API terms agreement, etc)
       end
 
       def rescue_from_exception(exception)
@@ -31,11 +37,14 @@ module Api
           send_email = false
         end
 
-        ExceptionNotifier.notify_exception(
+        ExceptionNotifier::Notifier.exception_notification(
+          request.env,
           exception,
-          :env => request.env, 
-          :data => {:message => "was doing something wrong"}
-        ) if send_email
+          :data => {:message => "An exception occurred"}
+        ).deliver if send_email
+
+        
+        Rails.logger.debug("An exception occurred: #{exception.inspect}") if Rails.env.development?
 
         head error
       end

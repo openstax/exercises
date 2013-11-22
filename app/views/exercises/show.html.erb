@@ -1,15 +1,15 @@
 
 
-<div id='exercise-header'>
-  <div id='exercise-heading'></div>
-  <div id='exercise-nav'></div>
-</div>
+<%= render 'show', exercise: @exercise %>
 
-<div class='exercise-frame'>
 
-</div>
 
-<% if false ############################################################################## %>
+
+
+
+
+
+<% if false  %>
 
 <% list_options = options_for_select(@lists.collect{|l| [l.name, l.id]}, @list_id) unless @lists.nil? %>
 
@@ -90,4 +90,4 @@
 
 <%= link_to 'Back', @exercise.is_published? ? exercises_path : @exercise.lists.first %>
 
-<% end ############################################################################## %>
+<% end  %>

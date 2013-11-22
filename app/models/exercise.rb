@@ -21,8 +21,9 @@ class Exercise < ActiveRecord::Base
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
+  belongs_to :background, class_name: 'Content'
 
-  attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions, :questions_attributes
+  attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions
 
   validate :valid_embargo
 

@@ -1,4 +1,4 @@
-module Content
+module Contents
   module Migration
     module Columns
       def content(names = 'content')
@@ -13,4 +13,4 @@ module Content
   end
 end
 
-ActiveRecord::ConnectionAdapters::TableDefinition.send :include, Content::Migration::Columns
+ActiveRecord::ConnectionAdapters::TableDefinition.send :include, Contents::Migration::Columns
