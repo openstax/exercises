@@ -1,5 +1,12 @@
-class ExerciseEditor.ExerciseView extends Marionette.ItemView
+class ExerciseEditor.ExerciseView extends Marionette.Layout
   template: "exercise"
 
+  regions:
+    background: '.exercise-background'
+
   initialize: () ->
-    this.listenTo this.model, 'change', this.render
+    @listenTo @model, 'change', @render
+
+  onShow: () ->
+    @background.show(new ExerciseEditor.ContentView({model: @model.get('background')}))
+

@@ -16,10 +16,8 @@ ExerciseEditor.on 'initialize:after', () ->
   Backbone.history.start
   ex = new ExerciseEditor.Exercise id: ExerciseEditor.startOptions.exerciseId
   
-  
-  ExerciseEditor.main.show(new ExerciseEditor.ExerciseView({model: ex}))
   ex.fetch
     success: () ->
-      # ExerciseEditor.main.show(new ExerciseEditor.ExerciseView({model: ex}))
-      console.log(ex.attributes)
+      ExerciseEditor.main.show(new ExerciseEditor.ExerciseView({model: ex}))
+  
   ExerciseEditor.tempEx = ex
