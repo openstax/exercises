@@ -43,3 +43,5 @@ Berksfile.lock
 
 # Ignore ERD diagrams
 erd*.pdf
+
+public/assets/source_maps/

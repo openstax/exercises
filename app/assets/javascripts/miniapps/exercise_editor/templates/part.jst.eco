@@ -1,0 +1,3 @@
+<%= @position %>) 
+
+<div class='part-background'></div>

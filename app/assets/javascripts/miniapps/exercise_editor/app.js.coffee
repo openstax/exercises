@@ -9,9 +9,6 @@ ExerciseEditor.addRegions
 ExerciseEditor.Router = Marionette.AppRouter.extend
   appRoutes: {}
 
-
-
-
 ExerciseEditor.on 'initialize:after', () ->
   Backbone.history.start
   ex = new ExerciseEditor.Exercise id: ExerciseEditor.startOptions.exerciseId

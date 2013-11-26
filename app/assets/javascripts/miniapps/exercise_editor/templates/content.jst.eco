@@ -1,0 +1,4 @@
+
+
+<div class='output'><%= @html %></div>
+<textarea style='display:none'><%= @markup %></textarea>

@@ -40,6 +40,7 @@ gem 'doorkeeper', '~> 0.6.7'
 gem 'exception_notification'
 
 gem 'ejs'
+gem 'eco'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -76,6 +77,7 @@ group :development, :test do
   gem 'nifty-generators'
   gem 'rack-test', require: "rack/test"
   gem 'factory_girl_rails'
+  gem 'coffee-rails-source-maps'
 end
 
 group :production do

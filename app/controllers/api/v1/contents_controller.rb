@@ -33,8 +33,25 @@ module Api
         # raise SecurityTransgression unless current_user.can_read?(@object)
       end
 
+      api :PUT, '/contents/:id', 'Updates the specified Content'
+      description <<-EOS
+        Updates the Content object whose ID matches the provided param.  Any provided html will
+        be ignored.
+      EOS
+      example <<-EOS
+        { 
+          id: 2,
+          markup: "Jack was a very _dull_ boy",
+        }
+      EOS
       def update
+        @content = Content.find(params[:id])
 
+        if @content.update_attributes(params[:content])
+          head :no_content
+        else
+          render json: @content.errors, status: :unprocessable_entity
+        end
       end
       
     end
