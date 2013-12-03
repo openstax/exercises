@@ -33,10 +33,29 @@ module Api
       def show
         @exercise = Exercise.find(params[:id])
         raise SecurityTransgression unless current_user.can_read?(@exercise)
+        respond_with @exercise
       end
 
+      api :PUT, '/exercises/:id', 'Updates the specified Exercise'
+      description <<-EOS
+        Updates the Exercise object whose ID matches the provided param.  Any provided 
+        transformed Content field (e.g. 'html') will be ignored.
+      EOS
+      example <<-EOS
+        { 
+          TBD maybe use mocks plus Api::V1::ExerciseRepresenter.new(Exercise.new).to_json
+        }
+      EOS
       def update
-
+        @exercise = Exercise.find(params[:id])
+        raise SecurityTransgression unless current_user.can_update?(@exercise)
+        consume!(@exercise)
+        
+        if @exercise.save  #@exercise.update_attributes(params.slice(Exercise.accessible_attributes.to_a))
+          head :no_content
+        else
+          render json: @exercise.errors, status: :unprocessable_entity
+        end
       end
       
     end

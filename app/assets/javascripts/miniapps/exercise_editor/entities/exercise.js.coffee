@@ -13,7 +13,7 @@ class ExerciseEditor.Exercise extends Backbone.RelationalModel
       reverseRelation: {
         type: Backbone.HasOne
         key: 'exercise',
-        includeInJSON: 'id'
+        includeInJSON: false
       }
     },
     {
@@ -23,7 +23,7 @@ class ExerciseEditor.Exercise extends Backbone.RelationalModel
       collectionType: 'ExerciseEditor.Parts',
       reverseRelation: {
         key: 'exercise',
-        includeInJSON: 'id'
+        includeInJSON: false
       }
     }
   ]

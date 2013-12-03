@@ -10,7 +10,8 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
     'focusout textarea': 'save'
 
   initialize: () ->
-    this.listenTo this.model, 'change', this.render
+    @listenTo @model, 'change', @render
+    @listenTo @model.container(), 'change', @render
 
   edit: () ->
     @ui.output.toggle()
@@ -20,5 +21,10 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
   save: () ->
     @ui.input.toggle()
     @ui.output.toggle()
-    this.model.set('markup', @ui.input.val())
-    this.model.save()
+    @model.set('markup', @ui.input.val())
+    @model.save {}, {
+      success: (model, response, options) ->
+        model.fetch()
+    }
+      
+    

@@ -37,8 +37,10 @@ module Api
       description <<-EOS
         Updates the Content object whose ID matches the provided param.  Any provided html will
         be ignored.
+
+        #{json_schema(Api::V1::ContentRepresenter, include: :writeable)}        
       EOS
-      example <<-EOS
+      example <<-EOS        
         { 
           id: 2,
           markup: "Jack was a very _dull_ boy",

@@ -13,7 +13,7 @@ class ExerciseEditor.Part extends Backbone.RelationalModel
       reverseRelation: {
         type: Backbone.HasOne
         key: 'part',
-        includeInJSON: 'id'
+        includeInJSON: false
       }
     }
   ]

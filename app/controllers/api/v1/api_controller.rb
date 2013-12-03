@@ -1,6 +1,8 @@
 module Api
   module V1
-    class ApiController < ApplicationController      
+    class ApiController < ApplicationController  
+      include Roar::Rails::ControllerAdditions
+
       skip_before_filter :authenticate_user!
       respond_to :json
       rescue_from Exception, :with => :rescue_from_exception
@@ -9,7 +11,7 @@ module Api
       # API terms of use (need to have agreed to it at one time, can't require them to agree when 
       # terms change since their apps are doing the talking) -- this needs more thought
 
-    private
+    protected
 
       def current_user
         @current_user ||= doorkeeper_token ? 
@@ -47,6 +49,14 @@ module Api
         Rails.logger.debug("An exception occurred: #{exception.inspect}") if Rails.env.development?
 
         head error
+      end
+
+      def self.json_schema(representer, options={})
+        options[:indent] ||= FUNKY_INDENT_CHARS
+        "<pre class='code'>
+        #{RepresentableSchemaPrinter.json(representer, options)}
+        </pre>
+        "
       end
 
     end

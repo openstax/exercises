@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/andresf/roar.git
+  revision: 0698cb17515ae229bd10580a95062530aba4f583
+  ref: 0698cb17515ae229bd10580a95062530aba4f583
+  specs:
+    roar (0.12.0)
+      representable (~> 1.7.0)
+
+GIT
   remote: git://github.com/lml/fine_print.git
   revision: c75c3d4e76e7ddbd6319956efed8270c36b9f36c
   ref: c75c3d4e76e7ddbd6319956efed8270c36b9f36c
@@ -10,6 +18,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    RedCloth (4.2.9)
     actionmailer (3.2.13)
       actionpack (= 3.2.13)
       mail (~> 2.5.3)
@@ -44,9 +53,9 @@ GEM
       rails (>= 3, < 5)
     acts_as_votable (0.5.0)
       rails (>= 3.0.0)
-    apipie-rails (0.0.22)
+    apipie-rails (0.0.24)
       rails (>= 3.0.10)
-    arel (3.0.2)
+    arel (3.0.3)
     attribeautiful (0.0.7)
       activesupport (~> 3.0)
       eager_beaver (~> 0.0.4)
@@ -160,13 +169,12 @@ GEM
     haml (4.0.3)
       tilt
     hashie (2.0.5)
+    heredoc_unindent (1.1.2)
     highline (1.6.19)
     hike (1.2.3)
+    hooks (0.3.3)
     httpauth (0.2.0)
     i18n (0.6.1)
-    jbuilder (1.4.2)
-      activesupport (>= 3.0.0)
-      multi_json (>= 1.2.0)
     journey (1.0.4)
     jquery-rails (2.3.0)
       railties (>= 3.0, < 5.0)
@@ -188,7 +196,7 @@ GEM
       treetop (~> 1.4.8)
     maruku (0.6.1)
       syntax (>= 1.0.0)
-    mime-types (1.25)
+    mime-types (1.25.1)
     mini_magick (3.6.0)
       subexec (~> 0.2.1)
     mini_portile (0.5.0)
@@ -262,6 +270,15 @@ GEM
       json (~> 1.4)
     ref (1.0.5)
     remotipart (1.2.1)
+    representable (1.7.3)
+      multi_json
+      nokogiri
+    roar-rails (0.1.4)
+      actionpack
+      hooks
+      railties (>= 3.0.0)
+      roar (>= 0.11.13)
+      test_xml (>= 0.1.6)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -314,6 +331,8 @@ GEM
     syntax (1.0.0)
     temple (0.6.5)
     terminal-table (1.4.5)
+    test_xml (0.1.6)
+      nokogiri (>= 1.3.2)
     therubyracer (0.11.4)
       libv8 (~> 3.11.8.12)
       ref
@@ -332,6 +351,8 @@ GEM
       polyglot (>= 0.3.1)
       transaction_isolation (>= 1.0.2)
     treetop (1.4.15)
+      polyglot
+      polyglot (>= 0.3.1)
     tzinfo (0.3.38)
     uglifier (2.1.1)
       execjs (>= 0.3.0)
@@ -349,6 +370,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth
   acts-as-taggable-on
   acts_as_votable
   apipie-rails
@@ -374,7 +396,7 @@ DEPENDENCIES
   factory_girl_rails
   faker
   fine_print!
-  jbuilder
+  heredoc_unindent
   jquery-rails (= 2.3.0)
   lev (~> 2.0.4)
   maruku
@@ -392,6 +414,8 @@ DEPENDENCIES
   rails (= 3.2.13)
   rails-erd
   remotipart (~> 1.2)
+  roar!
+  roar-rails
   rspec-rails
   rspec-rerun
   sass-rails (~> 3.2.3)
