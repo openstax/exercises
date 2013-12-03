@@ -25,8 +25,7 @@ class RepresentableSchemaPrinter
       attr_info = {}
       attr.options.each do |key, value|
         next if [:writeable, :readable, :required].include?(key)
-        value = ruby_to_schema_type(value) if key == :type
-        next if value.nil?
+        value = value.to_s.downcase if key == :type
         attr_info[key] = value
       end
       schema[:properties][attr.name.to_sym] = attr_info
@@ -36,6 +35,7 @@ class RepresentableSchemaPrinter
   end
 
   def self.ruby_to_schema_type(ruby_type)
+
     case ruby_type
     when String
       "string"

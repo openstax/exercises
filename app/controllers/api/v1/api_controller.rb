@@ -53,7 +53,11 @@ module Api
 
       def self.json_schema(representer, options={})
         options[:indent] ||= FUNKY_INDENT_CHARS
-        "<pre class='code'>
+
+        "
+        Schema
+        ------
+        <pre class='code'>
         #{RepresentableSchemaPrinter.json(representer, options)}
         </pre>
         "

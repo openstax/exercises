@@ -42,8 +42,8 @@ module Api
       EOS
       example <<-EOS        
         { 
-          id: 2,
-          markup: "Jack was a very _dull_ boy",
+          "id": 2,
+          "markup": "Jack was a very _dull_ boy",
         }
       EOS
       def update

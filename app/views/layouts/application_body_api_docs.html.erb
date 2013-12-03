@@ -4,7 +4,7 @@
 <% content_for :javascript do %>
   <script type='text/javascript'>
     $(document).ready(function() {
-      $('pre.code').each(function(index) {
+      $('pre.code, pre.prettyprint').each(function(index) {
         $(this).html(Exercises.Ui.syntaxHighlight($(this).html()));
       });
     });
