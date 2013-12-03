@@ -1,0 +1,29 @@
+//http://www.foliotek.com/devblog/make-table-rows-sortable-using-jquery-ui-sortable/
+function makeSortable() {
+  var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+      $(this).width($(this).width());
+    });
+    return ui;
+  };
+
+  $('.sortable_content').parent().sortable({
+    dropOnEmpty: false,
+    handle: '.sortable_handle',
+    helper: fixHelper,
+    items: '.sortable_content',
+    opacity: 0.7,
+    scroll: true,
+    update: function(){
+      $.ajax({
+        type: 'post',
+        data: $('.sortable_content').parent().sortable('serialize'),
+        dataType: 'script',
+        url: '<%= Rails.application.routes.url_helpers.sort_path %>'
+      });
+    },
+    success: function(result) { eval(result); }
+  }).disableSelection();
+}
+
+$(document).ready(makeSortable);

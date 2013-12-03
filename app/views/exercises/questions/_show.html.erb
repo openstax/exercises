@@ -1,11 +1,10 @@
 <% # Clients of this partial must supply the following variable:
    # question %>
 
-<br/>
-
-<div class="question">
+<%= sortable_content_tag(question, 'div', 'question') do %>
+  <%= sortable_handle %>
   <p>
-    <b>Question <%= question.position %></b>
+    <b>Question <%= sortable_position %></b>
     <%= render :partial => 'question_dependency_pairs/index', :locals => {:question_dependency_pairs => question.independent_question_pairs} %>
 
     <% if question.can_be_updated_by?(current_user) || user_is_admin? %>
@@ -24,4 +23,6 @@
   <%= render :partial => 'exercises/questions/fill_in_the_blank_answers/index', :locals => {:question => question} %>
   <%= render :partial => 'exercises/questions/short_answers/index', :locals => {:question => question} %>
   <%= render :partial => 'exercises/questions/free_response_answers/index', :locals => {:question => question} %>
-</div>
+
+  <br/>
+<% end %>

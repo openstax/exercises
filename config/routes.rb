@@ -6,7 +6,6 @@ Exercises::Application.routes.draw do
 
   use_doorkeeper
 
-
   namespace 'dev' do
     get "/", to: 'base#index'
 
@@ -19,8 +18,7 @@ Exercises::Application.routes.draw do
 
   resources :user_profiles, only: [:show, :edit, :update]
   
-  namespace 'admin' do 
-
+  namespace 'admin' do
     get '/', to: 'base#index'
 
     put "cron",                         to: 'base#cron', :as => "cron"
@@ -91,6 +89,8 @@ Exercises::Application.routes.draw do
   get 'api', to: 'static_pages#api'
   get 'copyright', to: 'static_pages#copyright'
   get 'developers', to: 'static_pages#developers'
+
+  post 'sort', to: 'sortables#sort'
 
   root to: 'static_pages#home'
 

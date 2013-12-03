@@ -28,7 +28,7 @@ gem 'will_paginate', '~> 3.0'
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
-gem 'commontator'
+gem 'commontator', '~> 4.2.0'
 gem 'fine_print', '~> 1.2.0'
 gem 'remotipart', '~> 1.2'
 
