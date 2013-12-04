@@ -14,12 +14,12 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
     @listenTo @model.container(), 'sync', @render
 
   edit: () ->
-    @ui.input.writemaths()
     @ui.input.height(Math.max(@ui.output.height(), 60))
     @ui.input.width(@ui.output.width())
 
     @ui.output.toggle()
-    @ui.input.toggle().focus()
+    @ui.input.toggle().focus().writemaths()
+    # @ui.input.writemaths()
 
   onRender: () ->
     MathJax.Hub.Queue(["Typeset",MathJax.Hub,@ui.output.get()]);

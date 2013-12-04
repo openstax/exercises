@@ -38,6 +38,10 @@
   //   z-index: 100;
   // }
 
+  textarea {
+    position: relative;
+  }
+
   .gray-out {
     @include opacity(0.2);
   }

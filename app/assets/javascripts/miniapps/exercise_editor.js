@@ -5,7 +5,7 @@
 //= require backbone/backbone.marionette.js
 //= require ./initializer
 //= require ./utils
-//= require ./jquery.caretposition
+//= require ./textarea-helper
 //= require ./rangyinputs-jquery-1.1.2
 //= require ./writemaths
 //= require ./exercise_editor/manifest

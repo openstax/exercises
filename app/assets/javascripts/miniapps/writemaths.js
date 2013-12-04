@@ -117,7 +117,8 @@ jQuery(function() {
 
                 var pos, txt, sel, range;
                 if(textarea) {
-                    pos = jQuery(this).getCaretPosition();
+                    pos = jQuery(this).textareaHelper('caretPos');
+                    debugger
                     var fontHeight = parseInt(jQuery(this).css('font-size').replace('px',''));
                     pos = {x: pos.left, y: pos.top - fontHeight};
                     sel = jQuery(this).getSelection();
@@ -238,7 +239,7 @@ jQuery(function() {
 					if(options.position)
 	                    previewElement.position({my: options.previewPosition, at: options.position, of: of, collision: 'fit'})
 					else
-	                    previewElement.position({my: 'left bottom', at: 'left top', of: of, offset: pos.x+' '+pos.y, collision: 'fit'})
+	                    previewElement.position({my: 'left bottom', at: 'left+' + pos.x + ' top+' + pos.y, of: of, collision: 'fit'})
                 }
 
                 previewElement
