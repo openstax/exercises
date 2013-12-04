@@ -82,7 +82,7 @@ function restoreSelection(containerEl, savedSel) {
 
 
 jQuery(function() {
-    jQuery("<style type='text/css'> .wm_preview { z-index: 1; position: absolute; display: none; border: 1px solid; padding: 0.2em; width: auto; margin: 0 auto; background: white;} </style>").appendTo("head");
+    jQuery("<style type='text/css'> .wm_preview { z-index: 1; position: absolute; display: none; border: 1px solid; padding: 0.4em; width: auto; margin: 0 auto; background: white;} </style>").appendTo("head");
 
 	jQuery.fn.writemaths = function(options) {
 		options = jQuery.extend({
@@ -113,12 +113,11 @@ jQuery(function() {
             var queue = MathJax.Callback.Queue(MathJax.Hub.Register.StartupHook("End",{}));
 
 			function updatePreview(e) {
-                previewElement.hide();
+                previewElement.hide(); debugger
 
                 var pos, txt, sel, range;
                 if(textarea) {
                     pos = jQuery(this).textareaHelper('caretPos');
-                    debugger
                     var fontHeight = parseInt(jQuery(this).css('font-size').replace('px',''));
                     pos = {x: pos.left, y: pos.top - fontHeight};
                     sel = jQuery(this).getSelection();
@@ -154,8 +153,8 @@ jQuery(function() {
                         return;
                     txt = jQuery(anchor).text();
                 }
-				if(pos.y<0)
-					return;
+				// if(pos.y<0)
+				// 	return;
 
                 //only do this if the selection has zero width
                 //so when you're selecting blocks of text, distracting previews don't pop up
@@ -239,7 +238,7 @@ jQuery(function() {
 					if(options.position)
 	                    previewElement.position({my: options.previewPosition, at: options.position, of: of, collision: 'fit'})
 					else
-	                    previewElement.position({my: 'left bottom', at: 'left+' + pos.x + ' top+' + pos.y, of: of, collision: 'fit'})
+	                    previewElement.position({my: 'center bottom', at: 'left+' + pos.x + ' top+' + pos.y, of: of, collision: 'fit'})
                 }
 
                 previewElement

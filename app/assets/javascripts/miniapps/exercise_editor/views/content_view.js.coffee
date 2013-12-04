@@ -18,8 +18,10 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
     @ui.input.width(@ui.output.width())
 
     @ui.output.toggle()
-    @ui.input.toggle().focus().writemaths()
-    # @ui.input.writemaths()
+    @ui.input.toggle().focus()
+
+    # Not super efficient to do this every time, but can't get it to work otherwise
+    @ui.input.writemaths()
 
   onRender: () ->
     MathJax.Hub.Queue(["Typeset",MathJax.Hub,@ui.output.get()]);

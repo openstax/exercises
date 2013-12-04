@@ -5,7 +5,5 @@
 //= require backbone/backbone.marionette.js
 //= require ./initializer
 //= require ./utils
-//= require ./textarea-helper
-//= require ./rangyinputs-jquery-1.1.2
-//= require ./writemaths
+//= require_tree ./vendor/writemaths
 //= require ./exercise_editor/manifest
