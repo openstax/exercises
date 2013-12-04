@@ -55,12 +55,44 @@ module Api
         options[:indent] ||= FUNKY_INDENT_CHARS
 
         "
-        Schema
+        Schema  {##{SecureRandom.hex(4)} .schema}
         ------
         <pre class='code'>
         #{RepresentableSchemaPrinter.json(representer, options)}
         </pre>
         "
+      end
+
+      # A hack at a conversion from a Representer to a series of Apipie declarations
+      # Can call it like any Apipie DSL method, 
+      #
+      #  example "blah"
+      #  representer Api::V1::ExerciseRepresenter
+      #  def update ...
+      #
+      def self.representer(representer)
+        representer.representable_attrs.each do |attr|
+          schema_info = attr.options[:schema_info] || {}
+          param attr.name, (attr.options[:type] || Object), required: schema_info[:required]
+        end
+      end
+
+      def rest_get(model_klass, id)
+        @model = model_klass.find(id)
+        raise SecurityTransgression unless current_user.can_read?(@model)
+        respond_with @model
+      end
+
+      def rest_update(model_klass, id)
+        @model = model_klass.find(id)
+        raise SecurityTransgression unless current_user.can_update?(@model)
+        consume!(@model)
+        
+        if @model.save
+          head :no_content
+        else
+          render json: @model.errors, status: :unprocessable_entity
+        end
       end
 
     end

@@ -35,8 +35,6 @@ gem 'remotipart', '~> 1.2'
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
-gem 'RedCloth'
-gem 'heredoc_unindent'
 # see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
 gem 'roar', git: 'git://github.com/andresf/roar.git', ref: '0698cb17515ae229bd10580a95062530aba4f583'
 gem 'roar-rails'

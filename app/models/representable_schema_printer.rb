@@ -1,49 +1,74 @@
-class RepresentableSchemaPrinter
-  include ActionView::Helpers::JavaScriptHelper
 
-  def self.escape_js( text )
-    @instance ||= self.new
-    return @instance.escape_javascript( text )
-  end
+class RepresentableSchemaPrinter
 
   def self.json(representer, options={})
     options[:include] ||= [:readable, :writeable]
     options[:indent] ||= '  '
 
-    schema = {
-      title: representer.name.gsub(/Representer/,''),
-      type: "object",
-      properties: {},
-      required: []
-    }
+    definitions = {}
 
-    representer.representable_attrs.each do |attr|
-      schema[:required].push(attr.name) if attr.options[:required]
+    schema = json_schema(representer, definitions, options)
+    schema[:definitions] = definitions
 
-      next unless [options[:include]].flatten.any?{|inc| attr.send(inc.to_s+"?") || attr.options[:required]}
-      
-      attr_info = {}
-      attr.options.each do |key, value|
-        next if [:writeable, :readable, :required].include?(key)
-        value = value.to_s.downcase if key == :type
-        attr_info[key] = value
-      end
-      schema[:properties][attr.name.to_sym] = attr_info
-    end
-    
     JSON.pretty_generate(schema, {indent: options[:indent]})
   end
 
-  def self.ruby_to_schema_type(ruby_type)
+protected
 
-    case ruby_type
-    when String
-      "string"
-    when Integer
-      "integer"
-    else
-      nil
+  def self.json_schema(representer, definitions, options={})
+    schema = {
+      # id: schema_id(representer),
+      # title: schema_title(representer),
+      type: "object",
+      properties: {},
+      required: []
+      # :$schema => "http://json-schema.org/draft-04/schema#"
+    }
+
+    representer.representable_attrs.each do |attr|
+      schema_info = attr.options[:schema_info] || {}
+
+      schema[:required].push(attr.name) if schema_info[:required]
+
+      next unless [options[:include]].flatten.any?{|inc| attr.send(inc.to_s+"?") || schema_info[:required]}
+      
+      attr_info = {}
+
+      if attr.options[:collection]
+        attr_info[:type] = "array"
+      else
+        attr_info[:type] = attr.options[:type].to_s.downcase if attr.options[:type]
+      end
+
+      schema_info.each do |key, value|
+        next if [:required].include?(key)
+        value = value.to_s.downcase if key == :type
+        attr_info[key] = value
+      end
+
+      if attr.options[:decorator]
+        relative_schema_id(attr.options[:decorator]).tap do |id|
+          attr_info[:$ref] = "#/definitions/#{id}"
+          definitions[id] ||= json_schema(attr.options[:decorator], definitions, options)
+        end
+      end
+
+      schema[:properties][attr.name.to_sym] = attr_info
     end
+
+    schema
+  end
+
+  def self.schema_title(representer)
+    representer.name.gsub(/Representer/,'')
+  end
+
+  def self.schema_id(representer)
+    "http://exercises.openstax.org/#{schema_title(representer).downcase.gsub(/::/,'/')}"
+  end
+
+  def self.relative_schema_id(representer)
+    representer.name.gsub(/Representer/,'').downcase.gsub(/::/,'/')
   end
 
 end

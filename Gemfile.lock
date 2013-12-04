@@ -18,7 +18,6 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    RedCloth (4.2.9)
     actionmailer (3.2.13)
       actionpack (= 3.2.13)
       mail (~> 2.5.3)
@@ -169,7 +168,6 @@ GEM
     haml (4.0.3)
       tilt
     hashie (2.0.5)
-    heredoc_unindent (1.1.2)
     highline (1.6.19)
     hike (1.2.3)
     hooks (0.3.3)
@@ -370,7 +368,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  RedCloth
   acts-as-taggable-on
   acts_as_votable
   apipie-rails
@@ -396,7 +393,6 @@ DEPENDENCIES
   factory_girl_rails
   faker
   fine_print!
-  heredoc_unindent
   jquery-rails (= 2.3.0)
   lev (~> 2.0.4)
   maruku

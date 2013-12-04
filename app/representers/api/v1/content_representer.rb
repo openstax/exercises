@@ -5,7 +5,10 @@ module Api::V1
     property :id, 
              type: Integer,
              writeable: false,
-             required: true
+             schema_info: {
+               required: true
+             }
+             
 
     property :markup, 
              type: String

@@ -99,7 +99,7 @@ Exercises::Application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       resources :exercises, only: [:show, :update]
-      resources :contents, only: [:show]
+      resources :parts, only: [:show, :update]
     end
   end
 end
