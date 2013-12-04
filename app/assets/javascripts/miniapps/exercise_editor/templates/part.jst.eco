@@ -1,3 +1,7 @@
-<%= @position %>) 
+<div class='part'>
+  <div class='part-position'><%= @position %>)</div>
 
-<div class='part-background'></div>
+  <div class='part-content'>
+    <div class='part-background'></div>
+  </div>
+</div>

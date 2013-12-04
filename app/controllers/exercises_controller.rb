@@ -8,6 +8,8 @@ class ExercisesController < ApplicationController
   before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, 
                                          :dependencies, :derive, :new_version]
 
+  before_filter :include_mathjax
+
   def index
     # exercise_search
     @exercises = []

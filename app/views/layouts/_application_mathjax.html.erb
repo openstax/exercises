@@ -1,0 +1,21 @@
+  <% if @include_mathjax %>  
+     <script type="text/x-mathjax-config">
+       MathJax.Hub.Config({
+         tex2jax: {
+           inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+           processEscapes: true
+         }
+       });
+     </script>
+     
+     <% if true %>
+       <% mj_url_base = request.ssl? ? 
+                        "https://c328740.ssl.cf1.rackcdn.com" : 
+                        "http://cdn.mathjax.org" %>
+       <script type="text/javascript"
+         src="<%= mj_url_base %>/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+       </script>
+     <% else %>
+       <%= javascript_include_tag 'MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML' %>
+     <% end %>
+  <% end %>

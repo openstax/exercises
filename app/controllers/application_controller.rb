@@ -33,6 +33,10 @@ protected
     raise SecurityTransgression unless signed_in? && current_user.is_admin?
   end
 
+  def include_mathjax
+    @include_mathjax = true
+  end
+
   private
 
   def layout
