@@ -29,6 +29,18 @@ module Api
       def update
         rest_update(Part, params[:id])
       end
+
+      def create
+        exercise = Exercise.find(params[:exercise_id])
+        raise SecurityTransgression unless current_user.can_update?(exercise)
+        result = CreateBlankPart.call(exercise)
+
+        if result.errors.none?
+          respond_with result.outputs[:part]
+        else
+          render json: result.errors, status: :unprocessable_entity
+        end
+      end
       
     end
   end

@@ -1,7 +1,7 @@
-<div class='part'>
-  <div class='part-position'><%= @position %>)</div>
+<div class='part-position'><%= @position %>)</div>
 
-  <div class='part-content'>
-    <div class='part-background'></div>
-  </div>
+<div class='part-content'>
+  <div class='part-background'></div>
 </div>
+
+<div style="clear:both"></div>

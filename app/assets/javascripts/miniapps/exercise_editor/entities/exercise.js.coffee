@@ -2,8 +2,7 @@ class ExerciseEditor.Exercise extends Backbone.RelationalModel
   urlRoot: '/api/exercises'
 
   defaults:
-    number: '',
-    id: ''
+    number: ''
 
   relations: [
     {
@@ -23,7 +22,10 @@ class ExerciseEditor.Exercise extends Backbone.RelationalModel
       collectionType: 'ExerciseEditor.Parts',
       reverseRelation: {
         key: 'exercise',
-        includeInJSON: false
+        keySource: 'exercise_id',
+        includeInJSON: 'id'
       }
     }
   ]
+
+ExerciseEditor.Exercise.setup()

@@ -1,6 +1,9 @@
 class ExerciseEditor.PartView extends Marionette.Layout
   template: "part"
 
+  tagName: "div"
+  className: "part"
+
   regions: 
     background: '.part-background',
     question: '.part-question'

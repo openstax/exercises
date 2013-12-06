@@ -17,3 +17,5 @@ class ExerciseEditor.Part extends Backbone.RelationalModel
       }
     }
   ]
+
+ExerciseEditor.Part.setup()

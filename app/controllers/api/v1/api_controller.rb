@@ -95,6 +95,18 @@ module Api
         end
       end
 
+      def rest_create(model_klass)
+        @model = model_klass.new()
+        consume!(@model)
+        raise SecurityTransgression unless current_user.can_create?(@model)
+
+        if @model.save
+          respond_with @model
+        else
+          render json: @model.errors, status: :unprocessable_entity
+        end
+      end
+
     end
   end
 end

@@ -3,8 +3,7 @@ class ExerciseEditor.Content extends Backbone.RelationalModel
 
   defaults:
     markup: '',
-    html: '',
-    id: ''
+    html: ''
 
   # Allows us to get the object containing this Content without polymorphic relations 
   container: () ->
@@ -13,3 +12,5 @@ class ExerciseEditor.Content extends Backbone.RelationalModel
 
   save: (key, val, options) ->
     @container().save(key, val, options)
+
+ExerciseEditor.Content.setup()

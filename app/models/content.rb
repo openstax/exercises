@@ -2,12 +2,17 @@ class Content < ActiveRecord::Base
   attr_accessible :attachable_id, :html, :markup
 
   before_validation :parse_and_cache_content
+  after_initialize :blank_markup
 
   cattr_accessor :run_parser_in_test_env
   Content.run_parser_in_test_env = false
 
   def unchanged?
     !new_record? && !markup_changed?
+  end
+
+  def blank_markup
+    self.markup ||= ''
   end
 
   def parse_and_cache_content(force = false)

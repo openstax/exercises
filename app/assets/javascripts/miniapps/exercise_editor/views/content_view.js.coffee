@@ -1,12 +1,15 @@
 class ExerciseEditor.ContentView extends Marionette.ItemView
   template: "content"
 
+  tagName: "div"
+  className: "content"
+
   ui: 
     input: 'textarea',
     output: '.output'
 
   events:
-    'dblclick .output': 'edit'
+    'click .output': 'edit'
     'focusout textarea': 'save'
 
   initialize: () ->

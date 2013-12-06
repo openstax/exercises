@@ -1,5 +1,5 @@
 class Part < ActiveRecord::Base
-  sortable 
+  sortable :exercise_id
 
   belongs_to :exercise, inverse_of: :parts
   belongs_to :background, class_name: 'Content'

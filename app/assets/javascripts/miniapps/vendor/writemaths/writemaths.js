@@ -113,7 +113,7 @@ jQuery(function() {
             var queue = MathJax.Callback.Queue(MathJax.Hub.Register.StartupHook("End",{}));
 
 			function updatePreview(e) {
-                previewElement.hide(); debugger
+                previewElement.hide();
 
                 var pos, txt, sel, range;
                 if(textarea) {
