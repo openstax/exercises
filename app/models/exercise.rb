@@ -25,8 +25,8 @@ class Exercise < ActiveRecord::Base
 
   accepts_nested_attributes_for :background
 
-  accepts_nested_attributes_for :parts
-  attr_accessible :parts_attributes
+  # accepts_nested_attributes_for :parts
+  # attr_accessible :parts_attributes
 
   attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions, :background_attributes
 
