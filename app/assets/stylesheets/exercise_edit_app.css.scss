@@ -1,11 +1,19 @@
 @import "common";
 @import "compass/css3/opacity";
 
+$edit_app_light_gray: lighten($os_gray,50%);
+
 .exercise-edit-app {
   background-color: white;
-  border: 1px solid lighten($os_gray,50%);
+  border: 1px solid $edit_app_light_gray;
   padding: 15px;
   color: black;
+
+  .content .empty {
+    height: 40px;
+    width: 100%;
+    border: 1px solid $edit_app_light_gray;
+  }
 
   ul, ol {
     margin-left: 25px;
@@ -19,6 +27,7 @@
 
   .part {
     clear: both;
+    margin-bottom: 15px;
   }
 
   .part-content {
