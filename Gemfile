@@ -45,6 +45,8 @@ gem 'exception_notification'
 gem 'ejs'
 gem 'eco'
 
+gem 'tinymce-rails', git: 'git://github.com/spohlenz/tinymce-rails.git', branch: 'tinymce-4'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

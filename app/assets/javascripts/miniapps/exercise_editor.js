@@ -3,6 +3,7 @@
 //= require backbone/backbone.js
 //= require backbone/backbone-relational.js
 //= require backbone/backbone.marionette.js
+//= require tinymce-jquery
 //= require ./initializer
 //= require ./utils
 //= require_tree ./vendor/writemaths
