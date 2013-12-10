@@ -10,6 +10,11 @@ class ExerciseEditor.PartView extends Marionette.Layout
 
   initialize: () ->
     @listenTo @model, 'change', @render
+    @listenTo @model, 'change:background', @resetBackground
+
+  resetBackground: () ->
+    @contentView = new ExerciseEditor.ContentView({model: @model.get('background')})
+    @background.show(@contentView)
 
   onShow: () ->
-    @background.show(new ExerciseEditor.ContentView({model: @model.get('background')}))
+    @resetBackground()

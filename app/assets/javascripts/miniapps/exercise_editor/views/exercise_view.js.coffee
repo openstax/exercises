@@ -19,7 +19,7 @@ class ExerciseEditor.ExerciseView extends Marionette.Layout
     @parts.show(new ExerciseEditor.PartsView({collection: @model.get('parts')}))
 
   addPart: () ->
-    part = new ExerciseEditor.Part({position: 99})
+    part = new ExerciseEditor.Part({position: @model.get('parts').length+1})
     part.set('background', new ExerciseEditor.Content())
     @model.get('parts').create(part)
 
