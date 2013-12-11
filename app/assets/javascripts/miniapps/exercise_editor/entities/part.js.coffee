@@ -15,6 +15,17 @@ class ExerciseEditor.Part extends Backbone.RelationalModel
         key: 'part',
         includeInJSON: false
       }
+    },
+    {
+      type: Backbone.HasMany,
+      key: 'questions',
+      relatedModel: 'ExerciseEditor.Question'
+      collectionType: 'ExerciseEditor.Questions',
+      reverseRelation: {
+        key: 'part',
+        keySource: 'part_id',
+        includeInJSON: 'id'
+      }
     }
   ]
 

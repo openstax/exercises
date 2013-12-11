@@ -5,5 +5,5 @@
 
 <button type="button" class="btn btn-sm js-add-part">
 <span class="glyphicon glyphicon-plus"></span>
-Add Part
+Add a part
 </button>

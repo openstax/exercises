@@ -15,7 +15,13 @@ module Api::V1
              decorator: ContentRepresenter, 
              parse_strategy: :sync
 
-    # collection :questions
+    collection :questions, 
+               class: Question, 
+               decorator: QuestionRepresenter, 
+               parse_strategy: :sync,
+               schema_info: {
+                 minItems: 0
+               }
 
   end
 end

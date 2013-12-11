@@ -2,6 +2,28 @@
 
 <div class='part-content'>
   <div class='part-background'></div>
+
+  <div class='part-questions'></div>
+
+  <button type="button" class="btn btn-sm js-add-question-mc">
+    <span class="glyphicon glyphicon-plus"></span> Multiple Choice
+  </button>
+
+  <% if false: %>
+    <div class='btn-group'>
+      <button type="button" class="btn btn-sm js-add-part">
+        <span class="glyphicon glyphicon-plus"></span>
+        Multiple Choice
+      </button>
+      <button type="button" class="btn btn-sm js-add-part">
+        <span class="glyphicon glyphicon-plus"></span>
+        Multiple Select
+      </button>
+    </div>
+  <% end %>
+
 </div>
+
+
 
 <div style="clear:both"></div>

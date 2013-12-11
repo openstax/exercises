@@ -1,7 +1,7 @@
 class Question < ActiveRecord::Base
   # attachable :exercise
   # content
-  # sortable :exercise_id
+  sortable :part_id
 
   belongs_to :part, :inverse_of => :questions
   belongs_to :format, polymorphic: true
