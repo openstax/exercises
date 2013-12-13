@@ -1,0 +1,9 @@
+
+
+
+<div class='mcq-stem'></div>
+<div class='mcq-choices'></div>
+
+<%= @type %>
+
+<%= @stem.id %>

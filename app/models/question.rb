@@ -6,6 +6,18 @@ class Question < ActiveRecord::Base
   belongs_to :part, :inverse_of => :questions
   belongs_to :format, polymorphic: true
 
+  accepts_nested_attributes_for :format
+
+  validates_presence_of :part
+  
+  delegate :can_be_read_by?, 
+           :can_be_created_by?, 
+           :can_be_updated_by?, 
+           :can_be_destroyed_by?, 
+           to: :part
+end
+
+
   # has_many :dependent_question_pairs,
   #          :class_name => "QuestionDependencyPair",
   #          :foreign_key => "independent_question_id",
@@ -41,7 +53,6 @@ class Question < ActiveRecord::Base
   # attr_accessible :credit, :true_or_false_answers_attributes, :multiple_choice_answers_attributes,
   #   :matching_answers_attributes, :fill_in_the_blank_answers_attributes, :short_answers_attributes, :free_response_answers_attributes
 
-  validates_presence_of :part
 
   # def has_correct_answers?
   #   return false if (multiple_choice_answers.first.nil? && \
@@ -79,12 +90,3 @@ class Question < ActiveRecord::Base
 
   #   false
   # end
-
-  ##################
-  # Access Control #
-  ##################
-  
-  def can_be_updated_by?(user)
-    part.can_be_updated_by?(user)
-  end
-end

@@ -42,4 +42,9 @@ $edit_app_light_gray: lighten($os_gray,50%);
   .gray-out {
     @include opacity(0.2);
   }
+
+  .question {
+    border-top: 1px solid $edit_app_light_gray;
+    padding: 8px 0px;
+  }
 }

@@ -16,8 +16,7 @@ module Api
         #{json_schema(Api::V1::MultipleChoiceQuestionRepresenter, include: :readable)}        
       EOS
       def show
-        raise NotYetImplemented
-        # rest_get(Question, params[:id])
+        rest_get(Question, params[:id], QuestionRepresenter.method(:sub_representer_for).to_proc)
       end
 
       api :PUT, '/questions/:id', 'Updates the specified Question'
@@ -27,8 +26,7 @@ module Api
         
       EOS
       def update
-        raise NotYetImplemented
-        # rest_update(Question, params[:id])
+        rest_update(Question, params[:id], QuestionRepresenter.method(:sub_representer_for).to_proc)
       end
 
       api :POST, '/questions'
@@ -38,7 +36,8 @@ module Api
         result = CreateBlankQuestion.call(part, params[:type])
 
         if result.errors.none?
-          respond_with result.outputs[:question]
+          question = result.outputs[:question]
+          respond_with question, represent_with: QuestionRepresenter.sub_representer_for(question)
         else
           render json: result.errors, status: :unprocessable_entity
         end

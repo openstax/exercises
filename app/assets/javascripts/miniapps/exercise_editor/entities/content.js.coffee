@@ -7,8 +7,11 @@ class ExerciseEditor.Content extends Backbone.RelationalModel
 
   # Allows us to get the object containing this Content without polymorphic relations 
   container: () ->
-    @get('exercise') or
-    @get('part')
+    _.reduce(
+      @getRelations(), 
+      (result, relation) => result or @get(relation.key), 
+      null
+    )
 
   save: (key, val, options) ->
     @container().save(key, val, options)

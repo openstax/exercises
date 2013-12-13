@@ -6,4 +6,6 @@ class MultipleChoiceQuestion < ActiveRecord::Base
   has_many :combo_choices
 
   attr_accessible :can_select_multiple, :stem_id
+
+  accepts_nested_attributes_for :stem
 end

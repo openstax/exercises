@@ -13,7 +13,7 @@ module Api
 
       api :GET, '/exercises/:id', 'Gets the specified Exercise'
       description <<-EOS
-        #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}        
+        #{json_schema(Api::V1::ExerciseRepresenter, include: :readable) if false}        
       EOS
       def show
         @exercise = Exercise.find(params[:id])

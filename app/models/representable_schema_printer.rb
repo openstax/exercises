@@ -46,10 +46,12 @@ protected
         attr_info[key] = value
       end
 
-      if attr.options[:decorator]
-        relative_schema_id(attr.options[:decorator]).tap do |id|
+      decorator = attr.options[:decorator].try(:is_a?, Proc) ? nil : attr.options[:decorator]
+
+      if decorator
+        relative_schema_id(decorator).tap do |id|
           attr_info[:$ref] = "#/definitions/#{id}"
-          definitions[id] ||= json_schema(attr.options[:decorator], definitions, options)
+          definitions[id] ||= json_schema(decorator, definitions, options)
         end
       end
 

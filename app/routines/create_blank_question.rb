@@ -13,7 +13,7 @@ protected
       run(CreateBlankMultipleChoiceFormat)
     else
       fatal_error(code: :unknown_question_type)
-    end; debugger
+    end
 
     question = Question.create do |question|
       question.part = part
