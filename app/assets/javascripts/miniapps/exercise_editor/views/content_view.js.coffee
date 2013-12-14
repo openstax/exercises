@@ -32,7 +32,6 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
       setup: (ed) ->    
         ed.addButton('save', {
           title: 'Save'
-          # image: 'http://localhost:3002/assets/facebook_icon.png'
           icon: 'save'
           onclick: () -> ed.settings.view.save()
         })

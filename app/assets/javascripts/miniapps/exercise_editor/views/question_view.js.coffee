@@ -12,31 +12,14 @@ class ExerciseEditor.QuestionView extends Marionette.Layout
 
   initialize: () ->
     @listenTo @model, 'change', @render
-
-  onShow: () ->
-    formatView = 
-      switch @model.get('type')
-        when 'multiple_choice_question' then ExerciseEditor.MultipleChoiceQuestionView
-        else throw 'Unknown question type'               
-
-    @format.show(new formatView({model: @model}))
-
-  blah: () ->
-    formatView = 
-      switch @model.get('type')
-        when 'multiple_choice_question' then ExerciseEditor.MultipleChoiceQuestionView
-        else throw 'Unknown question type'               
-
-    @format.show(new formatView({model: @model}))
-
-  onRender: () ->
-    # alert 'here'
-    @blah()
+    @maintainRegion @format, 
+      {
+        'multiple_choice_question': ExerciseEditor.MultipleChoiceQuestionView
+      }
 
   deleteQuestion: () ->
     debugger
     @model.destroy(
       success: (model, response) ->
-        debugger
-        model.collection.remove(model)
+        if model.collection? then model.collection.remove(model)
     )
