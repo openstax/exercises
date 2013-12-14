@@ -1,4 +1,4 @@
-class ExerciseEditor.PartView extends Marionette.Layout
+class ExerciseEditor.PartView extends Marionette.Layout #ExerciseEditor.RelationalLayout
   template: "part"
 
   tagName: "div"
@@ -13,14 +13,21 @@ class ExerciseEditor.PartView extends Marionette.Layout
 
   initialize: () ->
     @listenTo @model, 'change', @render
-    @listenTo @model, 'change:background', @resetBackground
+    @setupRelationalRegion @background, ExerciseEditor.ContentView, 'background'
 
-  resetBackground: () ->
-    @contentView = new ExerciseEditor.ContentView({model: @model.get('background')})
-    @background.show(@contentView)
+  # resetBackground: () ->
+  #   @contentView = new ExerciseEditor.ContentView({model: @model.get('background')})
+  #   @background.show(@contentView)
+
+  # registerRelationalRegion: (region, view, relationName) ->
+  #   @listenTo @model, 'change:' + relationName, () -> @showRelationalRegion(region, view, relationName)
+  #   @on 'show', () -> @showRelationalRegion(region, view, relationName)
+
+  # showRelationalRegion: (region, view, relationName) ->
+  #   region.show(new view({model: @model.get(relationName)}))
+
 
   onShow: () ->
-    @resetBackground()
     @questions.show(new ExerciseEditor.QuestionsView({collection: @model.get('questions')}))
 
 

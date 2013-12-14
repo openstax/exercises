@@ -1,3 +1,4 @@
+//= require_tree ./lib
 //= require ./app
 //= require ./entities/question
 //= require ./views/question_view

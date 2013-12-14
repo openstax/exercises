@@ -116,6 +116,17 @@ module Api
         end
       end
 
+      def rest_destroy(model_klass, id)
+        @model = model_klass.find(id)
+        raise SecurityTransgression unless current_user.can_destroy?(@model)
+        
+        if @model.destroy
+          head :no_content
+        else
+          render json: @model.errors, status: :unprocessable_entity
+        end
+      end
+
     end
   end
 end

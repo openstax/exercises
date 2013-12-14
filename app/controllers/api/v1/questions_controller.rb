@@ -42,6 +42,11 @@ module Api
           render json: result.errors, status: :unprocessable_entity
         end
       end
+
+      api :DELETE, '/questions/:id', 'Deletes the specified Question'
+      def destroy
+        rest_destroy(Question, params[:id])
+      end
       
     end
   end
