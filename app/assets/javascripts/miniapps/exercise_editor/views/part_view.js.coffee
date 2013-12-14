@@ -19,7 +19,6 @@ class ExerciseEditor.PartView extends Marionette.Layout
   #### Controller Methods ####
 
   addMcQuestion: () ->
-    debugger
     question = new ExerciseEditor.MultipleChoiceQuestion()
     question.set('stem', new ExerciseEditor.Content())
     @model.get('questions').create(question)

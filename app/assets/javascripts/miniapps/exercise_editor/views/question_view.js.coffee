@@ -18,8 +18,7 @@ class ExerciseEditor.QuestionView extends Marionette.Layout
       }
 
   deleteQuestion: () ->
-    debugger
-    @model.destroy(
-      success: (model, response) ->
-        if model.collection? then model.collection.remove(model)
-    )
+    @model.destroy()
+    #   success: (model, response) ->
+    #     # if model.collection? then model.collection.remove(model)
+    # )
