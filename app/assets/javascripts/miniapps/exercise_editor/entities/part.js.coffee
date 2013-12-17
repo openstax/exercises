@@ -29,4 +29,8 @@ class ExerciseEditor.Part extends Backbone.RelationalModel
     }
   ]
 
+
+  initialize: () ->
+    @listenTo this, 'sync', () -> console.log('synchec part ' + @get('cid'))
+
 ExerciseEditor.Part.setup()

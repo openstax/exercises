@@ -26,24 +26,33 @@ _.extend Marionette.Layout.prototype,
     # This is what all the listeners will call below
     action = () -> @showRegion(region, view, options)
 
+    logger = (object, event) => @listenTo(object, event, () -> debugger; console.log(object.__proto__.constructor.name + ": " + object.cid  + "(" + region.el + ")" +  "       " + event))
+
     # If the view is a collection, we'll want to reshow the region whenever there
     # is a change (otherwise, our collection can get replaced (especially for new @models
     # and our view will end up with an orphaned collection))
     viewIsCollection = view.prototype? && 'itemView' of view.prototype
 
     if viewIsCollection
+      logger(@model, 'change')
       @listenTo @model, 'change', action
     else
       # If we're maintaining a region for an attribute of @model, watch for changes on it.
       # If the @model itself changes, also reshow the region
       event = 'change' + (if options.regionModelAttribute? then ':' + options.regionModelAttribute)
+      logger(@model, event)
       @listenTo @model, event, action
+      logger(this, 'render')
       @listenTo this, 'render', action
+      
 
     # This is the first showing
+    logger(this, 'show')
     @listenTo this, 'show', action
+    
 
   showRegion: (region, view, options={}) ->
+    # console.log(region)
     # Get the model we're to show in the region
     regionModel = if options.regionModelAttribute? then @model.get(options.regionModelAttribute) else @model
     
