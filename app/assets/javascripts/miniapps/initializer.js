@@ -1,7 +1,6 @@
 var sync = Backbone.sync;
 Backbone.sync = function(method, model, options) {
   options.beforeSend = function (xhr) {
-    debugger
     console.log('about to sync' + model.cid);
     xhr.setRequestHeader('Accept', 'application/vnd.exercises.openstax.v1');
   };

@@ -26,7 +26,8 @@ _.extend Marionette.Layout.prototype,
     # This is what all the listeners will call below
     action = () -> @showRegion(region, view, options)
 
-    logger = (object, event) => @listenTo(object, event, () -> debugger; console.log(object.__proto__.constructor.name + ": " + object.cid  + "(" + region.el + ")" +  "       " + event))
+    logger = (object, event) => @listenTo(object, event, () -> console.log(object.__proto__.constructor.name + ": " + object.cid  + "(" + region.el + ")" +  "       " + event))
+    loggerOnce = (object, event) => @listenToOnce(object, event, () -> console.log(object.__proto__.constructor.name + ": " + object.cid  + "(" + region.el + ")" +  "       " + event))
 
     # If the view is a collection, we'll want to reshow the region whenever there
     # is a change (otherwise, our collection can get replaced (especially for new @models
@@ -47,8 +48,8 @@ _.extend Marionette.Layout.prototype,
       
 
     # This is the first showing
-    logger(this, 'show')
-    @listenTo this, 'show', action
+    loggerOnce(this, 'show')
+    @listenToOnce this, 'show', action
     
 
   showRegion: (region, view, options={}) ->

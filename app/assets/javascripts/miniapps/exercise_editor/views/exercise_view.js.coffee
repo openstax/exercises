@@ -21,5 +21,6 @@ class ExerciseEditor.ExerciseView extends Marionette.Layout
   addPart: () ->
     part = new ExerciseEditor.Part({position: @model.get('parts').length+1})
     part.set('background', new ExerciseEditor.Content())
-    @model.get('parts').create(part)
+    part.set('exercise_id', @model.get('id'))
+    @model.get('parts').create(part, {wait: true})
 

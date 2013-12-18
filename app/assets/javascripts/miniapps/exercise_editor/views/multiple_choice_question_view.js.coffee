@@ -10,4 +10,6 @@ class ExerciseEditor.MultipleChoiceQuestionView extends Marionette.Layout
 
   initialize: () ->
     @listenTo @model, 'change', @render
-    @maintainRegion @stem, ExerciseEditor.ContentView, {regionModelAttribute: 'stem'}
+
+  onShow: () ->
+    @stem.show(new ExerciseEditor.ContentView({model: @model.get('stem')}))

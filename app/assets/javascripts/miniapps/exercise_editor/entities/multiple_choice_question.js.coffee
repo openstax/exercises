@@ -6,15 +6,8 @@ class ExerciseEditor.MultipleChoiceQuestion extends ExerciseEditor.Question
 
   relations: [
     {
-      type: Backbone.HasOne,
+      type: Backbone.One,
       key: 'stem',
       relatedModel: 'ExerciseEditor.Content',
-      reverseRelation: {
-        type: Backbone.HasOne
-        key: 'multiple_choice_question',
-        includeInJSON: false
-      }
     }
   ]
-
-ExerciseEditor.MultipleChoiceQuestion.setup()

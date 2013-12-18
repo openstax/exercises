@@ -42,13 +42,10 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
     
   save: () ->
     @model.set('markup', @ui.input.tinymce().getContent())
-    @ui.input.hide()
     @model.save {}, {
       success: (model, response, options) =>
-        @ui.input.tinymce().remove()
         model.fetch()
       error: (model, response, options) =>
-        @ui.input.show()
     }
       
     

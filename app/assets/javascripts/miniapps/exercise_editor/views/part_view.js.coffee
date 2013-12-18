@@ -13,12 +13,15 @@ class ExerciseEditor.PartView extends Marionette.Layout
 
   initialize: () ->
     @listenTo @model, 'change', @render
-    @maintainRegion @background, ExerciseEditor.ContentView, {regionModelAttribute: 'background'}
-    @maintainRegion @questions, ExerciseEditor.QuestionsView, {regionModelAttribute: 'questions'}
+
+  onShow: () ->
+    @background.show(new ExerciseEditor.ContentView({model: @model.get('background')}))
+    @questions.show(new ExerciseEditor.QuestionsView({collection: @model.get('questions')}))
 
   #### Controller Methods ####
 
   addMcQuestion: () ->
     question = new ExerciseEditor.MultipleChoiceQuestion()
     question.set('stem', new ExerciseEditor.Content())
-    @model.get('questions').create(question)
+    question.set('part_id', @model.get('id'))
+    @model.get('questions').create(question, {wait: true})
