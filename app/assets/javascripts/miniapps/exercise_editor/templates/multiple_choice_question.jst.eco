@@ -2,8 +2,13 @@
 
 
 <div class='mcq-stem'></div>
-<div class='mcq-choices'></div>
+<div class='mcq-simple-choices'></div>
+<div class='mcq-combo-choices'></div>
 
-<%= @type %>
+  <button type="button" class="btn btn-sm js-add-simple-choice">
+    <span class="glyphicon glyphicon-plus"></span> Add Choice
+  </button>
 
-<%= @stem.id %>
+  <button type="button" class="btn btn-sm js-add-combo-choice">
+    <span class="glyphicon glyphicon-plus"></span> Add Combo Choice
+  </button>

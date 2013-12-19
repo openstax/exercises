@@ -101,6 +101,7 @@ Exercises::Application.routes.draw do
       resources :exercises, only: [:show, :update]
       resources :parts, only: [:show, :update, :create, :destroy]
       resources :questions, only: [:show, :update, :create, :destroy]
+      resources :simple_choices, only: [:show, :update, :create, :destroy]
     end
   end
 end

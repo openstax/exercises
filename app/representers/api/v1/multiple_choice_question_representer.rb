@@ -20,7 +20,15 @@ module Api::V1
              decorator: ContentRepresenter, 
              parse_strategy: :sync
 
-
+    collection :simple_choices,
+               getter: lambda { |*| format.simple_choices },
+               setter: lambda { |value, *| format.simple_choices = value },
+               class: SimpleChoice,
+               decorator: SimpleChoiceRepresenter,
+               parse_strategy: :sync,
+               schema_info: {
+                 minItems: 0
+               }
 
   end
 end

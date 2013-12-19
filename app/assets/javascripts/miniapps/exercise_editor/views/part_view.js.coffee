@@ -10,6 +10,8 @@ class ExerciseEditor.PartView extends Marionette.Layout
 
   events:
     'click button.js-add-question-mc': 'addMcQuestion'
+    'click button.js-delete-part': "deletePart"
+
 
   initialize: () ->
     @listenTo @model, 'change', @render
@@ -25,3 +27,7 @@ class ExerciseEditor.PartView extends Marionette.Layout
     question.set('stem', new ExerciseEditor.Content())
     question.set('part_id', @model.get('id'))
     @model.get('questions').create(question, {wait: true})
+
+  deletePart: () ->
+    @model.destroy()
+    

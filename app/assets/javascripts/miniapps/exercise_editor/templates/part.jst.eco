@@ -9,6 +9,10 @@
     <span class="glyphicon glyphicon-plus"></span> Multiple Choice
   </button>
 
+  <button type="button" class="btn btn-sm js-delete-part">
+    <span class="glyphicon glyphicon-minus"></span> Delete Part
+  </button>
+
   <% if false: %>
     <div class='btn-group'>
       <button type="button" class="btn btn-sm js-add-part">

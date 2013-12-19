@@ -1,5 +1,4 @@
 class ExerciseEditor.MultipleChoiceQuestion extends ExerciseEditor.Question
-  # urlRoot: '/api/formats'
 
   defaults:
     type: 'multiple_choice_question'
@@ -9,5 +8,10 @@ class ExerciseEditor.MultipleChoiceQuestion extends ExerciseEditor.Question
       type: Backbone.One,
       key: 'stem',
       relatedModel: 'ExerciseEditor.Content',
+    },
+    {
+      type: Backbone.Many,
+      key: 'simple_choices',
+      relatedModel: 'ExerciseEditor.SimpleChoice'
     }
   ]
