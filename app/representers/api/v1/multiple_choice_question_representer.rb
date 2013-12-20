@@ -30,6 +30,16 @@ module Api::V1
                  minItems: 0
                }
 
+    collection :combo_choices,
+               getter: lambda { |*| format.combo_choices },
+               setter: lambda { |value, *| format.combo_choices = value },
+               class: ComboChoice,
+               decorator: ComboChoiceRepresenter,
+               parse_strategy: :sync,
+               schema_info: {
+                 minItems: 0
+               }               
+
   end
 end
 

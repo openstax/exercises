@@ -48,4 +48,19 @@ $edit_app_light_gray: lighten($os_gray,50%);
     padding: 8px 0px;
   }
 
+  .choice-label {
+    font-size: 15px;
+    float: left;
+    margin: 0px 15px 15px 15px;
+  }
+
+  .choice-content {
+    overflow: hidden;
+    padding-top: 4px;
+  }
+
+  .combo-choice-edit {
+    display: none;
+  }
+
 }
