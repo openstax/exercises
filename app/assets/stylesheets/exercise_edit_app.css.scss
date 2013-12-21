@@ -59,8 +59,17 @@ $edit_app_light_gray: lighten($os_gray,50%);
     padding-top: 4px;
   }
 
-  .combo-choice-edit {
-    display: none;
+  // .combo-choice-edit {
+  //   display: none;
+  // }
+
+  .combo-simple-choice {
+    display: inline-block;
+    color: lighten(gray,20%);
+
+    &.selected {
+      color: black
+    }
   }
 
 }

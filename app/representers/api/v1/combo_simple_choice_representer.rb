@@ -16,5 +16,11 @@ module Api::V1
                required: true
              }
 
+    property :combo_choice_id,
+             type: Integer,
+             writeable: true,
+             schema_info: {
+               required: true
+             }
   end
 end

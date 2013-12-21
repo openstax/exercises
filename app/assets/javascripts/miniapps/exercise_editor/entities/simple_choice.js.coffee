@@ -8,3 +8,9 @@ class ExerciseEditor.SimpleChoice extends Backbone.AssociatedModel
       relatedModel: 'ExerciseEditor.Content',
     }
   ]
+
+  question: () ->
+    @collection.parents[0]
+
+  letter: () ->
+    String.fromCharCode(96 + @get('position'))

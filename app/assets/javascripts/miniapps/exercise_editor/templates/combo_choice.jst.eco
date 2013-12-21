@@ -1,17 +1,10 @@
 <div class='choice-label'>x)</div>
 
 <div class='choice-content'>
-  <div class='combo-choice-edit'>
-    <%= console.log this %>
-    <%# for simple_choice of @question().simple_choices(): %>
-      hi
-      <%#= simple_choice.get('id') %>
-    <%# end %>
-
+  <div class='simple-choices'>
+    
 
   </div>
-  
-  <div class='combo-choice-show'>Display</div>
 </div>
 
 <button type="button" class="btn btn-sm js-delete-choice">

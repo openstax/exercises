@@ -10,4 +10,4 @@ class ExerciseEditor.ComboChoice extends Backbone.AssociatedModel
   ]
 
   question: () ->
-    @parents[0]
+    @collection.parents[0]
