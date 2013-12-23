@@ -1,0 +1,10 @@
+<% if @selectedSimpleChoices.length == @simpleChoices.length: %>
+  All of the above.
+<% else if @selectedSimpleChoices.length == 0: %>
+  None of the above.
+<% else: %>
+  <% for sc, index in @selectedSimpleChoices: %>
+    (<%= sc.letter() %>)
+    <%- if index == @selectedSimpleChoices.length-2 then "&" else if index < @selectedSimpleChoices.length-2 then ',' %>
+  <% end %>
+<% end %>

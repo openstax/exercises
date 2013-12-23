@@ -1,1 +1,1 @@
-(<%= @simple_choice_letter %>)<span class='separator'><%- if @index == @numItems-2 then "&nbsp;&&nbsp;" else if @index < @numItems-2 then ', ' %></span>
+(<%= @simple_choice_letter %>)

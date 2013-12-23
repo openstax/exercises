@@ -1,57 +1,26 @@
-class ExerciseEditor.ComboChoiceView extends Marionette.CompositeView
+class ExerciseEditor.ComboChoiceView extends Marionette.Layout
   template: "combo_choice"
 
   tagName: "div"
   className: "combo-choice"
 
-  itemView: ExerciseEditor.ComboSimpleChoiceView
-
-  buildItemView: (item, ItemView, itemViewOptions) ->
-    # the item views in general represent the selected simple choices, but to be 
-    # able to add ones not yet selected, really we want the item views to represent
-    # all possible simple choices, and we want to attach any combo simple choices
-    # already present.  So we extend the item view options so that it has the 
-    # simple choice, this view's combo choice (see the initializer below), and the
-    # combo simple choice if it exists.
-
-    comboSimpleChoice = itemViewOptions.comboChoice.get('combo_simple_choices').find( (csc) -> csc.get('simple_choice_id') == item.id)
-    options = _.extend(
-      {
-        model: item, 
-        comboSimpleChoice: comboSimpleChoice
-        index: @collection.indexOf(item)
-        numItems: @collection.size()
-      }, 
-      itemViewOptions
-    )
-    new ExerciseEditor.ComboSimpleChoiceView(options)
-
-  ui:
-    content: '.choice-content'
-  # ui: 
-  #   editor: '.combo-choice-edit',
-  #   display: '.combo-choice-show'
+  regions:
+    editor: '.editor'
+    display: '.display'
 
   events:
-    'dblclick': 'edit'
-  #   'click button.js-delete-choice': "delete"
-    
-  itemViewContainer: '.simple-choices'
+    'dblclick .display': 'edit'
 
   initialize: () ->
     @listenTo @model, 'change', @render
-    # See 'buildItemView' for a relevant discussion about the collection and item
-    # view options.
-    @collection = @model.question().get('simple_choices')
-    @itemViewOptions = { comboChoice: @model }
 
+  onShow: () ->
+    @editor.show(new ExerciseEditor.ComboChoiceEditorView({model: @model}))
+    @display.show(new ExerciseEditor.ComboChoiceDisplayView({model: @model}))
 
   edit: (event) ->
-    event.preventDefault()
-    # alert 'editing'
-    @ui.content.toggleClass('editing')
-    # @ui.display.hide()
-    # @ui.editor.show()
+    @display.$el.hide()
+    @editor.$el.show()
 
   ### Controller Methods ###
 

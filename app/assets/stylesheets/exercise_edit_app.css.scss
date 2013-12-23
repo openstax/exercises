@@ -62,12 +62,15 @@ $edit_app_light_gray: lighten($os_gray,50%);
 
   .combo-choice {
     .choice-content {
-      @include user-select(none);
+      // @include user-select(none);
+      .editor {
+        display: none;
+      }      
     }
-    .choice-content.editing {
-      border: 1px solid blue;
-      padding: 8px;
-    }
+    // .choice-content.editing {
+    //   border: 1px solid blue;
+    //   padding: 8px;
+    // }
   }
 
   .combo-simple-choice {
