@@ -1,5 +1,6 @@
 @import "common";
 @import "compass/css3/opacity";
+@import "compass/css3/user-interface";
 
 $edit_app_light_gray: lighten($os_gray,50%);
 
@@ -59,9 +60,15 @@ $edit_app_light_gray: lighten($os_gray,50%);
     padding-top: 4px;
   }
 
-  // .combo-choice-edit {
-  //   display: none;
-  // }
+  .combo-choice {
+    .choice-content {
+      @include user-select(none);
+    }
+    .choice-content.editing {
+      border: 1px solid blue;
+      padding: 8px;
+    }
+  }
 
   .combo-simple-choice {
     display: inline-block;

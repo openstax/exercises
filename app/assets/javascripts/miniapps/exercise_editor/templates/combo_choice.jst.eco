@@ -1,6 +1,8 @@
 <div class='choice-label'>x)</div>
 
 <div class='choice-content'>
+  <div class='output'></div>
+  <div class='editor'></div>
   <div class='simple-choices'>
     
 

@@ -13,16 +13,27 @@ class ExerciseEditor.ComboChoiceView extends Marionette.CompositeView
     # already present.  So we extend the item view options so that it has the 
     # simple choice, this view's combo choice (see the initializer below), and the
     # combo simple choice if it exists.
+
     comboSimpleChoice = itemViewOptions.comboChoice.get('combo_simple_choices').find( (csc) -> csc.get('simple_choice_id') == item.id)
-    options = _.extend({model: item, comboSimpleChoice: comboSimpleChoice}, itemViewOptions)
+    options = _.extend(
+      {
+        model: item, 
+        comboSimpleChoice: comboSimpleChoice
+        index: @collection.indexOf(item)
+        numItems: @collection.size()
+      }, 
+      itemViewOptions
+    )
     new ExerciseEditor.ComboSimpleChoiceView(options)
 
+  ui:
+    content: '.choice-content'
   # ui: 
   #   editor: '.combo-choice-edit',
   #   display: '.combo-choice-show'
 
-  # events:
-  #   'click .combo-choice-show': 'edit'
+  events:
+    'dblclick': 'edit'
   #   'click button.js-delete-choice': "delete"
     
   itemViewContainer: '.simple-choices'
@@ -35,9 +46,12 @@ class ExerciseEditor.ComboChoiceView extends Marionette.CompositeView
     @itemViewOptions = { comboChoice: @model }
 
 
-  edit: () ->
-    @ui.display.hide()
-    @ui.editor.show()
+  edit: (event) ->
+    event.preventDefault()
+    # alert 'editing'
+    @ui.content.toggleClass('editing')
+    # @ui.display.hide()
+    # @ui.editor.show()
 
   ### Controller Methods ###
 

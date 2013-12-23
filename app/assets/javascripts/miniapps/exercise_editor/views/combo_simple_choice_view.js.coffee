@@ -40,5 +40,7 @@ class ExerciseEditor.ComboSimpleChoiceView extends Marionette.ItemView
     { 
       simple_choice: @model.toJSON(), 
       simple_choice_letter: @model.letter()
+      index: @options.index
+      numItems: @options.numItems
       combo_simple_choice: @options.comboSimpleChoice?.toJSON() 
     }
