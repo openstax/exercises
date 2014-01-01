@@ -4,6 +4,9 @@ class ExerciseEditor.ComboChoiceDisplayView extends Marionette.ItemView
   initialize: () ->
     @listenTo @model, 'change', @render
 
+  onRender: () ->
+    console.log 'rendered cc' + @model.get('id')
+
   serializeData: () ->
     simpleChoices = @model.question().get('simple_choices')
     selectedSimpleChoiceIds = @model.get('combo_simple_choices').pluck('simple_choice_id')

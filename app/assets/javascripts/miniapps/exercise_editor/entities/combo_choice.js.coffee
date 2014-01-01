@@ -10,4 +10,14 @@ class ExerciseEditor.ComboChoice extends Backbone.AssociatedModel
   ]
 
   question: () ->
-    @collection.parents[0]
+    if @collection.parents? and @collection.parents[0] then return @collection.parents[0]
+
+  letter: () ->
+    String.fromCharCode(96 + @collection.indexOf(this) + 1 + @question().get('simple_choices').length)
+
+  selectedSimpleChoices: () ->
+    selectedSimpleChoiceIds = @get('combo_simple_choices').pluck('simple_choice_id')
+
+    @question().get('simple_choices').filter((sc) -> 
+      sc.get('id') in selectedSimpleChoiceIds
+    )

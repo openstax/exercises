@@ -19,8 +19,11 @@ class ExerciseEditor.MultipleChoiceQuestionView extends Marionette.Layout
 
   onShow: () ->
     @stem.show(new ExerciseEditor.ContentView({model: @model.get('stem')}))
-    @simpleChoices.show(new ExerciseEditor.SimpleChoicesView({collection: @model.get('simple_choices')}))
-    @comboChoices.show(new ExerciseEditor.ComboChoicesView({collection: @model.get('combo_choices')}))
+    # @simpleChoices.show(new ExerciseEditor.SimpleChoicesView({collection: @model.get('simple_choices')}))
+    # @comboChoices.show(new ExerciseEditor.ComboChoicesView({collection: @model.get('combo_choices')}))
+    @simpleChoices.show(new ExerciseEditor.ChoicesView({collection: @model.get('simple_choices')}))
+    @model.get('combo_choices').sort()
+    @comboChoices.show(new ExerciseEditor.ChoicesView({collection: @model.get('combo_choices')}))
 
   #### Controller methods ###
 

@@ -1,9 +1,5 @@
-<div class='choice-label'><%= String.fromCharCode(96 + @position) %>)</div>
 
-<div class='choice-content'></div>
 
-<button type="button" class="btn btn-sm js-delete-choice">
-  <span class="glyphicon glyphicon-minus"></span> Delete Choice
-</button>
+<div class='simple-choice-content'></div>
 
-<div style="clear:both"></div>
+

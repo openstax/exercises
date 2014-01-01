@@ -11,6 +11,12 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
   events:
     'click .output': 'edit'
 
+    # 'mouseenter': () -> console.log 'content mouseenter'
+    # 'mouseleave': () -> console.log 'content mouseleave'
+    # 'focusin': () -> console.log 'content focusin'
+    # 'focusout': () -> console.log 'content focusout'
+    # 'focus': () -> console.log 'content focus'
+
   initialize: () ->
     @listenTo @model, 'sync', @render
     @listenTo @model.container(), 'sync', @render
@@ -35,6 +41,8 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
           icon: 'save'
           onclick: () -> ed.settings.view.save()
         })
+        # ed.on('focus', (e) -> console.log('tinymce focus'))
+        # ed.on('blur', (e) -> console.log('tinymce blur'))
       statusbar: false
 
   onRender: () ->
