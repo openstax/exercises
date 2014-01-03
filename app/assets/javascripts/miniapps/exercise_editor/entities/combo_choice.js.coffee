@@ -15,9 +15,9 @@ class ExerciseEditor.ComboChoice extends Backbone.AssociatedModel
   letter: () ->
     String.fromCharCode(96 + @collection.indexOf(this) + 1 + @question().get('simple_choices').length)
 
+  simpleChoices: () ->
+    @question().get('simple_choices')
+
   selectedSimpleChoices: () ->
     selectedSimpleChoiceIds = @get('combo_simple_choices').pluck('simple_choice_id')
-
-    @question().get('simple_choices').filter((sc) -> 
-      sc.get('id') in selectedSimpleChoiceIds
-    )
+    @simpleChoices().filter((sc) -> sc.get('id') in selectedSimpleChoiceIds)

@@ -20,3 +20,8 @@ class ExerciseEditor.MultipleChoiceQuestion extends ExerciseEditor.Question
       collectionType: 'ExerciseEditor.ComboChoices'
     }
   ]
+
+  constructor: () ->
+    @on 'change:simple_choices', () -> @get('combo_choices').sort()
+    @on 'change:combo_choices', () -> @get('combo_choices').sort()
+    super

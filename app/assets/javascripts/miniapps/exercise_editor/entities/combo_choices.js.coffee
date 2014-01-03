@@ -4,7 +4,7 @@ class ExerciseEditor.ComboChoices extends Backbone.Collection
   comparator: (choice) ->
     # When collection created, parent might not be set so don't sort
     unless choice.collection.parents && choice.collection.parents.length > 0 then return 0
-    
+
     selectedPositions = _.map(choice.selectedSimpleChoices(), (sc) -> sc.get('position'))
 
     # Put None of the aboves last.  There can be more than one while editing.

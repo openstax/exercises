@@ -1,2 +1,2 @@
-class ExerciseEditor.Questions extends Backbone.Collection
-  model: ExerciseEditor.Question
+# class ExerciseEditor.Questions extends Backbone.Collection
+#   model: ExerciseEditor.Question
