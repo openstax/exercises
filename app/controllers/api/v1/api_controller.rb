@@ -11,8 +11,6 @@ module Api
       # API terms of use (need to have agreed to it at one time, can't require them to agree when 
       # terms change since their apps are doing the talking) -- this needs more thought
 
-    protected
-
       def current_user
         @current_user ||= doorkeeper_token ? 
                           User.find(doorkeeper_token.resource_owner_id) : 
@@ -20,6 +18,8 @@ module Api
         # TODO maybe freak out if current user is anonymous (require we know who person/app is
         # so we can do things like throttling, API terms agreement, etc)
       end
+
+    protected
 
       def rescue_from_exception(exception)
         # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols

@@ -16,14 +16,14 @@ protected
     # Save it
     exercise.save
 
+    outputs[:exercise] = exercise
+    transfer_errors_from(exercise, {type: :verbatim})
+
     # Add a blank part
     run(CreateBlankPart, exercise)
 
     # Put it on the author's default list
     run(CreateListExercise, author.default_list, exercise)
-
-    outputs[:exercise] = exercise
-    transfer_errors_from(exercise, {type: :verbatim})
   end
 
 end

@@ -5,7 +5,6 @@
 
 <% contracts = [FinePrint.get_contract(:general_terms_of_use),
                 FinePrint.get_contract(:privacy_policy)]
-print contracts
 
    contract_links = contracts.collect do |contract|
      link_to contract.title, show_terms_path(contract), remote: true

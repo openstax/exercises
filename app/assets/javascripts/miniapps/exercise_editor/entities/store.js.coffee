@@ -11,7 +11,9 @@ ExerciseEditor.module(
 
       theStore[className] ?= {}
 
-      if theStore[className][id]? then throw "model already exists in store"
+      if theStore[className][id]? 
+        if theStore[className][id].cid == model.cid then return
+        throw "model already exists in store"
 
       theStore[className][id] = model
 
@@ -19,10 +21,6 @@ ExerciseEditor.module(
 
     Store.onModelAvailable = (className, id, action) ->
       getPendingModelActions(className, id).push(action)
-      # pendingModelActions[className] ?= {}
-      # pendingModelActions[className][id] ?= []
-      # pendingModelActions[className][id].push(action)
-
       processPendingModelActions(className, id)
 
     getPendingModelActions = (className, id) ->
@@ -30,10 +28,11 @@ ExerciseEditor.module(
       pendingModelActions[className][id] ?= []
 
     processPendingModelActions = (className, id) ->
-      model = theStore[className][id]
+      model = theStore[className]?[id]
       return if not model?
       actions = getPendingModelActions(className, id)
       _.each(actions, (action) -> action(model))
       actions = []
+
 
 )

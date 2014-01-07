@@ -9,8 +9,7 @@ class ListExercise < ActiveRecord::Base
   after_destroy :destroy_unlisted_draft_exercise
 
   validates_presence_of :list, :exercise
-  validates_uniqueness_of :exercise_id, :scope => :list_id
-  validates_uniqueness_of :exercise_id, :unless => :is_published?
+  validates_uniqueness_of :exercise_id, :scope => :list_id, :unless => :is_published?
 
   def is_published?
     exercise.is_published?
