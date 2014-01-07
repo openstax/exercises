@@ -1,0 +1,32 @@
+@import 'common';
+
+.exercise-header {
+  color: $dark_font_color;
+  margin-bottom: 15px;
+
+  .exercise-heading {
+    border-bottom: 1px solid $dark_font_color;
+    padding-bottom: 5px;
+    
+    .exercise-id {
+      font-size: 24px;
+      display: inline-block;
+    }
+    .exercise-version-state {
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: text-bottom;
+    }
+    
+  }
+
+  .exercise-nav {
+  }
+}
+
+.exercise-frame {
+  width: 670px;
+  background-color: white;
+  border: 1px solid #e1e1e1;
+  padding: 29px;
+}

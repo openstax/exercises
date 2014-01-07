@@ -9,6 +9,7 @@ $os_blue:   #233066; //#00246a;
 
 $os_dark_orange:  darken($os_orange,10%);
 $os_dark_gray:    darken($os_gray,20%);
+$os_light_gray:   lighten($os_gray, 20%);
 
 $ost_light_beige:   #f7f3f1;
 $hot_blue:      #43bff9;
@@ -17,3 +18,5 @@ $ost_account_gray:  #9d9d9d;
 $application_background_color: rgb(247,243,241);
 
 $application_footer_background_color: #7d7d7d;
+
+$dark_font_color: #252525;

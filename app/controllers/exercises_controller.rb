@@ -8,25 +8,32 @@ class ExercisesController < ApplicationController
   before_filter :get_exercise, :only => [:show, :edit, :update, :destroy, 
                                          :dependencies, :derive, :new_version]
 
+  before_filter :include_mathjax
+
   def index
-    exercise_search
+    # exercise_search
+    @exercises = []
   end
 
   def show
     raise_exception_unless(@exercise.can_be_read_by?(current_user))
 
-    @lists = current_user.try(:editable_lists)
-    @list_id = params[:list_id] || current_user.try(:default_list).try(:id)
+    # @lists = current_user.try(:editable_lists)
+    # @list_id = params[:list_id] || current_user.try(:default_list).try(:id)
   end
 
   def new
-    @exercise = Exercise.new
-    raise_exception_unless(@exercise.can_be_created_by?(current_user))
-    @exercise.questions << Question.new
+    handle_with(ExercisesNew,
+                complete: lambda { redirect_to @handler_result.outputs[:exercise] })
 
-    current_user.ensure_default_list
-    @lists = current_user.editable_lists
-    @list_id = params[:list_id] || current_user.default_list.id
+
+    # @exercise = Exercise.new
+    # raise_exception_unless(@exercise.can_be_created_by?(current_user))
+    # @exercise.questions << Question.new
+
+    # current_user.ensure_default_list
+    # @lists = current_user.editable_lists
+    # @list_id = params[:list_id] || current_user.default_list.id
 
   end
 

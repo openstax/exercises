@@ -6,28 +6,25 @@ class User < ActiveRecord::Base
   delegate :username, :first_name, :last_name, :name, :casual_name,
            to: :openstax_connect_user
 
-  has_one :user_profile, :dependent => :destroy, :inverse_of => :user
-
-  has_one :default_list, :through => :user_profile
-
-  has_one :deputy_user_group, :through => :user_profile
-  has_many :deputies, :through => :user_profile
+  has_one :deputy_user_group, :class_name => 'UserGroup', :as => 'container', :dependent => :destroy
+  has_many :deputies, :through => :deputy_user_group, :source => :users
+  has_many :deputizers, :through => :deputizer_profiles, :source => :user
 
   has_many :collaborators, :dependent => :destroy, :inverse_of => :user
 
   has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
   has_many :user_groups, :through => :user_group_users
 
-  has_many :deputizer_profiles, :through => :user_groups, :source => :container, :source_type => 'UserProfile'
-  has_many :deputizers, :through => :deputizer_profiles, :source => :user
-
+  belongs_to :default_list, :class_name => 'List'
   has_many :lists, :through => :user_groups, :source => :container, :source_type => 'List'
   has_many :listed_exercises, :through => :lists, :source => :exercises
 
-  before_validation :build_user_profile, :unless => :user_profile
   before_save :force_active_admin
 
-  validates_presence_of :user_profile
+  validates_presence_of :default_list
+
+  attr_accessible :announcement_email, :auto_author_subscribe,
+                  :collaborator_request_email, :user_group_member_email
 
   scope :registered, where(is_registered: true)
   scope :unregistered, where{is_registered != true}
@@ -42,10 +39,6 @@ class User < ActiveRecord::Base
 
   def disable
     update_attribute(:disabled_at, Time.now)
-  end
-
-  def ensure_default_list
-    user_profile.ensure_default_list
   end
 
   def editable_lists
@@ -106,6 +99,30 @@ class User < ActiveRecord::Base
 
   def can_be_destroyed_by?(user)
     can_be_updated_by?(user)
+  end
+
+  ##########################
+  # Access Control Helpers #
+  ##########################
+
+  def can_read?(resource)
+    resource.can_be_read_by?(self)
+  end
+  
+  def can_create?(resource)
+    resource.can_be_created_by?(self)
+  end
+  
+  def can_update?(resource)
+    resource.can_be_updated_by?(self)
+  end
+    
+  def can_destroy?(resource)
+    resource.can_be_destroyed_by?(self)
+  end
+
+  def can_vote_on?(resource)
+    resource.can_be_voted_on_by?(self)
   end
 
   protected

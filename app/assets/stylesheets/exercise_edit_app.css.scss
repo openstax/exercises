@@ -1,0 +1,104 @@
+@import "common";
+@import "compass/css3/opacity";
+@import "compass/css3/user-interface";
+
+$edit_app_light_gray: lighten($os_gray,50%);
+
+.exercise-edit-app {
+  background-color: white;
+  border: 1px solid $edit_app_light_gray;
+  padding: 15px;
+  color: black;
+
+  .content .empty {
+    height: 40px;
+    width: 100%;
+    border: 1px solid $edit_app_light_gray;
+  }
+
+  ul, ol {
+    margin-left: 25px;
+  }
+
+  .part-position {
+    font-size: 18px;
+    float: left;
+    margin: 0px 15px 15px 15px;
+  }
+
+  .part {
+    clear: both;
+    margin-bottom: 15px;
+  }
+
+  .part-content {
+    overflow: hidden;
+    padding-top: 4px;
+  }
+
+  textarea.writemaths {
+    position: relative;
+  }
+
+  .gray-out {
+    @include opacity(0.2);
+  }
+
+  .question {
+    border-top: 1px solid $edit_app_light_gray;
+    padding: 8px 0px;
+  }
+
+  .choice {
+    margin: 6px 0px;
+  }
+
+  .choice-label {
+    font-size: 15px;
+    float: left;
+    margin: 0px 15px 15px 15px;
+  }
+
+  .choice-content {
+    overflow: hidden;
+    padding-top: 4px;
+  }
+
+  .combo-choice {
+    .choice-content {
+      // @include user-select(none);
+      .editor {
+        display: none;
+      }      
+    }
+    // .choice-content.editing {
+    //   border: 1px solid blue;
+    //   padding: 8px;
+    // }
+  }
+
+  .combo-simple-choice {
+    display: inline-block;
+    color: lighten(gray,20%);
+
+    &.selected {
+      color: black
+    }
+  }
+
+  .choice-controls {
+    float: right;
+    width: 100px;
+    min-height: 60px;
+    padding-left: 15px;
+    button {
+      display: block;
+      margin: 4px 0px;
+    }
+
+    .edit-controls, .display-controls {
+      text-align: center;
+    }
+  }
+
+}

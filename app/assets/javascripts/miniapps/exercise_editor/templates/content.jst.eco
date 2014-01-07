@@ -1,0 +1,4 @@
+<% console.log this %>
+
+<div class='output <%= 'empty' if !@html %>'><%- @html %></div>
+<textarea style='display:none'><%= @markup %></textarea>

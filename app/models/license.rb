@@ -4,9 +4,9 @@ class License < ActiveRecord::Base
   has_many :exercises, :inverse_of => :license
   has_many :solutions, :inverse_of => :license
 
-  attr_accessible :name, :short_name, :url, :partial_filename, :allow_exercises, :allow_solutions
+  attr_accessible :name, :short_name, :url, :publishing_contract_name, :allow_exercises, :allow_solutions
 
-  validates_presence_of :name, :short_name, :url, :partial_filename
+  validates_presence_of :name, :short_name, :url, :publishing_contract_name
 
   scope :for_exercises, where(:allow_exercises => true)
   scope :for_solutions, where(:allow_solutions => true)

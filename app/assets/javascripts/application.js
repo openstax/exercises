@@ -20,4 +20,5 @@
 //= require jquery_nested_form
 //= require bootstrap
 //= require markitup
-//= require_tree .
+//= require_tree ./utils
+//= require_tree ./for_views

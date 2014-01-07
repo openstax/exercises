@@ -7,10 +7,24 @@
 
   @include body-margins;
 
+  ul.breadcrumb {
+
+    margin-top: -15px;
+
+    & > li + li:before {
+      content: '';
+      padding: 0;
+    }
+  }
+
   h1.page-header {
     font-size: 22px;
     line-height: 24px;
     margin-bottom: 12px;
+  }
+
+  h2.schema {
+    clear: both;
   }
 
   .page-header {
@@ -25,6 +39,7 @@
         margin-top:20px;
         font-size: 16px;
         line-height: 22px;
+        margin-bottom: 15px;
       }
     }    
 
@@ -58,6 +73,10 @@
     small {
       font-size: 14px;
     }
+  }
+
+  div p {
+    clear: both;
   }
 
   // position: relative;

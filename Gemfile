@@ -11,7 +11,7 @@ gem 'squeel'
 
 gem 'lev', "~> 2.0.4"
 
-gem 'jbuilder'
+# gem 'jbuilder'
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'squeel'
@@ -35,9 +35,17 @@ gem 'remotipart', '~> 1.2'
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
+# see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
+gem 'roar', git: 'git://github.com/andresf/roar.git', ref: '0698cb17515ae229bd10580a95062530aba4f583'
+gem 'roar-rails'
 
 gem 'doorkeeper', '~> 0.6.7'
 gem 'exception_notification'
+
+gem 'ejs'
+gem 'eco'
+
+gem 'tinymce-rails', git: 'git://github.com/spohlenz/tinymce-rails.git', branch: 'tinymce-4'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -45,8 +53,7 @@ group :assets do
   gem 'sass-rails',     '~> 3.2.3'
   gem 'coffee-rails',   '~> 3.2.1'
   gem 'sass-rails',     '~> 3.2.3'
-  # gem 'bootstrap-sass', '~> 2.3.1.0'
-  gem 'bootstrap-sass', '~> 3.0.1.0.rc'
+  gem 'bootstrap-sass', '~> 3.0.2.0'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
   gem 'compass-rails'
@@ -73,7 +80,8 @@ group :development, :test do
   gem 'cucumber-rails', :require => false
   gem 'nifty-generators'
   gem 'rack-test', require: "rack/test"
-  gem 'factory_girl'
+  gem 'factory_girl_rails'
+  gem 'coffee-rails-source-maps'
 end
 
 group :production do

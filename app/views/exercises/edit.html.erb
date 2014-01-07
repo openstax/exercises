@@ -1,5 +1,24 @@
-<%= page_heading 'Editing exercise' %>
+<% content_for :javascript_includes do %>
+  <%= javascript_include_tag 'miniapps/exercise_editor' %>
+  <% if false %>
+  <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+  <% end %>
+<% end %>
 
-<%= render 'form' %>
+<% content_for :javascript do %>
+  <script type='text/javascript'>
+    $(document).ready(function() {
+      ExerciseEditor.start({exerciseId: <%= @exercise.id %>});
+    });
+  </script>
+<% end %>
 
-<%= link_to 'Back', @exercise %>
+<div class='exercise-edit'>
+
+  <%= render 'header', exercise: @exercise %>
+
+
+  <div class='exercise-edit-app'>
+  </div>
+
+</div>
