@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131119002521) do
+ActiveRecord::Schema.define(:version => 20131211021035) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -276,13 +276,11 @@ ActiveRecord::Schema.define(:version => 20131119002521) do
   add_index "multiple_choice_answers", ["question_id", "position"], :name => "index_multiple_choice_answers_on_question_id_and_position", :unique => true
 
   create_table "multiple_choice_questions", :force => true do |t|
-    t.integer  "stem_id",             :null => false
-    t.boolean  "can_select_multiple", :null => false
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.integer  "stem_id",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
-  add_index "multiple_choice_questions", ["can_select_multiple"], :name => "index_multiple_choice_questions_on_can_select_multiple"
   add_index "multiple_choice_questions", ["stem_id"], :name => "index_multiple_choice_questions_on_stem_id"
 
   create_table "oauth_access_grants", :force => true do |t|

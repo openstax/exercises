@@ -15,7 +15,15 @@ module Api::V1
              decorator: ContentRepresenter, 
              parse_strategy: :sync
 
-    # collection :questions
+    collection :questions, 
+               # class: Question, 
+               # decorator: QuestionRepresenter, 
+               class: lambda { |hsh, *| Api::V1::QuestionRepresenter.sub_model_for(hsh) },
+               decorator: lambda { |question, *| Api::V1::QuestionRepresenter.sub_representer_for(question) },
+               parse_strategy: :sync,
+               schema_info: {
+                 minItems: 0
+               }
 
   end
 end

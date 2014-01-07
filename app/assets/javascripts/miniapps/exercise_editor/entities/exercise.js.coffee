@@ -1,4 +1,4 @@
-class ExerciseEditor.Exercise extends Backbone.RelationalModel
+class ExerciseEditor.Exercise extends Backbone.AssociatedModel
   urlRoot: '/api/exercises'
 
   defaults:
@@ -6,26 +6,14 @@ class ExerciseEditor.Exercise extends Backbone.RelationalModel
 
   relations: [
     {
-      type: Backbone.HasOne,
+      type: Backbone.One,
       key: 'background',
       relatedModel: 'ExerciseEditor.Content',
-      reverseRelation: {
-        type: Backbone.HasOne
-        key: 'exercise',
-        includeInJSON: false
-      }
     },
     {
-      type: Backbone.HasMany,
+      type: Backbone.Many,
       key: 'parts',
       relatedModel: 'ExerciseEditor.Part'
       collectionType: 'ExerciseEditor.Parts',
-      reverseRelation: {
-        key: 'exercise',
-        keySource: 'exercise_id',
-        includeInJSON: 'id'
-      }
     }
   ]
-
-ExerciseEditor.Exercise.setup()

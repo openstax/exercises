@@ -14,7 +14,7 @@ module Api
 
       api :GET, '/parts/:id', 'Gets the specified Part'
       description <<-EOS
-        #{json_schema(Api::V1::PartRepresenter, include: :readable)}        
+        #{json_schema(Api::V1::PartRepresenter, include: :readable)}
       EOS
       def show
         rest_get(Part, params[:id])
@@ -40,6 +40,11 @@ module Api
         else
           render json: result.errors, status: :unprocessable_entity
         end
+      end
+
+      api :DELETE, '/parts/:id', 'Deletes the specified Part'
+      def destroy
+        rest_destroy(Part, params[:id])
       end
       
     end

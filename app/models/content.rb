@@ -19,7 +19,9 @@ class Content < ActiveRecord::Base
     return if Rails.env.test? && !Content.run_parser_in_test_env
     return if unchanged? && !force
 
-    self.html = TransformMarkup.call(markup).outputs[:output]
+    self.html = markup
+
+    # self.html = TransformMarkup.call(markup).outputs[:output]
     # todo should maybe just call routine straight up? instead of update_attributes
     # !!! shouldn't be able to update content if container published, something that
     # belongs in a routine (cross class checks, etc)

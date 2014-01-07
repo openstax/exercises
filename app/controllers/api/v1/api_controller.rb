@@ -77,16 +77,25 @@ module Api
         end
       end
 
-      def rest_get(model_klass, id)
-        @model = model_klass.find(id)
-        raise SecurityTransgression unless current_user.can_read?(@model)
-        respond_with @model
+      def get_representer(represent_with, model=nil)
+        return nil if represent_with.nil?
+        if represent_with.is_a? Proc
+          represent_with.call(model)
+        else
+          represent_with
+        end
       end
 
-      def rest_update(model_klass, id)
+      def rest_get(model_klass, id, represent_with=nil)
+        @model = model_klass.find(id)
+        raise SecurityTransgression unless current_user.can_read?(@model)
+        respond_with @model, represent_with: get_representer(represent_with, @model)
+      end
+
+      def rest_update(model_klass, id, represent_with=nil)
         @model = model_klass.find(id)
         raise SecurityTransgression unless current_user.can_update?(@model)
-        consume!(@model)
+        consume!(@model, represent_with: get_representer(represent_with, @model))
         
         if @model.save
           head :no_content
@@ -102,6 +111,17 @@ module Api
 
         if @model.save
           respond_with @model
+        else
+          render json: @model.errors, status: :unprocessable_entity
+        end
+      end
+
+      def rest_destroy(model_klass, id)
+        @model = model_klass.find(id)
+        raise SecurityTransgression unless current_user.can_destroy?(@model)
+        
+        if @model.destroy
+          head :no_content
         else
           render json: @model.errors, status: :unprocessable_entity
         end

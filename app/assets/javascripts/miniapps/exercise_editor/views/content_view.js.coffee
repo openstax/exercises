@@ -10,7 +10,12 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
 
   events:
     'click .output': 'edit'
-    'focusout textarea': 'save'
+
+    # 'mouseenter': () -> console.log 'content mouseenter'
+    # 'mouseleave': () -> console.log 'content mouseleave'
+    # 'focusin': () -> console.log 'content focusin'
+    # 'focusout': () -> console.log 'content focusout'
+    # 'focus': () -> console.log 'content focus'
 
   initialize: () ->
     @listenTo @model, 'sync', @render
@@ -21,24 +26,34 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
     @ui.input.width(@ui.output.width())
 
     @ui.output.toggle()
-    @ui.input.toggle().focus()
+    @ui.input.show().focus()
 
     # Not super efficient to do this every time, but can't get it to work otherwise
-    @ui.input.writemaths()
+    @ui.input.tinymce
+      toolbar: 'bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image code | undo redo | save'
+      menu: {}
+      view: this
+      init_instance_callback: (ed) ->
+        ed.settings.view.$el.writemaths({iFrame: true})
+      setup: (ed) ->    
+        ed.addButton('save', {
+          title: 'Save'
+          icon: 'save'
+          onclick: () -> ed.settings.view.save()
+        })
+        # ed.on('focus', (e) -> console.log('tinymce focus'))
+        # ed.on('blur', (e) -> console.log('tinymce blur'))
+      statusbar: false
 
   onRender: () ->
     MathJax.Hub.Queue(["Typeset",MathJax.Hub,@ui.output.get()]);
     
   save: () ->
-    @model.set('markup', @ui.input.val())
-    Utils.disable(@ui.input)
-    Utils.grayOut(@ui.input)
+    @model.set('markup', @ui.input.tinymce().getContent())
     @model.save {}, {
       success: (model, response, options) =>
         model.fetch()
       error: (model, response, options) =>
-        Utils.enable(@ui.input)
-        Utils.unGrayOut(@ui.input)
     }
       
     

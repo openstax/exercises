@@ -6,10 +6,28 @@ class ExerciseEditor.PartView extends Marionette.Layout
 
   regions: 
     background: '.part-background',
-    question: '.part-question'
+    questions: '.part-questions'
+
+  events:
+    'click button.js-add-question-mc': 'addMcQuestion'
+    'click button.js-delete-part': "deletePart"
+
 
   initialize: () ->
     @listenTo @model, 'change', @render
 
   onShow: () ->
     @background.show(new ExerciseEditor.ContentView({model: @model.get('background')}))
+    @questions.show(new ExerciseEditor.QuestionsView({collection: @model.get('questions')}))
+
+  #### Controller Methods ####
+
+  addMcQuestion: () ->
+    question = new ExerciseEditor.MultipleChoiceQuestion()
+    question.set('stem', new ExerciseEditor.Content())
+    question.set('part_id', @model.get('id'))
+    @model.get('questions').create(question, {wait: true})
+
+  deletePart: () ->
+    @model.destroy()
+    

@@ -1,4 +1,4 @@
-class ExerciseEditor.Part extends Backbone.RelationalModel
+class ExerciseEditor.Part extends Backbone.AssociatedModel
   urlRoot: '/api/parts'
 
   defaults:
@@ -7,15 +7,16 @@ class ExerciseEditor.Part extends Backbone.RelationalModel
 
   relations: [
     {
-      type: Backbone.HasOne,
+      type: Backbone.One,
       key: 'background',
       relatedModel: 'ExerciseEditor.Content',
-      reverseRelation: {
-        type: Backbone.HasOne
-        key: 'part',
-        includeInJSON: false
-      }
+    },
+    {
+      type: Backbone.Many,
+      key: 'questions',
+      relatedModel: (relation, attributes) ->
+        return (attrs, options) ->
+          if attrs.type == 'multiple_choice_question' then return new ExerciseEditor.MultipleChoiceQuestion(attrs)
+          throw "unknown question type"
     }
   ]
-
-ExerciseEditor.Part.setup()

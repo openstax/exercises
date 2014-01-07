@@ -1,16 +1,12 @@
-class ExerciseEditor.Content extends Backbone.RelationalModel
+class ExerciseEditor.Content extends Backbone.AssociatedModel
   urlRoot: '/api/contents'
 
   defaults:
     markup: '',
     html: ''
 
-  # Allows us to get the object containing this Content without polymorphic relations 
   container: () ->
-    @get('exercise') or
-    @get('part')
+    @parents[0]
 
   save: (key, val, options) ->
     @container().save(key, val, options)
-
-ExerciseEditor.Content.setup()
