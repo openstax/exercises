@@ -52,7 +52,7 @@ module Publishable
         scope :published, where{published_at != nil}
         scope :latest, joins{same_number}
                          .where{(id == same_number.id) | (same_number.published_at != nil)}
-                         .group(:id).having{version >= max(same_number.version)}
+                         .group(:id).having{version == max(same_number.version)}
 
         def is_published?
           !published_at.nil?

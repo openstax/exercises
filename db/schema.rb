@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
   add_index "commontator_comments", ["cached_votes_down"], :name => "index_commontator_comments_on_cached_votes_down"
   add_index "commontator_comments", ["cached_votes_total"], :name => "index_commontator_comments_on_cached_votes_total"
   add_index "commontator_comments", ["cached_votes_up"], :name => "index_commontator_comments_on_cached_votes_up"
-  add_index "commontator_comments", ["creator_type", "creator_id", "thread_id"], :name => "index_c_c_on_c_type_and_c_id_and_t_id"
+  add_index "commontator_comments", ["creator_id", "creator_type", "thread_id"], :name => "index_c_c_on_c_id_and_c_type_and_t_id"
   add_index "commontator_comments", ["thread_id"], :name => "index_commontator_comments_on_thread_id"
 
   create_table "commontator_subscriptions", :force => true do |t|
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
     t.datetime "updated_at",                     :null => false
   end
 
-  add_index "commontator_subscriptions", ["subscriber_type", "subscriber_id", "thread_id"], :name => "index_c_s_on_s_type_and_s_id_and_t_id", :unique => true
+  add_index "commontator_subscriptions", ["subscriber_id", "subscriber_type", "thread_id"], :name => "index_c_s_on_s_id_and_s_type_and_t_id", :unique => true
   add_index "commontator_subscriptions", ["thread_id"], :name => "index_commontator_subscriptions_on_thread_id"
 
   create_table "commontator_threads", :force => true do |t|
@@ -108,7 +108,7 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
     t.datetime "updated_at",       :null => false
   end
 
-  add_index "commontator_threads", ["commontable_type", "commontable_id"], :name => "index_commontator_threads_on_commontable_type_and_commontable_id", :unique => true
+  add_index "commontator_threads", ["commontable_id", "commontable_type"], :name => "index_c_t_on_c_id_and_c_type", :unique => true
 
   create_table "contents", :force => true do |t|
     t.text     "markup"
@@ -188,7 +188,7 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
   end
 
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
-  add_index "fine_print_signatures", ["user_type", "user_id", "contract_id"], :name => "index_fine_print_s_on_u_type_and_u_id_and_c_id", :unique => true
+  add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
 
   create_table "free_response_answers", :force => true do |t|
     t.text     "content",            :default => "",    :null => false

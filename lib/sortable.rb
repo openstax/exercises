@@ -1,5 +1,8 @@
 require 'sortable_migration'
 
+require 'sortable_migration'
+require 'sortable_view'
+
 module Sortable
   def self.included(base)
     base.extend(ClassMethods)
@@ -14,42 +17,36 @@ module Sortable
 
         before_save :assign_next_position, :unless => :position
 
-        validates_uniqueness_of :position, :scope => scope_symbols, :allow_nil => true
+        validates_uniqueness_of :position, :scope => scope_symbols
 
         default_scope order(:position)
 
         def self.sort(sorted_ids)
           return false unless (sorted_ids.is_a?(Array) && !sorted_ids.empty?)
 
-          ss = sorted_ids.first.sort_scope
-          unsorted_ids = ss.select(:id).all
-          sorted_ids = sorted_ids & unsorted_ids
-          sorted_ids = sorted_ids | unsorted_ids
+          sorted_objs = sorted_ids.collect{|i| find(i)}
+          sort_scope = sorted_objs.first.sort_scope
 
-          index = 1
-          conflict_index = (ss.minimum(:position) || 0) - 1
+          unsorted_objs = sort_scope.all
+          sorted_objs &= unsorted_objs
+          sorted_objs |= unsorted_objs
 
           transaction do
-            sorted_ids.each do |sorted_id|
-              ss.where(:position => index).where{id != sorted_id}.all.each do |conflict|
-                conflict.position = conflict_index
+            sorted_objs.each_with_index do |obj, index|
+              obj.position = index + 1
+              next if obj.save
+              sort_scope.where(:position => index + 1).where{id != my{obj.id}}.all.each do |conflict|
+                conflict.position = -conflict.position
                 conflict.save!
-                conflict_index -= 1
               end
-
-              obj = find(sorted_id)
-              obj.position = index
               obj.save!
-              index += 1
             end
           end
         end
 
         def assign_next_position
-          self.position = ((sort_scope.maximum(:position) || 0) + 1)
+          self.position = (sort_scope.maximum(:position) || 0) + 1
         end
-
-        protected
 
         def sort_scope
           sort_scope_array.nil? ? self.class.scoped : self.class.where(Hash[sort_scope_array.map{|s| [s, send(s)]}])

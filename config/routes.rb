@@ -1,12 +1,10 @@
 Exercises::Application.routes.draw do
-
   mount OpenStax::Connect::Engine, at: "/connect"
   mount FinePrint::Engine => "/admin/fine_print"
 
   apipie
 
   use_doorkeeper
-
 
   namespace 'dev' do
     get "/", to: 'base#index'
@@ -20,8 +18,7 @@ Exercises::Application.routes.draw do
 
   resources :user_profiles, only: [:show, :edit, :update]
   
-  namespace 'admin' do 
-
+  namespace 'admin' do
     get '/', to: 'base#index'
 
     put "cron",                         to: 'base#cron', :as => "cron"
@@ -42,7 +39,6 @@ Exercises::Application.routes.draw do
     resources :user_groups, :only => [:index]
   end
 
-  get "terms", to: "terms#index"
   get "terms/:id/show", to: "terms#show", as: "show_terms"
   get "terms/pose", to: "terms#pose", as: "pose_terms"
   post "terms/agree", to: "terms#agree", as: "agree_to_terms"
@@ -93,6 +89,8 @@ Exercises::Application.routes.draw do
   get 'api', to: 'static_pages#api'
   get 'copyright', to: 'static_pages#copyright'
   get 'developers', to: 'static_pages#developers'
+
+  post 'sort', to: 'sortables#sort'
 
   root to: 'static_pages#home'
 

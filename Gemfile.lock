@@ -7,15 +7,6 @@ GIT
       representable (~> 1.7.0)
 
 GIT
-  remote: git://github.com/lml/fine_print.git
-  revision: c75c3d4e76e7ddbd6319956efed8270c36b9f36c
-  ref: c75c3d4e76e7ddbd6319956efed8270c36b9f36c
-  specs:
-    fine_print (1.0.0)
-      jquery-rails
-      rails (>= 3.1)
-
-GIT
   remote: git://github.com/spohlenz/tinymce-rails.git
   revision: 4a4d0ea551171c279eafe3002dff52a462a45b66
   branch: tinymce-4
@@ -114,7 +105,7 @@ GEM
       execjs
     coffee-script-source (1.6.2)
     columnize (0.3.6)
-    commontator (2.0.2)
+    commontator (4.2.1)
       jquery-rails
       rails (>= 3.1)
     compass (0.12.2)
@@ -170,6 +161,9 @@ GEM
       multipart-post (~> 1.2.0)
     fastercsv (1.5.5)
     ffi (1.9.0)
+    fine_print (1.2.0)
+      jquery-rails
+      rails (>= 3.1)
     fssm (0.2.10)
     gherkin (2.12.0)
       multi_json (~> 1.3)
@@ -388,7 +382,7 @@ DEPENDENCIES
   cheat
   coffee-rails (~> 3.2.1)
   coffee-rails-source-maps
-  commontator
+  commontator (~> 4.2.0)
   compass-rails
   cucumber-rails
   database_cleaner
@@ -400,7 +394,7 @@ DEPENDENCIES
   exception_notification
   factory_girl_rails
   faker
-  fine_print!
+  fine_print (~> 1.2.0)
   jquery-rails (= 2.3.0)
   lev (~> 2.0.4)
   maruku

@@ -28,8 +28,8 @@ gem 'will_paginate', '~> 3.0'
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
-gem 'commontator'
-gem 'fine_print', git: 'git://github.com/lml/fine_print.git', ref: 'c75c3d4e76e7ddbd6319956efed8270c36b9f36c'
+gem 'commontator', '~> 4.2.0'
+gem 'fine_print', '~> 1.2.0'
 gem 'remotipart', '~> 1.2'
 
 # API documentation
