@@ -1,5 +1,6 @@
 //= require_tree ./lib
 //= require ./app
+//= require ./entities/store
 //= require ./entities/question
 //= require ./entities/combo_simple_choice
 //= require ./entities/combo_choice

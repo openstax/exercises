@@ -7,29 +7,39 @@ class ExerciseEditor.ComboSimpleChoiceView extends Marionette.ItemView
   events:
     'click': 'toggle'
 
+  initialize: () ->
+    @simpleChoice = @model
+    @comboChoice = @options.comboChoice
+    @comboSimpleChoice = @options.comboSimpleChoice
+
+    ExerciseEditor.Store.onModelAvailable(
+      'SimpleChoice', @simpleChoice.get('id'), 
+      (sc) => @listenTo sc, 'change:content', () -> alert 'saw sc changed'
+    )  
+
   isSelected: () ->
-    @options.comboSimpleChoice?
+    @comboSimpleChoice?
 
   toggle: () ->
     if @isSelected() then @deselect() else @select()
 
   select: () ->
     csc = new ExerciseEditor.ComboSimpleChoice()
-    csc.set('simple_choice_id', @model.get('id'))
-    csc.set('combo_choice_id', @options.comboChoice.get('id'))
-    @options.comboChoice.get('combo_simple_choices').create(
+    csc.set('simple_choice_id', @simpleChoice.get('id'))
+    csc.set('combo_choice_id', @comboChoice.get('id'))
+    @comboChoice.get('combo_simple_choices').create(
       csc, {
         success: (model) => 
-          @options.comboSimpleChoice = model
+          @comboSimpleChoice = model
           @render()
         wait: true
       }
-    )    
+    )  
 
   deselect: () ->
-    @options.comboSimpleChoice?.destroy({
+    @comboSimpleChoice?.destroy({
       success: () => 
-        @options.comboSimpleChoice = null
+        @comboSimpleChoice = null
         @render()
     })
 
@@ -37,4 +47,4 @@ class ExerciseEditor.ComboSimpleChoiceView extends Marionette.ItemView
     @$el.toggleClass('selected', @isSelected())
 
   serializeData: () ->
-    simpleChoice: @model
+    simpleChoice: @simpleChoice

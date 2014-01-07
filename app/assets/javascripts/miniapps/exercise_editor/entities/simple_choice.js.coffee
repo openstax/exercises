@@ -11,6 +11,8 @@ class ExerciseEditor.SimpleChoice extends Backbone.AssociatedModel
 
   initialize: (attributes, options) ->
     console.log 'sc init:' + @get('id')
+    debugger
+    ExerciseEditor.Store.addModel(this)
 
   question: () ->
     @collection.parents[0]
