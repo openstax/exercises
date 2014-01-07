@@ -45,6 +45,11 @@ module Api
       def destroy
         rest_destroy(SimpleChoice, params[:id])
       end
+
+      api :PUT, '/simple_choices/sort', 'Reorders a set of Simple Choices'
+      def sort
+
+      end
       
     end
   end
