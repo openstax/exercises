@@ -1,16 +1,33 @@
-<%= page_heading 'Exercise lists' %>
+<%= page_heading 'My Exercise Lists' %>
 
-<table>
+<div class='list-of-lists'>
 <% @lists.each do |list| %>
-  <tr>
-    <td><%= link_to list.name, list %></td>
-  <% if user_is_admin? %>
-    <td><%= link_to 'Delete', list, method: :delete, data: { confirm: "Are you sure you want to delete #{list.name}?" } %></td>
-  <% end %>
-  </tr>
+  <div class='list-of-lists-entry'>
+    <%= link_to 'Delete', list, class: 'hover btn-sm btn-primary', method: :delete, data: { confirm: "Are you sure you want to delete #{list.name}?" } %>
+    <%= link_to list.name, list %>
+    &nbsp;&nbsp;
+    <span class='badge'><%= list.exercises.count %></span>
+    
+  </div>
 <% end %>
-</table>
+</div>
 
-<br />
+<%= button_to 'New List', new_list_path, class: 'btn' %>
 
-<%= link_to 'New List', new_list_path %>
+<% content_for :javascript do %>
+  <script type='text/javascript'>
+    $(document).ready(function() {
+      $('.list-of-lists-entry').hover(
+        function() {
+          $(this).find('.hover').show();
+        }, 
+        function() {
+          $(this).find('.hover').hide();
+        }
+      );
+    });
+  </script>
+<% end %>
+
+
+

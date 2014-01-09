@@ -1,0 +1,23 @@
+@import 'common';
+
+#application-body {
+  .list-of-lists {
+    margin-bottom: 30px;
+
+    .list-of-lists-entry {
+      background-color: white;
+      border: 1px solid  $os_light_gray;
+      padding: 15px;
+      @include border-radius(5px);
+
+      a.btn-sm {
+        color: white;
+        @include border-radius(0px);  
+        float: right;
+        display: none; 
+        margin-top: -4px;
+      }
+
+    }
+  }  
+}

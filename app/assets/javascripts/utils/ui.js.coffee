@@ -28,14 +28,14 @@ Ui = do () ->
                       (userScreenHeight / 2) - (modalHeight / 2)) 
 
   enableOnChecked: (targetSelector, sourceSelector) ->
-      $(document).ready ->
-        Exercises.Ui.disableButton(targetSelector)
+    $(document).ready =>
+      @disableButton(targetSelector)
 
-      $(sourceSelector).on 'click', ->
-        if $(this).is(':checked')
-          Exercises.Ui.enableButton(targetSelector)
-        else
-          Exercises.Ui.disableButton(targetSelector)
+    $(sourceSelector).on 'click', =>
+      if $(sourceSelector).is(':checked')
+        @enableButton(targetSelector)
+      else
+        @disableButton(targetSelector)
 
   syntaxHighlight: (code) ->
     json = if typeof code is not 'string' then JSON.stringify(code, undefined, 2) else code
