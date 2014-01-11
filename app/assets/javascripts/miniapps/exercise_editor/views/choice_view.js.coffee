@@ -7,11 +7,15 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
   regions:
     content: ".choice-content"
 
+  ui:
+    letter: '.choice-letter'
+
   events:
     'click button.js-delete-choice': 'delete'
+    'drop': 'drop'
 
   initialize: () ->
-    @listenTo @model, 'change', @render
+    @listenTo @model, 'change:position', () -> @refreshLetter()
 
   onShow: () ->
     contentView = switch 
@@ -22,6 +26,17 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
 
   serializeData: () ->
     model: @model
+
+  refreshLetter: () ->
+    @ui.letter.html(@model.letter())
+
+  drop: (event, index) -> @move(index)
+
+  move: (toPosition) ->
+    collection = @model.collection
+    collection.models.move(@model.get('position'), toPosition)
+    collection.each (model, index) -> model.set('position', index)
+    collection.sort()
 
   delete: () ->
     @model.destroy()

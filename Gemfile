@@ -17,7 +17,7 @@ gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_connect', '~> 0.0.8'
-gem 'openstax_utilities', '~> 1.1.0'
+gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities'   #'~> 1.1.0'
 gem 'nested_form'
 
 gem 'carrierwave'

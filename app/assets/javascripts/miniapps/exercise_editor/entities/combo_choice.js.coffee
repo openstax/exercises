@@ -13,7 +13,7 @@ class ExerciseEditor.ComboChoice extends Backbone.AssociatedModel
     if @collection.parents? and @collection.parents[0] then return @collection.parents[0]
 
   letter: () ->
-    String.fromCharCode(96 + @collection.indexOf(this) + 1 + @question().get('simple_choices').length)
+    String.fromCharCode(97 + @collection.indexOf(this) + @question().get('simple_choices').length)
 
   simpleChoices: () ->
     @question().get('simple_choices')

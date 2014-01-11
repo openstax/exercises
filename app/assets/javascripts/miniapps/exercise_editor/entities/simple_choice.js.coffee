@@ -17,4 +17,4 @@ class ExerciseEditor.SimpleChoice extends Backbone.AssociatedModel
     @collection.parents[0]
 
   letter: () ->
-    String.fromCharCode(96 + @get('position'))
+    String.fromCharCode(97 + @get('position'))

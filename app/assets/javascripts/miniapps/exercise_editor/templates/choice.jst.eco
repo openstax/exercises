@@ -19,7 +19,7 @@
 
 </div>
 
-<div class='choice-label'><%= @model.letter() %>)</div>
+<div class='choice-label'><span class='choice-letter'><%= @model.letter() %></span>)</div>
 
 <div class='choice-content'>
 </div>

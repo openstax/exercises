@@ -1,5 +1,12 @@
 class ExerciseEditor.SimpleChoicesView extends Marionette.CollectionView
-  itemView: ExerciseEditor.SimpleChoiceView
+  itemView: ExerciseEditor.ChoiceView
   
   tagName: "div"
-  className: "simple-choices"
+  className: "choices"
+
+  onDomRefresh: () ->
+    @$el.sortable
+      handle: '.handle',
+      update: (event, ui) ->
+        ui.item.trigger 'drop', ui.item.index()
+
