@@ -15,7 +15,7 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
     'drop': 'drop'
 
   initialize: () ->
-    @listenTo @model, 'change:position', () -> @refreshLetter()
+    @listenTo @model, 'change:letter', () -> @refreshLetter()
 
   onShow: () ->
     contentView = switch 
