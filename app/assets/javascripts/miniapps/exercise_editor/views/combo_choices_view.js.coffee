@@ -4,6 +4,6 @@ class ExerciseEditor.ComboChoicesView extends Marionette.CollectionView
   tagName: "div"
   className: "combo-choices"
 
-  onBeforeRender: () ->
-    console.log 'about to sort'
-    @collection.sort()
+  # onBeforeRender: () ->
+    # console.log 'about to sort'
+    # @collection.sort()

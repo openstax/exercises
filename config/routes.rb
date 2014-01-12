@@ -99,7 +99,9 @@ Exercises::Application.routes.draw do
       resources :exercises, only: [:show, :update]
       resources :parts, only: [:show, :update, :create, :destroy]
       resources :questions, only: [:show, :update, :create, :destroy]
-      resources :simple_choices, only: [:show, :update, :create, :destroy]
+      resources :simple_choices, only: [:show, :update, :create, :destroy] do
+        put 'sort', on: :collection
+      end
       resources :combo_choices, only: [:show, :update, :create, :destroy]
       resources :combo_simple_choices, only: [:show, :create, :destroy]
     end

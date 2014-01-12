@@ -37,6 +37,7 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
     collection.models.move(@model.get('position'), toPosition)
     collection.each (model, index) -> model.set('position', index)
     collection.sort()
+    collection.savePositions()
 
   delete: () ->
     @model.destroy()

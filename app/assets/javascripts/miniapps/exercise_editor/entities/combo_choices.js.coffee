@@ -11,4 +11,4 @@ class ExerciseEditor.ComboChoices extends Backbone.Collection
     return 100000 + choice.get('id') if selectedPositions.length == 0
 
     # Order by number of selected choices, then by highest position of simple choice
-    selectedPositions.length*1000 + Math.max.apply(null, selectedPositions)
+    selectedPositions.length*1000 + _.reduce(selectedPositions, (memo, num) -> memo + num) 

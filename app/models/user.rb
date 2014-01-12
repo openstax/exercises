@@ -125,6 +125,10 @@ class User < ActiveRecord::Base
     resource.can_be_voted_on_by?(self)
   end
 
+  def can_sort?(resource)
+    resource.can_be_sorted_by?(self)
+  end
+
   protected
 
   #############

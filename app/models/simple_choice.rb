@@ -15,4 +15,8 @@ class SimpleChoice < ActiveRecord::Base
            :can_be_updated_by?, 
            :can_be_destroyed_by?, 
            to: :multiple_choice_question
+
+  def can_be_sorted_by?(user)
+    multiple_choice_question.can_be_updated_by?(user)
+  end
 end
