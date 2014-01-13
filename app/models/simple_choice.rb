@@ -4,7 +4,7 @@ class SimpleChoice < ActiveRecord::Base
 
   belongs_to :multiple_choice_question
   belongs_to :content
-  has_many :combo_simple_choices
+  has_many :combo_simple_choices, dependent: :destroy
 
   attr_accessible :content_id, :credit, :multiple_choice_question_id, :position
 
