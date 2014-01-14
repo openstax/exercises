@@ -7,12 +7,20 @@
 
   @include body-margins;
 
+.breadcrumb {
+    padding: 0 0 10px 0;
+    margin: 0;
+    background-color: transparent;
+    float:right;
+    text-align: right;
+    width: 100%;
+  }
+
   ul.breadcrumb {
 
-    margin-top: -15px;
-
-    & > li + li:before {
-      content: '';
+    // undoes the "/" provided by apipie's default CSS
+    li + li:before {
+      content: none;
       padding: 0;
     }
   }
@@ -47,14 +55,7 @@
     border-bottom: none;
   }
 
-  .breadcrumb {
-    padding: 0 0 10px 0;
-    margin: 0;
-    background-color: transparent;
-    float:right;
-    text-align: right;
-    width: 100%;
-  }
+  
 
   #description-create {
     p {

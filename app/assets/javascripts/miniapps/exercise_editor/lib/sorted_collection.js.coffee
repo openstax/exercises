@@ -1,12 +1,9 @@
-class ExerciseEditor.SimpleChoices extends Backbone.Collection
-  model: ExerciseEditor.SimpleChoice
-
-  comparator: (choice) ->
-    choice.get('position')
+class ExerciseEditor.SortedCollection extends Backbone.Collection
 
   savePositions: () ->
     if @models.length == 0 then return
-    attrs = {newPositions: @collect (model) -> {id: model.get('id'), position: model.get('position')}}
+    attrs = {newPositions: {}}
+    @each (model) -> attrs['newPositions'][model.get('id')] = model.get('position')
     @sync 'update', 
           this, 
           {

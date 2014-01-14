@@ -47,6 +47,12 @@ module Api
       end
 
       api :PUT, '/simple_choices/sort', 'Reorders a set of Simple Choices'
+      description <<-EOS
+        Updates the Exercise object whose ID matches the provided param.  Any provided 
+        transformed Content field (e.g. 'html') will be ignored.
+
+        #{json_schema(Api::V1::SortRepresenter, include: :writeable)}        
+      EOS
       def sort
         # take array of all IDs or hash of id => position,
         # regardless build up an array of all IDs in the right order and pass those to sort
@@ -54,7 +60,7 @@ module Api
         newPositions = params['newPositions']
         return head :no_content if newPositions.length == 0
 
-        first = SimpleChoice.where(newPositions[0]).first
+        first = SimpleChoice.where(:id => newPositions[0]['id']).first
 
         return head :not_found if first.blank?
 
@@ -70,10 +76,10 @@ module Api
 
 
         newOrderedIds = Array.new(originalOrderedIds.size)
-
-        newPositions.each do |id, position|
-          id = id.to_i
-          newOrderedIds[position] = id
+      
+        newPositions.each do |newPosition|
+          id = newPosition['id'].to_i
+          newOrderedIds[newPosition['position']] = id
           originalOrderedIds.delete(id)
         end
 
