@@ -12,12 +12,6 @@ class ExerciseEditor.ComboSimpleChoiceView extends Marionette.ItemView
     @comboChoice = @options.comboChoice
     @comboSimpleChoice = @options.comboSimpleChoice
 
-    ExerciseEditor.Store.onModelAvailable(
-      'SimpleChoice', 
-      @simpleChoice.get('id'), 
-      (sc) => @listenTo sc, 'change:content', () -> alert 'saw sc changed'
-    )  
-
   isSelected: () ->
     @comboSimpleChoice?
 

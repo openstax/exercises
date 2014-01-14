@@ -59,6 +59,22 @@ $edit_app_light_gray: lighten($os_gray,50%);
     margin: 0px 15px 15px 15px;
   }
 
+  .choice-under-letter-control {
+    float: left;
+    clear: left;
+    margin-left: 14px;
+    display: none;
+  }
+
+  .choice:hover {
+    .choice-under-letter-control {
+      display: inline;
+    }
+    .choice-delete {
+      display: block;
+    }
+  }
+
   .choice-content {
     overflow: hidden;
     padding-top: 4px;
@@ -95,6 +111,12 @@ $edit_app_light_gray: lighten($os_gray,50%);
       display: block;
       margin: 4px 0px;
     }
+
+    .choice-delete {
+      display: none;
+    }
+  
+
 
     .edit-controls, .display-controls {
       text-align: center;

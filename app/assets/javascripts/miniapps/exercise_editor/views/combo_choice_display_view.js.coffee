@@ -2,13 +2,16 @@ class ExerciseEditor.ComboChoiceDisplayView extends Marionette.ItemView
   template: "combo_choice_display"
 
   initialize: () ->
+
     @listenTo @model, 'change', @render
+    @listenTo @model.get('combo_simple_choices'), 'add', @render
+    @listenTo @model.get('combo_simple_choices'), 'remove', @render
     @listenTo @simpleChoices(), 'add', @render
     @listenTo @simpleChoices(), 'remove', @render
     @listenTo @simpleChoices(), 'sort', @render
 
   simpleChoices: () ->
-    @model.simpleChoices()
+    @cachedSimpleChoices or= @model.simpleChoices()
 
   serializeData: () ->
     simpleChoices = @simpleChoices()

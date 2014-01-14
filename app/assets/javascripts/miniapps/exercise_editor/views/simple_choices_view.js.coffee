@@ -6,7 +6,7 @@ class ExerciseEditor.SimpleChoicesView extends Marionette.CollectionView
 
   onDomRefresh: () ->
     @$el.sortable
-      handle: '.handle',
+      handle: '.choice-handle',
       update: (event, ui) ->
         ui.item.trigger 'drop', ui.item.index()
 

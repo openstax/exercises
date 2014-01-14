@@ -3,3 +3,6 @@ class ExerciseEditor.ChoicesView extends Marionette.CollectionView
   
   tagName: "div"
   className: "choices"
+
+  initialize: () ->
+    @listenTo @collection, 'sort', @render

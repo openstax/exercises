@@ -19,13 +19,25 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
 
   onShow: () ->
     contentView = switch 
-      when @model instanceof ExerciseEditor.SimpleChoice then ExerciseEditor.SimpleChoiceView
-      when @model instanceof ExerciseEditor.ComboChoice then ExerciseEditor.ComboChoiceView
+      when @isSimple() then ExerciseEditor.SimpleChoiceView
+      when @isCombo() then ExerciseEditor.ComboChoiceView
       else throw 'unknown choice type'
     @content.show(new contentView({model: @model}))
 
+  isSimple: () ->
+    @model instanceof ExerciseEditor.SimpleChoice
+
+  isCombo: () ->
+    @model instanceof ExerciseEditor.ComboChoice
+
+  # onDomRefresh: () ->
+  #   @$el.hover(
+  #     () -> $(this).addClass('hovering')
+  #   )
+
   serializeData: () ->
     model: @model
+    isSimple: @isSimple()
 
   refreshLetter: () ->
     @ui.letter.html(@model.letter())

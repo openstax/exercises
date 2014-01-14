@@ -40,6 +40,7 @@ class ExerciseEditor.ComboChoiceEditorView extends Marionette.CompositeView
 
   initialize: () ->
     @listenTo @model, 'change', @render
+    @listenTo @model.simpleChoices(), 'remove', @render
     # See 'buildItemView' for a relevant discussion about the collection and item
     # view options.
     @collection = @model.question().get('simple_choices')
