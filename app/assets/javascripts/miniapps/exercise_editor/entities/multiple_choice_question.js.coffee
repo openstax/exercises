@@ -25,3 +25,7 @@ class ExerciseEditor.MultipleChoiceQuestion extends ExerciseEditor.Question
     @on 'change:simple_choices', () -> @get('combo_choices').sort()
     @on 'change:combo_choices', () -> @get('combo_choices').sort()
     super
+
+  initialize: () ->
+    @listenTo @get('simple_choices'), 'add', () -> @get('combo_choices').sort()
+    @listenTo @get('simple_choices'), 'remove', () -> @get('combo_choices').sort()

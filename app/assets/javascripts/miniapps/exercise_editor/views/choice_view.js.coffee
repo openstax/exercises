@@ -30,11 +30,6 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
   isCombo: () ->
     @model instanceof ExerciseEditor.ComboChoice
 
-  # onDomRefresh: () ->
-  #   @$el.hover(
-  #     () -> $(this).addClass('hovering')
-  #   )
-
   serializeData: () ->
     model: @model
     isSimple: @isSimple()

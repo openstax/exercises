@@ -29,3 +29,11 @@ var apiGet = function(url) {
     }
   });
 };
+
+
+_.extend(Backbone.Model.prototype, {
+  synclessDestroy: function(options) {
+    debugger
+    this.trigger('destroy', this, this.collection, options);
+  }
+})
