@@ -1,4 +1,4 @@
-class ExerciseEditor.SortedCollection extends Backbone.Collection
+class ExerciseEditor.ExplicitlySortedCollection extends Backbone.Collection
 
   savePositions: () ->
     if @models.length == 0 then return

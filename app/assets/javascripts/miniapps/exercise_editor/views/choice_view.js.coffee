@@ -37,14 +37,7 @@ class ExerciseEditor.ChoiceView extends Marionette.Layout
   refreshLetter: () ->
     @ui.letter.html(@model.letter())
 
-  drop: (event, index) -> @move(index)
-
-  move: (toPosition) ->
-    collection = @model.collection
-    collection.models.move(@model.get('position'), toPosition)
-    collection.each (model, index) -> model.set('position', index)
-    collection.sort()
-    collection.savePositions()
+  drop: (event, index) -> @model.collection.move(@model, index)
 
   delete: () ->
     @model.destroy()

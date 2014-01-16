@@ -127,6 +127,57 @@ module Api
         end
       end
 
+      def standard_sort(model_klass)
+        # take array of all IDs or hash of id => position,
+        # regardless build up an array of all IDs in the right order and pass those to sort
+
+        new_positions = params['newPositions']
+        return head :no_content if new_positions.length == 0
+
+        # Can't have duplicate positions or IDs
+        unique_ids =       new_positions.collect{|np| np['id']}.uniq
+        unique_positions = new_positions.collect{|np| np['position']}.uniq
+
+        return head :bad_request if unique_ids.length != new_positions.length
+        return head :bad_request if unique_positions.length != new_positions.length
+
+        first = model_klass.where(:id => new_positions[0]['id']).first
+
+        return head :not_found if first.blank?
+
+        originalOrdered = first.me_and_peers.ordered.all
+
+        originalOrdered.each do |item|
+          raise SecurityTransgression unless item.send(:container_column) == originalOrdered[0].send(:container_column) \
+            if item.respond_to?(:container_column)
+          raise SecurityTransgression unless current_user.can_sort?(item)
+        end
+
+        originalOrderedIds = originalOrdered.collect{|sc| sc.id}
+
+        newOrderedIds = Array.new(originalOrderedIds.size)
+      
+        new_positions.each do |newPosition|
+          id = newPosition['id'].to_i
+          newOrderedIds[newPosition['position']] = id
+          originalOrderedIds.delete(id)
+        end
+
+        ptr = 0
+        for oldId in originalOrderedIds 
+          while !newOrderedIds[ptr].nil?; ptr += 1; end
+          newOrderedIds[ptr] = oldId
+        end
+
+        begin 
+          model_klass.sort!(newOrderedIds)
+        rescue Exception => e
+          return head :internal_server_error
+        end
+
+        head :no_content
+      end
+
     end
   end
 end

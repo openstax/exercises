@@ -48,54 +48,25 @@ module Api
 
       api :PUT, '/simple_choices/sort', 'Reorders a set of Simple Choices'
       description <<-EOS
-        Updates the Exercise object whose ID matches the provided param.  Any provided 
-        transformed Content field (e.g. 'html') will be ignored.
+        <p>Changes the sort order of the specified Simple Choices.  Not all Simple Choices in 
+        a Multiple Choice Question have to be specified in the request -- those whose positions
+        are specified will be placed at those positions, and the rest of the choices in the
+        question will be filled into the remaining spots in their original order.</p>
+
+        <p>The request is formed as a list of pairings of Simple Choice ID and that choice's new
+        zero-indexed position.</p>
+
+        <p>Requirements:</p>
+
+        * All of the specified Simple Choices must be from the same Multiple Choice Question.
+        * The IDs must be unique (no repeats)
+        * The positions must also be unique and valid for the number of Simple Choices in a
+        given Multiple Choice Question
 
         #{json_schema(Api::V1::SortRepresenter, include: :writeable)}        
       EOS
       def sort
-        # take array of all IDs or hash of id => position,
-        # regardless build up an array of all IDs in the right order and pass those to sort
-
-        newPositions = params['newPositions']
-        return head :no_content if newPositions.length == 0
-
-        first = SimpleChoice.where(:id => newPositions[0]['id']).first
-
-        return head :not_found if first.blank?
-
-
-        originalOrdered = first.me_and_peers.ordered.all
-
-        originalOrdered.each do |simple_choice|
-          raise SecurityTransgression unless simple_choice.multiple_choice_question_id == originalOrdered[0].multiple_choice_question_id
-          raise SecurityTransgression unless current_user.can_sort?(simple_choice)
-        end
-
-        originalOrderedIds = originalOrdered.collect{|sc| sc.id}
-
-
-        newOrderedIds = Array.new(originalOrderedIds.size)
-      
-        newPositions.each do |newPosition|
-          id = newPosition['id'].to_i
-          newOrderedIds[newPosition['position']] = id
-          originalOrderedIds.delete(id)
-        end
-
-        ptr = 0
-        for oldId in originalOrderedIds 
-          while !newOrderedIds[ptr].nil?; ptr += 1; end
-          newOrderedIds[ptr] = oldId
-        end
-
-        begin 
-          SimpleChoice.sort!(newOrderedIds)
-        rescue Exception => e
-          return head :internal_server_error
-        end
-
-        head :no_content
+        standard_sort(SimpleChoice)
       end
       
     end
