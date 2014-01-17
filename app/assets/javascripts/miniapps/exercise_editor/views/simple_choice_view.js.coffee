@@ -10,8 +10,6 @@ class ExerciseEditor.SimpleChoiceView extends Marionette.Layout
   events:
     'click button.js-delete-choice': "delete"
 
-  initialize: () ->
-
   onShow: () ->
     @content.show(new ExerciseEditor.ContentView({model: @model.get('content')}))
 
