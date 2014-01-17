@@ -1,9 +1,6 @@
 class ExerciseEditor.ComboChoiceEditorView extends Marionette.CompositeView
   template: "combo_choice_editor"
 
-  # tagName: "div"
-  # className: "combo-choice"
-
   itemView: ExerciseEditor.ComboSimpleChoiceView
 
   buildItemView: (item, ItemView, itemViewOptions) ->
@@ -25,34 +22,14 @@ class ExerciseEditor.ComboChoiceEditorView extends Marionette.CompositeView
       itemViewOptions
     )
     new ExerciseEditor.ComboSimpleChoiceView(options)
-
-  # ui:
-  #   content: '.choice-content'
-  # ui: 
-  #   editor: '.editor',
-  #   output: '.output'
-
-  # events:
-  #   'dblclick': 'edit'
-  #   'click button.js-delete-choice': "delete"
     
   itemViewContainer: '.simple-choices'
 
   initialize: () ->
     @listenTo @model, 'change', @render
     @listenTo @model.simpleChoices(), 'remove', @render
+    @listenTo @model.simpleChoices(), 'sort', @render
     # See 'buildItemView' for a relevant discussion about the collection and item
     # view options.
     @collection = @model.question().get('simple_choices')
     @itemViewOptions = { comboChoice: @model }
-
-
-  # edit: (event) ->
-  #   # alert 'editing'
-  #   # @ui.content.toggleClass('editing')
-  #   @ui.output.hide()
-  #   @ui.editor.show()
-
-  ### Controller Methods ###
-
-  # delete: () -> @model.destroy()

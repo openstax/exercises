@@ -1,3 +1,5 @@
+Cocktail.patch(Backbone);
+
 var sync = Backbone.sync;
 Backbone.sync = function(method, model, options) {
   options.beforeSend = function (xhr) {
@@ -33,7 +35,6 @@ var apiGet = function(url) {
 
 _.extend(Backbone.Model.prototype, {
   synclessDestroy: function(options) {
-    debugger
     this.trigger('destroy', this, this.collection, options);
   }
 })
