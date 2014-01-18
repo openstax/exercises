@@ -71,6 +71,7 @@ class Exercise < ActiveRecord::Base
   end
 
   def summary
+    return "NYI"
     summary_string = (content.blank? ? "" : content[0..15] + (content.length > 16 ? ' ...' : ''))
 
     question_count = questions.count

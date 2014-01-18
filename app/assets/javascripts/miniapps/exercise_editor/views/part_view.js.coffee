@@ -12,13 +12,25 @@ class ExerciseEditor.PartView extends Marionette.Layout
     'click button.js-add-question-mc': 'addMcQuestion'
     'click button.js-delete-part': "deletePart"
 
+  ui:
+    partNumber: '.part-position'
 
   initialize: () ->
     @listenTo @model, 'change', @render
+    @listenTo @model.collection, 'add remove', @refreshPartNumber
 
   onShow: () ->
     @background.show(new ExerciseEditor.ContentView({model: @model.get('background')}))
     @questions.show(new ExerciseEditor.QuestionsView({collection: @model.get('questions')}))
+
+  refreshPartNumber: () ->
+    if @model.collection.length < 2
+      @ui.partNumber.addClass('hidden')
+    else
+      @ui.partNumber.removeClass('hidden')
+
+  serializeData: () ->
+    model: @model
 
   #### Controller Methods ####
 
