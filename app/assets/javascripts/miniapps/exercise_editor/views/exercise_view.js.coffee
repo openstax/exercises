@@ -15,8 +15,17 @@ class ExerciseEditor.ExerciseView extends Marionette.Layout
     @listenTo @model, 'change', @render
 
   onShow: () ->
-    @background.show(new ExerciseEditor.ContentView({model: @model.get('background'), parent: this}))
-    @parts.show(new ExerciseEditor.PartsView({collection: @model.get('parts')}))
+    @background.show(
+      new ExerciseEditor.ContentView { 
+        model: @model.get('background'), 
+        parent: this, 
+        emptyMessage: 'Click here to add background info common to the entire exercise'
+      }
+    )
+
+    @parts.show(
+      new ExerciseEditor.PartsView {collection: @model.get('parts')}
+    )
 
   addPart: () ->
     part = new ExerciseEditor.Part({position: @model.get('parts').length+1})

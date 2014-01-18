@@ -55,5 +55,10 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
         model.fetch()
       error: (model, response, options) =>
     }
+
+  serializeData: () ->
+    html: @model.get('html')
+    markup: @model.get('markup')
+    options: @options
       
     

@@ -21,7 +21,8 @@ class Exercise < ActiveRecord::Base
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
-  belongs_to :background, class_name: 'Content'
+  belongs_to :background, class_name: 'Content', dependent: :destroy
+  has_one :logic, :as => :logicable, :dependent => :destroy
 
   accepts_nested_attributes_for :background
 

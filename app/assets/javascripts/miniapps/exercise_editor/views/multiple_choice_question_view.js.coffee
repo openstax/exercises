@@ -18,7 +18,13 @@ class ExerciseEditor.MultipleChoiceQuestionView extends Marionette.Layout
     @listenTo @model, 'change', @render
 
   onShow: () ->
-    @stem.show(new ExerciseEditor.ContentView({model: @model.get('stem')}))
+    @stem.show(
+      new ExerciseEditor.ContentView {
+        model: @model.get('stem'),
+        emptyMessage: 'Click here to add your question stem'
+      }
+    )
+
     @simpleChoices.show(new ExerciseEditor.SimpleChoicesView({collection: @model.get('simple_choices')}))
     @comboChoices.show(new ExerciseEditor.ChoicesView({collection: @model.get('combo_choices')}))
 

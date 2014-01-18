@@ -20,7 +20,13 @@ class ExerciseEditor.PartView extends Marionette.Layout
     @listenTo @model.collection, 'add remove', @refreshPartNumber
 
   onShow: () ->
-    @background.show(new ExerciseEditor.ContentView({model: @model.get('background')}))
+    @background.show(
+      new ExerciseEditor.ContentView {
+        model: @model.get('background'),
+        emptyMessage: 'Click here to add background info for this part'
+      }
+    )
+
     @questions.show(new ExerciseEditor.QuestionsView({collection: @model.get('questions')}))
 
   refreshPartNumber: () ->

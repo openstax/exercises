@@ -7,9 +7,6 @@ class ComboChoice < ActiveRecord::Base
 
   validates_presence_of :multiple_choice_question
 
-  delegate :can_be_read_by?, 
-       :can_be_created_by?, 
-       :can_be_updated_by?, 
-       :can_be_destroyed_by?, 
-       to: :multiple_choice_question
+  delegate_access_control to: :multiple_choice_question
+
 end

@@ -4,9 +4,6 @@ class ComboSimpleChoice < ActiveRecord::Base
 
   attr_accessible :combo_choice_id, :simple_choice_id
 
-  delegate :can_be_read_by?, 
-           :can_be_created_by?, 
-           :can_be_updated_by?, 
-           :can_be_destroyed_by?, 
-           to: :combo_choice
+  delegate_access_control to: :combo_choice
+  
 end

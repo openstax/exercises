@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131211021035) do
+ActiveRecord::Schema.define(:version => 20140118022717) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
     t.integer  "background_id"
+    t.string   "title"
   end
 
   add_index "exercises", ["background_id"], :name => "index_exercises_on_background_id"
@@ -247,6 +248,17 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
   end
 
   add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
+
+  create_table "logics", :force => true do |t|
+    t.text     "code"
+    t.string   "variables"
+    t.string   "logicable_type"
+    t.integer  "logicable_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "logics", ["logicable_id", "logicable_type"], :name => "index_logics_on_logicable_id_and_logicable_type", :unique => true
 
   create_table "matching_answers", :force => true do |t|
     t.text     "left_content",       :default => "", :null => false

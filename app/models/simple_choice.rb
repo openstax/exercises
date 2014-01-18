@@ -3,20 +3,13 @@ class SimpleChoice < ActiveRecord::Base
                      number_field: :position
 
   belongs_to :multiple_choice_question
-  belongs_to :content
+  belongs_to :content, dependent: :destroy
   has_many :combo_simple_choices, dependent: :destroy
 
   attr_accessible :content_id, :credit, :multiple_choice_question_id, :position
 
   accepts_nested_attributes_for :content
 
-  delegate :can_be_read_by?, 
-           :can_be_created_by?, 
-           :can_be_updated_by?, 
-           :can_be_destroyed_by?, 
-           to: :multiple_choice_question
-
-  def can_be_sorted_by?(user)
-    multiple_choice_question.can_be_updated_by?(user)
-  end
+  delegate_access_control to: :multiple_choice_question,
+                          include_sort: true
 end

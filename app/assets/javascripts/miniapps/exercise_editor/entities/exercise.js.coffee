@@ -7,6 +7,11 @@ class ExerciseEditor.Exercise extends Backbone.AssociatedModel
   relations: [
     {
       type: Backbone.One,
+      key: 'logic',
+      relatedModel: 'ExerciseEditor.Logic'
+    },
+    {
+      type: Backbone.One,
       key: 'background',
       relatedModel: 'ExerciseEditor.Content',
     },
