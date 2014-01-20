@@ -29,6 +29,7 @@ module Api::V1
     property :logic,
              class: Logic,
              decorator: LogicRepresenter,
+             # getter: lambda {|*| @logic || Logic.new},
              parse_strategy: :sync
 
     collection :parts, 

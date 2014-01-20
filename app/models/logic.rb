@@ -15,11 +15,12 @@ class Logic < ActiveRecord::Base
                                
   VARIABLE_REGEX = /^[_a-zA-Z]{1}\w*$/
 
-  delegate_access_control to: :logicable
+  # delegate_access_control to: :logicable
 
 protected
 
   def can_parse_variables
+    return true
     raise NotYetImplemeted # need to examine code below
     self.variables_array = variables.split(/[\s,]+/)
     

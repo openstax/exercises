@@ -1,9 +1,6 @@
 class ExerciseEditor.Exercise extends Backbone.AssociatedModel
   urlRoot: '/api/exercises'
 
-  defaults:
-    number: ''
-
   relations: [
     {
       type: Backbone.One,
@@ -22,3 +19,7 @@ class ExerciseEditor.Exercise extends Backbone.AssociatedModel
       collectionType: 'ExerciseEditor.Parts',
     }
   ]
+
+  defaults:
+    number: '',
+    logic: null

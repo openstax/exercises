@@ -9,21 +9,21 @@ module Api::V1
                required: true
              }
 
-    property :logicable_type,
-             type: String,
-             writeable: true,
-             schema_info: {
-               required: true,
-               description: "The name of the model to which this Logic belongs"
-             }
+    # property :logicable_type,
+    #          type: String,
+    #          writeable: true,
+    #          schema_info: {
+    #            required: true,
+    #            description: "The name of the model to which this Logic belongs"
+    #          }
 
-    property :logicable_id,
-             type: Integer,
-             writeable: true,
-             schema_info: {
-               required: true,
-               description: "The ID of the model to which this Logic belongs"
-             }
+    # property :logicable_id,
+    #          type: Integer,
+    #          writeable: true,
+    #          schema_info: {
+    #            required: true,
+    #            description: "The ID of the model to which this Logic belongs"
+    #          }
 
     property :code,
              type: String,
