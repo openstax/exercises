@@ -1,3 +1,24 @@
-<textarea>
-  <%= @code %>
-</textarea>
+
+<div class='controls'>
+  <button type="button" class="btn btn-sm js-save-logic">
+    <span class="glyphicon glyphicon-save"></span> Save
+  </button>
+</div>
+
+<div class='editor'>
+  <textarea><%= @code %></textarea>
+</div>
+
+<div class='footer'>
+  <div class='variables-label'>Available variables:</div>
+  <div class='variables'>
+    <input type='text' class='js-variables'>
+  </div>
+  <div class='permutations-label'># Permutations:</div>
+  <div class='permutations'>
+    <input type='text' class='js-num-permutations' value='<%= @numPermutations %>'>
+  </div>
+  <div class='status'></div>
+</div>
+
+

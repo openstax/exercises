@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140118184722) do
+ActiveRecord::Schema.define(:version => 20140121224946) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -251,6 +251,16 @@ ActiveRecord::Schema.define(:version => 20140118184722) do
 
   add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
 
+  create_table "logic_outputs", :force => true do |t|
+    t.integer  "seed"
+    t.text     "values"
+    t.integer  "logic_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "logic_outputs", ["logic_id"], :name => "index_logic_outputs_on_logic_id"
+
   create_table "logics", :force => true do |t|
     t.text     "code"
     t.string   "variables"
@@ -420,10 +430,12 @@ ActiveRecord::Schema.define(:version => 20140118184722) do
     t.integer  "part_id"
     t.integer  "details_id"
     t.integer  "summary_id"
+    t.integer  "logic_id"
   end
 
   add_index "solutions", ["details_id"], :name => "index_solutions_on_details_id"
   add_index "solutions", ["license_id"], :name => "index_solutions_on_license_id"
+  add_index "solutions", ["logic_id"], :name => "index_solutions_on_logic_id", :unique => true
   add_index "solutions", ["number", "version"], :name => "index_solutions_on_number_and_version", :unique => true
   add_index "solutions", ["part_id"], :name => "index_solutions_on_part_id"
   add_index "solutions", ["published_at"], :name => "index_solutions_on_published_at"

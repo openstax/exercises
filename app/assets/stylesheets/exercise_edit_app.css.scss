@@ -141,4 +141,69 @@ $edit_app_light_gray: lighten($os_gray,50%);
     }
   }
 
+  .logic {
+    border: 1px solid darken($edit_app_light_gray,20%);
+
+    .controls {
+      padding: 4px;
+      text-align: right;
+      background-color: rgb(247,247,247);
+    }
+
+    .editor {
+      border: solid darken($edit_app_light_gray,20%);      
+      border-width: 1px 0px;
+
+      .CodeMirror {
+        // border: 1px solid #eee;
+        height: auto;
+      }
+      .CodeMirror-scroll {
+        // overflow-y: hidden;
+        overflow-x: auto;
+        min-height: 5em;
+        max-height:30em;
+      }
+      .CodeMirror-code {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .footer {
+      background-color: rgb(247,247,247);
+
+      padding: 4px;
+
+      .variables-label {
+        display: inline-block;
+        padding-left: 4px;
+      }
+      .variables {
+        width: 40%;
+        display: inline-block;
+        input {
+          display: inline-block;
+        }
+      }
+
+      .permutations-label {
+        display: inline-block;
+      }
+      .permutations {
+        display: inline-block;
+        text-align: right;
+        input.js-num-permutations {
+          width: 65px;
+        }
+      }
+      .status {
+        display: inline-block;
+        width: 140px;
+        text-align: right;
+        color: darken(gray,0%);
+      }
+    }
+  }
+
 }

@@ -1,5 +1,5 @@
 module Api::V1
-  class LogicRepresenter < Roar::Decorator
+  class LogicOutputRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
     property :id, 
@@ -9,27 +9,19 @@ module Api::V1
                required: true
              }
 
-    property :code,
-             type: String,
+    property :seed,
+             type: Integer,
              writeable: true,
              schema_info: {
                required: true
              }
 
-    property :variables,
+    property :values,
              type: String,
              writeable: true,
              schema_info: {
                required: true
              }
-
-    collection :logic_outputs, 
-               class: LogicOutput, 
-               decorator: LogicOutputRepresenter, 
-               parse_strategy: :sync,
-               schema_info: {
-                 minItems: 0
-               }
 
   end
 end
