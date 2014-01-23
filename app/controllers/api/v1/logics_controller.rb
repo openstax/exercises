@@ -21,7 +21,9 @@ module Api
         Updates the Logic object whose ID matches the provided param.
       EOS
       def update
-        rest_update(Logic, params[:id])
+        # Logic.transaction do 
+          rest_update(Logic, params[:id])
+        # end
       end
 
       api :POST, '/logics', 'Creates a new Logic with the specified parameters'

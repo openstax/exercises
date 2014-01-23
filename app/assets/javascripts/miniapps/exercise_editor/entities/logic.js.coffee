@@ -10,7 +10,8 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     {
       type: Backbone.Many,
       key: 'logic_outputs',
-      relatedModel: 'ExerciseEditor.LogicOutput',
+      collectionType: 'ExerciseEditor.LogicOutputs'
+      # relatedModel: 'ExerciseEditor.LogicOutput',
     }
   ]
 

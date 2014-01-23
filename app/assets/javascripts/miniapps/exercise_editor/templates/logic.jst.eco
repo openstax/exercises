@@ -12,7 +12,7 @@
 <div class='footer'>
   <div class='variables-label'>Available variables:</div>
   <div class='variables'>
-    <input type='text' class='js-variables'>
+    <input type='text' class='js-variables' value='<%= @variables %>'>
   </div>
   <div class='permutations-label'># Permutations:</div>
   <div class='permutations'>

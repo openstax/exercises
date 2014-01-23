@@ -1,13 +1,13 @@
 class Logic < ActiveRecord::Base
   # attr_accessible :code, :logicable_id, :logicable_type, :variables
 
-  has_many :logic_outputs
+  has_many :logic_outputs, dependent: :destroy
 
   serialize :variables
 
   validate :can_parse_variables
 
-  after_update :clear_old_outputs
+  before_update :clear_old_outputs
 
   JS_RESERVED_WORDS_REGEX = /^(do|if|in|for|let|new|try|var|case|else|enum|eval|
                                false|null|this|true|void|with|break|catch|class|
@@ -28,7 +28,7 @@ class Logic < ActiveRecord::Base
     (Exercise.where(logic_id: id) || Solution.where(logic_id: id)).first
   end
 
-  def clear_old_outputs
+  def clear_old_outputs; debugger
     logic_outputs.where{updated_at.lt my{updated_at}}.destroy_all
   end
 
