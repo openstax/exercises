@@ -66,4 +66,17 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     do () =>
       eval @get('code')
 
-    _.collect @variables(), (variable) -> eval(variable)
+    # Return the values of the "available variables".  Only allow strings and numbers.
+    # TODO on server side escape javascript
+    
+    outputs = _.collect @variables(), (variable) ->
+      value = window[variable]
+      if value instanceof Raphael
+        value = value.toSVG()
+      else if _.isNumber(value) or _.isString(value)
+        value = value
+      else
+        value = nil
+
+    _.compact(outputs)
+
