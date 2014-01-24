@@ -1,19 +1,18 @@
 class ExerciseEditor.Logic extends Backbone.AssociatedModel
   urlRoot: '/api/logics'
 
-  defaults:
-    code: '',
-    variables: '',
-    numPermutations: 100
-
   relations: [
     {
       type: Backbone.Many,
       key: 'logic_outputs',
-      collectionType: 'ExerciseEditor.LogicOutputs'
-      # relatedModel: 'ExerciseEditor.LogicOutput',
+      relatedModel: 'ExerciseEditor.LogicOutput',
     }
   ]
+
+  defaults:
+    code: '',
+    variables: '',
+    numPermutations: 100
 
   validation:
     numPermutations:
@@ -22,6 +21,9 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     variables:
       pattern: /[\w,\s]/
 
+
+  initialize: () ->
+    @set('numPermutations', @get('logic_outputs').length)
 
   # run: () ->
   #   # Create a new logic closure, copy in relevant library code, set the seed,

@@ -16,7 +16,7 @@
   </div>
   <div class='permutations-label'># Permutations:</div>
   <div class='permutations'>
-    <input type='text' class='js-num-permutations' value='<%= @numPermutations %>'>
+    <input type='text' class='js-num-permutations' value='<%= if @numPermutations == 0 then 100 else @numPermutations %>'>
   </div>
   <div class='status'></div>
 </div>

@@ -7,7 +7,7 @@ class Logic < ActiveRecord::Base
 
   validate :can_parse_variables
 
-  before_update :clear_old_outputs
+  after_update :clear_old_outputs
 
   JS_RESERVED_WORDS_REGEX = /^(do|if|in|for|let|new|try|var|case|else|enum|eval|
                                false|null|this|true|void|with|break|catch|class|
@@ -28,7 +28,7 @@ class Logic < ActiveRecord::Base
     (Exercise.where(logic_id: id) || Solution.where(logic_id: id)).first
   end
 
-  def clear_old_outputs; debugger
+  def clear_old_outputs
     logic_outputs.where{updated_at.lt my{updated_at}}.destroy_all
   end
 

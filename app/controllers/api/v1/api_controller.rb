@@ -106,8 +106,17 @@ module Api
 
       def rest_create(model_klass)
         @model = model_klass.new()
-        consume!(@model)
-        raise SecurityTransgression unless current_user.can_create?(@model)
+
+        # Unlike the implications of the representable README, "consume!" can
+        # actually make changes to the database.  See http://goo.gl/WVLBqA. 
+        # We do want to consume before checking the permissions so we can know
+        # what we're dealing with, but if user doesn't have permission we don't
+        # want to have changed the DB.  Wrap in a transaction to protect ourselves.
+
+        model_klass.transaction do 
+          consume!(@model)
+          raise SecurityTransgression unless current_user.can_create?(@model)
+        end
 
         if @model.save
           respond_with @model
