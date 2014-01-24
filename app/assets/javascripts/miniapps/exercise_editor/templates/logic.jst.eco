@@ -18,7 +18,10 @@
   <div class='permutations'>
     <input type='text' class='js-num-permutations' value='<%= if @numPermutations == 0 then 100 else @numPermutations %>'>
   </div>
-  <div class='status'></div>
 </div>
+
+<div class='status'>Ready</div>
+
+
 
 

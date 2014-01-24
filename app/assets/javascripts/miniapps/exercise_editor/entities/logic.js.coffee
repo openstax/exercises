@@ -23,13 +23,13 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
 
   initialize: () ->
-    @set('numPermutations', @get('logic_outputs').length)
+    logic_outputs = @get('logic_outputs')
+    @set('numPermutations', logic_outputs.length)
+    if logic_outputs.length > 0 then @set('currentSeed', @get('logic_outputs').at(0).get('seed'))
 
-  # run: () ->
-  #   # Create a new logic closure, copy in relevant library code, set the seed,
-  #   # copy in the logic code, return the 
-  #   @get('logic_outputs')
-
+  currentLogicOutput: () ->
+    if !@get('currentSeed')? then return undefined
+    @get('logic_outputs').find (lo) => lo.get('seed') == @get('currentSeed')  
 
   # Return the array of seeds currently in use.  If there are fewer seeds
   # than specified in numPermutations, add new ones.  If there are more than
@@ -58,9 +58,6 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
       logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
 
     @get('logic_outputs').reset(newOutputs)
-
-  setOutputs: () ->
-
 
   runForSeed: (seed) ->
 

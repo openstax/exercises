@@ -143,6 +143,7 @@ $edit_app_light_gray: lighten($os_gray,50%);
 
   .logic {
     border: 1px solid darken($edit_app_light_gray,20%);
+    margin-bottom: 15px;
 
     .controls {
       padding: 4px;
@@ -197,13 +198,17 @@ $edit_app_light_gray: lighten($os_gray,50%);
           width: 65px;
         }
       }
-      .status {
-        display: inline-block;
-        width: 140px;
+    }
+
+    .status {
+      border-top: 1px solid darken($edit_app_light_gray,20%);  
+      background-color: rgb(247,247,247); 
+      padding: 4px;   
+        display: block;
+        width: 100%;
         text-align: right;
         color: darken(gray,0%);
       }
-    }
   }
 
 }

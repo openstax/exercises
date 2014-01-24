@@ -37,3 +37,5 @@ _.extend(Backbone.Model.prototype, {
     this.trigger('destroy', this, this.collection, options);
   }
 })
+
+_.extend(Backbone.Model.prototype, Backbone.Validation.mixin);

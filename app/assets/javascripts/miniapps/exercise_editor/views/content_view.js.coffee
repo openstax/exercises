@@ -18,6 +18,7 @@ class ExerciseEditor.ContentView extends Marionette.ItemView
     # 'focus': () -> console.log 'content focus'
 
   initialize: () ->
+    @listenTo @model, 'change:html', @render
     @listenTo @model, 'sync', @render
     @listenTo @model.container(), 'sync', @render
 

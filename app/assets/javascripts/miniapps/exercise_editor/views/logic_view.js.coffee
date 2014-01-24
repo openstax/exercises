@@ -33,19 +33,24 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     @editor.on('change', (instance, changeObj) => Utils.enable(@ui.saveButton))
 
   save: () ->
-    @setStatus('Saving...')
-    Utils.disable(@ui.saveButton)
     @model.set
       code: @editor.getValue()
       numPermutations: @ui.numPermutationsInput.val()
       variables: @ui.variablesInput.val()
-    @model.regenerateOutputs()
-    @model.save {}, 
-      success: () => @clearStatus(), 
-      error: () => Utils.enable(@ui.saveButton)
+
+    if @model.isValid(true)
+      @setStatus('Saving...')
+      Utils.disable(@ui.saveButton)
+      @model.regenerateOutputs()
+      @model.save {}, 
+        success: () => @clearStatus(), 
+        error: () => Utils.enable(@ui.saveButton)
+    else
+      msg = _.reduce(_.values(@model.validate()), (memo, error) -> memo + error + '. ')
+      @setStatus(msg)
 
   setStatus: (text) ->
     @ui.status.html(text)
 
   clearStatus: () ->
-    @setStatus('')
+    @setStatus('Ready')
