@@ -1,23 +1,28 @@
 class Logic < ActiveRecord::Base
-  # attr_accessible :code, :logicable_id, :logicable_type, :variables
-
   has_many :logic_outputs, dependent: :destroy
 
-  serialize :variables
+  after_initialize :initialize_library_version_ids
+
+  before_validation :cleanup_library_version_ids
 
   validate :can_parse_variables
+  validate :can_parse_library_version_ids
 
   after_update :clear_old_outputs
 
-  JS_RESERVED_WORDS_REGEX = /^(do|if|in|for|let|new|try|var|case|else|enum|eval|
-                               false|null|this|true|void|with|break|catch|class|
-                               const|super|throw|while|yield|delete|export|
-                               import|public|return|static|switch|typeof|
-                               default|extends|finally|package|private|continue|
-                               debugger|function|arguments|interface|protected|
-                               implements|instanceof)$/
-                               
-  OTHER_RESERVED_WORDS_REGEX = /^(seedrandom)$/
+  JS_RESERVED_WORDS = %w(do if in for let new try var case else enum eval 
+                         false null this true void with break catch class 
+                         const super throw while yield delete export 
+                         import public return static switch typeof 
+                         default extends finally package private continue 
+                         debugger function arguments interface protected 
+                         implements instanceof)
+
+  JS_RESERVED_WORDS_REGEX = Regexp.compile("^(#{JS_RESERVED_WORDS.join('|')})$")
+               
+  OTHER_RESERVED_WORDS = %w(seedrandom)
+
+  OTHER_RESERVED_WORDS_REGEX = Regexp.compile("^(#{OTHER_RESERVED_WORDS.join('|')})$")
                                
   VARIABLE_REGEX = /^[_a-zA-Z]{1}\w*$/
 
@@ -35,30 +40,47 @@ class Logic < ActiveRecord::Base
 protected
 
   def can_parse_variables
-    return true
-    raise NotYetImplemeted # need to examine code below
-    self.variables_array = variables.split(/[\s,]+/)
-    
-    if !self.variables_array.all?{|v| VARIABLE_REGEX =~ v}    
-      errors.add(:variables, "can only contain letter, numbers and 
-                              underscores.  Additionally, the first character 
-                              must be a letter or an underscore.")
-    end
+    begin
+      vars = JSON.parse(variables)
 
-    reserved_vars = self.variables_array.collect do |v| 
-      match = JS_RESERVED_WORDS_REGEX.match(v) || OTHER_RESERVED_WORDS_REGEX.match(v)
-      match.nil? ? nil : match[0]
-    end
-    
-    reserved_vars.compact!
-    
-    reserved_vars.each do |v|
-      errors.add(:variables, "cannot contain the reserved word '#{v}'.")
-    end
+      if !vars.all?{|var| VARIABLE_REGEX =~ var}
+        errors.add(:variables, "can only contain letter, numbers and 
+                                underscores.  Additionally, the first character 
+                                must be a letter or an underscore.")
+      end
 
-    self.variables = self.variables_array.join(", ")
+      reserved_vars = vars.collect do |v| 
+        match = JS_RESERVED_WORDS_REGEX.match(v) || OTHER_RESERVED_WORDS_REGEX.match(v)
+        match.nil? ? nil : match[0]
+      end
+      reserved_vars.compact!
+      
+      reserved_vars.each do |v|
+        errors.add(:variables, "cannot contain the reserved word '#{v}'.")
+      end
 
-    errors.none?
+      return errors.none?
+    rescue Exception => e
+      errors.add(:variables, e.message) and return false
+    end
+  end
+
+  def can_parse_library_version_ids
+    begin
+      ids = JSON.parse(library_version_ids)
+
+      errors.add(:library_version_ids, "aren't an array") and return true if !ids.is_a?(Array) 
+      errors.add(:library_version_ids, "include non integers") and return true if ids.any?{|id| !id.is_a?(Integer)}
+
+      return true
+    rescue Exception => e
+      errors.add(:library_version_ids, e.message) and return false
+    end
+  end
+
+  # Put the required librarys in
+  def initialize_library_version_ids
+    self.library_version_ids ||= JSON.generate(Library.latest_prerequisite_versions(false).collect{|v| v.id})
   end
 
 end

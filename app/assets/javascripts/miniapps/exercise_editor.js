@@ -5,6 +5,7 @@
 //= require backbone/backbone.marionette.js
 //= require backbone/Cocktail.js
 //= require backbone/backbone-validation.js
+//= require sandbox
 //= require raphael
 //= require raphael.export
 //= require codemirror/index.js

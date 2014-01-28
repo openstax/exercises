@@ -1,5 +1,6 @@
 
 <div class='controls'>
+  <span class='title'>Logic for computer-generated permutations</span>
   <button type="button" class="btn btn-sm js-save-logic">
     <span class="glyphicon glyphicon-save"></span> Save
   </button>

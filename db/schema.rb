@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140121224946) do
+ActiveRecord::Schema.define(:version => 20140125180131) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -207,6 +207,34 @@ ActiveRecord::Schema.define(:version => 20140121224946) do
   end
 
   add_index "free_response_answers", ["question_id", "position"], :name => "index_free_response_answers_on_question_id_and_position", :unique => true
+
+  create_table "libraries", :force => true do |t|
+    t.integer  "language"
+    t.string   "name"
+    t.text     "summary"
+    t.boolean  "is_prerequisite"
+    t.integer  "owner_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "libraries", ["is_prerequisite"], :name => "index_libraries_on_is_prerequisite"
+  add_index "libraries", ["language"], :name => "index_libraries_on_language"
+  add_index "libraries", ["owner_id", "name"], :name => "index_libraries_on_owner_id_and_name", :unique => true
+  add_index "libraries", ["owner_id"], :name => "index_libraries_on_owner_id"
+
+  create_table "library_versions", :force => true do |t|
+    t.integer  "library_id"
+    t.text     "code"
+    t.integer  "version"
+    t.boolean  "deprecated"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "library_versions", ["library_id", "deprecated"], :name => "index_library_versions_on_library_id_and_deprecated"
+  add_index "library_versions", ["library_id", "version"], :name => "index_library_versions_on_library_id_and_version", :unique => true
+  add_index "library_versions", ["library_id"], :name => "index_library_versions_on_library_id"
 
   create_table "licenses", :force => true do |t|
     t.integer  "position",                                   :null => false

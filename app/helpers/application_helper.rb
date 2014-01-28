@@ -91,4 +91,35 @@ module ApplicationHelper
     "$('##{options[:alerts_html_id]}').html('#{ j(render options[:alerts_partial]) }').trigger('#{options[:trigger]}');".html_safe
   end
 
+  def include_codemirror
+    content_for :javascript_includes do
+      javascript_include_tag 'codemirror'
+    end
+
+    content_for :stylesheet_includes do
+      stylesheet_link_tag 'codemirror'
+    end
+  end
+
+  def activate_codemirror(options={})
+    options[:selector] ||= 'textarea'
+
+    content_for :javascript do
+      javascript_tag do
+        "$(document).ready(function() {
+           CodeMirror.fromTextArea(
+             $('#{options[:selector]}').get(0), 
+             {
+               mode: '#{options[:language]}',
+               lineNumbers: true,
+               matchBrackets: true,
+               gutters: ['CodeMirror-lint-markers'],
+               lint: true
+             }
+           );
+         });".html_safe
+      end
+    end
+  end
+
 end

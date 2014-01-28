@@ -7,8 +7,12 @@
 
   @include body-margins;
 
-  ul {
+  ul, ol {
     margin-left: 25px;
+  }
+
+  blockquote p {
+    font-size: 12px;
   }
 
 .breadcrumb {

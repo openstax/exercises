@@ -149,6 +149,14 @@ $edit_app_light_gray: lighten($os_gray,50%);
       padding: 4px;
       text-align: right;
       background-color: rgb(247,247,247);
+
+      .title {
+        float: left;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left: 5px;
+        font-style: italic
+      }
     }
 
     .editor {

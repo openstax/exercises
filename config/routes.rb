@@ -37,6 +37,10 @@ Exercises::Application.routes.draw do
 
     resources :licenses
     resources :user_groups, :only => [:index]
+
+    resources :libraries do
+      resources :library_versions, :shallow => true
+    end
   end
 
   get "terms/:id/show", to: "terms#show", as: "show_terms"

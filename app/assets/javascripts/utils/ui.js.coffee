@@ -19,13 +19,13 @@ Ui = do () ->
     # Code to center the dialog
     modalDialog = $('#' + html_id + ' .modal-dialog')
     modalHeight = modalDialog.outerHeight()
-    userScreenHeight = $(document).outerHeight()
+    userScreenHeight = window.outerHeight
 
     if modalHeight > userScreenHeight
       modalDialog.css('overflow', 'auto'); #set to overflow if no fit
     else
       modalDialog.css('margin-top', #center it if it does fit
-                      (userScreenHeight / 2) - (modalHeight / 2)) 
+                      ((userScreenHeight / 2) - (modalHeight / 2)))
 
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>

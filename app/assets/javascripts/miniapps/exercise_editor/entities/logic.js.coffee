@@ -26,6 +26,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     logic_outputs = @get('logic_outputs')
     @set('numPermutations', logic_outputs.length)
     if logic_outputs.length > 0 then @set('currentSeed', @get('logic_outputs').at(0).get('seed'))
+    @sandbox = sandbox({js: 'console.log("howdy")'}) # TODO initialize with logic libraries
 
   currentLogicOutput: () ->
     if !@get('currentSeed')? then return undefined
@@ -68,7 +69,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
     # Return the values of the "available variables".  Only allow strings and numbers.
     # TODO on server side escape javascript
-    
+
     outputs = _.collect @variables(), (variable) ->
       value = window[variable]
       if value instanceof Raphael
