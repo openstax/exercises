@@ -1,5 +1,6 @@
 class Library < ActiveRecord::Base
   has_many :library_versions, dependent: :destroy
+  belongs_to :owner, class_name: "User"
 
   before_destroy :no_versions
 
@@ -25,6 +26,22 @@ class Library < ActiveRecord::Base
   
   def self.latest_prerequisite_versions(include_deprecated = true)
     prerequisites.all.collect{|library| library.latest_version(include_deprecated)}.compact
+  end
+
+  def can_be_read_by?(user)
+    user.is_admin? || user.id == owner_id
+  end
+    
+  def can_be_created_by?(user)
+    user.is_admin? # for the moment
+  end
+  
+  def can_be_updated_by?(user)
+    user.is_admin? || user.id == owner_id
+  end
+
+  def can_be_destroyed_by?(user)
+    user.is_admin? || user.id == owner_id
   end
 
 protected

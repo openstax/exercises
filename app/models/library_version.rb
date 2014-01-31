@@ -10,6 +10,8 @@ class LibraryVersion < ActiveRecord::Base
 
   attr_accessible :code, :deprecated
 
+  delegate_access_control to: :library
+
   scope :ordered, order{version.asc}
 
   def name

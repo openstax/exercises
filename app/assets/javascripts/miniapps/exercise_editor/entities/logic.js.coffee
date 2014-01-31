@@ -30,8 +30,28 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
       if logic_outputs.length > 0 then @set('currentSeed', logic_outputs.at(0).get('seed'))
     super
 
+
+# jim = sandbox({js: 'x = function (y) { return y*2}'})
+# <iframe seamless sandbox=​"allow-scripts allow-forms allow-top-navigation allow-same-origin">​…​</iframe>​
+# jim.contentWindow.x(3)
+# 6
+
   initialize: () ->
-    @sandbox = sandbox({js: 'console.log("howdy")'}) # TODO initialize with logic libraries
+    @sandbox = sandbox({js: 'yy = 42; console.log("howdy")'}) # TODO initialize with logic libraries
+    console.log this.sandbox.contentWindow['yy']
+
+    @libraryDigest = ""
+    @listenTo this, 'change:library_version_ids', @refreshLibraries
+
+  refreshLibraries: () ->
+    # Set some flag that we are not ready to run the code
+    # like librariesSynched = false
+    digest = new ExerciseEditor.LibraryVersionDigest({ids: @get('library_version_ids')})
+    digest.fetch(
+      success: (model) ->
+        @libraryDigest = model.get('code')
+        # Set flag that we are ready to run the code
+    )
 
   currentLogicOutput: () ->
     if !@get('currentSeed')? then return undefined
@@ -54,6 +74,9 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # a next seed in Logic
 
   regenerateOutputs: () ->
+    # setup a new sandbox here, wrap logic code in a function that can be called with different seeds
+    # delete old sandbox so don't pile up a zillion iframes
+
     seeds = @getCleanSeeds()
 
     newOutputs = _.collect seeds, (seed) => 

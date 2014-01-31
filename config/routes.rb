@@ -110,6 +110,10 @@ Exercises::Application.routes.draw do
       resources :combo_choices, only: [:show, :update, :create, :destroy]
       resources :combo_simple_choices, only: [:show, :create, :destroy]
       resources :logics, except: [:index]
+      resources :libraries, only: [:show, :update, :create, :destroy]
+      resources :library_versions, only: [:show, :update, :create, :destroy] do
+        get 'digest', on: :collection
+      end
 
     end
   end
