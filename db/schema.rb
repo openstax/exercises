@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140125180131) do
+ActiveRecord::Schema.define(:version => 20140128000437) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -292,8 +292,9 @@ ActiveRecord::Schema.define(:version => 20140125180131) do
   create_table "logics", :force => true do |t|
     t.text     "code"
     t.string   "variables"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.string   "library_version_ids"
   end
 
   create_table "matching_answers", :force => true do |t|

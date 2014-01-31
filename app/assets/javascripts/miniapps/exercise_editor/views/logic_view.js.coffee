@@ -16,6 +16,15 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     'input @ui.variablesInput': () -> Utils.enable(@ui.saveButton)
     'input @ui.numPermutationsInput': () -> Utils.enable(@ui.saveButton)
 
+  onDomRefresh: () ->
+    @structuredVariablesInput = new ExerciseEditor.StructuredTextInput(
+      @ui.variablesInput, 
+      validation: 
+        pattern: /^[\w,\s]*$/,
+        message: "Variables must only contain underscores, letters, or numbers and must be separated by commas"
+      parser: (value) -> value.replace(/[ \t\r\n]+/g,"").split(",")
+    )
+
   onShow: () ->
     Utils.disable(@ui.saveButton)
 
@@ -33,10 +42,15 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     @editor.on('change', (instance, changeObj) => Utils.enable(@ui.saveButton))
 
   save: () ->
+    # Check structured inputs before modifying model
+    if !@structuredVariablesInput.isValid()
+      @setStatus(@structuredVariablesInput.validate())
+      return
+
     @model.set
       code: @editor.getValue()
       numPermutations: @ui.numPermutationsInput.val()
-      variables: @ui.variablesInput.val()
+      variables: @structuredVariablesInput.val()
 
     if @model.isValid(true)
       @setStatus('Saving...')

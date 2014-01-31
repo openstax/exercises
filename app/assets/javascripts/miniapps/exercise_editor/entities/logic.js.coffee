@@ -11,21 +11,26 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
   defaults:
     code: '',
-    variables: '',
+    variables: [],
     numPermutations: 100
+
 
   validation:
     numPermutations:
       range: [1, 500]
       required: true
-    variables:
-      pattern: /[\w,\s]/
+    variables: (variables, attr, computedState) -> 
+      if !_.isArray(variables) then return "Variables must be an array"
+      if !_.every(variables, (vv) -> _.isString(vv)) then return "Variables must be strings"
 
+  constructor: () ->
+    @listenTo this, 'change:logic_outputs', () ->
+      logic_outputs = @get('logic_outputs')
+      @set('numPermutations', logic_outputs.length)
+      if logic_outputs.length > 0 then @set('currentSeed', logic_outputs.at(0).get('seed'))
+    super
 
   initialize: () ->
-    logic_outputs = @get('logic_outputs')
-    @set('numPermutations', logic_outputs.length)
-    if logic_outputs.length > 0 then @set('currentSeed', @get('logic_outputs').at(0).get('seed'))
     @sandbox = sandbox({js: 'console.log("howdy")'}) # TODO initialize with logic libraries
 
   currentLogicOutput: () ->
@@ -36,7 +41,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
   # than specified in numPermutations, add new ones.  If there are more than
   # needed, eliminate the ones at the end.
   getCleanSeeds: () ->
-    seeds = @get('logic_outputs').pluck('seed')
+    seeds = @get('logic_outputs')?.pluck('seed') || []
     numMissingSeeds = @get('numPermutations') - seeds.length
     if numMissingSeeds > 0
       nextSeed = if seeds.length == 0 then 0 else seeds[seeds.length-1]+1
@@ -45,11 +50,8 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
       seeds = seeds.slice(0, numMissingSeeds)
     seeds
 
-    # doesn't take into account seeds at end of array that were deleted, could store 
+    # TODO doesn't take into account seeds at end of array that were deleted, could store 
     # a next seed in Logic
-
-  variables: () ->
-    @get('variables').replace(/[ \t\r\n]+/g,"").split(",")
 
   regenerateOutputs: () ->
     seeds = @getCleanSeeds()
@@ -70,7 +72,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # Return the values of the "available variables".  Only allow strings and numbers.
     # TODO on server side escape javascript
 
-    outputs = _.collect @variables(), (variable) ->
+    outputs = _.collect @get('variables'), (variable) ->
       value = window[variable]
       if value instanceof Raphael
         value = value.toSVG()

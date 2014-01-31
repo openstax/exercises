@@ -12,12 +12,13 @@ class ExerciseEditor.Content extends Backbone.AssociatedModel
     @container().save(key, val, options)
 
   connectToLogic: (logic) ->
-    @logicUpdated logic
-    @listenTo logic.get('logic_outputs'), 'reset', () => @logicUpdated logic
+    @listenToBulkChange logic, 'logic_outputs', {runActionIfPresent: true}, () => @logicUpdated logic
 
   logicUpdated: (logic) ->
-    variables = logic.variables()
-    values = logic.currentLogicOutput().values()
+    variables = logic.get('variables')
+    values = logic.currentLogicOutput()?.values()
+
+    if !values? then return
 
     html = @get('markup')
     _.each variables, (variable, index) =>

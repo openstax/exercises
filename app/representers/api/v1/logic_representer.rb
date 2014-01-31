@@ -20,7 +20,19 @@ module Api::V1
              type: String,
              writeable: true,
              schema_info: {
-               required: true
+               required: true,
+               description: "JSON-stringified array of variable string names"
+             }
+
+    property :library_version_ids,
+             type: String,
+             writeable: true,
+             schema_info: {
+               required: true,
+               description: 
+                 "JSON-stringified array of integer IDs of code libraries," +
+                 "listed in the order the code should be read/included before" +
+                 "the code in this Logic is read/included."
              }
 
     # this comment out of date: see below (TODO remove it)

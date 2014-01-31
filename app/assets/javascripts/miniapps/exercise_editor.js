@@ -11,6 +11,7 @@
 //= require codemirror/index.js
 //= require tinymce-jquery
 //= require ./initializer
+//= require_tree ./lib
 //= require ./extensions
 //= require ./utils
 //= require_tree ./vendor/writemaths

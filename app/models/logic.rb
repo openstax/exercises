@@ -3,10 +3,11 @@ class Logic < ActiveRecord::Base
 
   after_initialize :initialize_library_version_ids
 
-  before_validation :cleanup_library_version_ids
+  serialize :variables
+  serialize :library_version_ids
 
-  validate :can_parse_variables
-  validate :can_parse_library_version_ids
+  validate :variables_well_formatted
+  validate :library_version_ids_well_formatted
 
   after_update :clear_old_outputs
 
@@ -39,48 +40,35 @@ class Logic < ActiveRecord::Base
 
 protected
 
-  def can_parse_variables
-    begin
-      vars = JSON.parse(variables)
-
-      if !vars.all?{|var| VARIABLE_REGEX =~ var}
+  def variables_well_formatted
+      if !variables.all?{|var| VARIABLE_REGEX =~ var}
         errors.add(:variables, "can only contain letter, numbers and 
                                 underscores.  Additionally, the first character 
                                 must be a letter or an underscore.")
       end
 
-      reserved_vars = vars.collect do |v| 
+      reserved_variables = variables.collect do |v| 
         match = JS_RESERVED_WORDS_REGEX.match(v) || OTHER_RESERVED_WORDS_REGEX.match(v)
         match.nil? ? nil : match[0]
       end
-      reserved_vars.compact!
+      reserved_variables.compact!
       
-      reserved_vars.each do |v|
+      reserved_variables.each do |v|
         errors.add(:variables, "cannot contain the reserved word '#{v}'.")
       end
 
       return errors.none?
-    rescue Exception => e
-      errors.add(:variables, e.message) and return false
-    end
   end
 
-  def can_parse_library_version_ids
-    begin
-      ids = JSON.parse(library_version_ids)
-
-      errors.add(:library_version_ids, "aren't an array") and return true if !ids.is_a?(Array) 
-      errors.add(:library_version_ids, "include non integers") and return true if ids.any?{|id| !id.is_a?(Integer)}
-
-      return true
-    rescue Exception => e
-      errors.add(:library_version_ids, e.message) and return false
-    end
+  def library_version_ids_well_formatted
+      errors.add(:library_version_ids, "aren't an array") and return true if !library_version_ids.is_a?(Array) 
+      errors.add(:library_version_ids, "include non integers") and return true if library_version_ids.any?{|id| !id.is_a?(Integer)}
+      return errors.none?
   end
 
-  # Put the required librarys in
+  # Put the required libraries in
   def initialize_library_version_ids
-    self.library_version_ids ||= JSON.generate(Library.latest_prerequisite_versions(false).collect{|v| v.id})
+    self.library_version_ids ||= Library.latest_prerequisite_versions(false).collect{|v| v.id}
   end
 
 end
