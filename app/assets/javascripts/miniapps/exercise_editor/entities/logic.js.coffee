@@ -85,27 +85,42 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
     def.promise()
 
+
   setupSandbox: (next) ->
     # Set up a new sandbox with the library content, the user's code, and the glue logic
     # to make everything run.  The user's code is placed into a function so it can be
-    # called over and over later (for each seed).  Before making the new sandbox, delete
-    # the old one so that we don't have a zillion iframes piling up.
+    # called over and over later (for each seed).
 
-    code = @libraryDigest.get('code') + 
+    varNormalizationStatements =
+      _.collect @get('variables'), (variable) ->
+        """
+        if (typeof #{variable}.toExercisesNormalization === 'function') {
+          #{variable} =  #{variable}.toExercisesNormalization(); 
+        }
+        iterationOutputs['#{variable}'] = #{variable};
+        """
 
-           'iterationOutputs = {};'+
-           '; runIteration = function (seed) { iterationOutputs = {}; Math.seedrandom(seed); ' + 
-           @get('code') + "\n" +
+    code = """
+           #{@libraryDigest.get('code')}
 
-           (_.collect @get('variables'), (variable) -> 
-             "if (typeof " + variable + ".toExercisesNormalization === 'function') { " + 
-             variable + " = " + variable + ".toExercisesNormalization(); };\n
-             iterationOutputs['" + variable + "'] = " + variable + ";").join("\n") +
+          iterationOutputs = {};           
 
-           '}'
+          runIteration = function (seed) { 
+            iterationOutputs = {}; 
+            Math.seedrandom(seed); 
+
+            #{@get('code')}
+
+            #{varNormalizationStatements.join("\n")}
+          }
+          """
+
+    # Before making the new sandbox, delete the old one so that we don't have a 
+    # zillion iframes piling up.
 
     if @sandbox? then @sandbox.remove()    
     @sandbox = sandbox({js: code})
+
 
   runForSeed: (seed) ->    
     # Run the code in the sandbox, passing in the seed
@@ -114,8 +129,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # Retrieve and retur the outputs out of the sandbox, allowing only strings and numbers.
     outputs = _.collect @get('variables'), (variable) =>
       value = @sandbox.contentWindow['iterationOutputs'][variable]
-      if !(_.isNumber(value) or _.isString(value)) then value = nil
-      value
+      if (_.isNumber(value) or _.isString(value)) then value else nil
 
     _.compact(outputs)
 
