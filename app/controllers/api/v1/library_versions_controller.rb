@@ -13,9 +13,7 @@ module Api
       end
 
       api :GET, '/library_versions/:id', 'Gets the specified LibraryVersion'
-      description <<-EOS
-        #{#json_schema(Api::V1::LibraryVersionRepresenter, include: :readable)
-         }        
+      description <<-EOS        
       EOS
       def show
         rest_get(LibraryVersion, params[:id])

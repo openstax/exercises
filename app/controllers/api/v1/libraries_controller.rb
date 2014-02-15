@@ -14,7 +14,6 @@ module Api
 
       api :GET, '/libraries/:id', 'Gets the specified Library'
       description <<-EOS
-        #{json_schema(Api::V1::LibraryRepresenter, include: :readable)}        
       EOS
       def show
         rest_get(Library, params[:id])

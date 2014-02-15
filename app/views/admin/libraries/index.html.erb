@@ -6,13 +6,13 @@
 <div class='list-of-lists'>
 <% @libraries.each do |library| %>
   <div class='list-of-lists-entry'>
-    <%= link_to 'Delete', library, class: 'hover btn-sm btn-primary', method: :delete, data: { confirm: "Are you sure you want to delete #{library.name}?" } %>
-    <%= link_to library.name, library %>
+    <%= link_to 'Delete', [:admin, library], class: 'hover btn-sm btn-primary', method: :delete, data: { confirm: "Are you sure you want to delete #{library.name}?" } %>
+    <%= link_to library.name, [:admin, library] %>
   </div>
 <% end %>
 </div>
 
-<%= button_to 'New Library', new_admin_library_path, class: 'btn' %>
+<%= link_to 'New Library', new_admin_library_path %>
 
 <% content_for :javascript do %>
   <script type='text/javascript'>

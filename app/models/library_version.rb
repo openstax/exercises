@@ -8,7 +8,7 @@ class LibraryVersion < ActiveRecord::Base
   before_destroy :not_used
   before_destroy :verify_latest
 
-  attr_accessible :code, :deprecated
+  attr_accessible :code, :deprecated, :library_id
 
   delegate_access_control to: :library
 
@@ -19,7 +19,7 @@ class LibraryVersion < ActiveRecord::Base
   end
   
   def logics_using
-    Logic.where{required_library_version_ids =~ "%'#{id}'%"}
+    Logic.where{library_version_ids =~ "%'#{id}'%"}
   end
   
   def v_dot
@@ -42,7 +42,7 @@ protected
   
   def verify_latest
     errors.add(:base, "Non-latest versions cannot be changed or destroyed") if
-      logic_library.latest_version != self
+      library.latest_version != self
     errors.none?
   end
 end

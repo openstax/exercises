@@ -37,21 +37,11 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 # 6
 
   initialize: () ->
-    @sandbox = sandbox({js: 'yy = 42; console.log("howdy")'}) # TODO initialize with logic libraries
-    console.log this.sandbox.contentWindow['yy']
+    @sandbox = sandbox({js: 'yy = 42; console.log("howdy"); function blah() { return 8; }; zz = function() { return 10; }'}) # TODO initialize with logic libraries
+    # console.log this.sandbox.contentWindow['yy']
+    # debugger
 
-    @libraryDigest = ""
-    @listenTo this, 'change:library_version_ids', @refreshLibraries
-
-  refreshLibraries: () ->
-    # Set some flag that we are not ready to run the code
-    # like librariesSynched = false
-    digest = new ExerciseEditor.LibraryVersionDigest({ids: @get('library_version_ids')})
-    digest.fetch(
-      success: (model) ->
-        @libraryDigest = model.get('code')
-        # Set flag that we are ready to run the code
-    )
+    @listenTo this, 'change:library_version_ids', () => @libraryDigest = null
 
   currentLogicOutput: () ->
     if !@get('currentSeed')? then return undefined
@@ -74,35 +64,80 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # a next seed in Logic
 
   regenerateOutputs: () ->
+
+    $(this)
+      .queue(@refreshLibraries)
+      .queue(@setupSandbox)
+      .queue( (next) -> 
+        seeds = @getCleanSeeds()
+
+        newOutputs = _.collect seeds, (seed) => 
+          values = @runForSeed(seed)
+          logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
+
+        @get('logic_outputs').reset(newOutputs)        
+      )
+
+    # if !(@digest? && @get('library_version_ids')
+
     # setup a new sandbox here, wrap logic code in a function that can be called with different seeds
     # delete old sandbox so don't pile up a zillion iframes
 
-    seeds = @getCleanSeeds()
+    # seeds = @getCleanSeeds()
 
-    newOutputs = _.collect seeds, (seed) => 
-      values = @runForSeed(seed)
-      logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
+    # newOutputs = _.collect seeds, (seed) => 
+    #   values = @runForSeed(seed)
+    #   logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
 
-    @get('logic_outputs').reset(newOutputs)
+    # @get('logic_outputs').reset(newOutputs)
+
+
+  refreshLibraries: (next) ->
+    
+    if @libraryDigest? then (next(); return)
+    @libraryDigest = new ExerciseEditor.LibraryVersionDigest({ids: @get('library_version_ids')})
+    @libraryDigest.fetch(success: (model) -> @libraryDigest = model.get('code'); next())
+
+  setupSandbox: (next) ->
+    # setup a new sandbox here, wrap logic code in a function that can be called with different seeds
+    
+
+    # TODO delete old sandbox so don't pile up a zillion iframes
+    code = @libraryDigest.get('code') + 
+
+           'iterationOutputs = {};'+
+           '; runIteration = function (seed) { iterationOutputs = {}; console.log("in sandbox"); Math.seedrandom(seed); ' + 
+           @get('code') + "\n" +
+
+           (_.collect @get('variables'), (variable) -> 
+             "if (typeof " + variable + ".toExercisesNormalization === 'function') { " + 
+             variable + " = " + variable + ".toExercisesNormalization(); };\n
+             iterationOutputs['" + variable + "'] = " + variable + ";").join("\n") +
+
+           '}'
+
+    @sandbox = sandbox({js: code})
+    next()
+
 
   runForSeed: (seed) ->
+    
+    @sandbox.contentWindow.runIteration(seed);
 
-    # Math.seedrandom(seed)
 
-    do () =>
-      eval @get('code')
+   
+    # do () =>
+    #   eval @get('code')
 
-    # Return the values of the "available variables".  Only allow strings and numbers.
-    # TODO on server side escape javascript
+    # # Return the values of the "available variables".  Only allow strings and numbers.
+    # # TODO on server side escape javascript
 
-    outputs = _.collect @get('variables'), (variable) ->
-      value = window[variable]
-      if value instanceof Raphael
-        value = value.toSVG()
-      else if _.isNumber(value) or _.isString(value)
-        value = value
-      else
-        value = nil
+    outputs = _.collect @get('variables'), (variable) =>
+    
+    
+      value = @sandbox.contentWindow['iterationOutputs'][variable]
+      if !(_.isNumber(value) or _.isString(value)) then value = nil
+      value
 
     _.compact(outputs)
 
