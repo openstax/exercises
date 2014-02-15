@@ -17,12 +17,17 @@ extension =
     }
 
     @listenTo container, 'change:' + collectionName, (model, collection, options) ->
+      debugger
       action(collection, options)
-      @listenTo container.get(collectionName), 'reset', (collection, options) -> action(collection, options)
+      @listenTo container.get(collectionName), 'reset', (collection, options) -> 
+        debugger
+        action(collection, options)
 
     if container.get(collectionName)?
       if options.runActionIfPresent then action(container.get(collectionName))
-      @listenTo container.get(collectionName), 'reset', (collection, options) -> action(collection, options)
+      @listenTo container.get(collectionName), 'reset', (collection, options) -> 
+        debugger
+        action(collection, options)
 
 _.extend Backbone.Model.prototype, extension
 

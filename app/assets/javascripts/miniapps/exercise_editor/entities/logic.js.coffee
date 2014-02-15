@@ -14,7 +14,6 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     variables: [],
     numPermutations: 100
 
-
   validation:
     numPermutations:
       range: [1, 500]
@@ -30,17 +29,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
       if logic_outputs.length > 0 then @set('currentSeed', logic_outputs.at(0).get('seed'))
     super
 
-
-# jim = sandbox({js: 'x = function (y) { return y*2}'})
-# <iframe seamless sandbox=​"allow-scripts allow-forms allow-top-navigation allow-same-origin">​…​</iframe>​
-# jim.contentWindow.x(3)
-# 6
-
   initialize: () ->
-    @sandbox = sandbox({js: 'yy = 42; console.log("howdy"); function blah() { return 8; }; zz = function() { return 10; }'}) # TODO initialize with logic libraries
-    # console.log this.sandbox.contentWindow['yy']
-    # debugger
-
     @listenTo this, 'change:library_version_ids', () => @libraryDigest = null
 
   currentLogicOutput: () ->
@@ -63,8 +52,8 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # TODO doesn't take into account seeds at end of array that were deleted, could store 
     # a next seed in Logic
 
-  regenerateOutputs: () ->
-
+  regenerateOutputs: (outerNext) ->
+    debugger
     $(this)
       .queue(@refreshLibraries)
       .queue(@setupSandbox)
@@ -74,39 +63,28 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
         newOutputs = _.collect seeds, (seed) => 
           values = @runForSeed(seed)
           logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
-
-        @get('logic_outputs').reset(newOutputs)        
+        debugger
+        @get('logic_outputs').reset(newOutputs)     
+        outerNext()   
       )
 
-    # if !(@digest? && @get('library_version_ids')
-
-    # setup a new sandbox here, wrap logic code in a function that can be called with different seeds
-    # delete old sandbox so don't pile up a zillion iframes
-
-    # seeds = @getCleanSeeds()
-
-    # newOutputs = _.collect seeds, (seed) => 
-    #   values = @runForSeed(seed)
-    #   logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
-
-    # @get('logic_outputs').reset(newOutputs)
-
-
-  refreshLibraries: (next) ->
-    
+  refreshLibraries: (next) ->    
+    # debugger
     if @libraryDigest? then (next(); return)
     @libraryDigest = new ExerciseEditor.LibraryVersionDigest({ids: @get('library_version_ids')})
     @libraryDigest.fetch(success: (model) -> @libraryDigest = model.get('code'); next())
 
   setupSandbox: (next) ->
-    # setup a new sandbox here, wrap logic code in a function that can be called with different seeds
-    
+    # debugger
+    # Set up a new sandbox with the library content, the user's code, and the glue logic
+    # to make everything run.  The user's code is placed into a function so it can be
+    # called over and over later (for each seed).  Before making the new sandbox, delete
+    # the old one so that we don't have a zillion iframes piling up.
 
-    # TODO delete old sandbox so don't pile up a zillion iframes
     code = @libraryDigest.get('code') + 
 
            'iterationOutputs = {};'+
-           '; runIteration = function (seed) { iterationOutputs = {}; console.log("in sandbox"); Math.seedrandom(seed); ' + 
+           '; runIteration = function (seed) { iterationOutputs = {}; Math.seedrandom(seed); ' + 
            @get('code') + "\n" +
 
            (_.collect @get('variables'), (variable) -> 
@@ -116,25 +94,19 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
            '}'
 
+    if @sandbox? then @sandbox.remove()    
     @sandbox = sandbox({js: code})
+
     next()
 
-
-  runForSeed: (seed) ->
-    
+  runForSeed: (seed) ->    
+    # debugger
     @sandbox.contentWindow.runIteration(seed);
-
-
-   
-    # do () =>
-    #   eval @get('code')
 
     # # Return the values of the "available variables".  Only allow strings and numbers.
     # # TODO on server side escape javascript
 
     outputs = _.collect @get('variables'), (variable) =>
-    
-    
       value = @sandbox.contentWindow['iterationOutputs'][variable]
       if !(_.isNumber(value) or _.isString(value)) then value = nil
       value
