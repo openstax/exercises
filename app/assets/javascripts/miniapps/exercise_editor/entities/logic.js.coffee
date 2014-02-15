@@ -36,10 +36,11 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     if !@get('currentSeed')? then return undefined
     @get('logic_outputs').find (lo) => lo.get('seed') == @get('currentSeed')  
 
-  # Return the array of seeds currently in use.  If there are fewer seeds
-  # than specified in numPermutations, add new ones.  If there are more than
-  # needed, eliminate the ones at the end.
   getCleanSeeds: () ->
+    # Return the array of seeds currently in use.  If there are fewer seeds
+    # than specified in numPermutations, add new ones.  If there are more than
+    # needed, eliminate the ones at the end.
+
     seeds = @get('logic_outputs')?.pluck('seed') || []
     numMissingSeeds = @get('numPermutations') - seeds.length
     if numMissingSeeds > 0
@@ -68,7 +69,9 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
         @get('logic_outputs').reset(newOutputs))
 
-  refreshLibraries: () ->    
+  refreshLibraries: () ->  
+    # This method may make an GET request, so use a Deferred so it can be used synchronously
+
     def = new $.Deferred()
 
     if @libraryDigest? 
@@ -105,11 +108,10 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     @sandbox = sandbox({js: code})
 
   runForSeed: (seed) ->    
-    @sandbox.contentWindow.runIteration(seed);
+    # Run the code in the sandbox, passing in the seed
+    @sandbox.contentWindow.runIteration(seed)
 
-    # # Return the values of the "available variables".  Only allow strings and numbers.
-    # # TODO on server side escape javascript
-
+    # Retrieve and retur the outputs out of the sandbox, allowing only strings and numbers.
     outputs = _.collect @get('variables'), (variable) =>
       value = @sandbox.contentWindow['iterationOutputs'][variable]
       if !(_.isNumber(value) or _.isString(value)) then value = nil
