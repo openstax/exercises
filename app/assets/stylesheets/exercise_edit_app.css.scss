@@ -198,12 +198,31 @@ $edit_app_light_gray: lighten($os_gray,50%);
 
       .permutations-label {
         display: inline-block;
+        margin-left: 10px;
       }
       .permutations {
         display: inline-block;
         text-align: right;
-        input.js-num-permutations {
-          width: 65px;
+        input {
+          display: inline-block;
+          &.js-num-permutations, &.js-current-permutation {
+            width: 65px;
+          }
+        }
+
+        .js-next-permutation {
+          top: -6px;
+        }
+
+        .js-prev-permutation {
+          top: 10px;
+          left: -19px;
+        }
+
+        .permutations-of-label {
+          display: inline-block;
+          margin-left: -10px;
+          margin-right: 3px;
         }
       }
     }

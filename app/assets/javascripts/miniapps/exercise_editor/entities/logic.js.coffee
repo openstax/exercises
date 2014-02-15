@@ -26,20 +26,26 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     @listenTo this, 'change:logic_outputs', () ->
       logic_outputs = @get('logic_outputs')
       @set('numPermutations', logic_outputs.length)
-      if logic_outputs.length > 0 then @set('currentSeed', logic_outputs.at(0).get('seed'))
+      if logic_outputs.length > 0 then @set('currentLogicOutputIndex', 0)
     super
 
   initialize: () ->
     @listenTo this, 'change:library_version_ids', () => @libraryDigest = null
 
+  # A logic tracks the index of its current logic output, that is the one that 
+  # is displayed in a view. 
+
   currentLogicOutput: () ->
-    if !@get('currentSeed')? then return undefined
-    @get('logic_outputs').find (lo) => lo.get('seed') == @get('currentSeed')  
+    index = @get('currentLogicOutputIndex')
+    if index? then @get('logic_outputs').at(index) else undefined
 
-  moveToNextSeed: () ->
+  moveToNextLogicOutput: () ->
+    newIndex = (@get('currentLogicOutputIndex') + 1) % @get('numPermutations')
+    @set 'currentLogicOutputIndex', newIndex
 
-  moveToPrevSeed: () ->
-
+  moveToPrevLogicOutput: () ->
+    newIndex = (@get('currentLogicOutputIndex') - 1 + @get('numPermutations')) % @get('numPermutations')
+    @set 'currentLogicOutputIndex', newIndex
 
   getCleanSeeds: () ->
     # Return the array of seeds currently in use.  If there are fewer seeds

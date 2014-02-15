@@ -13,6 +13,7 @@ class ExerciseEditor.Content extends Backbone.AssociatedModel
 
   connectToLogic: (logic) ->
     @listenToBulkChange logic, 'logic_outputs', {runActionIfPresent: true}, () => @logicUpdated logic
+    @listenTo logic, 'change', () => @logicUpdated logic
 
   logicUpdated: (logic) ->
     variables = logic.get('variables')
