@@ -55,13 +55,20 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     if @model.isValid(true)
       @setStatus('Saving...')
       Utils.disable(@ui.saveButton)
-      debugger
-      $(this)
-        .queue((next) => @model.regenerateOutputs(next))
-        .queue((next) => 
-          @model.save {}, 
+
+      @model.regenerateOutputs()
+        .then(
+          () => @model.save {},
             success: () => @clearStatus(), 
-            error: () => Utils.enable(@ui.saveButton))
+            error: () => Utils.enable(@ui.saveButton)
+        )
+
+      # $(this)
+      #   .queue((next) => @model.regenerateOutputs(next))
+      #   .queue((next) => 
+      #     @model.save {}, 
+      #       success: () => @clearStatus(), 
+      #       error: () => Utils.enable(@ui.saveButton))
     else
       msg = _.reduce(_.values(@model.validate()), (memo, error) -> memo + error + '. ')
       @setStatus(msg)

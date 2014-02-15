@@ -52,30 +52,37 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # TODO doesn't take into account seeds at end of array that were deleted, could store 
     # a next seed in Logic
 
-  regenerateOutputs: (outerNext) ->
-    debugger
-    $(this)
-      .queue(@refreshLibraries)
-      .queue(@setupSandbox)
-      .queue( (next) -> 
+  regenerateOutputs: () ->
+    # Need to wait for refreshLibraries to finish before setting up and running the
+    # code in the sandbox. Note that the last call to 'then' returns a Promise to this
+    # method's caller so it too can be put into a deferred then chain.
+
+    @refreshLibraries()
+      .then(() =>
+        @setupSandbox()
         seeds = @getCleanSeeds()
 
         newOutputs = _.collect seeds, (seed) => 
           values = @runForSeed(seed)
           logicOutput = new ExerciseEditor.LogicOutput({seed: seed, values: JSON.stringify(values)})
-        debugger
-        @get('logic_outputs').reset(newOutputs)     
-        outerNext()   
+
+        @get('logic_outputs').reset(newOutputs))
+
+  refreshLibraries: () ->    
+    def = new $.Deferred()
+
+    if @libraryDigest? 
+      def.resolve()
+    else
+      @libraryDigest = new ExerciseEditor.LibraryVersionDigest({ids: @get('library_version_ids')})
+      @libraryDigest.fetch(success: (model) -> 
+        @libraryDigest = model.get('code')
+        def.resolve()
       )
 
-  refreshLibraries: (next) ->    
-    # debugger
-    if @libraryDigest? then (next(); return)
-    @libraryDigest = new ExerciseEditor.LibraryVersionDigest({ids: @get('library_version_ids')})
-    @libraryDigest.fetch(success: (model) -> @libraryDigest = model.get('code'); next())
+    def.promise()
 
   setupSandbox: (next) ->
-    # debugger
     # Set up a new sandbox with the library content, the user's code, and the glue logic
     # to make everything run.  The user's code is placed into a function so it can be
     # called over and over later (for each seed).  Before making the new sandbox, delete
@@ -97,10 +104,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     if @sandbox? then @sandbox.remove()    
     @sandbox = sandbox({js: code})
 
-    next()
-
   runForSeed: (seed) ->    
-    # debugger
     @sandbox.contentWindow.runIteration(seed);
 
     # # Return the values of the "available variables".  Only allow strings and numbers.

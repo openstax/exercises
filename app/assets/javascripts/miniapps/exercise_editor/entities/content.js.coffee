@@ -15,7 +15,6 @@ class ExerciseEditor.Content extends Backbone.AssociatedModel
     @listenToBulkChange logic, 'logic_outputs', {runActionIfPresent: true}, () => @logicUpdated logic
 
   logicUpdated: (logic) ->
-    alert 'logic updated'
     variables = logic.get('variables')
     values = logic.currentLogicOutput()?.values()
 
