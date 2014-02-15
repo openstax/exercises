@@ -36,22 +36,29 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     if !@get('currentSeed')? then return undefined
     @get('logic_outputs').find (lo) => lo.get('seed') == @get('currentSeed')  
 
+  moveToNextSeed: () ->
+
+  moveToPrevSeed: () ->
+
+
   getCleanSeeds: () ->
     # Return the array of seeds currently in use.  If there are fewer seeds
     # than specified in numPermutations, add new ones.  If there are more than
-    # needed, eliminate the ones at the end.
+    # needed, eliminate the ones at the end.  Seeds are chosen randomly from the
+    # range 0 to 2e9.  If authors decide to exclude certain problematic seeds,
+    # it is highly unlikely that that seed will recur in the limited number
+    # of permutations we are allowing
 
     seeds = @get('logic_outputs')?.pluck('seed') || []
     numMissingSeeds = @get('numPermutations') - seeds.length
+
     if numMissingSeeds > 0
-      nextSeed = if seeds.length == 0 then 0 else seeds[seeds.length-1]+1
-      seeds = seeds.concat([nextSeed..nextSeed+numMissingSeeds-1])
+      newSeeds = _.times(numMissingSeeds, () -> Math.round(Math.random()*2e9))
+      seeds = seeds.concat(newSeeds)
     else if numMissingSeeds < 0
       seeds = seeds.slice(0, numMissingSeeds)
     seeds
 
-    # TODO doesn't take into account seeds at end of array that were deleted, could store 
-    # a next seed in Logic
 
   regenerateOutputs: () ->
     # Need to wait for refreshLibraries to finish before setting up and running the
