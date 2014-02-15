@@ -1,7 +1,7 @@
 
 <div class='controls'>
   <span class='title'>Logic for computer-generated permutations</span>
-  <button type="button" class="btn btn-sm js-save-logic">
+  <button type="button" class="standard js-save-logic">
     <span class="glyphicon glyphicon-save"></span> Save
   </button>
 </div>
@@ -19,8 +19,8 @@
     <div class='permutations-label'> Permutation #</div>
     
       <input type='text' class='js-current-permutation' value='<%= @currentLogicOutputIndex %>'>
-    <div class="js-next-permutation glyphicon glyphicon-chevron-up"></div>
-    <div class="js-prev-permutation glyphicon glyphicon-chevron-down"></div>
+    <button class="js-next-permutation glyphicon glyphicon-chevron-up"></button>
+    <button class="js-prev-permutation glyphicon glyphicon-chevron-down"></button>
     <div class='permutations-of-label'> of </div>
     
     <input type='text' class='js-num-permutations' value='<%= if @numPermutations == 0 then 100 else @numPermutations %>'>

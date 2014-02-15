@@ -33,7 +33,8 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     @listenTo this, 'change:library_version_ids', () => @libraryDigest = null
 
   # A logic tracks the index of its current logic output, that is the one that 
-  # is displayed in a view. 
+  # is displayed in a view. Methods below move the index up and down, wrapping
+  # appropriately.
 
   currentLogicOutput: () ->
     index = @get('currentLogicOutputIndex')

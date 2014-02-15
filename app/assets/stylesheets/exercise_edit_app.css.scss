@@ -210,18 +210,24 @@ $edit_app_light_gray: lighten($os_gray,50%);
           }
         }
 
+        .js-next-permutation, .js-prev-permutation {
+          border: none;
+          background-color: transparent;
+          width: 20px;
+        }
+
         .js-next-permutation {
           top: -6px;
         }
 
         .js-prev-permutation {
           top: 10px;
-          left: -19px;
+          left: -26px;
         }
 
         .permutations-of-label {
           display: inline-block;
-          margin-left: -10px;
+          margin-left: -20px;
           margin-right: 3px;
         }
       }

@@ -23,7 +23,7 @@
   margin-bottom: 0px;
 }
 
-button, input[type='submit'] {
+button.standard, input[type='submit'].standard {
   @extend .btn;
   @extend .btn-primary;
   @include border-radius(0px);

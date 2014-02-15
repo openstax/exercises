@@ -18,12 +18,10 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     'click @ui.saveButton': 'save'
     'input @ui.variablesInput': () -> Utils.enable(@ui.saveButton)
     'input @ui.numPermutationsInput': () -> Utils.enable(@ui.saveButton)
-    'click @ui.nextPermutationButton': () -> @model.moveToNextLogicOutput() 
-    'click @ui.prevPermutationButton': () -> @model.moveToPrevLogicOutput()
+    'click @ui.nextPermutationButton': () -> @ui.nextPermutationButton.blur(); @model.moveToNextLogicOutput();
+    'click @ui.prevPermutationButton': () -> @ui.prevPermutationButton.blur(); @model.moveToPrevLogicOutput()
 
   # TODO add events for changing the currentPermutationInput manually
-  # TODO make it so clicking on the up/down perm buttons doesn't select text
-  #    make them actual buttons to do this?
   # TODO don't let users change permutation without saving the logic first
   #   (that new permutation won't be valid yet)
 
