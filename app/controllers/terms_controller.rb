@@ -9,7 +9,7 @@ class TermsController < ApplicationController
 
   def show
     # Hide old agreements (should never get them)
-    raise ActiveRecord::RecordNotFound if !@contract.is_latest? && !current_user.is_administrator?
+    raise ActiveRecord::RecordNotFound if !@contract.is_latest? && !current_user.is_admin?
   end
 
   def pose

@@ -57,5 +57,8 @@ Apipie.configure do |config|
         <td>v1</td>
       </tr>
     </table>
+
+    Many of the API specifications provide a related JSON schema.  These schemas are based on the 
+    standard being defined at [http://json-schema.org/](http://json-schema.org/).
   eos
 end

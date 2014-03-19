@@ -1,7 +1,8 @@
+Cocktail.patch(Backbone);
+
 var sync = Backbone.sync;
 Backbone.sync = function(method, model, options) {
   options.beforeSend = function (xhr) {
-    console.log('about to sync' + model.cid);
     xhr.setRequestHeader('Accept', 'application/vnd.exercises.openstax.v1');
   };
 
@@ -29,3 +30,12 @@ var apiGet = function(url) {
     }
   });
 };
+
+
+_.extend(Backbone.Model.prototype, {
+  synclessDestroy: function(options) {
+    this.trigger('destroy', this, this.collection, options);
+  }
+})
+
+_.extend(Backbone.Model.prototype, Backbone.Validation.mixin);

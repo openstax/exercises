@@ -3,7 +3,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.17'
 
 gem 'jquery-rails', '2.3.0'
 gem 'thin'
@@ -17,7 +17,7 @@ gem 'newrelic_rpm'
 gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_connect', '~> 0.0.8'
-gem 'openstax_utilities', '~> 1.1.0'
+gem 'openstax_utilities', '~> 1.2.0'
 gem 'nested_form'
 
 gem 'carrierwave'
@@ -35,8 +35,9 @@ gem 'remotipart', '~> 1.2'
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
+gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
 # see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
-gem 'roar', git: 'git://github.com/andresf/roar.git', ref: '0698cb17515ae229bd10580a95062530aba4f583'
+# gem 'roar', git: 'git://github.com/andresf/roar.git', ref: '0698cb17515ae229bd10580a95062530aba4f583'
 gem 'roar-rails'
 
 gem 'doorkeeper', '~> 0.6.7'

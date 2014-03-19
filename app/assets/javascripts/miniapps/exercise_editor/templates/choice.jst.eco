@@ -1,25 +1,23 @@
 <div class='choice-controls'>
   <div class='edit-controls'>
 
-      <button type="button" class="btn btn-sm btn-block js-delete-choice">
-        Save
-      </button>
-      <button type="button" class="btn btn-sm btn-block js-delete-choice">
-        Cancel
-      </button>
 
   </div>
   <div class='display-controls'>
-
-      <button type="button" class="btn btn-sm btn-block js-delete-choice">
-        Delete
-      </button>
-
+    <button type="button" class="choice-delete btn btn-sm btn-block js-delete-choice">Delete</button>  
   </div>
 
 </div>
 
-<div class='choice-label'><%= @model.letter() %>)</div>
+<div class='choice-label'><span class='choice-letter'><%= @model.letter() %></span>)</div>
+
+
+<% if @isSimple: %>
+<span class='choice-handle choice-under-letter-control glyphicon glyphicon-move'></span>
+<% end %>
+
+
+
 
 <div class='choice-content'>
 </div>

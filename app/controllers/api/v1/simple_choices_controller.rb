@@ -47,8 +47,26 @@ module Api
       end
 
       api :PUT, '/simple_choices/sort', 'Reorders a set of Simple Choices'
-      def sort
+      description <<-EOS
+        <p>Changes the sort order of the specified Simple Choices.  Not all Simple Choices in 
+        a Multiple Choice Question have to be specified in the request -- those whose positions
+        are specified will be placed at those positions, and the rest of the choices in the
+        question will be filled into the remaining spots in their original order.</p>
 
+        <p>The request is formed as a list of pairings of Simple Choice ID and that choice's new
+        zero-indexed position.</p>
+
+        <p>Requirements:</p>
+
+        * All of the specified Simple Choices must be from the same Multiple Choice Question.
+        * The IDs must be unique (no repeats)
+        * The positions must also be unique and valid for the number of Simple Choices in a
+        given Multiple Choice Question
+
+        #{json_schema(Api::V1::SortRepresenter, include: :writeable)}        
+      EOS
+      def sort
+        standard_sort(SimpleChoice)
       end
       
     end

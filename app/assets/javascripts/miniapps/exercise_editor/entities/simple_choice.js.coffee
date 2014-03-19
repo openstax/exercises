@@ -10,12 +10,11 @@ class ExerciseEditor.SimpleChoice extends Backbone.AssociatedModel
   ]
 
   initialize: (attributes, options) ->
-    console.log 'sc init:' + @get('id')
-    debugger
     ExerciseEditor.Store.addModel(this)
+    @listenTo this, 'change:position', () -> @trigger('change:letter')
 
   question: () ->
     @collection.parents[0]
 
   letter: () ->
-    String.fromCharCode(96 + @get('position'))
+    String.fromCharCode(97 + @get('position'))

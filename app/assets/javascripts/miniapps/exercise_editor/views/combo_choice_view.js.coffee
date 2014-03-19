@@ -9,7 +9,8 @@ class ExerciseEditor.ComboChoiceView extends Marionette.Layout
     display: '.display'
 
   events:
-    'dblclick .display': 'edit'
+    'dblclick .display': 'showEditor'
+    'dblclick .editor': 'doneEditing'
 
   initialize: () ->
     @listenTo @model, 'change', @render
@@ -18,7 +19,12 @@ class ExerciseEditor.ComboChoiceView extends Marionette.Layout
     @editor.show(new ExerciseEditor.ComboChoiceEditorView({model: @model}))
     @display.show(new ExerciseEditor.ComboChoiceDisplayView({model: @model}))
 
-  edit: (event) ->
+  doneEditing: () ->
+    @editor.$el.hide()
+    @display.$el.show()
+    @model.collection.sort()    
+
+  showEditor: (event) ->
     @display.$el.hide()
     @editor.$el.show()
 

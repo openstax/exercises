@@ -2,10 +2,13 @@ class ExerciseEditor.ComboSimpleChoice extends Backbone.AssociatedModel
   urlRoot: '/api/combo_simple_choices'
 
   initialize: () ->
-    debugger
-    console.log 'hi'
+    @listenToOnce this, 'change:simple_choice_id', () =>
+      ExerciseEditor.Store.onModelAvailable('SimpleChoice', @get('simple_choice_id'), (sc) =>
+        @listenTo sc, 'destroy', () => 
+          # The CSC is already deleted on the server side when an SC is destroyed
+          @synclessDestroy()
+      )
 
   simpleChoice: () ->
     if @simpleChoice? then return @simpleChoice
-    debugger
     @simpleChoice = @collection.parents[0]

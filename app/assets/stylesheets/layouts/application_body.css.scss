@@ -8,7 +8,7 @@
   clear:both;
 
   // Sometimes UL's are used not as bulleted lists
-  ul.normal {
+  ol.normal, ul.normal {
     margin-left: 25px;
   }
 }

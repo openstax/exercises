@@ -1,3 +1,12 @@
+<% if !@logic: %>
+<button type="button" class="btn btn-sm js-add-logic">
+<span class="glyphicon glyphicon-plus"></span>
+Make this exercise dynamic!
+</button>
+<% end %>
+
+<div class='exercise-logic'></div>
+
 <div class='exercise-background'></div>
 
 <div class='exercise-parts'></div>

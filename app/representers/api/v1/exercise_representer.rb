@@ -17,9 +17,19 @@ module Api::V1
              type: Integer,
              writeable: false
 
+    property :title,
+             type: String,
+             writeable: true
+
     property :background, 
              class: Content, 
              decorator: ContentRepresenter, 
+             parse_strategy: :sync
+
+    property :logic,
+             class: Logic,
+             decorator: LogicRepresenter,
+             # getter: lambda {|*| @logic || Logic.new},
              parse_strategy: :sync
 
     collection :parts, 

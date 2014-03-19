@@ -1,0 +1,9 @@
+//= require ./codemirror.js
+//= require ./mode/javascript.js
+//= require ./addons/comment/comment.js
+//= require ./addons/comment/continuecomment.js
+//= require ./addons/edit/closebrackets.js
+//= require ./addons/edit/matchbrackets.js
+//= require ./addons/lint/jshint
+//= require ./addons/lint/lint
+//= require ./addons/lint/javascript-lint

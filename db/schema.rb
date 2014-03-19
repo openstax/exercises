@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131211021035) do
+ActiveRecord::Schema.define(:version => 20140128000437) do
 
   create_table "attachments", :force => true do |t|
     t.integer  "attachable_id",                   :null => false
@@ -146,10 +146,13 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
     t.integer  "background_id"
+    t.string   "title"
+    t.integer  "logic_id"
   end
 
   add_index "exercises", ["background_id"], :name => "index_exercises_on_background_id"
   add_index "exercises", ["license_id"], :name => "index_exercises_on_license_id"
+  add_index "exercises", ["logic_id"], :name => "index_exercises_on_logic_id", :unique => true
   add_index "exercises", ["number", "version"], :name => "index_exercises_on_number_and_version", :unique => true
   add_index "exercises", ["published_at"], :name => "index_exercises_on_published_at"
 
@@ -205,6 +208,34 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
 
   add_index "free_response_answers", ["question_id", "position"], :name => "index_free_response_answers_on_question_id_and_position", :unique => true
 
+  create_table "libraries", :force => true do |t|
+    t.integer  "language"
+    t.string   "name"
+    t.text     "summary"
+    t.boolean  "is_prerequisite"
+    t.integer  "owner_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "libraries", ["is_prerequisite"], :name => "index_libraries_on_is_prerequisite"
+  add_index "libraries", ["language"], :name => "index_libraries_on_language"
+  add_index "libraries", ["owner_id", "name"], :name => "index_libraries_on_owner_id_and_name", :unique => true
+  add_index "libraries", ["owner_id"], :name => "index_libraries_on_owner_id"
+
+  create_table "library_versions", :force => true do |t|
+    t.integer  "library_id"
+    t.text     "code"
+    t.integer  "version"
+    t.boolean  "deprecated"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "library_versions", ["library_id", "deprecated"], :name => "index_library_versions_on_library_id_and_deprecated"
+  add_index "library_versions", ["library_id", "version"], :name => "index_library_versions_on_library_id_and_version", :unique => true
+  add_index "library_versions", ["library_id"], :name => "index_library_versions_on_library_id"
+
   create_table "licenses", :force => true do |t|
     t.integer  "position",                                   :null => false
     t.string   "name",                     :default => "",   :null => false
@@ -247,6 +278,24 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
   end
 
   add_index "lists", ["parent_list_id"], :name => "index_lists_on_parent_list_id"
+
+  create_table "logic_outputs", :force => true do |t|
+    t.integer  "seed"
+    t.text     "values"
+    t.integer  "logic_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "logic_outputs", ["logic_id"], :name => "index_logic_outputs_on_logic_id"
+
+  create_table "logics", :force => true do |t|
+    t.text     "code"
+    t.string   "variables"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.string   "library_version_ids"
+  end
 
   create_table "matching_answers", :force => true do |t|
     t.text     "left_content",       :default => "", :null => false
@@ -410,10 +459,12 @@ ActiveRecord::Schema.define(:version => 20131211021035) do
     t.integer  "part_id"
     t.integer  "details_id"
     t.integer  "summary_id"
+    t.integer  "logic_id"
   end
 
   add_index "solutions", ["details_id"], :name => "index_solutions_on_details_id"
   add_index "solutions", ["license_id"], :name => "index_solutions_on_license_id"
+  add_index "solutions", ["logic_id"], :name => "index_solutions_on_logic_id", :unique => true
   add_index "solutions", ["number", "version"], :name => "index_solutions_on_number_and_version", :unique => true
   add_index "solutions", ["part_id"], :name => "index_solutions_on_part_id"
   add_index "solutions", ["published_at"], :name => "index_solutions_on_published_at"

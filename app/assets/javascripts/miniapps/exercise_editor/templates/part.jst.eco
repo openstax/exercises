@@ -1,4 +1,4 @@
-<div class='part-position'><%= @position %>)</div>
+<div class='part-position <%= 'hidden' if @model.collection.models.length < 2 %>'><%= @model.get('position') %>)</div>
 
 <div class='part-content'>
   <div class='part-background'></div>

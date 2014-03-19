@@ -19,23 +19,23 @@ Ui = do () ->
     # Code to center the dialog
     modalDialog = $('#' + html_id + ' .modal-dialog')
     modalHeight = modalDialog.outerHeight()
-    userScreenHeight = $(document).outerHeight()
+    userScreenHeight = window.outerHeight
 
     if modalHeight > userScreenHeight
       modalDialog.css('overflow', 'auto'); #set to overflow if no fit
     else
       modalDialog.css('margin-top', #center it if it does fit
-                      (userScreenHeight / 2) - (modalHeight / 2)) 
+                      ((userScreenHeight / 2) - (modalHeight / 2)))
 
   enableOnChecked: (targetSelector, sourceSelector) ->
-      $(document).ready ->
-        Exercises.Ui.disableButton(targetSelector)
+    $(document).ready =>
+      @disableButton(targetSelector)
 
-      $(sourceSelector).on 'click', ->
-        if $(this).is(':checked')
-          Exercises.Ui.enableButton(targetSelector)
-        else
-          Exercises.Ui.disableButton(targetSelector)
+    $(sourceSelector).on 'click', =>
+      if $(sourceSelector).is(':checked')
+        @enableButton(targetSelector)
+      else
+        @disableButton(targetSelector)
 
   syntaxHighlight: (code) ->
     json = if typeof code is not 'string' then JSON.stringify(code, undefined, 2) else code

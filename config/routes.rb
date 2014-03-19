@@ -16,7 +16,7 @@ Exercises::Application.routes.draw do
     end
   end
 
-  resources :user_profiles, only: [:show, :edit, :update]
+  # resources :user_profiles, only: [:show, :edit, :update]
   
   namespace 'admin' do
     get '/', to: 'base#index'
@@ -37,6 +37,10 @@ Exercises::Application.routes.draw do
 
     resources :licenses
     resources :user_groups, :only => [:index]
+
+    resources :libraries do
+      resources :library_versions, :shallow => true
+    end
   end
 
   get "terms/:id/show", to: "terms#show", as: "show_terms"
@@ -96,12 +100,21 @@ Exercises::Application.routes.draw do
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
+
       resources :exercises, only: [:show, :update]
       resources :parts, only: [:show, :update, :create, :destroy]
       resources :questions, only: [:show, :update, :create, :destroy]
-      resources :simple_choices, only: [:show, :update, :create, :destroy]
+      resources :simple_choices, only: [:show, :update, :create, :destroy] do
+        put 'sort', on: :collection
+      end
       resources :combo_choices, only: [:show, :update, :create, :destroy]
       resources :combo_simple_choices, only: [:show, :create, :destroy]
+      resources :logics, except: [:index]
+      resources :libraries, only: [:show, :update, :new, :create, :destroy]
+      resources :library_versions, only: [:show, :update, :create, :destroy] do
+        get 'digest', on: :collection
+      end
+
     end
   end
 end

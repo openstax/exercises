@@ -10,6 +10,10 @@
     <%= stylesheet_link_tag     "application" %>
     <%= javascript_include_tag  "application" %>
 
+    <% if content_for?(:stylesheet_includes) %>
+      <%= yield :stylesheet_includes %>
+    <% end %>
+
     <% if content_for?(:javascript_includes) %>
       <%= yield :javascript_includes %>
     <% end %>

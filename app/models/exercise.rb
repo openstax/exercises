@@ -21,9 +21,10 @@ class Exercise < ActiveRecord::Base
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
-  belongs_to :background, class_name: 'Content'
+  belongs_to :background, class_name: 'Content', dependent: :destroy
+  belongs_to :logic, dependent: :destroy
 
-  accepts_nested_attributes_for :background
+  accepts_nested_attributes_for :background, :logic
 
   # accepts_nested_attributes_for :parts
   # attr_accessible :parts_attributes
@@ -71,6 +72,7 @@ class Exercise < ActiveRecord::Base
   end
 
   def summary
+    return "NYI"
     summary_string = (content.blank? ? "" : content[0..15] + (content.length > 16 ? ' ...' : ''))
 
     question_count = questions.count

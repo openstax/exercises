@@ -3,8 +3,16 @@
 //= require backbone/backbone.js
 //= require backbone/backbone-associations.js
 //= require backbone/backbone.marionette.js
+//= require backbone/Cocktail.js
+//= require backbone/backbone-validation.js
+//= require sandbox
+//= require raphael
+//= require raphael.export
+//= require codemirror/index.js
 //= require tinymce-jquery
 //= require ./initializer
+//= require_tree ./lib
+//= require ./extensions
 //= require ./utils
 //= require_tree ./vendor/writemaths
 //= require ./exercise_editor/manifest

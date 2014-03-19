@@ -4,17 +4,13 @@ class Question < ActiveRecord::Base
   sortable :part_id
 
   belongs_to :part, :inverse_of => :questions
-  belongs_to :format, polymorphic: true
+  belongs_to :format, polymorphic: true, dependent: :destroy
 
   accepts_nested_attributes_for :format
 
   validates_presence_of :part
-  
-  delegate :can_be_read_by?, 
-           :can_be_created_by?, 
-           :can_be_updated_by?, 
-           :can_be_destroyed_by?, 
-           to: :part
+
+  delegate_access_control to: :part
 end
 
 
