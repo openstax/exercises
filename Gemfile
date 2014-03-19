@@ -6,7 +6,6 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.17'
 
 gem 'jquery-rails', '2.3.0'
-gem 'thin'
 gem 'squeel'
 
 gem 'lev', "~> 2.0.4"
@@ -14,7 +13,6 @@ gem 'lev', "~> 2.0.4"
 # gem 'jbuilder'
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
-gem 'squeel'
 gem 'yaml_db'
 gem 'openstax_connect', '~> 0.0.8'
 gem 'openstax_utilities', '~> 1.2.0'
@@ -33,7 +31,7 @@ gem 'fine_print', '~> 1.2.0'
 gem 'remotipart', '~> 1.2'
 
 # API documentation
-gem 'apipie-rails'
+gem 'apipie-rails', '~> 0.1.1'
 gem 'maruku'
 gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
 # see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
@@ -53,7 +51,6 @@ gem 'tinymce-rails', git: 'git://github.com/spohlenz/tinymce-rails.git', branch:
 group :assets do
   gem 'sass-rails',     '~> 3.2.3'
   gem 'coffee-rails',   '~> 3.2.1'
-  gem 'sass-rails',     '~> 3.2.3'
   gem 'bootstrap-sass', '~> 3.0.2.0'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
@@ -73,7 +70,6 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'faker'
   gem 'thin'
-  gem 'quiet_assets'
   gem 'cheat'
   gem 'brakeman'
   gem 'railroady'
