@@ -16,7 +16,7 @@ Exercises::Application.routes.draw do
     end
   end
 
-  resources :user_profiles, only: [:show, :edit, :update]
+  # resources :user_profiles, only: [:show, :edit, :update]
   
   namespace 'admin' do
     get '/', to: 'base#index'

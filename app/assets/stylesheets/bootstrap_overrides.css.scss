@@ -38,6 +38,6 @@ button.standard, input[type='submit'].standard {
   } 
 }
 
-select, input[type='text'] {
+select, input[type='text'], input[type='search'] {
   @extend .form-control;
 }

@@ -135,11 +135,6 @@ class User < ActiveRecord::Base
   # Callbacks #
   #############
 
-  def build_user_profile
-    self.user_profile = UserProfile.new
-    user_profile.user = self
-  end
-
   def force_active_admin
     if self == User.first
       self.is_admin = true

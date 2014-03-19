@@ -13,6 +13,7 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     currentPermutationInput: 'input.js-current-permutation'
     nextPermutationButton: '.js-next-permutation'
     prevPermutationButton: '.js-prev-permutation'
+    librariesButton: ".js-libraries-button"
 
   events:
     'click @ui.saveButton': 'save'
@@ -20,6 +21,7 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
     'input @ui.numPermutationsInput': () -> Utils.enable(@ui.saveButton)
     'click @ui.nextPermutationButton': () -> @ui.nextPermutationButton.blur(); @model.moveToNextLogicOutput();
     'click @ui.prevPermutationButton': () -> @ui.prevPermutationButton.blur(); @model.moveToPrevLogicOutput()
+    'click @ui.js-libraries-button': () -> # should logic be a layout?
 
   # TODO add events for changing the currentPermutationInput manually
   # TODO don't let users change permutation without saving the logic first

@@ -62,10 +62,10 @@ Doorkeeper.configure do
   # end
 
   # Enable password authentication in the test environment
-  if Rails.env.test?
-    resource_owner_from_credentials do |routes|
-      u = User.find_for_database_authentication(:email => params[:username])
-      u if u && u.valid_password?(params[:password])
-    end
-  end
+  # if Rails.env.test?
+  #   resource_owner_from_credentials do |routes|
+  #     u = User.find_for_database_authentication(:email => params[:username])
+  #     u if u && u.valid_password?(params[:password])
+  #   end
+  # end
 end
