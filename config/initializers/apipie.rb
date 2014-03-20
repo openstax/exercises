@@ -1,16 +1,16 @@
 # Ideally Apipie would use Markdown for writing things like method descriptions,
 # etc.  This is great except that it is very indentation sensitive.  When we use
 # multiline heredocs and interpolate indentation sensitive multiline strings into
-# it (e.g. JSON schema strings derived from our Representable representers), things
-# get all messed up format-wise.  So we do two things: 
+# it (e.g. JSON schema strings derived from our Representable representers),
+# things get all messed up format-wise.  So we do two things:
 # 
 # 1) We assume that the indentation of the first line of a heredoc is what should 
 #    be removed from all lines (hence the first two lines of the 'to_html' method)
 # 2) This can be a problem when we embed a multiline preformatted string (where 
-#    indentation is important), so our hack is to use "funky" indentation characters
-#    instead of spaces at the start of lines in that preformatted code.  That way
-#    when we remove spaces from the start of lines in the preformatted block we don't
-#    mess up the intentional indentation.
+#    indentation is important), so our hack is to use "funky" indentation
+#    characters instead of spaces at the start of lines in that preformatted
+#    code.  That way when we remove spaces from the start of lines in thw
+#    preformatted block we don't mess up the intentional indentation.
 #
 # Sucks, I know.  If someone knows a better approach I'm all ears.
 

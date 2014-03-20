@@ -4,6 +4,10 @@ class UserGroup < ActiveRecord::Base
   has_many :user_group_users, :dependent => :delete_all, :inverse_of => :user_group
   has_many :users, :through => :user_group_users
 
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application',
+                                as: :owner,
+                                dependent: :destroy
+
   accepts_nested_attributes_for :user_group_users, :allow_destroy => true
 
   attr_accessible :name, :user_group_users_attributes

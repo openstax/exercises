@@ -6,20 +6,23 @@ class User < ActiveRecord::Base
   delegate :username, :first_name, :last_name, :name, :casual_name,
            to: :openstax_connect_user
 
-  has_one :deputy_user_group, :class_name => 'UserGroup', :as => 'container', :dependent => :destroy
-  has_many :deputies, :through => :deputy_user_group, :source => :users
-  has_many :deputizers, :through => :deputizer_profiles, :source => :user
-
   has_many :collaborators, :dependent => :destroy, :inverse_of => :user
 
   has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
   has_many :user_groups, :through => :user_group_users
 
+  has_one :deputy_user_group, :class_name => 'UserGroup',
+                              :as => 'container', :dependent => :destroy
+  has_many :deputies, :through => :deputy_user_group, :source => :users
+  has_many :deputizers, :through => :user_groups, :class_name => 'User',
+           :source => :container, :source_type => 'User'
+
   belongs_to :default_list, :class_name => 'List'
-  has_many :lists, :through => :user_groups, :source => :container, :source_type => 'List'
+  has_many :lists, :through => :user_groups,
+                   :source => :container, :source_type => 'List'
   has_many :listed_exercises, :through => :lists, :source => :exercises
 
-  before_save :force_active_admin
+  before_save :force_first_admin
 
   validates_presence_of :default_list
 
@@ -28,10 +31,6 @@ class User < ActiveRecord::Base
 
   scope :registered, where(is_registered: true)
   scope :unregistered, where{is_registered != true}
-
-  def is_admin?
-    is_admin
-  end
 
   def is_disabled?
     !disabled_at.nil?
@@ -49,19 +48,15 @@ class User < ActiveRecord::Base
     lists.select{|l| l.can_be_updated_by?(self)}
   end
 
-  def is_registered?
-    is_registered == true
-  end
-
-  def is_anonymous?
-    is_anonymous == true
-  end
-
   #
   # Anonymous User stuff
   #
 
   attr_accessor :is_anonymous
+
+  def is_anonymous?
+    is_anonymous
+  end
 
   def self.anonymous
     @@anonymous ||= AnonymousUser.new
@@ -135,7 +130,7 @@ class User < ActiveRecord::Base
   # Callbacks #
   #############
 
-  def force_active_admin
+  def force_first_admin
     if self == User.first
       self.is_admin = true
       self.disabled_at = nil

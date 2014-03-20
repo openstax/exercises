@@ -4,5 +4,6 @@
   <%= render 'form', :application => @application %>
 </div>
 
-<p><%= link_to 'Back to application list', oauth_applications_path %></p>
+<p><%= link_to 'Back to application list',
+               user_group_oauth_applications_path(@user_group) %></p>
 

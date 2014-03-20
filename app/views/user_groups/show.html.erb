@@ -13,4 +13,6 @@
 <%= link_to 'Add user', new_user_group_user_group_user_path(@user_group) %> |
 <%= link_to 'Rename group', edit_user_group_path(@user_group) %> |
 <% end %>
+<%= link_to 'OAuth Applications',
+            user_group_oauth_applications_path(@user_group) %> |
 <%= link_to 'Back', @user_group.container.nil? ? user_groups_path : @user_group.container %>

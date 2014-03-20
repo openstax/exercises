@@ -4,7 +4,9 @@ Exercises::Application.routes.draw do
 
   apipie
 
-  use_doorkeeper
+  use_doorkeeper do
+    skip_controllers :applications
+  end
 
   namespace 'dev' do
     get "/", to: 'base#index'
@@ -56,6 +58,10 @@ Exercises::Application.routes.draw do
 
 
   resources :user_groups do
+    namespace :oauth do
+      resources :applications, shallow: true
+    end
+    
     resources :user_group_users, only: [:new, :create, :destroy], shallow: true do
       put 'toggle', on: :member
     end

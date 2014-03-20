@@ -61,6 +61,9 @@ module Exercises
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    # Enforce that locales are valid
+    config.i18n.enforce_available_locales = true
+
     config.to_prepare do
       Doorkeeper::ApplicationController.layout "application_body_only"
     end

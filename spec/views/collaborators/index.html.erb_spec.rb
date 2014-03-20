@@ -1,4 +1,4 @@
-Hrequire 'spec_helper'
+require 'spec_helper'
 
 describe "collaborators/index" do
   before(:each) do

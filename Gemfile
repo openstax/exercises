@@ -14,7 +14,8 @@ gem 'lev', "~> 2.0.4"
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'yaml_db'
-gem 'openstax_connect', '~> 0.0.8'
+gem 'openstax_connect', :git => 'https://github.com/Dantemss/connect-rails.git',
+                        :ref => '930a73651d07e09b6963f3320c579dd662a3e6b3'
 gem 'openstax_utilities', '~> 1.2.0'
 gem 'nested_form'
 
