@@ -14,9 +14,7 @@ gem 'lev', "~> 2.0.4"
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'yaml_db'
-gem 'openstax_connect', :git => 'https://github.com/Dantemss/connect-rails.git',
-                        :ref => '930a73651d07e09b6963f3320c579dd662a3e6b3'
-gem 'openstax_utilities', '~> 1.2.0'
+
 gem 'nested_form'
 
 gem 'carrierwave'
@@ -27,9 +25,15 @@ gem 'will_paginate', '~> 3.0'
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
+gem 'remotipart', '~> 1.2'
+
 gem 'commontator', '~> 4.2.0'
 gem 'fine_print', '~> 1.2.0'
-gem 'remotipart', '~> 1.2'
+gem 'openstax_connect', git: 'https://github.com/Dantemss/connect-rails',
+                        ref: '5f17c363a33d7c8973796469f0f5c4328831ac2b'
+gem 'openstax_utilities', git: 'https://github.com/Dantemss/openstax_utilities',
+                          ref: '1e595556dac27b5d71b180bf45cf36ff1845f3b5'
+gem 'openstax_api', '~> 0.1.0'
 
 # API documentation
 gem 'apipie-rails', '~> 0.1.1'

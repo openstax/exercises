@@ -1,7 +1,7 @@
 module Api
   module V1
 
-    class LibrariesController < ApiController 
+    class LibrariesController < OpenStax::Api::V1::ApiController 
 
       resource_description do
         api_versions "v1"

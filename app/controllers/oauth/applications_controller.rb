@@ -6,21 +6,23 @@ module Oauth
     before_filter :get_user_group, :only => [:index, :new, :create]
     before_filter :get_application, :except => [:index, :new, :create]
 
+    layout 'application_body_only'
+
     def index
-      AccessPolicy.require_action_allowed!(:read, @user, @user_group)
+      OSU::AccessPolicy.require_action_allowed!(:read, @user, @user_group)
       @applications = @user_group.oauth_applications
     end
 
     def new
       @application = Doorkeeper::Application.new
       @application.owner = @user_group
-      AccessPolicy.require_action_allowed!(:create, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
     end
 
     def create
       @application = Doorkeeper::Application.new(application_params)
       @application.owner = @user_group
-      AccessPolicy.require_action_allowed!(:create, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       @application.trusted = params[:application][:trusted] if @user.is_admin?
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
@@ -32,17 +34,17 @@ module Oauth
     end
     
     def show
-      AccessPolicy.require_action_allowed!(:read, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
       super
     end
 
     def edit
-      AccessPolicy.require_action_allowed!(:update, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
       super
     end
 
     def update
-      AccessPolicy.require_action_allowed!(:update, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
       if @application.update_attributes(application_params)
         @application.update_attribute(:trusted, params[:application][:trusted]) \
           if @user.is_admin?
@@ -55,7 +57,7 @@ module Oauth
     end
 
     def destroy
-      AccessPolicy.require_action_allowed!(:destroy, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:destroy, @user, @application)
       flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                   :applications, :destroy]) \
                          if @application.destroy

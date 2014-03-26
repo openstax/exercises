@@ -1,7 +1,7 @@
 module Api
   module V1
 
-    class LogicsController < ApiController 
+    class LogicsController < OpenStax::Api::V1::ApiController 
 
       resource_description do
         api_versions "v1"

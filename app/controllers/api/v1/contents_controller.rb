@@ -1,7 +1,7 @@
 module Api
   module V1
 
-    class ContentsController < ApiController 
+    class ContentsController < OpenStax::Api::V1::ApiController 
 
       # NOT PLANNING ON HAVING CONTENTS ACCESSIBLE VIA THE API, NEED TO GET/SET VIA PARENT
 

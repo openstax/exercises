@@ -1,7 +1,7 @@
 module Api
   module V1
 
-    class ExercisesController < ApiController 
+    class ExercisesController < OpenStax::Api::V1::ApiController 
 
       resource_description do
         api_versions "v1"

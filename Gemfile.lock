@@ -16,20 +16,28 @@ GIT
       railties (>= 3.1.1)
 
 GIT
-  remote: https://github.com/Dantemss/connect-rails.git
-  revision: 930a73651d07e09b6963f3320c579dd662a3e6b3
-  ref: 930a73651d07e09b6963f3320c579dd662a3e6b3
+  remote: https://github.com/Dantemss/connect-rails
+  revision: 5f17c363a33d7c8973796469f0f5c4328831ac2b
+  ref: 5f17c363a33d7c8973796469f0f5c4328831ac2b
   specs:
-    openstax_connect (0.0.9.alpha)
-      coffee-rails (~> 3.2.1)
-      lev (~> 2.0.1)
-      omniauth (~> 1.1)
-      omniauth-oauth2 (~> 1.1.1)
-      openstax_utilities (~> 1.2.0)
-      rails (~> 3.2.14)
-      sass-rails (~> 3.2.3)
+    openstax_connect (0.0.10.alpha)
+      lev (>= 2.0)
+      omniauth (>= 1.1)
+      omniauth-oauth2 (>= 1.1)
+      openstax_utilities (>= 1.2)
+      rails (>= 3.1)
+      sass-rails (>= 3.1)
       squeel
-      uglifier (>= 1.0.3)
+      uglifier (>= 1.0)
+
+GIT
+  remote: https://github.com/Dantemss/openstax_utilities
+  revision: 1e595556dac27b5d71b180bf45cf36ff1845f3b5
+  ref: 1e595556dac27b5d71b180bf45cf36ff1845f3b5
+  specs:
+    openstax_utilities (2.0.1.alpha)
+      attribeautiful (~> 0.0.7)
+      rails (>= 3.1)
 
 GEM
   remote: https://rubygems.org/
@@ -240,9 +248,12 @@ GEM
       multi_json (~> 1.3)
       oauth2 (~> 0.9.3)
       omniauth (~> 1.2)
-    openstax_utilities (1.2.0)
-      attribeautiful (~> 0.0.7)
+    openstax_api (0.1.0)
+      doorkeeper (>= 0.5)
+      openstax_utilities (>= 1.0.1)
       rails (>= 3.1)
+      roar (>= 0.12.1)
+      roar-rails (>= 0.1.2)
     pager (1.0.1)
     parslet (1.5.0)
       blankslate (~> 2.0)
@@ -416,8 +427,9 @@ DEPENDENCIES
   nested_form
   newrelic_rpm
   nifty-generators
+  openstax_api (~> 0.1.0)
   openstax_connect!
-  openstax_utilities (~> 1.2.0)
+  openstax_utilities!
   parslet (~> 1.5)
   quiet_assets
   rack-test
