@@ -27,7 +27,7 @@ window.sandbox = (options = {}) ->
   externalCSS = for src in external.css
     "<link rel='stylesheet' type='text/css' href='#{src}' media='screen' />"
 
-  doc.open();
+  doc.open()
   doc.write """
     #{html}
     #{externalJS.join ''}

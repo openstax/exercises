@@ -21,8 +21,7 @@ class ExerciseEditor.Exercise extends Backbone.AssociatedModel
   ]
 
   defaults:
-    number: '',
-    logic: null
+    number: ''
 
   initialize: () ->
     @listenToOnce this, 'change:logic', @connectLogic

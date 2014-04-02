@@ -38,7 +38,7 @@ class ExerciseEditor.LogicView extends Marionette.ItemView
       validation: 
         pattern: /^[\w,\s]*$/,
         message: "Variables must only contain underscores, letters, or numbers and must be separated by commas"
-      parser: (value) -> value.replace(/[ \t\r\n]+/g,"").split(",")
+      parser: (value) -> _.compact(value.replace(/[ \t\r\n]+/g,"").split(","))
     )
 
   onShow: () ->

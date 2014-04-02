@@ -105,8 +105,8 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     # to make everything run.  The user's code is placed into a function so it can be
     # called over and over later (for each seed).
 
-    varNormalizationStatements =
-      _.collect @get('variables'), (variable) ->
+    variableNormalizationStatements =
+      _.collect @validVariables(), (variable) ->
         """
         if (typeof #{variable}.toExercisesNormalization === 'function') {
           #{variable} =  #{variable}.toExercisesNormalization(); 
@@ -125,7 +125,7 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
 
             #{@get('code')}
 
-            #{varNormalizationStatements.join("\n")}
+            #{variableNormalizationStatements.join("\n")}
           }
           """
 
@@ -141,9 +141,12 @@ class ExerciseEditor.Logic extends Backbone.AssociatedModel
     @sandbox.contentWindow.runIteration(seed)
 
     # Retrieve and retur the outputs out of the sandbox, allowing only strings and numbers.
-    outputs = _.collect @get('variables'), (variable) =>
+
+    outputs = _.collect @validVariables(), (variable) =>
       value = @sandbox.contentWindow['iterationOutputs'][variable]
       if (_.isNumber(value) or _.isString(value)) then value else nil
 
     _.compact(outputs)
 
+  validVariables: () ->
+    _.compact(@get('variables'))
