@@ -41,3 +41,11 @@ button.standard, input[type='submit'].standard {
 select, input[type='text'], input[type='search'] {
   @extend .form-control;
 }
+
+.developer a {
+  color: $os_orange !important;
+}
+
+.developer a:hover {
+  color: $os_dark_orange !important;
+}

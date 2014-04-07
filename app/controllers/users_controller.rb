@@ -13,9 +13,4 @@ class UsersController < ApplicationController
                 failure: lambda { render 'registration' })
   end
 
-  def become
-    raise SecurityTransgression unless !Rails.env.production? || current_user.is_admin?
-    sign_in(User.find(params[:id]))
-    redirect_to request.referrer
-  end
 end

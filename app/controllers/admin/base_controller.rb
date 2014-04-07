@@ -3,14 +3,16 @@
 
 module Admin
   class BaseController < ApplicationController
-    
-    before_filter :authenticate_admin!
-    # skip_before_filter :require_registration!
 
-    # fine_print_skip_signatures :general_terms_of_use, 
-    #                            :privacy_policy
+    if Rails.env.production?
+      before_filter :authenticate_admin!
+    else
+      skip_before_filter :authenticate_user!
+      skip_before_filter :require_registration!
 
-    # layout "layouts/application_body_only"
+      fine_print_skip_signatures :general_terms_of_use,
+                                 :privacy_policy
+    end
     
     def cron
       Ost::Cron::execute_cron_jobs

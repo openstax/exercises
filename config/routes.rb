@@ -27,18 +27,6 @@ Exercises::Application.routes.draw do
     end
     
   end
-
-  namespace 'dev' do
-    get "/", to: 'base#index'
-
-    namespace 'users' do
-      post 'search'
-      post 'create'
-      post 'generate'
-    end
-  end
-
-  # resources :user_profiles, only: [:show, :edit, :update]
   
   namespace 'admin' do
     get '/', to: 'base#index'
@@ -54,6 +42,7 @@ Exercises::Application.routes.draw do
     get "raise_illegal_argument",       to: 'base#raise_illegal_argument'
 
     resources :users, only: [:show, :update, :edit] do
+      post 'become', on: :member
       post 'search', on: :collection
     end
 
@@ -63,15 +52,17 @@ Exercises::Application.routes.draw do
     resources :libraries do
       resources :library_versions, :shallow => true
     end
+
+    namespace :dev do
+      resources :users, only: [:create] do
+        post 'generate', on: :collection
+      end
+    end
   end
 
   get "terms/:id/show", to: "terms#show", as: "show_terms"
   get "terms/pose", to: "terms#pose", as: "pose_terms"
   post "terms/agree", to: "terms#agree", as: "agree_to_terms"
-
-  resources :users, :only => [] do
-    post 'become', on: :member
-  end
 
   get "users/registration" 
   put "users/register"
