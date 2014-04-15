@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe CreateUser do
 
-  let (:connect_user) do
-    mock_model OpenStax::Connect::User, name: 'Bobby Joe'
+  let (:accounts_user) do
+    mock_model OpenStax::Accounts::User, name: 'Bobby Joe'
   end
 
   it "works" do
     result = nil
     expect {
-      result = CreateUser.call(connect_user)
+      result = CreateUser.call(accounts_user)
     }.to change{User.count}.by 1
 
     user = result.outputs[:user]

@@ -1,10 +1,13 @@
 class User < ActiveRecord::Base
-  belongs_to :openstax_connect_user, 
-             class_name: "OpenStax::Connect::User",
+
+  USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
+
+  belongs_to :openstax_accounts_user,
+             class_name: "OpenStax::Accounts::User",
              dependent: :destroy
 
   delegate :username, :first_name, :last_name, :name, :casual_name,
-           to: :openstax_connect_user
+           to: :openstax_accounts_user
 
   has_many :collaborators, :dependent => :destroy, :inverse_of => :user
 
@@ -68,20 +71,20 @@ class User < ActiveRecord::Base
       super
       self.is_anonymous          = true
       self.is_registered         = false
-      self.openstax_connect_user = OpenStax::Connect::User.anonymous
+      self.openstax_accounts_user = OpenStax::Accounts::User.anonymous
     end
   end
 
   #
-  # OpenStax Connect "user_provider" methods
+  # OpenStax Accounts "user_provider" methods
   #
 
-  def self.connect_user_to_app_user(connect_user)
-    GetOrCreateUserFromConnectUser.call(connect_user).outputs.user
+  def self.accounts_user_to_app_user(accounts_user)
+    GetOrCreateUserFromAccountsUser.call(accounts_user).outputs.user
   end
 
-  def self.app_user_to_connect_user(app_user)
-    app_user.is_anonymous? ? OpenStax::Connect::User.anonymous : app_user.openstax_connect_user
+  def self.app_user_to_accounts_user(app_user)
+    app_user.is_anonymous? ? OpenStax::Accounts::User.anonymous : app_user.openstax_accounts_user
   end
 
   ##################

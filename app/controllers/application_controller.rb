@@ -16,7 +16,10 @@ class ApplicationController < ActionController::Base
 protected
 
   def require_registration!
-    redirect_to users_registration_path if signed_in? && !current_user.is_registered?
+    redirect_to users_registration_path if signed_in? &&
+      (current_user.is_a?(OpenStax::Api::ApiUser) ?
+         !current_user.human_user.try(:is_registered?) :
+         !current_user.is_registered?)
   end
 
   def raise_exception_unless_admin

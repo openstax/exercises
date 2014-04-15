@@ -29,22 +29,21 @@ gem 'remotipart', '~> 1.2'
 
 gem 'commontator', '~> 4.2.0'
 gem 'fine_print', '~> 1.2.0'
-gem 'openstax_connect', git: 'https://github.com/Dantemss/connect-rails',
-                        ref: '5f17c363a33d7c8973796469f0f5c4328831ac2b'
-gem 'openstax_utilities', git: 'https://github.com/Dantemss/openstax_utilities',
-                          ref: '1e595556dac27b5d71b180bf45cf36ff1845f3b5'
-gem 'openstax_api', '~> 0.1.0'
+gem 'openstax_accounts', :path => '../accounts-rails'
+gem 'openstax_utilities', '~> 2.2.0'
+gem 'openstax_api', :path => '../openstax_api'
 
 # API documentation
 gem 'apipie-rails', '~> 0.1.1'
 gem 'maruku'
 gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
-# see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
-# gem 'roar', git: 'git://github.com/andresf/roar.git', ref: '0698cb17515ae229bd10580a95062530aba4f583'
+gem 'roar', '~> 0.12.4'
 gem 'roar-rails'
 
 gem 'doorkeeper', '~> 0.6.7'
 gem 'exception_notification'
+
+gem "keyword_search", "~> 1.5.0"
 
 gem 'ejs'
 gem 'eco'

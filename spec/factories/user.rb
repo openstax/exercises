@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :user do
-    association :openstax_connect_user, factory: :openstax_connect_user
+    association :openstax_accounts_user, factory: :openstax_accounts_user
     association :default_list, factory: :list
 
     trait :admin do
