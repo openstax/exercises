@@ -15,13 +15,6 @@ GIT
     tinymce-rails (4.0.11)
       railties (>= 3.1.1)
 
-PATH
-  remote: ../openstax_utilities
-  specs:
-    openstax_utilities (2.1.1.alpha)
-      attribeautiful (>= 0.0.7)
-      rails (>= 3.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -251,6 +244,9 @@ GEM
       rails (>= 3.1)
       roar (>= 0.12.1)
       roar-rails (>= 0.1.2)
+    openstax_utilities (2.2.0)
+      attribeautiful (>= 0.0.7)
+      rails (>= 3.1)
     pager (1.0.1)
     parslet (1.5.0)
       blankslate (~> 2.0)
@@ -427,7 +423,7 @@ DEPENDENCIES
   nifty-generators
   openstax_accounts (~> 0.3.0)
   openstax_api (~> 1.0.0)
-  openstax_utilities!
+  openstax_utilities (~> 2.2.0)
   parslet (~> 1.5)
   quiet_assets
   rack-test
