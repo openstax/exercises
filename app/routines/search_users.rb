@@ -56,57 +56,15 @@ class SearchUsers
   
   def exec(query, options={})
 
-    delegate_to_accounts = false
-    users = OpenStax::Accounts::User.scoped
-    
-    KeywordSearch.search(query) do |with|
+    if !OpenStax::Accounts.configuration.enable_stubbing? &&\
+       KeywordSearch.search(query).values_at('email',:default).compact.any?
+      # Delegate to Accounts
 
-      with.default_keyword :any
-
-      with.keyword :username do |usernames|
-        users = users.where{username.like_any my{prep_usernames(usernames)}}
-      end
-
-      with.keyword :first_name do |first_names|
-        users = users.where{lower(first_name).like_any my{prep_names(first_names)}}
-      end
-
-      with.keyword :last_name do |last_names|
-        users = users.where{lower(last_name).like_any my{prep_names(last_names)}}
-      end
-
-      with.keyword :full_name do |full_names|
-        users = users.where{lower(full_name).like_any my{prep_names(full_names)}}
-      end
-
-      with.keyword :name do |names|
-        names = prep_names(names)
-        users = users.where{ (lower(full_name).like_any names)  |
-          (lower(last_name).like_any names)  |
-        (lower(first_name).like_any names) }
-      end
-
-      with.keyword :id do |ids|
-        users = users.where{openstax_uid.in ids}
-      end
-
-      with.keyword :email do |emails|
-        delegate_to_accounts = true
-      end
-
-      with.keyword :any do |terms|
-        delegate_to_accounts = true
-      end
-
-    end
-
-    if delegate_to_accounts
-
-      # Query with 'any' or 'email' keywords - must send to accounts
       response = OpenStax::Accounts.user_search(query)
+      puts response.body
 
-      user_search = Api::V1::UserSearch.new
-      search_rep = Api::V1::UserSearchRepresenter.new(user_search)
+      user_search = OpenStruct.new
+      search_rep = OpenStax::Accounts::Api::V1::UserSearchRepresenter.new(user_search)
       search_rep.from_json(response.body)
 
       outputs[:users] = user_search.users
@@ -117,12 +75,52 @@ class SearchUsers
       outputs[:num_matching_users] = user_search.num_matching_users
 
     else
+      # Local search
+
+      users = OpenStax::Accounts::User.scoped
+
+      KeywordSearch.search(query) do |with|
+
+        with.default_keyword :name
+
+        with.keyword :username do |usernames|
+          users = users.where{username.like_any my{prep_usernames(usernames)}}
+        end
+
+        with.keyword :first_name do |first_names|
+          users = users.where{lower(first_name).like_any my{prep_names(first_names)}}
+        end
+
+        with.keyword :last_name do |last_names|
+          users = users.where{lower(last_name).like_any my{prep_names(last_names)}}
+        end
+
+        with.keyword :full_name do |full_names|
+          users = users.where{lower(full_name).like_any my{prep_names(full_names)}}
+        end
+
+        with.keyword :name do |names|
+          names = prep_names(names)
+          users = users.where{ (lower(full_name).like_any names)  |
+                               (lower(last_name).like_any names)  |
+                               (lower(first_name).like_any names) }
+        end
+
+        with.keyword :id do |ids|
+          users = users.where{openstax_uid.in ids}
+        end
+
+        with.keyword :email do |emails|
+          users = OpenStax::Accounts::User.where('0=1')
+        end
+
+      end
     
       # If the query didn't result in any restrictions, either because it was blank
       # or didn't have a keyword from above with appropriate values, then return no
       # results.
       
-      users = User.where('0=1') if User.scoped == users
+      users = OpenStax::Accounts::User.where('0=1') if users == OpenStax::Accounts::User.scoped
       
       # Pagination -- this is where we could modify the incoming values for page
       # and per_page, depending on options

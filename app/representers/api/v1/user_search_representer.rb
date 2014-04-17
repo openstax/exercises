@@ -1,9 +1,6 @@
-require 'roar/representer/feature/client'
-
 module Api::V1
   class UserSearchRepresenter < Roar::Decorator
     include Roar::Representer::JSON
-    include Roar::Representer::Feature::Client
 
     property :q,
              type: String,

@@ -10,7 +10,7 @@ Exercises::Application.routes.draw do
 
   get 'api', to: 'static_pages#api'
 
-api :v1, :default => true do
+  api :v1, :default => true do
     
     resources :exercises, only: [:show, :update]
     resources :parts, only: [:show, :update, :create, :destroy]

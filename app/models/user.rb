@@ -51,6 +51,14 @@ class User < ActiveRecord::Base
     lists.select{|l| l.can_be_updated_by?(self)}
   end
 
+  def is_human?
+    true
+  end
+  
+  def is_application?
+    false
+  end
+
   #
   # Anonymous User stuff
   #

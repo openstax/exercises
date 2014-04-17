@@ -4,9 +4,9 @@
                  html: {class: 'form-inline'} do |f| %>
 
   Search for 
-  <%= f.search_field :search_terms, style: 'width:300px' %> 
+  <%= f.search_field :terms, style: 'width:300px' %> 
   in         
-  <%= f.select :search_type, ['Any', 'Name', 'Username'], {}, {style: 'width: 150px'} %>
+  <%= f.select :type, ['Any', 'Name', 'Username'], {}, {style: 'width: 150px'} %>
 
   <%= f.submit 'Search', class: 'btn btn-primary' %>
 
