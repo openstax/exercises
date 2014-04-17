@@ -15,30 +15,6 @@ GIT
     tinymce-rails (4.0.11)
       railties (>= 3.1.1)
 
-GIT
-  remote: https://github.com/Dantemss/connect-rails
-  revision: 5f17c363a33d7c8973796469f0f5c4328831ac2b
-  ref: 5f17c363a33d7c8973796469f0f5c4328831ac2b
-  specs:
-    openstax_connect (0.0.10.alpha)
-      lev (>= 2.0)
-      omniauth (>= 1.1)
-      omniauth-oauth2 (>= 1.1)
-      openstax_utilities (>= 1.2)
-      rails (>= 3.1)
-      sass-rails (>= 3.1)
-      squeel
-      uglifier (>= 1.0)
-
-GIT
-  remote: https://github.com/Dantemss/openstax_utilities
-  revision: 1e595556dac27b5d71b180bf45cf36ff1845f3b5
-  ref: 1e595556dac27b5d71b180bf45cf36ff1845f3b5
-  specs:
-    openstax_utilities (2.0.1.alpha)
-      attribeautiful (~> 0.0.7)
-      rails (>= 3.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -172,8 +148,9 @@ GEM
     ejs (1.1.1)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    exception_notification (3.0.1)
+    exception_notification (4.0.1)
       actionmailer (>= 3.0.4)
+      activesupport (>= 3.0.4)
     execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (4.3.0)
@@ -207,6 +184,7 @@ GEM
     json (1.8.1)
     jwt (0.1.11)
       multi_json (>= 1.5)
+    keyword_search (1.5.0)
     lev (2.0.4)
       actionpack (>= 3.0)
       active_attr
@@ -224,8 +202,8 @@ GEM
     mime-types (1.25.1)
     mini_magick (3.6.0)
       subexec (~> 0.2.1)
-    mini_portile (0.5.2)
-    multi_json (1.8.4)
+    mini_portile (0.5.3)
+    multi_json (1.9.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     mysql2 (0.3.11)
@@ -248,12 +226,27 @@ GEM
       multi_json (~> 1.3)
       oauth2 (~> 0.9.3)
       omniauth (~> 1.2)
-    openstax_api (0.1.0)
+    openstax_accounts (0.3)
+      lev (>= 2.0)
+      oauth2
+      omniauth (>= 1.1)
+      omniauth-oauth2 (>= 1.1)
+      openstax_utilities (>= 1.2)
+      rails (>= 3.2)
+      roar (>= 0.8)
+      sass-rails (>= 3.1)
+      squeel
+      uglifier (>= 1.0)
+    openstax_api (1.0.0)
       doorkeeper (>= 0.5)
+      exception_notification (>= 4.0)
       openstax_utilities (>= 1.0.1)
       rails (>= 3.1)
       roar (>= 0.12.1)
       roar-rails (>= 0.1.2)
+    openstax_utilities (2.2.1)
+      attribeautiful (>= 0.0.7)
+      rails (>= 3.1)
     pager (1.0.1)
     parslet (1.5.0)
       blankslate (~> 2.0)
@@ -265,7 +258,7 @@ GEM
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-ssl (1.3.3)
+    rack-ssl (1.3.4)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -290,12 +283,12 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
-    rake (10.1.1)
+    rake (10.3.0)
     rdoc (3.12.2)
       json (~> 1.4)
     ref (1.0.5)
     remotipart (1.2.1)
-    roar (0.12.2)
+    roar (0.12.4)
       representable (>= 1.6.0)
     roar-rails (0.1.4)
       actionpack
@@ -364,7 +357,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
-    thor (0.18.1)
+    thor (0.19.1)
     tilt (1.4.1)
     timecop (0.6.1)
     transaction_isolation (1.0.3)
@@ -377,7 +370,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.38)
+    tzinfo (0.3.39)
     uglifier (2.1.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -420,6 +413,7 @@ DEPENDENCIES
   faker
   fine_print (~> 1.2.0)
   jquery-rails (= 2.3.0)
+  keyword_search (~> 1.5.0)
   lev (~> 2.0.4)
   maruku
   mini_magick
@@ -427,9 +421,9 @@ DEPENDENCIES
   nested_form
   newrelic_rpm
   nifty-generators
-  openstax_api (~> 0.1.0)
-  openstax_connect!
-  openstax_utilities!
+  openstax_accounts (~> 0.3.0)
+  openstax_api (~> 1.0.0)
+  openstax_utilities (~> 2.2.1)
   parslet (~> 1.5)
   quiet_assets
   rack-test
@@ -438,6 +432,7 @@ DEPENDENCIES
   rails-erd
   remotipart (~> 1.2)
   representable!
+  roar (~> 0.12.4)
   roar-rails
   rspec-rails
   rspec-rerun

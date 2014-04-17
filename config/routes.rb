@@ -1,5 +1,5 @@
 Exercises::Application.routes.draw do
-  mount OpenStax::Connect::Engine, at: "/connect"
+  mount OpenStax::Accounts::Engine, at: "/accounts"
   mount FinePrint::Engine => "/admin/fine_print"
 
   use_doorkeeper do
@@ -10,7 +10,7 @@ Exercises::Application.routes.draw do
 
   get 'api', to: 'static_pages#api'
 
-  api :v1, true do
+  api :v1, :default => true do
     
     resources :exercises, only: [:show, :update]
     resources :parts, only: [:show, :update, :create, :destroy]
@@ -24,6 +24,9 @@ Exercises::Application.routes.draw do
     resources :libraries, only: [:show, :update, :new, :create, :destroy]
     resources :library_versions, only: [:show, :update, :create, :destroy] do
       get 'digest', on: :collection
+    end
+    resources :users, only: [] do
+      get 'search', on: :collection
     end
     
   end

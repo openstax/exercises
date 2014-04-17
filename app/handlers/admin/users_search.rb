@@ -2,31 +2,33 @@ module Admin
   class UsersSearch
 
     lev_handler transaction: :no_transaction
-    
-    paramify :search do
-      attribute :search_type, type: String
-      validates :search_type, presence: true,
-                              inclusion: { in: %w(Name Username Any),
-                                           message: "is not valid" }
 
-      attribute :search_terms, type: String
+    paramify :search do
+      attribute :terms, type: String
+      attribute :type, type: String
+      attribute :page, type: Integer
     end
 
-    uses_routine SearchUsers, 
+    uses_routine SearchUsers,
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 
-  protected
+    protected
 
     def authorized?
       !Rails.env.production? || caller.is_admin?
     end
 
     def handle
-      terms = search_params.search_terms
-      type = search_params.search_type
-
-      run(:search_users, terms, type.downcase.to_sym)
+      case search_params.type
+      when 'Name'
+        query = "name:#{search_params.terms.gsub(/\s/,',')}"
+      when 'Username'
+        query = "username:#{search_params.terms.gsub(/\s/,',')}"
+      else
+        query = search_params.terms
+      end
+      run(:search_users, query, page: search_params.page || 0)
     end
 
   end

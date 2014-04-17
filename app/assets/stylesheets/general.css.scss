@@ -17,3 +17,12 @@ table.std-list-1 {
 div.not-full-width {
   width: 60%;
 }
+
+#search-results-list {
+  @include std-table-list-1;
+  margin-top: 17px;
+
+  #search-results-pagination {
+    float: right;
+  }
+}

@@ -3,7 +3,7 @@
 
 module ApplicationAccountBarHelper
   def salutation(user)
-    return "Welcome, #{user.first_name}" if user
+    return "Welcome, #{user.first_name || user.username}" if user
   end
 
   def account_bar_transparent

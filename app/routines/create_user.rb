@@ -3,16 +3,16 @@ class CreateUser
 
 protected
 
-  def exec(connect_user, options={})
+  def exec(accounts_user, options={})
 
     # Create the new user's default list
 
-    default_list = List.create(:name => "#{connect_user.name}'s default list")
+    default_list = List.create(:name => "#{accounts_user.name}'s default list")
     
     # Create the user
 
     outputs[:user] = User.create do |user|
-      user.openstax_connect_user_id = connect_user.id
+      user.openstax_accounts_user_id = accounts_user.id
       user.is_registered = false
       user.default_list = default_list
     end
