@@ -55,11 +55,11 @@ Exercises::Application.routes.draw do
     resources :libraries do
       resources :library_versions, :shallow => true
     end
+  end
 
-    namespace :dev do
-      resources :users, only: [:create] do
-        post 'generate', on: :collection
-      end
+  namespace :dev do
+    resources :users, only: [:create] do
+      post 'generate', on: :collection
     end
   end
 

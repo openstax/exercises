@@ -2,11 +2,11 @@ module Dev
   class UsersController < BaseController
 
     def create
-      handle_with(Admin::Dev::UsersCreate)
+      handle_with(Dev::UsersCreate)
     end
 
     def generate
-      handle_with(Admin::Dev::UsersGenerate)
+      handle_with(Dev::UsersGenerate)
     end
 
   end
