@@ -14,12 +14,11 @@ module Api
           last_name
           full_name
           title
-          contact_infos
         EOS
       end
 
       ###############################################################
-      # search
+      # index
       ###############################################################
 
       api :GET, '/users/search', 'Return a set of Users matching query terms'
@@ -79,7 +78,7 @@ module Api
         A string that indicates how to sort the results of the query.  The string
         is a comma-separated list of fields with an optional sort direction.  The
         sort will be performed in the order the fields are given.  
-        The fields can be one of #{SearchUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+        The fields can be one of #{OpenStax::Accounts::SearchUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
         Sort directions can either be `ASC` for 
         an ascending sort, or `DESC` for a
         descending sort.  If not provided an ascending sort is assumed. Sort directions

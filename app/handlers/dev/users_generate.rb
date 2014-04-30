@@ -22,6 +22,7 @@ module Dev
       generate_params.count.times do 
         run(Dev::CreateUser, {ensure_no_errors: true})
       end
+      outputs[:count] = generate_params.count
     end
 
   end 

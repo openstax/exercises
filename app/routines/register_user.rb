@@ -4,7 +4,7 @@ class RegisterUser
 protected
 
   def exec(user, options={})
-    response = OpenStax::Accounts.create_application_user(user.openstax_accounts_user)
+    response = OpenStax::Accounts.application_user_create(user.openstax_accounts_user)
     # Probably not necessary to check the response status,
     # since it just throws exceptions on failure,
     # which will result in HTTP 500 errors.
