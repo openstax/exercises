@@ -1,5 +1,5 @@
 module Admin
-  class UsersSearch
+  class UsersIndex
 
     lev_handler transaction: :no_transaction
 

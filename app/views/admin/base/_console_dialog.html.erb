@@ -27,8 +27,8 @@
       </div>
 
       <div class="tab-pane" id="users-tab">
-        <%= render :partial => 'openstax/accounts/shared/users/search',
-                   :locals => { :search_action_path => search_admin_users_path,
+        <%= render :partial => 'openstax/accounts/shared/users/index',
+                   :locals => { :search_action_path => admin_users_path,
                                 :remote => true } %>
       </div>
 

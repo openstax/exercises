@@ -3,9 +3,9 @@ module Admin
 
     before_filter :get_user, only: [:show, :edit, :update, :destroy, :become]
 
-    def search
-      handle_with(Admin::UsersSearch,
-                  complete: lambda { render 'search' })
+    def index
+      handle_with(Admin::UsersIndex,
+                  complete: lambda { render 'index' })
     end
 
     def update
