@@ -28,10 +28,10 @@ Exercises::Application.routes.draw do
       get 'digest', on: :collection
     end
 
-    resources :users do
+    resources :users, only: [:index] do
       post 'index', on: :collection
     end
-    
+
   end
   
   namespace 'admin' do

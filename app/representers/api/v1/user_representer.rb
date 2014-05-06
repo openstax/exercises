@@ -10,7 +10,8 @@ module Api::V1
              }
 
     property :username,
-             type: String
+             type: String,
+             writeable: true
 
     property :first_name,
              type: String,
@@ -20,21 +21,13 @@ module Api::V1
              type: String,
              writeable: true
 
-#    property :full_name,
-#             type: String,
-#             writeable: true
+    property :full_name,
+             type: String,
+             writeable: true
 
-#    property :title,
-#             type: String,
-#             writeable: true
-
-#    collection :contact_infos,
-#               class: ContactInfo,
-#               decorator: ContactInfoRepresenter,
-#               writeable: false,
-#               schema_info: {
-#                 minItems: 0
-#               }
+    property :title,
+             type: String,
+             writeable: true
 
   end
 end

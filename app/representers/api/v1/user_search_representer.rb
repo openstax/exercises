@@ -41,7 +41,7 @@ module Api::V1
 
     collection :users,
                class: OpenStax::Accounts::User,
-               decorator: UserRepresenter,
+               decorator: Api::V1::UserRepresenter,
                schema_info: {
                  description: "The users matching the query or a subset thereof when paginating",
                  minItems: 0
