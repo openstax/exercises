@@ -29,7 +29,7 @@ gem 'remotipart', '~> 1.2'
 
 gem 'commontator', '~> 4.2.0'
 gem 'fine_print', '~> 1.2.0'
-gem 'openstax_accounts', :path => '../accounts-rails'
+gem 'openstax_accounts', :git => 'https://github.com/openstax/accounts-rails/'
 gem 'openstax_utilities', '~> 2.2.1'
 gem 'openstax_api', '~> 1.0.4'
 

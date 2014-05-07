@@ -15,8 +15,9 @@ GIT
     tinymce-rails (4.0.11)
       railties (>= 3.1.1)
 
-PATH
-  remote: ../accounts-rails
+GIT
+  remote: https://github.com/openstax/accounts-rails/
+  revision: 3f767f39b6c0c50cd1def3e71b05321a87477c45
   specs:
     openstax_accounts (0.3.1.alpha)
       keyword_search (>= 1.0.0)
