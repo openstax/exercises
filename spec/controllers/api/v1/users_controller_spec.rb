@@ -12,7 +12,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                                                 application: trusted_application, 
                                                 resource_owner_id: nil }
 
-  describe "search" do
+  describe "index" do
 
     it "returns a single result well" do
       api_get :index, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
