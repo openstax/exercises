@@ -27,12 +27,14 @@
       </div>
 
       <div class="tab-pane" id="users-tab">
-        <%= render 'users' %>
+        <%= render :partial => 'openstax/accounts/shared/users/index',
+                   :locals => { :search_action_path => admin_users_path,
+                                :remote => true } %>
       </div>
 
       <% unless Rails.env.production? %>
         <div class="tab-pane" id="developer-tab">
-          <%= render 'admin/dev/base/index' %>
+          <%= render 'dev/base/index' %>
         </div>
       <% end %>
     </div>

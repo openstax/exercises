@@ -1,5 +1,5 @@
 module Admin
-  class UsersSearch
+  class UsersIndex
 
     lev_handler transaction: :no_transaction
 
@@ -9,14 +9,14 @@ module Admin
       attribute :page, type: Integer
     end
 
-    uses_routine SearchUsers,
+    uses_routine OpenStax::Accounts::Dev::SearchUsers,
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 
     protected
 
     def authorized?
-      !Rails.env.production? || caller.is_admin?
+      !Rails.env.production?
     end
 
     def handle
@@ -26,7 +26,7 @@ module Admin
       when 'Username'
         query = "username:#{search_params.terms.gsub(/\s/,',')}"
       else
-        query = search_params.terms
+        query = search_params.terms || ''
       end
       run(:search_users, query, page: search_params.page || 0)
     end

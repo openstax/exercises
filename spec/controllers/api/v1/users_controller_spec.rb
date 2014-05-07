@@ -12,10 +12,10 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                                                 application: trusted_application, 
                                                 resource_owner_id: nil }
 
-  describe "search" do
+  describe "index" do
 
     it "returns a single result well" do
-      api_get :search, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
+      api_get :index, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
       expect(response.code).to eq('200')
 
       expected_response = {
@@ -45,34 +45,12 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       }
     }
 
-    it "should return the 2nd page when requested" do
-      api_get :search, trusted_application_token, parameters: {q: 'username:billy', page: 1, per_page: 10}
-
-      outcome = JSON.parse(response.body)
-
-      expect(outcome["num_matching_users"]).to eq 46
-      expect(outcome["users"].length).to eq 10
-      expect(outcome["users"][0]["username"]).to eq "billy_10"
-      expect(outcome["users"][9]["username"]).to eq "billy_19"
-    end
-
-    it "should return the incomplete 5th page when requested" do
-      api_get :search, trusted_application_token, parameters: {q: 'username:billy', page: 4, per_page: 10}
-
-      outcome = JSON.parse(response.body)
-
-      expect(outcome["num_matching_users"]).to eq 46
-      expect(outcome["users"].length).to eq 6
-      expect(outcome["users"][0]["username"]).to eq "billy_40"
-      expect(outcome["users"][5]["username"]).to eq "billy_45"
-    end
-
     let!(:bob_brown) { FactoryGirl.create :openstax_accounts_user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
     let!(:bob_jones) { FactoryGirl.create :openstax_accounts_user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
     let!(:tim_jones) { FactoryGirl.create :openstax_accounts_user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
 
     it "should allow sort by multiple fields in different directions" do
-      api_get :search, trusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
+      api_get :index, trusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
 
       outcome = JSON.parse(response.body)
 
@@ -83,6 +61,15 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(outcome["order_by"]).to eq "first_name ASC, last_name DESC"
     end
 
+    it "should return no results if the maximum number of results is exceeded" do
+      api_get :index, trusted_application_token, parameters: {q: ''}
+      expect(response.code).to eq('200')
+
+      outcome = JSON.parse(response.body)
+
+      expect(outcome["users"].length).to eq 0
+      expect(outcome["num_matching_users"]).to eq 52
+    end
 
   end
 

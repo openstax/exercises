@@ -21,7 +21,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 gem 'parslet', '~> 1.5'
 
-gem 'will_paginate', '~> 3.0'
+gem 'will_paginate', '~> 3.0.5'
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
@@ -29,9 +29,9 @@ gem 'remotipart', '~> 1.2'
 
 gem 'commontator', '~> 4.2.0'
 gem 'fine_print', '~> 1.2.0'
-gem 'openstax_accounts', '~> 0.3.0'
+gem 'openstax_accounts', :path => '../accounts-rails'
 gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 1.0.0'
+gem 'openstax_api', '~> 1.0.4'
 
 # API documentation
 gem 'apipie-rails', '~> 0.1.1'

@@ -15,20 +15,23 @@ Exercises::Application.routes.draw do
     resources :exercises, only: [:show, :update]
     resources :parts, only: [:show, :update, :create, :destroy]
     resources :questions, only: [:show, :update, :create, :destroy]
+
     resources :simple_choices, only: [:show, :update, :create, :destroy] do
       put 'sort', on: :collection
     end
     resources :combo_choices, only: [:show, :update, :create, :destroy]
     resources :combo_simple_choices, only: [:show, :create, :destroy]
+
     resources :logics, except: [:index]
     resources :libraries, only: [:show, :update, :new, :create, :destroy]
     resources :library_versions, only: [:show, :update, :create, :destroy] do
       get 'digest', on: :collection
     end
-    resources :users, only: [] do
-      get 'search', on: :collection
+
+    resources :users, only: [:index] do
+      post 'index', on: :collection
     end
-    
+
   end
   
   namespace 'admin' do
@@ -44,9 +47,9 @@ Exercises::Application.routes.draw do
     get "raise_not_yet_implemented",    to: 'base#raise_not_yet_implemented'
     get "raise_illegal_argument",       to: 'base#raise_illegal_argument'
 
-    resources :users, only: [:show, :update, :edit] do
+    resources :users, only: [:index, :show, :update, :edit] do
       post 'become', on: :member
-      post 'search', on: :collection
+      post 'index', on: :collection
     end
 
     resources :licenses
@@ -55,11 +58,11 @@ Exercises::Application.routes.draw do
     resources :libraries do
       resources :library_versions, :shallow => true
     end
+  end
 
-    namespace :dev do
-      resources :users, only: [:create] do
-        post 'generate', on: :collection
-      end
+  namespace :dev do
+    resources :users, only: [:create] do
+      post 'generate', on: :collection
     end
   end
 
