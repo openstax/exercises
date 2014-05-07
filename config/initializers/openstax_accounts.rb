@@ -5,7 +5,7 @@ OpenStax::Accounts.configure do |config|
   config.openstax_application_secret = SECRET_SETTINGS[:openstax_application_secret]
   config.logout_via = :delete
   config.user_provider = ::User
-  config.enable_stubbing = true
+  config.enable_stubbing = false
 end
 
 OpenStax::Accounts::ApplicationController.class_eval do

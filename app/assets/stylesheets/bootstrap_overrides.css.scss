@@ -42,10 +42,10 @@ select, input[type='text'], input[type='search'] {
   @extend .form-control;
 }
 
-.developer a {
+.dev a {
   color: $os_orange !important;
 }
 
-.developer a:hover {
+.dev a:hover {
   color: $os_dark_orange !important;
 }

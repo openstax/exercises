@@ -10,8 +10,8 @@
       <li class="active"><a href="#misc-tab" data-toggle="tab">Misc</a></li>
       <li><a href="#users-tab" data-toggle="tab">Users</a></li>
       <% unless Rails.env.production? %>
-        <li class="developer">
-          <a href="#developer-tab" data-toggle="tab">Dev</a>
+        <li class="dev">
+          <a href="#dev-tab" data-toggle="tab">Dev</a>
         </li>
       <% end %>
     </ul>
@@ -33,7 +33,7 @@
       </div>
 
       <% unless Rails.env.production? %>
-        <div class="tab-pane" id="developer-tab">
+        <div class="tab-pane" id="dev-tab">
           <%= render 'dev/base/index' %>
         </div>
       <% end %>
