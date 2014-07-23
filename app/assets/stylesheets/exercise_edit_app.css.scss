@@ -159,79 +159,89 @@ $edit_app_light_gray: lighten($os_gray,50%);
       }
     }
 
-    .editor {
-      border: solid darken($edit_app_light_gray,20%);      
-      border-width: 1px 0px;
-
-      .CodeMirror {
-        // border: 1px solid #eee;
-        height: auto;
-      }
-      .CodeMirror-scroll {
-        // overflow-y: hidden;
-        overflow-x: auto;
-        min-height: 5em;
-        max-height:30em;
-      }
-      .CodeMirror-code {
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
+    .logic-library-list {
+      border-top: 1px solid darken($edit_app_light_gray,20%);
+      background-color: rgb(247,247,247);
+      padding: 4px;
+      margin-left: 5px;
     }
 
-    .footer {
-      background-color: rgb(247,247,247);
+    .logic-input {
+      .editor {
+        border: solid darken($edit_app_light_gray,20%);      
+        border-width: 1px 0px;
 
-      padding: 4px;
-
-      .variables-label {
-        display: inline-block;
-        padding-left: 4px;
-      }
-      .variables {
-        width: 40%;
-        display: inline-block;
-        input {
-          display: inline-block;
+        .CodeMirror {
+          // border: 1px solid #eee;
+          height: auto;
+        }
+        .CodeMirror-scroll {
+          // overflow-y: hidden;
+          overflow-x: auto;
+          min-height: 5em;
+          max-height:30em;
+        }
+        .CodeMirror-code {
+          margin-top: 5px;
+          margin-bottom: 5px;
         }
       }
 
-      .permutations-label {
-        display: inline-block;
-        margin-left: 10px;
-      }
-      .permutations {
-        display: inline-block;
-        text-align: right;
-        input {
+      .footer {
+        background-color: rgb(247,247,247);
+
+        padding: 4px;
+
+        .variables-label {
           display: inline-block;
-          &.js-num-permutations, &.js-current-permutation {
-            width: 65px;
+          padding-left: 4px;
+        }
+        .variables {
+          width: 40%;
+          display: inline-block;
+          input {
+            display: inline-block;
           }
         }
 
-        .js-next-permutation, .js-prev-permutation {
-          border: none;
-          background-color: transparent;
-          width: 20px;
-        }
-
-        .js-next-permutation {
-          top: -6px;
-        }
-
-        .js-prev-permutation {
-          top: 10px;
-          left: -26px;
-        }
-
-        .permutations-of-label {
+        .permutations-label {
           display: inline-block;
-          margin-left: -20px;
-          margin-right: 3px;
+          margin-left: 10px;
         }
-      }
+        .permutations {
+          display: inline-block;
+          text-align: right;
+          input {
+            display: inline-block;
+            &.js-num-permutations, &.js-current-permutation {
+              width: 65px;
+            }
+          }
+
+          .js-next-permutation, .js-prev-permutation {
+            border: none;
+            background-color: transparent;
+            width: 20px;
+          }
+
+          .js-next-permutation {
+            top: -6px;
+          }
+
+          .js-prev-permutation {
+            top: 10px;
+            left: -26px;
+          }
+
+          .permutations-of-label {
+            display: inline-block;
+            margin-left: -20px;
+            margin-right: 3px;
+          }
+        }
+      }  
     }
+    
 
     .status {
       border-top: 1px solid darken($edit_app_light_gray,20%);  
