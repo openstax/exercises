@@ -8,7 +8,7 @@ gem 'rails', '3.2.17'
 gem 'jquery-rails', '2.3.0'
 gem 'squeel'
 
-gem 'lev', "~> 2.0.4"
+gem 'lev', "~> 2.1.1"
 
 # gem 'jbuilder'
 gem 'whenever', :require => false
@@ -21,23 +21,21 @@ gem 'carrierwave'
 gem 'mini_magick'
 gem 'parslet', '~> 1.5'
 
-gem 'will_paginate', '~> 3.0.5'
 gem 'acts-as-taggable-on'
 gem 'acts_as_votable'
 gem 'deep_cloneable'
 gem 'remotipart', '~> 1.2'
 
-gem 'commontator', '~> 4.2.0'
-gem 'fine_print', '~> 1.2.0'
-gem 'openstax_accounts', :git => 'https://github.com/openstax/accounts-rails/'
-gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 1.0.4'
+gem 'commontator', '~> 4.6.1'
+gem 'fine_print', '~> 1.4.1'
+gem 'openstax_accounts', '~> 2.0.0'
+gem 'openstax_utilities', '~> 3.0.0'
+gem 'openstax_api', '~> 2.2.3'
 
 # API documentation
-gem 'apipie-rails', '~> 0.1.1'
+gem 'apipie-rails', '~> 0.1.2'
 gem 'maruku'
-gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
-gem 'roar', '~> 0.12.4'
+gem 'representable', '~> 1.8.2'
 gem 'roar-rails'
 
 gem 'doorkeeper', '~> 0.6.7'
@@ -53,9 +51,9 @@ gem 'tinymce-rails', git: 'git://github.com/spohlenz/tinymce-rails.git', branch:
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',     '~> 3.2.3'
+  gem 'sass-rails',     '~> 3.2.6'
   gem 'coffee-rails',   '~> 3.2.1'
-  gem 'bootstrap-sass', '~> 3.0.2.0'
+  gem 'bootstrap-sass', '~> 3.1.1'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
   gem 'compass-rails'
@@ -68,7 +66,7 @@ group :development, :test do
   gem 'quiet_assets'
   gem 'timecop'
   gem 'rspec-rails'
-  gem 'capybara', '<2.1.0'  ## see: https://github.com/thoughtbot/capybara-webkit/issues/507
+  gem 'capybara'
   gem 'capybara-screenshot'
   gem 'capybara-webkit'
   gem 'database_cleaner'

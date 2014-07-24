@@ -1,4 +1,3 @@
-# This migration comes from fine_print (originally 0)
 class InstallFinePrint < ActiveRecord::Migration
   def change
     create_table :fine_print_contracts do |t|
@@ -20,8 +19,9 @@ class InstallFinePrint < ActiveRecord::Migration
     end
 
     add_index :fine_print_signatures, :contract_id
-    add_index :fine_print_signatures, [:user_id, :user_type, :contract_id], 
-                                      :name => 'index_fine_print_s_on_u_id_and_u_type_and_c_id',
-                                      :unique => true
+    add_index :fine_print_signatures,
+              [:user_id, :user_type, :contract_id],
+              :name => 'index_fine_print_s_on_u_id_and_u_type_and_c_id',
+              :unique => true
   end
 end

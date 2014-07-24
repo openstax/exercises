@@ -5,6 +5,7 @@ class CreateDoorkeeperTables < ActiveRecord::Migration
       t.string  :uid,          :null => false
       t.string  :secret,       :null => false
       t.string  :redirect_uri, :null => false
+
       t.timestamps
     end
 
@@ -39,4 +40,3 @@ class CreateDoorkeeperTables < ActiveRecord::Migration
     add_index :oauth_access_tokens, :refresh_token, :unique => true
   end
 end
-

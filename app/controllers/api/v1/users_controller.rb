@@ -23,21 +23,22 @@ module Api
       api :GET, '/users', 'Return a set of Users matching query terms'
       description <<-EOS
         Accepts a query string along with options and returns a JSON
-        representation of the matching Users.  Some User data may be
+        representation of the matching Users. Some User data may be
         filtered out depending on the caller's status and privileges in
-        the system.  The schema for the returned JSON result is shown below.
+        the system. The schema for the returned JSON result is shown below.
 
         #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}            
       EOS
       # Using route helpers doesn't work in test or production, probably has to do with initialization order
-      example "#{api_example(url_base: 'https://exercises.openstax.org/api/users/search', url_end: '?q=username:bob%20name=Jones')}"
+      example "#{api_example(url_base: 'https://exercises.openstax.org/api/users',
+                             url_end: '?q=username:bob%20name=Jones')}"
       param :q, String, required: true, desc: <<-EOS
         The search query string, built up as a space-separated collection of
-        search conditions on different fields.  Each condition is formatted as
-        "field_name:comma-separated-values".  The resulting list of users will
-        match all of the conditions (boolean 'and').  Each condition will produce
+        search conditions on different fields. Each condition is formatted as
+        "field_name:comma-separated-values". The resulting list of users will
+        match all of the conditions (boolean 'and'). Each condition will produce
         a list of users where those users must match any of the
-        comma-separated-values (boolean 'or').  The fields_names and their
+        comma-separated-values (boolean 'or'). The fields_names and their
         characteristics are given below.
         When a field is listed as using wildcard matching, it means that any
         fields that start with a comma-separated-value will be matched.

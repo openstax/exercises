@@ -1,13 +1,4 @@
 GIT
-  remote: git://github.com/jpslav/representable.git
-  revision: 0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457
-  ref: 0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457
-  specs:
-    representable (1.7.5)
-      multi_json
-      nokogiri
-
-GIT
   remote: git://github.com/spohlenz/tinymce-rails.git
   revision: 4a4d0ea551171c279eafe3002dff52a462a45b66
   branch: tinymce-4
@@ -15,26 +6,11 @@ GIT
     tinymce-rails (4.0.11)
       railties (>= 3.1.1)
 
-GIT
-  remote: https://github.com/openstax/accounts-rails/
-  revision: 3f767f39b6c0c50cd1def3e71b05321a87477c45
-  specs:
-    openstax_accounts (0.3.1.alpha)
-      keyword_search (>= 1.0.0)
-      lev (>= 2.0)
-      oauth2 (>= 0.5.0)
-      omniauth (>= 1.1)
-      omniauth-oauth2 (>= 1.1)
-      openstax_utilities (>= 1.2)
-      rails (>= 3.2)
-      roar (>= 0.8)
-      sass-rails (>= 3.1)
-      squeel (>= 0.5.0)
-      uglifier (>= 1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
+    action_interceptor (0.2.4)
+      rails (>= 3.1)
     actionmailer (3.2.17)
       actionpack (= 3.2.17)
       mail (~> 2.5.4)
@@ -48,9 +24,9 @@ GEM
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
-    active_attr (0.8.2)
-      activemodel (>= 3.0.2, < 4.1)
-      activesupport (>= 3.0.2, < 4.1)
+    active_attr (0.8.4)
+      activemodel (>= 3.0.2, < 4.2)
+      activesupport (>= 3.0.2, < 4.2)
     activemodel (3.2.17)
       activesupport (= 3.2.17)
       builder (~> 3.0.0)
@@ -69,15 +45,12 @@ GEM
       rails (>= 3, < 5)
     acts_as_votable (0.5.0)
       rails (>= 3.0.0)
-    apipie-rails (0.1.1)
+    apipie-rails (0.1.3)
       json
       rails (>= 3.0.10)
     arel (3.0.3)
-    attribeautiful (0.0.7)
-      activesupport (~> 3.0)
-      eager_beaver (~> 0.0.4)
     blankslate (2.1.2.4)
-    bootstrap-sass (3.0.2.1)
+    bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
     brakeman (2.0.0)
       erubis (~> 2.6)
@@ -124,7 +97,7 @@ GEM
       execjs
     coffee-script-source (1.6.2)
     columnize (0.3.6)
-    commontator (4.2.1)
+    commontator (4.6.1)
       jquery-rails
       rails (>= 3.1)
     compass (0.12.2)
@@ -156,7 +129,6 @@ GEM
     diff-lcs (1.2.4)
     doorkeeper (0.6.7)
       railties (~> 3.1)
-    eager_beaver (0.0.4)
     eco (1.0.0)
       coffee-script
       eco-source
@@ -181,7 +153,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
     ffi (1.9.0)
-    fine_print (1.2.0)
+    fine_print (1.4.1)
       jquery-rails
       rails (>= 3.1)
     fssm (0.2.10)
@@ -189,7 +161,7 @@ GEM
       multi_json (~> 1.3)
     haml (4.0.3)
       tilt
-    hashie (2.0.5)
+    hashie (3.2.0)
     highline (1.6.19)
     hike (1.2.3)
     hooks (0.3.3)
@@ -199,10 +171,9 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
-    jwt (0.1.11)
-      multi_json (>= 1.5)
+    jwt (1.0.0)
     keyword_search (1.5.0)
-    lev (2.0.4)
+    lev (2.1.1)
       actionpack (>= 3.0)
       active_attr
       activemodel (>= 3.0)
@@ -229,29 +200,43 @@ GEM
     nifty-generators (0.4.6)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
-    oauth2 (0.9.3)
+    oauth2 (1.0.0)
       faraday (>= 0.8, < 0.10)
-      jwt (~> 0.1.8)
+      jwt (~> 1.0)
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (~> 1.2)
-    omniauth (1.2.1)
-      hashie (>= 1.2, < 3)
+    omniauth (1.2.2)
+      hashie (>= 1.2, < 4)
       rack (~> 1.0)
-    omniauth-oauth2 (1.1.2)
+    omniauth-oauth2 (1.2.0)
       faraday (>= 0.8, < 0.10)
       multi_json (~> 1.3)
-      oauth2 (~> 0.9.3)
+      oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    openstax_api (1.0.4)
+    openstax_accounts (2.0.0)
+      action_interceptor (>= 0.1)
+      activesupport (>= 3.1)
+      keyword_search (>= 1.0.0)
+      lev (>= 2.1.1)
+      oauth2 (>= 0.5.0)
+      omniauth (>= 1.1)
+      omniauth-oauth2 (>= 1.1)
+      openstax_utilities (>= 2.2.3)
+      rails (>= 3.1)
+      roar (>= 0.8)
+      sass-rails (>= 3.1)
+      squeel (>= 0.5.0)
+      uglifier (>= 1.0)
+    openstax_api (2.2.3)
       doorkeeper (>= 0.5)
       exception_notification (>= 4.0)
       openstax_utilities (>= 1.0.1)
       rails (>= 3.1)
+      representable (>= 1.8)
       roar (>= 0.12.1)
       roar-rails (>= 0.1.2)
-    openstax_utilities (2.2.1)
-      attribeautiful (>= 0.0.7)
+    openstax_utilities (3.0.0)
       rails (>= 3.1)
     pager (1.0.1)
     parslet (1.5.0)
@@ -294,6 +279,10 @@ GEM
       json (~> 1.4)
     ref (1.0.5)
     remotipart (1.2.1)
+    representable (1.8.5)
+      multi_json
+      nokogiri
+      uber
     roar (0.12.4)
       representable (>= 1.6.0)
     roar-rails (0.1.4)
@@ -370,13 +359,12 @@ GEM
       activerecord (>= 3.0.11)
     transaction_retry (1.0.2)
       activerecord (>= 3.0.11)
-      polyglot
-      polyglot (>= 0.3.1)
       transaction_isolation (>= 1.0.2)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.39)
+    uber (0.0.7)
     uglifier (2.1.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -384,7 +372,6 @@ GEM
     whenever (0.8.2)
       activesupport (>= 2.3.4)
       chronic (>= 0.6.3)
-    will_paginate (3.0.5)
     xpath (1.0.0)
       nokogiri (~> 1.3)
     yaml_db (0.2.3)
@@ -395,17 +382,17 @@ PLATFORMS
 DEPENDENCIES
   acts-as-taggable-on
   acts_as_votable
-  apipie-rails (~> 0.1.1)
-  bootstrap-sass (~> 3.0.2.0)
+  apipie-rails (~> 0.1.2)
+  bootstrap-sass (~> 3.1.1)
   brakeman
-  capybara (< 2.1.0)
+  capybara
   capybara-screenshot
   capybara-webkit
   carrierwave
   cheat
   coffee-rails (~> 3.2.1)
   coffee-rails-source-maps
-  commontator (~> 4.2.0)
+  commontator (~> 4.6.1)
   compass-rails
   cucumber-rails
   database_cleaner
@@ -417,19 +404,19 @@ DEPENDENCIES
   exception_notification
   factory_girl_rails
   faker
-  fine_print (~> 1.2.0)
+  fine_print (~> 1.4.1)
   jquery-rails (= 2.3.0)
   keyword_search (~> 1.5.0)
-  lev (~> 2.0.4)
+  lev (~> 2.1.1)
   maruku
   mini_magick
   mysql2 (~> 0.3.11)
   nested_form
   newrelic_rpm
   nifty-generators
-  openstax_accounts!
-  openstax_api (~> 1.0.4)
-  openstax_utilities (~> 2.2.1)
+  openstax_accounts (~> 2.0.0)
+  openstax_api (~> 2.2.3)
+  openstax_utilities (~> 3.0.0)
   parslet (~> 1.5)
   quiet_assets
   rack-test
@@ -437,12 +424,11 @@ DEPENDENCIES
   rails (= 3.2.17)
   rails-erd
   remotipart (~> 1.2)
-  representable!
-  roar (~> 0.12.4)
+  representable (~> 1.8.2)
   roar-rails
   rspec-rails
   rspec-rerun
-  sass-rails (~> 3.2.3)
+  sass-rails (~> 3.2.6)
   sqlite3 (~> 1.3.6)
   squeel
   therubyracer
@@ -451,5 +437,4 @@ DEPENDENCIES
   tinymce-rails!
   uglifier (>= 1.0.3)
   whenever
-  will_paginate (~> 3.0.5)
   yaml_db

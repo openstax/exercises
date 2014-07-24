@@ -16,7 +16,6 @@ module Publishable
         add_index table_name, :published_at
       end
 
-      alias_method :add_publishable_indexes, :add_publishable_index
       alias_method :add_publishable_indices, :add_publishable_index
     end
   end

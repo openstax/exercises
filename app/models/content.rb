@@ -1,5 +1,5 @@
 class Content < ActiveRecord::Base
-  attr_accessible :attachable_id, :html, :markup
+  attr_accessible :html, :markup
 
   before_validation :parse_and_cache_content
   after_initialize :blank_markup
@@ -26,7 +26,4 @@ class Content < ActiveRecord::Base
     # !!! shouldn't be able to update content if container published, something that
     # belongs in a routine (cross class checks, etc)
   end
-
-
-
 end
