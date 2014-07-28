@@ -6,7 +6,6 @@ require 'shared_application_methods'
 require 'api_constraints'
 
 require 'attachable'
-require 'content'
 require 'exercise_search'
 require 'publishable'
 require 'solution_search'

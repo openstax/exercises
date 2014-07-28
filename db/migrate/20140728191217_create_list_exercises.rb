@@ -2,8 +2,9 @@ class CreateListExercises < ActiveRecord::Migration
   def change
     create_table :list_exercises do |t|
       t.sortable
-      t.belongs_to :list, null: false
-      t.belongs_to :exercise, null: false
+      t.references :list, null: false
+      t.references :exercise, null: false
+      t.decimal :credit, precision: 5, scale: 2
 
       t.timestamps
     end

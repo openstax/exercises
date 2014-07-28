@@ -3,6 +3,7 @@ class CreateCombos < ActiveRecord::Migration
     create_table :combos do |t|
       t.sortable
       t.references :question, null: false
+      t.decimal :correctness, null: false, precision: 5, scale: 2, default: 0
 
       t.timestamps
     end

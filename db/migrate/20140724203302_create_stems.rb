@@ -3,6 +3,7 @@ class CreateStems < ActiveRecord::Migration
     create_table :stems do |t|
       t.references :question, null: false
       t.string :format, null: false
+      t.text :content, null: false
 
       t.timestamps
     end
