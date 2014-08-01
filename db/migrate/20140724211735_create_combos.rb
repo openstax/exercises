@@ -4,6 +4,7 @@ class CreateCombos < ActiveRecord::Migration
       t.sortable
       t.references :question, null: false
       t.decimal :correctness, null: false, precision: 5, scale: 2, default: 0
+      t.text :feedback
 
       t.timestamps
     end
