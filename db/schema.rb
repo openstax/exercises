@@ -201,16 +201,6 @@ ActiveRecord::Schema.define(:version => 20140728232748) do
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
 
-  create_table "format_solutions", :force => true do |t|
-    t.integer  "format_id",   :null => false
-    t.integer  "solution_id", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
-  add_index "format_solutions", ["format_id", "solution_id"], :name => "index_format_solutions_on_format_id_and_solution_id", :unique => true
-  add_index "format_solutions", ["solution_id"], :name => "index_format_solutions_on_solution_id"
-
   create_table "formats", :force => true do |t|
     t.integer  "position",   :null => false
     t.string   "name",       :null => false
@@ -219,6 +209,17 @@ ActiveRecord::Schema.define(:version => 20140728232748) do
   end
 
   add_index "formats", ["name"], :name => "index_formats_on_name", :unique => true
+
+  create_table "grading_algorithms", :force => true do |t|
+    t.string   "name",         :null => false
+    t.string   "routine_name", :null => false
+    t.text     "description",  :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "grading_algorithms", ["name"], :name => "index_grading_algorithms_on_name", :unique => true
+  add_index "grading_algorithms", ["routine_name"], :name => "index_grading_algorithms_on_routine_name", :unique => true
 
   create_table "items", :force => true do |t|
     t.integer  "position",    :null => false
@@ -439,20 +440,40 @@ ActiveRecord::Schema.define(:version => 20140728232748) do
 
   add_index "questions", ["part_id", "position"], :name => "index_questions_on_part_id_and_position", :unique => true
 
-  create_table "rubrics", :force => true do |t|
-    t.integer  "number",                        :null => false
-    t.integer  "version",        :default => 1, :null => false
-    t.integer  "license_id",                    :null => false
-    t.datetime "published_at"
-    t.integer  "gradable_id",                   :null => false
-    t.string   "gradable_type",                 :null => false
-    t.text     "human_rubric"
-    t.text     "machine_rubric"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+  create_table "rubric_formats", :force => true do |t|
+    t.integer  "rubric_id",  :null => false
+    t.integer  "format_id",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
-  add_index "rubrics", ["gradable_id", "gradable_type"], :name => "index_rubrics_on_gradable_id_and_gradable_type", :unique => true
+  add_index "rubric_formats", ["format_id"], :name => "index_rubric_formats_on_format_id"
+  add_index "rubric_formats", ["rubric_id", "format_id"], :name => "index_rubric_formats_on_rubric_id_and_format_id", :unique => true
+
+  create_table "rubrics", :force => true do |t|
+    t.integer  "number",                              :null => false
+    t.integer  "version",              :default => 1, :null => false
+    t.integer  "license_id",                          :null => false
+    t.datetime "published_at"
+    t.integer  "question_id",                         :null => false
+    t.integer  "grading_algorithm_id"
+    t.text     "human_instructions"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+  end
+
+  add_index "rubrics", ["grading_algorithm_id"], :name => "index_rubrics_on_grading_algorithm_id"
+  add_index "rubrics", ["question_id"], :name => "index_rubrics_on_question_id"
+
+  create_table "solution_formats", :force => true do |t|
+    t.integer  "solution_id", :null => false
+    t.integer  "format_id",   :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "solution_formats", ["format_id"], :name => "index_solution_formats_on_format_id"
+  add_index "solution_formats", ["solution_id", "format_id"], :name => "index_solution_formats_on_solution_id_and_format_id", :unique => true
 
   create_table "solutions", :force => true do |t|
     t.integer  "number",                       :null => false

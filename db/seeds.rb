@@ -18,7 +18,7 @@
    contract.title   = 'Privacy Policy'
  end).publish
 
-(cc_by_contract = FinePrint::Contract.create do |contract|
+(FinePrint::Contract.create do |contract|
    contract.name    = 'publish_cc_by_3_0'
    contract.content = 'Placeholder for agreement to publish content under the CC BY 3.0 license'
    contract.title   = 'Content Publishing Agreement: CC-BY 3.0'

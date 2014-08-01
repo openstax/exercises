@@ -2,13 +2,14 @@ class CreateRubrics < ActiveRecord::Migration
   def change
     create_table :rubrics do |t|
       t.publishable
-      t.references :gradable, polymorphic: true, null: false
-      t.text :human_rubric
-      t.text :machine_rubric
+      t.references :question, null: false
+      t.references :grading_algorithm
+      t.text :human_instructions
 
       t.timestamps
     end
 
-    add_index :rubrics, [:gradable_id, :gradable_type], unique: true
+    add_index :rubrics, :question_id
+    add_index :rubrics, :grading_algorithm_id
   end
 end
