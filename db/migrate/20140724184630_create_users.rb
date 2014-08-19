@@ -3,10 +3,11 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users do |t|
       t.references :account, null: false
       t.datetime :registered_at
+
       t.boolean :subscribe_on_comment, null: false, default: false
       t.boolean :send_emails, null: false, default: true
       t.boolean :collaborator_request_email, null: false, default: true
-      t.boolean :permission_email, null: false, default: true
+      t.boolean :permission_change_email, null: false, default: true
 
       t.timestamps
     end

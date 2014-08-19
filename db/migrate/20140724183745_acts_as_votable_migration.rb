@@ -12,8 +12,6 @@ class ActsAsVotableMigration < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :votes, [:votable_id, :votable_type]
-    add_index :votes, [:voter_id, :voter_type]
     add_index :votes, [:voter_id, :voter_type, :vote_scope]
     add_index :votes, [:votable_id, :votable_type, :vote_scope]
   end
