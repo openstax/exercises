@@ -5,7 +5,10 @@ class CreateLicenses < ActiveRecord::Migration
       t.string :name, null: false
       t.string :short_name, null: false
       t.string :url, null: false
-      t.string :publishing_contract_name, null: false
+      t.text :contract, null: false
+      t.text :notice, null: false
+      t.text :can_combine_into, null: false, default: [].to_yaml
+      t.boolean :is_public_domain, null: false, default: false
       t.boolean :allows_exercises, null: false, default: true
       t.boolean :allows_solutions, null: false, default: true
       t.boolean :allows_rubrics, null: false, default: true

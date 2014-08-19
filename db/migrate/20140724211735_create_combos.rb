@@ -3,12 +3,13 @@ class CreateCombos < ActiveRecord::Migration
     create_table :combos do |t|
       t.sortable
       t.references :question, null: false
-      t.decimal :correctness, null: false, precision: 5, scale: 2, default: 0
+      t.decimal :correctness, null: false, precision: 3, scale: 2, default: 0
       t.text :feedback
 
       t.timestamps
     end
 
     add_sortable_index :combos, :question_id
+    add_index :combos, :correctness
   end
 end

@@ -4,7 +4,7 @@ class CreateExercises < ActiveRecord::Migration
       t.publishable
       t.references :logic
       t.string :title
-      t.text :background
+      t.text :background, null: false, default: ''
       t.datetime :embargoed_until
       t.boolean :embargo_solutions_only, null: false, default: false
       t.boolean :changes_solutions, null: false, default: false
@@ -14,5 +14,6 @@ class CreateExercises < ActiveRecord::Migration
 
     add_publishable_indexes :exercises
     add_index :exercises, :embargoed_until
+    add_index :exercises, :logic_id
   end
 end

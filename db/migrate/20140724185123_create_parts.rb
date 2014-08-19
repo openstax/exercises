@@ -3,7 +3,7 @@ class CreateParts < ActiveRecord::Migration
     create_table :parts do |t|
       t.sortable
       t.references :exercise, null: false
-      t.text :background
+      t.text :background, null: false, default: ''
 
       t.timestamps
     end

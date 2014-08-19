@@ -4,15 +4,13 @@ module Publishable
       def publishable
         integer :number, null: false
         integer :version, null: false, default: 1
-        belongs_to :license, null: false
         datetime :published_at
       end
     end
 
     module Index
-      def add_publishable_index(table_name)
-        add_index table_name, [:number, :version], unique: true
-        add_index table_name, :license_id
+      def add_publishable_index(table_name, publishable_scope = [])
+        add_index table_name, [publishable_scope].flatten + [:number, :version], unique: true
         add_index table_name, :published_at
       end
 

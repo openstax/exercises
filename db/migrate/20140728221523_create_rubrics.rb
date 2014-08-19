@@ -9,7 +9,7 @@ class CreateRubrics < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :rubrics, :question_id
+    add_publishable_indexes :rubrics, :question_id
     add_index :rubrics, :grading_algorithm_id
   end
 end

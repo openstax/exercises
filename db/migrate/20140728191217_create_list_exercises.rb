@@ -11,5 +11,6 @@ class CreateListExercises < ActiveRecord::Migration
 
     add_sortable_index :list_exercises, :list_id
     add_index :list_exercises, [:exercise_id, :list_id], unique: true
+    add_index :list_exercises, :credit
   end
 end

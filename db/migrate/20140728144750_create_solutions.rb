@@ -3,13 +3,14 @@ class CreateSolutions < ActiveRecord::Migration
     create_table :solutions do |t|
       t.publishable
       t.references :question, null: false
-      t.text :summary, null: false, default: ''
-      t.text :details, null: false, default: ''
+      t.references :logic
+      t.text :summary
+      t.text :details, null: false
 
       t.timestamps
     end
 
-    add_publishable_indexes :solutions
-    add_index :solutions, :question_id
+    add_publishable_indexes :solutions, :question_id
+    add_index :solutions, :logic_id
   end
 end
