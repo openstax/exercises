@@ -8,8 +8,9 @@ class CreateLicenses < ActiveRecord::Migration
       t.text :contract, null: false
       t.text :notice, null: false
       t.text :can_combine_into, null: false, default: [].to_yaml
-      t.text :allowed_publishables, null: false,
-             default: ['Exercise', 'Solution', 'Rubric'].to_yaml
+      t.boolean :allows_exercises, null: false, default: true
+      t.boolean :allows_solutions, null: false, default: true
+      t.boolean :allows_rubrics, null: false, default: true
       t.boolean :is_public_domain, null: false, default: false
 
       t.timestamps

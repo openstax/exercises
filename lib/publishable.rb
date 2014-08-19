@@ -220,22 +220,11 @@ module Publishable
 
   module RoutingMapper
     def publishable
-      resources :attachments, only: [:new, :create, :edit, :update, :destroy], shallow: true
-      resources :collaborators, only: [:index, :new, :create, :destroy], shallow: true do
-        member do
-          put 'toggle_author'
-          put 'toggle_copyright_holder'
-        end
-      end
-      resources :derivations, only: [:index, :new, :create, :destroy], shallow: true
-
-      post 'new_version', to: 'publishables#new_version'
-      post 'derive', to: 'publishables#derive'
     end
   end
 end
 
-ActiveRecord::Base.send :include, Publishable
+ActiveRecord::Base.send :include, Publishable::ActiveRecord
 ActiveRecord::ConnectionAdapters::TableDefinition.send :include, Publishable::TableDefinition
 ActiveRecord::Migration.send :include, Publishable::Migration
 ActionDispatch::Routing::Mapper.send :include, Publishable::RoutingMapper

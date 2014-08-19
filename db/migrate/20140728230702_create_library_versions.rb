@@ -10,6 +10,6 @@ class CreateLibraryVersions < ActiveRecord::Migration
     end
 
     add_index :library_versions, [:library_id, :version], unique: true
-    add_index :library_versions, [:library_id, :deprecated_at]
+    add_index :library_versions, :deprecated_at
   end
 end
