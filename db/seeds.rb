@@ -28,10 +28,8 @@ License.create do |license|
   license.short_name               = "CC BY 3.0"
   license.name                     = "Creative Commons Attribution 3.0 Unported"
   license.url                      = "http://creativecommons.org/licenses/by/3.0/"
-  license.publishing_contract_name = "publish_cc_by_3_0"
-  license.allows_exercises          = true
-  license.allows_solutions          = true
-  license.allows_rubrics            = true
+  license.publishing_contract      = "publish_cc_by_3_0"
+  license.allows_exercises         = true
+  license.allows_solutions         = true
+  license.allows_rubrics           = true
 end
-
-

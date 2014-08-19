@@ -1,5 +1,4 @@
 class Solution < ActiveRecord::Base
-  attachable
   # content [:summary, :content]
   publishable
 

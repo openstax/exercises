@@ -38,7 +38,7 @@ class Logic < ActiveRecord::Base
     logic_outputs.where{updated_at.lt my{updated_at}}.destroy_all
   end
 
-protected
+  protected
 
   def variables_well_formatted
       if !variables.all?{|var| VARIABLE_REGEX =~ var}

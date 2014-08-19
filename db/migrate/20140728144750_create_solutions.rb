@@ -2,7 +2,7 @@ class CreateSolutions < ActiveRecord::Migration
   def change
     create_table :solutions do |t|
       t.publishable
-      t.logic
+      t.logicable
       t.references :question, null: false
       t.text :summary
       t.text :details, null: false
@@ -11,6 +11,6 @@ class CreateSolutions < ActiveRecord::Migration
     end
 
     add_publishable_indexes :solutions, :question_id
-    add_logic_index :solutions
+    add_logicable_index :solutions
   end
 end

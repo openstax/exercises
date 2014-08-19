@@ -13,7 +13,7 @@ module Api
 
       api :GET, '/questions/:id', 'Gets the specified Question'
       description <<-EOS
-        #{json_schema(Api::V1::MultipleChoiceQuestionRepresenter, include: :readable)}        
+        #{json_schema(Api::V1::QuestionRepresenter, include: :readable)}        
       EOS
       def show
         rest_get(Question, params[:id], QuestionRepresenter.method(:sub_representer_for).to_proc)

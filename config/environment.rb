@@ -1,9 +1,10 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
+require 'secret_settings'
 require 'publishable'
 require 'sortable'
-require 'logic'
+require 'logicable'
 require 'user_search'
 require 'exercise_search'
 require 'solution_search'

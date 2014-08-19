@@ -27,7 +27,8 @@ module Api
         filtered out depending on the caller's status and privileges in
         the system. The schema for the returned JSON result is shown below.
 
-        #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}            
+        #{json_schema(OpenStax::Accounts::Api::V1::AccountSearchRepresenter,
+                      include: :readable)}            
       EOS
       # Using route helpers doesn't work in test or production, probably has to do with initialization order
       example "#{api_example(url_base: 'https://exercises.openstax.org/api/users',
@@ -71,7 +72,7 @@ module Api
         A string that indicates how to sort the results of the query. The string
         is a comma-separated list of fields with an optional sort direction. The
         sort will be performed in the order the fields are given.
-        The fields can be one of #{OpenStax::Accounts::SearchUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+        The fields can be one of #{OpenStax::Accounts::SearchAccounts::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
         Sort directions can either be `ASC` for 
         an ascending sort, or `DESC` for a
         descending sort. If not provided, an ascending sort is assumed. Sort
@@ -84,8 +85,10 @@ module Api
       EOS
       def index
         OSU::AccessPolicy.require_action_allowed!(:index, current_user, User)
-        outputs = OpenStax::Accounts::SearchUsers.call(params[:q], params.slice(:order_by)).outputs
-        respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
+        outputs = OpenStax::Accounts::SearchAccounts.call(
+                    params[:q], params.slice(:order_by)).outputs
+        respond_with outputs,
+                     represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
       end
 
     end

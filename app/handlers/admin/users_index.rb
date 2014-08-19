@@ -9,7 +9,7 @@ module Admin
       attribute :page, type: Integer
     end
 
-    uses_routine OpenStax::Accounts::Dev::SearchUsers,
+    uses_routine OpenStax::Accounts::Dev::SearchAccounts,
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 

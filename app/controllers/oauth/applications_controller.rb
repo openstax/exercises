@@ -1,29 +1,19 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
-    skip_before_filter :authenticate_admin!
-    before_filter :authenticate_user!
     before_filter :get_user
-    before_filter :get_user_group, :only => [:index, :new, :create]
-    before_filter :get_application, :except => [:index, :new, :create]
-
-    layout 'application_body_only'
+    before_filter :get_application, :only => [:show, :edit, :update, :destroy]
 
     def index
-      OSU::AccessPolicy.require_action_allowed!(:read, @user, @user_group)
-      @applications = @user_group.oauth_applications
-    end
-
-    def new
-      @application = Doorkeeper::Application.new
-      @application.owner = @user_group
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
+      @applications = @user.is_administrator? ? Doorkeeper::Application.all :
+                                                @user.oauth_applications
     end
 
     def create
-      @application = Doorkeeper::Application.new(application_params)
-      @application.owner = @user_group
+      @application = Doorkeeper::Application.new(application_params(@user))
+      @application.owner = Group.new
+      @application.owner.add_member(current_user)
+      @application.owner.add_owner(current_user)
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
-      @application.trusted = params[:application][:trusted] if @user.is_admin?
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
@@ -32,7 +22,7 @@ module Oauth
         render :new
       end
     end
-    
+
     def show
       OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
       super
@@ -45,9 +35,7 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      if @application.update_attributes(application_params)
-        @application.update_attribute(:trusted, params[:application][:trusted]) \
-          if @user.is_admin?
+      if @application.update_attributes(application_params(@user))
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :update])
         respond_with [:oauth, @application]
@@ -58,20 +46,13 @@ module Oauth
 
     def destroy
       OSU::AccessPolicy.require_action_allowed!(:destroy, @user, @application)
-      flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
-                                                  :applications, :destroy]) \
-                         if @application.destroy
-      redirect_to user_group_oauth_applications_url(@application.owner)
+      super
     end
 
     protected
 
     def get_user
       @user = current_user
-    end
-
-    def get_user_group
-      @user_group = UserGroup.find(params[:user_group_id])
     end
     
     def get_application
@@ -80,12 +61,21 @@ module Oauth
 
     private
     
-    def application_params
-      if params.respond_to?(:permit)
-        params.require(:application).permit(:name, :redirect_uri)
-      else
-        params[:application].slice(:name, :redirect_uri) rescue nil
-      end
+    def user_params
+      return {} if params[:application].nil?
+      params[:application].slice(:name, :redirect_uri, :email_subject_prefix)
+    end
+
+    def admin_params
+      return {} if params[:application].nil?
+      params[:application].slice(:trusted, :email_from_address)
+    end
+
+    # We control which attributes of Doorkeeper::Applications can be updated
+    # here, since they differ for normal users and administrators
+    def application_params(user)
+      user.is_administrator? ? \
+        user_params.merge(admin_params) : user_params
     end
   end
 end

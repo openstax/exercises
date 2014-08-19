@@ -8,12 +8,8 @@ module Api::V1
     property :position, 
               writeable: false
 
-    property :credit
-
     property :background, 
-             class: Content, 
-             decorator: ContentRepresenter, 
-             parse_strategy: :sync
+             type: String
 
     collection :questions, 
                # class: Question, 

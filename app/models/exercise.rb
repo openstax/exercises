@@ -1,6 +1,4 @@
 class Exercise < ActiveRecord::Base
-  attachable
-  content :background
   publishable
 
   add_prepublish_check(:has_questions?, true, 'This exercise does not contain any questions.')

@@ -5,7 +5,7 @@ class UserAccessPolicy
     if requestor.is_human?
       [:index].include?(action) && !requestor.is_anonymous?
     else
-      [:index].include?(action) && !self.nil?
+      [:index].include?(action)
     end
   end
 

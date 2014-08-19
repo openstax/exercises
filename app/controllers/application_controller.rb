@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  include SharedApplicationMethods
-
   include Lev::HandleWith
 
   layout :layout

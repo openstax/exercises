@@ -1,5 +1,5 @@
 module Api::V1
-  class ComboChoiceRepresenter < Roar::Decorator
+  class AnswerRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
     property :id, 
@@ -8,14 +8,12 @@ module Api::V1
              schema_info: {
                required: true
              }
+             
+    property :content,
+             type: String
 
     property :correctness,
              type: Float
-    
-    #collection :answer_ids,
-    #           schema_info: {
-    #             items: Integer
-    #           }
 
   end
 end

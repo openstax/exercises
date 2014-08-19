@@ -22,9 +22,7 @@ module Api::V1
              writeable: true
 
     property :background, 
-             class: Content, 
-             decorator: ContentRepresenter, 
-             parse_strategy: :sync
+             type: String
 
     property :logic,
              class: Logic,
