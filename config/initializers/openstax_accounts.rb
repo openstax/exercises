@@ -9,6 +9,7 @@ OpenStax::Accounts.configure do |config|
 end
 
 OpenStax::Accounts::ApplicationController.class_eval do
-  helper ApplicationAccountBarHelper, ApplicationHelper, ApplicationTopNavHelper, AlertHelper, OpenStax::Utilities::OsuHelper
+  helper ApplicationAccountBarHelper, ApplicationHelper, ApplicationTopNavHelper,
+  AlertsHelper, OpenStax::Utilities::OsuHelper
   layout "layouts/application_body_only"
 end
