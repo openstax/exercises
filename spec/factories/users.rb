@@ -1,4 +1,4 @@
 FactoryGirl.define do
-  factory :logic_output do
+  factory :user do
   end
 end

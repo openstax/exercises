@@ -1,4 +1,4 @@
 FactoryGirl.define do
-  factory :logic_output do
+  factory :rubric do
   end
 end

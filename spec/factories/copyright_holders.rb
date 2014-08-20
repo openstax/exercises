@@ -1,4 +1,4 @@
 FactoryGirl.define do
-  factory :logic_output do
+  factory :copyright_holder do
   end
 end

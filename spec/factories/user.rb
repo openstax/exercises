@@ -1,10 +1,11 @@
 FactoryGirl.define do
   factory :user do
     association :openstax_accounts_user, factory: :openstax_accounts_user
-    association :default_list, factory: :list
 
     trait :admin do
-      is_admin true
+      after(:create) do |user, evaluator|
+        user.administrator << Administrator.create(user: user)
+      end
     end
 
     trait :terms_agreed do
