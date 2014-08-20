@@ -1,9 +1,7 @@
 <div class="span16">
   <%= page_heading "OAuth Applications" %>
   
-  <p><%= link_to 'New Application',
-                 new_user_group_oauth_application_path(@user_group),
-                 style: 'float:right' %></p>
+  <p><%= link_to 'New Application', new_oauth_application_path, style: 'float:right' %></p>
 
   <table class="std-list-1">
     <thead>

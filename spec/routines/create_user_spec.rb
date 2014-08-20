@@ -6,7 +6,7 @@ describe CreateUser do
     mock_model OpenStax::Accounts::User, name: 'Bobby Joe'
   end
 
-  it "works" do
+  it "creates users" do
     result = nil
     expect {
       result = CreateUser.call(accounts_user)

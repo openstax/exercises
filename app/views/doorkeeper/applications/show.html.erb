@@ -14,6 +14,12 @@
   <h4>Secret:</h4>
   <p><code id="secret"><%= @application.secret %></code></p>
 
+  <h4>Email Subject Prefix:</h4>
+  <p><%= @application.email_subject_prefix %></p>
+
+  <h4>Email From Address:</h4>
+  <p><%= @application.email_from_address %></p>
+
   <h4>Trusted?</h4>
   <p><%= @application.trusted ? 'Yes' : 'No' %></p>
 
@@ -23,8 +29,7 @@
 
 <div class="span6">
   <h3>Actions</h3>
-  <p><%= link_to 'Application List',
-                 user_group_oauth_applications_path(@application.owner) %></p>
+  <p><%= link_to 'Application List', oauth_applications_path %></p>
   <% if OSU::AccessPolicy.action_allowed?(:update, @user, @application) %>
   <p><%= link_to 'Edit', edit_oauth_application_path(@application) %></p>
   <% end %>

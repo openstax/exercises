@@ -1,9 +1,7 @@
-<%= page_heading 'New OAuth application' %>
+<%= page_heading "New OAuth Application" %>
 
-<div>
+<%= link_to 'Application List', oauth_applications_path, style: 'float: right' %>
+
+<div class="span12" style="clear: both; padding-top: 20px">
   <%= render 'form', :application => @application %>
 </div>
-
-<p><%= link_to 'Back to application list',
-               user_group_oauth_applications_path(@user_group) %></p>
-

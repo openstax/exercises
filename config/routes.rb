@@ -1,6 +1,9 @@
 Exercises::Application.routes.draw do
+
+  root to: 'static_pages#home'
+
   mount OpenStax::Accounts::Engine, at: "/accounts"
-  mount FinePrint::Engine => "/admin/fine_print"
+  mount FinePrint::Engine => "/terms"
 
   use_doorkeeper do
     skip_controllers :applications
@@ -8,28 +11,30 @@ Exercises::Application.routes.draw do
 
   apipie
 
-  get 'api', to: 'static_pages#api'
-
   api :v1, :default => true do
     
     resources :exercises, only: [:show, :update]
     resources :parts, only: [:show, :update, :create, :destroy]
     resources :questions, only: [:show, :update, :create, :destroy]
 
-    resources :simple_choices, only: [:show, :update, :create, :destroy] do
-      put 'sort', on: :collection
-    end
+    resources :answers, only: [:show, :update, :create, :destroy]
     resources :combo_choices, only: [:show, :update, :create, :destroy]
-    resources :combo_simple_choices, only: [:show, :create, :destroy]
+    resources :combo_choice_answers, only: [:show, :create, :destroy]
 
     resources :logics, except: [:index]
-    resources :libraries, only: [:show, :update, :new, :create, :destroy]
-    resources :library_versions, only: [:show, :update, :create, :destroy] do
-      get 'digest', on: :collection
+
+    resources :libraries, only: [:show, :update, :new, :create, :destroy] do
+      resources :library_versions, only: [:show, :update, :create, :destroy],
+                                   shallow: true do
+        get 'digest', on: :collection
+      end
     end
 
     resources :users, only: [:index] do
-      post 'index', on: :collection
+      collection do
+        get 'registration'
+        put 'register'
+      end
     end
 
   end
@@ -37,7 +42,7 @@ Exercises::Application.routes.draw do
   namespace 'admin' do
     get '/', to: 'base#index'
 
-    put "cron",                         to: 'base#cron', :as => "cron"
+    put "cron",                         to: 'base#cron'
     get "raise_security_transgression", to: 'base#raise_security_transgression'
     get "raise_record_not_found",       to: 'base#raise_record_not_found'
     get "raise_routing_error",          to: 'base#raise_routing_error'
@@ -53,11 +58,6 @@ Exercises::Application.routes.draw do
     end
 
     resources :licenses
-    resources :user_groups, :only => [:index]
-
-    resources :libraries do
-      resources :library_versions, :shallow => true
-    end
   end
 
   namespace :dev do
@@ -66,55 +66,11 @@ Exercises::Application.routes.draw do
     end
   end
 
-  get "terms/:id/show", to: "terms#show", as: "show_terms"
-  get "terms/pose", to: "terms#pose", as: "pose_terms"
-  post "terms/agree", to: "terms#agree", as: "agree_to_terms"
-
-  get "users/registration" 
-  put "users/register"
-
-
-  resources :user_groups do
-    namespace :oauth do
-      resources :applications, shallow: true
-    end
-    
-    resources :user_group_users, only: [:new, :create, :destroy], shallow: true do
-      put 'toggle', on: :member
-    end
+  resource :static_page, only: [], path: '', as: '' do
+    get 'api'
+    get 'copyright'
+    get 'status'
+    get 'developers'
   end
 
-  resources :lists do
-    resources :list_exercises, only: [:new, :create, :destroy], shallow: true
-  end
-
-  resources :exercises do
-    publishable
-
-    resources :solutions, shallow: true
-
-    get 'quickview', on: :member
-  end
-
-  resources :questions, only: [] do
-    resources :question_dependency_pairs, only: [:new, :create, :destroy], shallow: true
-  end
-
-  resources :solutions, only: [] do
-    publishable
-  end
-
-  resources :publishables, only: [] do
-    collection do
-      get 'publication_agreement'
-      post 'publish'
-    end
-  end
-
-  get 'copyright', to: 'static_pages#copyright'
-  get 'developers', to: 'static_pages#developers'
-
-  post 'sort', to: 'sortables#sort'
-
-  root to: 'static_pages#home'
 end

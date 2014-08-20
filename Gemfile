@@ -10,7 +10,6 @@ gem 'squeel'
 
 gem 'lev', "~> 2.1.1"
 
-# gem 'jbuilder'
 gem 'whenever', :require => false
 gem 'newrelic_rpm'
 gem 'yaml_db'

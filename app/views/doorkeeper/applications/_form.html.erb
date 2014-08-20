@@ -1,5 +1,4 @@
-<% owner = @user_group || application.owner %>
-<%= form_for([@user_group, :oauth, application]) do |f| %>
+<%= form_for([:oauth, application]) do |f| %>
   <fieldset>
     <% if application.errors.any? %>
       <div class="alert-message error" data-alert><a class="close" href="#">×</a><p>Whoops! Check your form for possible errors</p></div>
@@ -24,7 +23,23 @@
       </div>
     </div>
 
-    <% if @user.is_admin? %>
+    <div class="clearfix">
+      <%= f.label :email_subject_prefix %>
+      <div class="input">
+        <%= f.text_field :email_subject_prefix %>
+        <%= errors_for application, :email_subject_prefix %>
+      </div>
+    </div>
+
+    <% if @user.is_administrator? %>
+    <div class="clearfix">
+      <%= f.label :email_from_address %>
+      <div class="input">
+        <%= f.text_field :email_from_address %>
+        <%= errors_for application, :email_from_address %>
+      </div>
+    </div>
+
     <div class="clearfix">
       <%= f.label :trusted? %>
       <div class="input">
@@ -38,8 +53,7 @@
 
     <div class="actions">
       <%= f.submit :Submit, :class => "btn primary" %>
-      <%= link_to "Cancel",
-                  user_group_oauth_applications_path(owner), :class => "btn" %>
+      <%= link_to "Cancel", oauth_applications_path, :class => "btn" %>
     </div>
   </fieldset>
 <% end %>

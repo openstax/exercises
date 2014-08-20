@@ -1,7 +1,0 @@
-<% # Clients of this partial must supply the following variable:
-   # answer %>
-
-<div class="answer">
-  <% if !answer.credit.nil? && answer.credit > 0 %>(<%= answer.credit %> pt): <% end %>
-  <%= answer.pre_content_html.html_safe %><u><%= answer.blank_answer %></u><%= answer.post_content_html.html_safe %>
-</div>

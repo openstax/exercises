@@ -1,3 +1,5 @@
+#TODO: Before publishing an exercise with logic, verify that the variables match the logic outputs and cover all of the variables in the exercise content.
+
 class Logic < ActiveRecord::Base
   has_many :logic_outputs, dependent: :destroy
 
