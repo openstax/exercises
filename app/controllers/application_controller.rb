@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   fine_print_get_signatures :general_terms_of_use, 
                             :privacy_policy
 
-protected
+  protected
 
   def require_registration!
     redirect_to users_registration_path if signed_in? &&
