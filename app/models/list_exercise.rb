@@ -4,8 +4,6 @@ class ListExercise < ActiveRecord::Base
   belongs_to :list, :inverse_of => :list_exercises
   belongs_to :exercise, :inverse_of => :list_exercises
 
-  attr_accessible :list, :exercise
-
   after_destroy :destroy_unlisted_draft_exercise
 
   validates_presence_of :list, :exercise

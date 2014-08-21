@@ -22,11 +22,6 @@ class Exercise < ActiveRecord::Base
 
   accepts_nested_attributes_for :logic
 
-  # accepts_nested_attributes_for :parts
-  # attr_accessible :parts_attributes
-
-  attr_accessible :changes_solutions, :embargo_days, :only_embargo_solutions, :background_attributes
-
   validate :valid_embargo
 
   scope :not_embargoed, lambda {

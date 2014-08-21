@@ -6,5 +6,4 @@ class ComboChoice < ActiveRecord::Base
   validates_presence_of :question
 
   delegate_access_control to: :question
-
 end

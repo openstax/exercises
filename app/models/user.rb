@@ -29,9 +29,6 @@ class User < ActiveRecord::Base
 
   validates_presence_of :default_list
 
-  attr_accessible :announcement_email, :auto_author_subscribe,
-                  :collaborator_request_email, :user_group_member_email
-
   scope :registered, where(is_registered: true)
   scope :unregistered, where{is_registered != true}
 

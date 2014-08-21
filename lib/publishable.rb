@@ -9,8 +9,8 @@ module Publishable
       def publishable
         class_name = self.name
         class_name_plural = class_name.downcase.pluralize
-        derived_names = "derived_#{class_name_plural}"
-        source_names = "source_#{class_name_plural}"
+        derived_symbol = "derived_#{class_name_plural}".to_sym
+        source_symbol = "source_#{class_name_plural}".to_sym
 
         class_eval do
           cattr_accessor :dup_includes_array
@@ -28,16 +28,14 @@ module Publishable
           belongs_to :license, :inverse_of => class_name_plural.to_sym
 
           has_many :sources, :class_name => 'Derivation', :as => :publishable, :foreign_key => 'derived_publishable_id', :dependent => :destroy
-          has_many source_names, :through => :sources, :source => :source_publishable, :source_type => class_name
+          has_many source_symbol, :through => :sources, :source => :source_publishable, :source_type => class_name
 
           has_many :derivations, :as => :publishable, :foreign_key => 'source_publishable_id', :dependent => :destroy
-          has_many derived_names, :through => :derivations, :source => :derived_publishable, :source_type => class_name
+          has_many derived_symbol, :through => :derivations, :source => :derived_publishable, :source_type => class_name
 
           has_many :collaborators, :as => :publishable, :dependent => :destroy
 
           has_many :same_number, :class_name => class_name, :primary_key => :number, :foreign_key => :number
-
-          attr_accessible :license_id
 
           before_validation :assign_next_number, :unless => :number
 
@@ -45,7 +43,7 @@ module Publishable
           validates_uniqueness_of :version, :scope => :number
           validate :valid_license
 
-          default_scope order("number ASC", "version DESC")
+          default_scope { order{number.asc}.order{version.desc} }
 
           scope :not_published, where(:published_at => nil)
           scope :published, where{published_at != nil}

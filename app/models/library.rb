@@ -4,8 +4,6 @@ class Library < ActiveRecord::Base
 
   before_destroy :no_versions
 
-  attr_accessible :is_prerequisite, :language, :name, :summary
-
   JAVASCRIPT = 0
   LATEX = 1
 

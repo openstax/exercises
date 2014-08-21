@@ -24,8 +24,6 @@ class List < ActiveRecord::Base
 
   accepts_nested_attributes_for :list_exercises, :allow_destroy => true
 
-  attr_accessible :name, :is_public, :list_exercises_attributes
-
   before_validation :create_user_groups, :on => :create
   after_create :set_user_groups_container
 

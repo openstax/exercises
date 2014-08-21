@@ -15,7 +15,7 @@ module Sortable
 
           validates_uniqueness_of :position, :scope => scope_symbols
 
-          default_scope order(:position)
+          default_scope { order{position.asc} }
 
           def self.sort(sorted_ids)
             return false unless (sorted_ids.is_a?(Array) && !sorted_ids.empty?)

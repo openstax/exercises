@@ -8,8 +8,6 @@ class LibraryVersion < ActiveRecord::Base
   before_destroy :not_used
   before_destroy :verify_latest
 
-  attr_accessible :code, :deprecated, :library_id
-
   delegate_access_control to: :library
 
   scope :ordered, order{version.asc}

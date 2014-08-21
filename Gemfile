@@ -1,84 +1,92 @@
-# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2014 Rice University. Licensed under the Affero General Public 
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.17'
+# Frameworks
+gem 'rails', '4.1.5'
+gem 'jquery-rails'
+gem 'lev'
 
-gem 'jquery-rails', '2.3.0'
+# SQL Queries
 gem 'squeel'
 
-gem 'lev', "~> 2.1.1"
+# Utilities
+gem 'openstax_utilities'
 
-gem 'whenever', :require => false
-gem 'newrelic_rpm'
-gem 'yaml_db'
+# Cron Jobs
+gem 'whenever'
 
-gem 'nested_form'
+# Access Control
+gem 'fine_print'
+gem 'openstax_accounts', path: '../accounts-rails'
+gem 'openstax_api'
+gem 'doorkeeper'
 
+# File Uploads
+gem 'remotipart'
 gem 'carrierwave'
 gem 'mini_magick'
-gem 'parslet', '~> 1.5'
 
+# Tags
 gem 'acts-as-taggable-on'
-gem 'acts_as_votable'
+
+# Derivation
 gem 'deep_cloneable'
-gem 'remotipart', '~> 1.2'
 
-gem 'commontator', '~> 4.6.1'
-gem 'fine_print', '~> 1.4.1'
-gem 'openstax_accounts', '~> 2.0.0'
-gem 'openstax_utilities', '~> 3.0.0'
-gem 'openstax_api', '~> 2.2.3'
+# Search
+gem "keyword_search"
 
-# API documentation
-gem 'apipie-rails', '~> 0.1.2'
-gem 'maruku'
-gem 'representable', '~> 1.8.2'
-gem 'roar-rails'
-
-gem 'doorkeeper', '~> 0.6.7'
-gem 'exception_notification'
-
-gem "keyword_search", "~> 1.5.0"
-
+# Logic
 gem 'ejs'
 gem 'eco'
 
-gem 'tinymce-rails', git: 'git://github.com/spohlenz/tinymce-rails.git', branch: 'tinymce-4'
+# Voting
+gem 'acts_as_votable'
+
+# Comments
+gem 'commontator'
+
+# API documentation
+gem 'apipie-rails'
+gem 'maruku'
+gem 'representable'
+gem 'roar-rails'
+
+# Administration
+gem 'exception_notification'
+gem 'newrelic_rpm'
+
+# Backup
+gem 'yaml_db'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',     '~> 3.2.6'
-  gem 'coffee-rails',   '~> 3.2.1'
-  gem 'bootstrap-sass', '~> 3.1.1'
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'bootstrap-sass'
   gem 'therubyracer', :platforms => :ruby
-  gem 'uglifier', '>= 1.0.3'
+  gem 'uglifier'
   gem 'compass-rails'
 end
 
 group :development, :test do
-  gem 'rails-erd'
-  gem 'sqlite3', '~> 1.3.6'
-  gem 'debugger', '~> 1.5.0'
+  gem 'sqlite3'
+  gem 'thin'
+
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem 'debugger'
+  gem 'brakeman'
+
   gem 'quiet_assets'
   gem 'timecop'
-  gem 'rspec-rails'
-  gem 'capybara'
-  gem 'capybara-screenshot'
-  gem 'capybara-webkit'
-  gem 'database_cleaner'
-  gem 'faker'
-  gem 'thin'
   gem 'cheat'
-  gem 'brakeman'
+  
+  gem 'rails-erd'
   gem 'railroady'
-  gem 'rspec-rerun'
-  gem 'cucumber-rails', :require => false
-  gem 'nifty-generators'
-  gem 'rack-test', require: "rack/test"
-  gem 'factory_girl_rails'
   gem 'coffee-rails-source-maps'
 end
 

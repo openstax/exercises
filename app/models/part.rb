@@ -6,8 +6,6 @@ class Part < ActiveRecord::Base
   has_many :solutions, :dependent => :destroy, :inverse_of => :part
   has_many :questions, dependent: :destroy, inverse_of: :part
 
-  attr_accessible :credit, :background_attributes
-
   accepts_nested_attributes_for :background
 
   validate :exercise_id, presence: true
