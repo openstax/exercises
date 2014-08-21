@@ -3,9 +3,16 @@
 
 source 'https://rubygems.org'
 
-# Frameworks
+# Rails
 gem 'rails', '4.1.5'
+
+# Use jquery as the JavaScript library
 gem 'jquery-rails'
+
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
+
+# Lev Framework
 gem 'lev'
 
 # SQL Queries
@@ -19,7 +26,8 @@ gem 'whenever'
 
 # Access Control
 gem 'fine_print'
-gem 'openstax_accounts', path: '../accounts-rails'
+gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
+                         ref: 'a3cea9d95e9d7c1f944f18cb55cca5a4a7d3093d'
 gem 'openstax_api'
 gem 'doorkeeper'
 
@@ -63,22 +71,28 @@ gem 'yaml_db'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails'
-  gem 'coffee-rails'
-  gem 'bootstrap-sass'
-  gem 'therubyracer', :platforms => :ruby
-  gem 'uglifier'
+  # Use SCSS for stylesheets
+  gem 'sass-rails', '~> 4.0.3'
+  # Use Uglifier as compressor for JavaScript assets
+  gem 'uglifier', '>= 1.3.0'
+  # Use CoffeeScript for .js.coffee assets and views
+  gem 'coffee-rails', '~> 4.0.0'
+  gem 'therubyracer', platforms: :ruby
   gem 'compass-rails'
 end
 
 group :development, :test do
+  # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
+
+  # Use debugger
+  gem 'debugger'
+
   gem 'thin'
 
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'faker'
-  gem 'debugger'
   gem 'brakeman'
 
   gem 'quiet_assets'
@@ -88,8 +102,17 @@ group :development, :test do
   gem 'rails-erd'
   gem 'railroady'
   gem 'coffee-rails-source-maps'
+
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+
+  # Use Capistrano for deployment
+  # gem 'capistrano-rails'
 end
 
 group :production do
-  gem 'mysql2', '~> 0.3.11'
+  gem 'mysql2'
+
+  # Use unicorn as the app server
+  # gem 'unicorn'
 end
