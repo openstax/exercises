@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Api::V1
-  describe UploadsController do
+  RSpec.describe UploadsController do
     describe "routing" do
 
       it "routes to #index" do

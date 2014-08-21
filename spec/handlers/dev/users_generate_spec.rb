@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Dev
-  describe UsersGenerate do
+  RSpec.describe UsersGenerate do
     pending "#{__FILE__}"
   end 
 end

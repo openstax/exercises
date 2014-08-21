@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Api::V1
-  describe UsersController do
+  RSpec.describe UsersController do
     describe "routing" do
 
       it "routes to #index" do

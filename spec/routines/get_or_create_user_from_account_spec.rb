@@ -1,5 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe GetOrCreateUserFromAccount do
+RSpec.describe GetOrCreateUserFromAccount do
   pending "#{__FILE__}"
 end

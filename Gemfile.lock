@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/Dantemss/accounts-rails.git
-  revision: a3cea9d95e9d7c1f944f18cb55cca5a4a7d3093d
-  ref: a3cea9d95e9d7c1f944f18cb55cca5a4a7d3093d
+  revision: 0c83fb2148f5a36ff2e642947bc9866cd6117bdb
+  ref: 0c83fb2148f5a36ff2e642947bc9866cd6117bdb
   specs:
     openstax_accounts (2.0.1.alpha)
       action_interceptor (>= 0.3)

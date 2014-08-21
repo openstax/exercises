@@ -1,5 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe RubricFormat do
+RSpec.describe RubricFormat do
   pending "add some examples to (or delete) #{__FILE__}"
 end

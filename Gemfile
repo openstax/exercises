@@ -27,7 +27,7 @@ gem 'whenever'
 # Access Control
 gem 'fine_print'
 gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
-                         ref: 'a3cea9d95e9d7c1f944f18cb55cca5a4a7d3093d'
+                         ref: '0c83fb2148f5a36ff2e642947bc9866cd6117bdb'
 gem 'openstax_api'
 gem 'doorkeeper'
 
@@ -61,8 +61,7 @@ gem 'maruku'
 gem 'representable'
 gem 'roar-rails'
 
-# Administration
-gem 'exception_notification'
+# New Relic
 gem 'newrelic_rpm'
 
 # Backup
@@ -115,4 +114,6 @@ group :production do
 
   # Use unicorn as the app server
   # gem 'unicorn'
+
+  gem 'exception_notification'
 end

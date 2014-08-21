@@ -1,5 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe Library do
+RSpec.describe Library do
   pending "add some examples to (or delete) #{__FILE__}"
 end

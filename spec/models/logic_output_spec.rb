@@ -1,5 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe LogicOutput do
+RSpec.describe LogicOutput do
   pending "add some examples to (or delete) #{__FILE__}"
 end

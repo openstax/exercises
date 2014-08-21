@@ -42,10 +42,7 @@ module Api::V1
       When a field is listed as using wildcard matching, it means that any
       fields that start with a comma-separated-value will be matched.
 
-      * `username` &ndash; Matches users' usernames.  Any characters matching 
-                   `#{ERB::Util.html_escape(
-                     User::USERNAME_DISCARDED_CHAR_REGEX.inspect)}`
-                   will be discarded. (uses wildcard matching)
+      * `username` &ndash; Matches usernames, case insensitive. (uses wildcard matching)
       * `first_name` &ndash; Matches users' first names, case insensitive. (uses wildcard matching)
       * `last_name` &ndash; Matches users' last names, case insensitive. (uses wildcard matching)
       * `name` &ndash; Matches users' first, last, or full names, case insenstive. (uses wildcard matching)

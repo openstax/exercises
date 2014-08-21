@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe ListsController, type: :api, version: :v1 do
+  describe ListsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # List. As you add validations to List, be sure to

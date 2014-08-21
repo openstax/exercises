@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe QuestionsController, type: :api, version: :v1 do
+  describe QuestionsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Question. As you add validations to Question, be sure to

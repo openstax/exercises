@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe QuestionFormatsController, type: :api, version: :v1 do
+  describe QuestionFormatsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # QuestionFormat. As you add validations to QuestionFormat, be sure to

@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Api::V1
-  describe UsersController, type: :api, version: :v1 do
+  describe UsersController, type: :controller do
 
     let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
     let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }

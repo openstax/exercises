@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Admin
-  describe LicensesController do
+  RSpec.describe LicensesController do
     describe "routing" do
 
       it "routes to #index" do

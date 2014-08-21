@@ -1,5 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe SearchExercises do
+RSpec.describe SearchExercises do
   pending "#{__FILE__}"
 end

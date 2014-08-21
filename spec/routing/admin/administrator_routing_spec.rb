@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Admin
-  describe AdministratorsController do
+  RSpec.describe AdministratorsController do
     describe "routing" do
 
       it "routes to #index" do

@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Dev
-  describe BaseController do
+  RSpec.describe BaseController do
     describe "routing" do
 
       it "routes to #index" do

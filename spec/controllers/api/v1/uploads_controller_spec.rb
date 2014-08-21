@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe UploadsController, type: :api, version: :v1 do
+  describe UploadsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Upload. As you add validations to Upload, be sure to

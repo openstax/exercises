@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140819211115) do
+ActiveRecord::Schema.define(version: 20140821185624) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -292,6 +292,17 @@ ActiveRecord::Schema.define(version: 20140819211115) do
   add_index "licenses", ["short_name"], name: "index_licenses_on_short_name", unique: true
   add_index "licenses", ["url"], name: "index_licenses_on_url", unique: true
 
+  create_table "list_editors", force: true do |t|
+    t.integer  "list_id"
+    t.integer  "editor_id"
+    t.string   "editor_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "list_editors", ["editor_id", "editor_type", "list_id"], name: "index_list_editors_on_editor_id_and_editor_type_and_list_id", unique: true
+  add_index "list_editors", ["list_id"], name: "index_list_editors_on_list_id"
+
   create_table "list_exercises", force: true do |t|
     t.integer  "position",                            null: false
     t.integer  "list_id",                             null: false
@@ -304,6 +315,28 @@ ActiveRecord::Schema.define(version: 20140819211115) do
   add_index "list_exercises", ["credit"], name: "index_list_exercises_on_credit"
   add_index "list_exercises", ["exercise_id", "list_id"], name: "index_list_exercises_on_exercise_id_and_list_id", unique: true
   add_index "list_exercises", ["list_id", "position"], name: "index_list_exercises_on_list_id_and_position", unique: true
+
+  create_table "list_owners", force: true do |t|
+    t.integer  "list_id"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "list_owners", ["list_id"], name: "index_list_owners_on_list_id"
+  add_index "list_owners", ["owner_id", "owner_type", "list_id"], name: "index_list_owners_on_owner_id_and_owner_type_and_list_id", unique: true
+
+  create_table "list_readers", force: true do |t|
+    t.integer  "list_id"
+    t.integer  "reader_id"
+    t.string   "reader_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "list_readers", ["list_id"], name: "index_list_readers_on_list_id"
+  add_index "list_readers", ["reader_id", "reader_type", "list_id"], name: "index_list_readers_on_reader_id_and_reader_type_and_list_id", unique: true
 
   create_table "lists", force: true do |t|
     t.integer  "parent_list_id"

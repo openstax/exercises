@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe ComboChoicesController, type: :api, version: :v1 do
+  describe ComboChoicesController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # ComboChoice. As you add validations to ComboChoice, be sure to

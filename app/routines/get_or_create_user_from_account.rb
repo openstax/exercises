@@ -11,7 +11,7 @@ class GetOrCreateUserFromAccount
     return outputs[:user] = User.anonymous if account.is_anonymous?
 
     existing_user = User.find_by(account_id: account.id)
-    return outputs[:user] = existing_user if existing_user.present?
+    return outputs[:user] = existing_user if existing_user
 
     run(:create_user, account)
   end

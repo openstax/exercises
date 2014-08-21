@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe AuthorsController, type: :api, version: :v1 do
+  describe AuthorsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Author. As you add validations to Author, be sure to

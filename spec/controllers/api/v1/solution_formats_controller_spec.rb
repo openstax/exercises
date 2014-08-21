@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe SolutionFormatsController, type: :api, version: :v1 do
+  describe SolutionFormatsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # SolutionFormat. As you add validations to SolutionFormat, be sure to

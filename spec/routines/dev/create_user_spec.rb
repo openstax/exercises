@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Dev
-  describe CreateUser do
+  RSpec.describe CreateUser do
     pending "#{__FILE__}"
   end
 end

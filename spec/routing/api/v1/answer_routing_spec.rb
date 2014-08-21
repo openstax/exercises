@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Api::V1
-  describe AnswersController do
+  RSpec.describe AnswersController do
     describe "routing" do
 
       it "routes to #index" do

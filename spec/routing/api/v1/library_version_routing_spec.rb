@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Api::V1
-  describe LibraryVersionsController do
+  RSpec.describe LibraryVersionsController do
     describe "routing" do
 
       it "routes to #index" do

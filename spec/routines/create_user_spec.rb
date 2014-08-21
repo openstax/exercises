@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe CreateUser do
+RSpec.describe CreateUser do
 
   let (:accounts_user) do
     mock_model OpenStax::Accounts::User, name: 'Bobby Joe'

@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe DerivationsController, type: :api, version: :v1 do
+  describe DerivationsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Derivation. As you add validations to Derivation, be sure to

@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe LogicLibraryVersionsController, type: :api, version: :v1 do
+  describe LogicLibraryVersionsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # LogicLibraryVersion. As you add validations to LogicLibraryVersion, be sure to

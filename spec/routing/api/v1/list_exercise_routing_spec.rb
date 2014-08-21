@@ -1,7 +1,7 @@
-require "spec_helper"
+require "rails_helper"
 
 module Api::V1
-  describe ListExercisesController do
+  RSpec.describe ListExercisesController do
     describe "routing" do
 
       it "routes to #index" do

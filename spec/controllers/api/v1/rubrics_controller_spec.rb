@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Api::V1
-  describe RubricsController, type: :api, version: :v1 do
+  describe RubricsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Rubric. As you add validations to Rubric, be sure to
