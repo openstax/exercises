@@ -9,6 +9,7 @@ class CreatePartSupports < ActiveRecord::Migration
     end
 
     add_sortable_index :part_supports, :supported_part_id
-    add_index :part_supports, [:supporting_part_id, :supported_part_id], unique: true
+    add_index :part_supports, [:supporting_part_id, :supported_part_id], unique: true,
+              name: 'index_part_supports_on_s_p_id_and_s_p_id'
   end
 end

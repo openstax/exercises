@@ -2,7 +2,6 @@ class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
       t.references :account, null: false
-      t.datetime :registered_at
 
       t.boolean :hide_public_domain_attribution, null: false, default: false
       t.boolean :subscribe_on_comment, null: false, default: false
@@ -14,6 +13,5 @@ class CreateUsers < ActiveRecord::Migration
     end
 
     add_index :users, :account_id, unique: true
-    add_index :users, :registered_at
   end
 end

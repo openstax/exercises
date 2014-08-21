@@ -4,17 +4,19 @@ module Dev
     lev_routine
 
     uses_routine OpenStax::Accounts::Dev::CreateUser,
+                 as: :create_user,
                  translations: { outputs: {scope: :accounts} }
-    uses_routine GetOrCreateUserFromAccountsUser,
+    uses_routine GetOrCreateUserFromAccount,
+                 as: :get_or_create_user_from_account,
                  translations: { outputs: {type: :verbatim} }
 
   protected
 
     def exec(options={})
-      run(OpenStax::Accounts::Dev::CreateUser,
+      run(:create_user,
           options.slice(:first_name, :last_name, :username, :ensure_no_errors))
 
-      run(GetOrCreateUserFromAccountsUser, outputs[[:accounts, :user]])
+      run(:get_or_create_user_from_account, outputs[[:accounts, :user]])
     end
   end
 

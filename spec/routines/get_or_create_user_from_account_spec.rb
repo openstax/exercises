@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe GetOrCreateUserFromAccountsUser do
+describe GetOrCreateUserFromAccount do
   pending "#{__FILE__}"
 end

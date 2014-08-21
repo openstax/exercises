@@ -80,58 +80,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  #
-  # OpenStax Accounts "user_provider" methods
-  #
-
-  def self.accounts_user_to_app_user(accounts_user)
-    GetOrCreateUserFromAccountsUser.call(accounts_user).outputs.user
-  end
-
-  def self.app_user_to_accounts_user(app_user)
-    app_user.is_anonymous? ? OpenStax::Accounts::User.anonymous : app_user.openstax_accounts_user
-  end
-
-  ##################
-  # Access Control #
-  ##################
-
-  def can_be_updated_by?(user)
-    !user.nil? && user.is_admin?
-  end
-
-  def can_be_destroyed_by?(user)
-    can_be_updated_by?(user)
-  end
-
-  ##########################
-  # Access Control Helpers #
-  ##########################
-
-  def can_read?(resource)
-    resource.can_be_read_by?(self)
-  end
-  
-  def can_create?(resource)
-    resource.can_be_created_by?(self)
-  end
-  
-  def can_update?(resource)
-    resource.can_be_updated_by?(self)
-  end
-    
-  def can_destroy?(resource)
-    resource.can_be_destroyed_by?(self)
-  end
-
-  def can_vote_on?(resource)
-    resource.can_be_voted_on_by?(self)
-  end
-
-  def can_sort?(resource)
-    resource.can_be_sorted_by?(self)
-  end
-
   protected
 
   #############

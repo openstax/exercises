@@ -4,7 +4,7 @@ class SearchExercises
 
   SORTABLE_FIELDS = []
 
-protected
+  protected
 
   def exec(text, part, type, answer_type, user)
     case type
