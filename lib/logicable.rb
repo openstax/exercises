@@ -5,9 +5,7 @@ module Logicable
     end
     
     module ClassMethods
-      def logicable(delegate_to = self)
-        class_eval do
-        end
+      def logicable(options = {})
       end
     end
   end

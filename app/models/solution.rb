@@ -1,8 +1,6 @@
 class Solution < ActiveRecord::Base
-  # content [:summary, :content]
-  publishable
 
-  add_prepublish_check(:has_blank_content?, false, 'The contents of this solution are blank.')
+  publishable
 
   belongs_to :part, inverse_of: :solutions
 

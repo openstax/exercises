@@ -1,6 +1,18 @@
 class ComboChoiceAnswer < ActiveRecord::Base
-  belongs_to :combo_choice
-  belongs_to :answer
 
-  delegate_access_control to: :combo_choice
+  belongs_to :combo_choice, inverse_of: :combo_choice_answers
+  belongs_to :answer, inverse_of: :combo_choice_answers
+
+  validates :combo_choice, presence: true
+  validates :answer, presence: true
+  validate :same_question
+
+  protected
+
+  def same_question
+    return if combo_choice.question == answer.question
+    errors.add(:base, 'the combo_choice and answer must belong to the same question')
+    false
+  end
+
 end

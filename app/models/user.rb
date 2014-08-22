@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
 
   USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 
+  has_one :administrator, inverse_of: :user
+
   belongs_to :account,
              class_name: "OpenStax::Accounts::Account"
 
