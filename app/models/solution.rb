@@ -1,7 +1,5 @@
 class Solution < ActiveRecord::Base
 
-  publishable
-
   belongs_to :part, inverse_of: :solutions
 
   validates_presence_of :part

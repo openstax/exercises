@@ -1,9 +1,5 @@
 class Exercise < ActiveRecord::Base
 
-  publishable children: :parts,
-              prepublish_validations: [:has_parts, :has_content]
-  logicable
-
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :questions, through: :parts
   has_many :items, through: :questions

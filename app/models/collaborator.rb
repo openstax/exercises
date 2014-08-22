@@ -1,14 +1,15 @@
 class Collaborator < ActiveRecord::Base
 
-  sortable [:publishable_id, :publishable_type]
-  belongs_to :publishable, polymorphic: true
+  sortable [:collaborable_id, :collaborable_type]
+  belongs_to :collaborable, polymorphic: true
   belongs_to :user, inverse_of: :collaborators
 
   has_one :author_request, inverse_of: :collaborator, dependent: :destroy
   has_one :copyright_holder_request, inverse_of: :collaborator, dependent: :destroy
 
-  validates :publishable, presence: true
-  validates :user, presence: true, uniqueness: { scope: [:publishable_id, :publishable_type] }
+  validates :collaborable, presence: true
+  validates :user, presence: true, uniqueness: {
+              scope: [:collaborable_id, :collaborable_type] }
 
   before_destroy :no_roles
 
