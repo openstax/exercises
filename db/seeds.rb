@@ -19,17 +19,31 @@
  end).publish
 
 (FinePrint::Contract.create do |contract|
-   contract.name    = 'publish_cc_by_3_0'
-   contract.content = 'Placeholder for agreement to publish content under the CC BY 3.0 license'
-   contract.title   = 'Content Publishing Agreement: CC-BY 3.0'
+   contract.name    = 'publishing_agreement'
+   contract.content = 'Placeholder for agreement to publish content under the available licenses'
+   contract.title   = 'Content Publishing Agreement'
  end).publish
 
 License.create do |license|
-  license.short_name               = "CC BY 3.0"
-  license.name                     = "Creative Commons Attribution 3.0 Unported"
-  license.url                      = "http://creativecommons.org/licenses/by/3.0/"
-  license.publishing_contract      = "publish_cc_by_3_0"
+  license.name                     = "Creative Commons Attribution 4.0 Unported"
+  license.short_name               = "CC BY 4.0"
+  license.url                      = "http://creativecommons.org/licenses/by/4.0/"
+  license.publishing_contract      = "publishing_contract placeholder"
+  license.copyright_notice         = "copyright_notice placeholder"
   license.allows_exercises         = true
   license.allows_solutions         = true
   license.allows_rubrics           = true
+  license.is_public_domain         = false
+end
+
+License.create do |license|
+  license.name                     = "Creative Commons CC0 1.0 Universal"
+  license.short_name               = "CC0 1.0"
+  license.url                      = "http://creativecommons.org/licenses/zero/1.0/"
+  license.publishing_contract      = "publishing_contract placeholder"
+  license.copyright_notice         = "copyright_notice placeholder"
+  license.allows_exercises         = true
+  license.allows_solutions         = true
+  license.allows_rubrics           = true
+  license.is_public_domain         = true
 end
