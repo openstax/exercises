@@ -25,12 +25,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
     t.integer  "position",                                          null: false
     t.integer  "question_id",                                       null: false
     t.integer  "item_id"
-    t.text     "content"
-    t.string   "regex"
-    t.float    "value"
-    t.float    "tolerance"
     t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
+    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -222,17 +219,6 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "formattings", ["format_id"], name: "index_formattings_on_format_id"
   add_index "formattings", ["formattable_id", "formattable_type", "format_id"], name: "index_formattings_on_f_id_and_f_type_and_f_id", unique: true
 
-  create_table "grading_algorithms", force: true do |t|
-    t.string   "name",         null: false
-    t.string   "routine_name", null: false
-    t.text     "description",  null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "grading_algorithms", ["name"], name: "index_grading_algorithms_on_name", unique: true
-  add_index "grading_algorithms", ["routine_name"], name: "index_grading_algorithms_on_routine_name", unique: true
-
   create_table "items", force: true do |t|
     t.integer  "position",                 null: false
     t.integer  "question_id",              null: false
@@ -278,7 +264,6 @@ ActiveRecord::Schema.define(version: 20140822204013) do
     t.text     "can_combine_into",    default: "--- []\n", null: false
     t.boolean  "allows_exercises",    default: true,       null: false
     t.boolean  "allows_solutions",    default: true,       null: false
-    t.boolean  "allows_rubrics",      default: true,       null: false
     t.boolean  "is_public_domain",    default: false,      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -500,17 +485,6 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   end
 
   add_index "questions", ["part_id", "position"], name: "index_questions_on_part_id_and_position", unique: true
-
-  create_table "rubrics", force: true do |t|
-    t.integer  "question_id",          null: false
-    t.integer  "grading_algorithm_id"
-    t.text     "human_instructions"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "rubrics", ["grading_algorithm_id"], name: "index_rubrics_on_grading_algorithm_id"
-  add_index "rubrics", ["question_id"], name: "index_rubrics_on_question_id"
 
   create_table "solutions", force: true do |t|
     t.integer  "question_id",              null: false

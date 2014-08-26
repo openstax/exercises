@@ -32,7 +32,6 @@ License.create do |license|
   license.copyright_notice         = "copyright_notice placeholder"
   license.allows_exercises         = true
   license.allows_solutions         = true
-  license.allows_rubrics           = true
   license.is_public_domain         = false
 end
 
@@ -44,6 +43,5 @@ License.create do |license|
   license.copyright_notice         = "copyright_notice placeholder"
   license.allows_exercises         = true
   license.allows_solutions         = true
-  license.allows_rubrics           = true
   license.is_public_domain         = true
 end
