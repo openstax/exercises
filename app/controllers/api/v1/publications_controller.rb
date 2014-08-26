@@ -3,9 +3,9 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Represents a published Exercise, Solution or Rubric.'
+      short_description 'Represents a published Exercise or Solution.'
       description <<-EOS
-        Publications represent a published Exercise, Solution or Rubric.
+        Publications represent a published Exercise or Solution.
       EOS
     end
 

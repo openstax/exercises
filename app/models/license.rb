@@ -5,7 +5,6 @@ class License < ActiveRecord::Base
 
   has_many :exercises, :inverse_of => :license
   has_many :solutions, :inverse_of => :license
-  has_many :rubrics, :inverse_of => :license
 
   validates_presence_of :name, :short_name, :url, :publishing_contract,
                         :copyright_notice, :can_combine_into
@@ -13,7 +12,6 @@ class License < ActiveRecord::Base
 
   scope :for_exercises, where(:allows_exercises => true)
   scope :for_solutions, where(:allows_solutions => true)
-  scope :for_rubrics, where(:allows_rubrics => true)
 
   def valid_for?(publishable)
     case publishable.class
@@ -21,8 +19,6 @@ class License < ActiveRecord::Base
       allows_exercises
     when Solution
       allows_solutions
-    when Rubric
-      allows_rubrics
     else
       false
     end
@@ -34,8 +30,6 @@ class License < ActiveRecord::Base
       pscope = for_exercises
     when Solution
       pscope = for_solutions
-    when Rubric
-      pscope = for_rubrics
     else
       pscope = none
     end

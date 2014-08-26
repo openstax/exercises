@@ -1,6 +1,5 @@
 OSU::AccessPolicy.register(Administrator, AdministratorAccessPolicy)
 OSU::AccessPolicy.register(Format, FormatAccessPolicy)
-OSU::AccessPolicy.register(GradingAlgorithm, GradingAlgorithmAccessPolicy)
 OSU::AccessPolicy.register(License, LicenseAccessPolicy)
 
 OSU::AccessPolicy.register(Answer, AnswerAccessPolicy)
@@ -30,6 +29,5 @@ OSU::AccessPolicy.register(PartDependency, PartDependencyAccessPolicy)
 OSU::AccessPolicy.register(PartSupport, PartSupportAccessPolicy)
 OSU::AccessPolicy.register(Publication, PublicationAccessPolicy)
 OSU::AccessPolicy.register(Question, QuestionAccessPolicy)
-OSU::AccessPolicy.register(Rubric, RubricAccessPolicy)
 OSU::AccessPolicy.register(Solution, SolutionAccessPolicy)
 OSU::AccessPolicy.register(User, UserAccessPolicy)

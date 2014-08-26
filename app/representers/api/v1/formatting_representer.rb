@@ -1,5 +1,5 @@
 module Api::V1
-  class RubricFormatRepresenter < Roar::Decorator
+  class FormattingRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
   end
