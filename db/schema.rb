@@ -172,16 +172,13 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true
 
   create_table "exercises", force: true do |t|
-    t.text     "background",             default: "",    null: false
     t.string   "title"
-    t.datetime "embargo_until"
-    t.boolean  "only_embargo_solutions", default: false, null: false
-    t.boolean  "changes_solutions",      default: false, null: false
+    t.text     "background"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "exercises", ["embargo_until"], name: "index_exercises_on_embargo_until"
+  add_index "exercises", ["title"], name: "index_exercises_on_title"
 
   create_table "fine_print_contracts", force: true do |t|
     t.string   "name",       null: false
@@ -226,9 +223,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "grading_algorithms", ["routine_name"], name: "index_grading_algorithms_on_routine_name", unique: true
 
   create_table "items", force: true do |t|
-    t.integer  "position",    null: false
-    t.integer  "question_id", null: false
-    t.text     "content",     null: false
+    t.integer  "position",                 null: false
+    t.integer  "question_id",              null: false
+    t.text     "content",     default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -453,9 +450,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "part_supports", ["supporting_part_id", "supported_part_id"], name: "index_part_supports_on_s_p_id_and_s_p_id", unique: true
 
   create_table "parts", force: true do |t|
-    t.integer  "position",                 null: false
-    t.integer  "exercise_id",              null: false
-    t.text     "background",  default: "", null: false
+    t.integer  "position",    null: false
+    t.integer  "exercise_id", null: false
+    t.text     "background"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -463,16 +460,21 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "parts", ["exercise_id", "position"], name: "index_parts_on_exercise_id_and_position", unique: true
 
   create_table "publications", force: true do |t|
-    t.integer  "publishable_id",               null: false
-    t.string   "publishable_type",             null: false
+    t.integer  "publishable_id",                   null: false
+    t.string   "publishable_type",                 null: false
     t.integer  "license_id"
-    t.integer  "number",                       null: false
-    t.integer  "version",          default: 1, null: false
+    t.integer  "number",                           null: false
+    t.integer  "version",          default: 1,     null: false
     t.datetime "published_at"
+    t.datetime "embargo_until"
+    t.boolean  "allows_preview",   default: false, null: false
+    t.boolean  "is_major_change",  default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "publications", ["allows_preview"], name: "index_publications_on_allows_preview"
+  add_index "publications", ["embargo_until"], name: "index_publications_on_embargo_until"
   add_index "publications", ["license_id"], name: "index_publications_on_license_id"
   add_index "publications", ["number", "publishable_type", "version"], name: "index_publications_on_number_and_publishable_type_and_version", unique: true
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true
@@ -489,9 +491,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "question_formats", ["question_id", "format_id"], name: "index_question_formats_on_question_id_and_format_id", unique: true
 
   create_table "questions", force: true do |t|
-    t.integer  "position",   null: false
-    t.integer  "part_id",    null: false
-    t.text     "stem",       null: false
+    t.integer  "position",                null: false
+    t.integer  "part_id",                 null: false
+    t.text     "stem",       default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -530,9 +532,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "solution_formats", ["solution_id", "format_id"], name: "index_solution_formats_on_solution_id_and_format_id", unique: true
 
   create_table "solutions", force: true do |t|
-    t.integer  "question_id", null: false
+    t.integer  "question_id",              null: false
     t.text     "summary"
-    t.text     "details",     null: false
+    t.text     "details",     default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

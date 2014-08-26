@@ -3,7 +3,7 @@ class CreateItems < ActiveRecord::Migration
     create_table :items do |t|
       t.sortable
       t.references :question, null: false
-      t.text :content, null: false
+      t.text :content, null: false, default: ''
 
       t.timestamps
     end

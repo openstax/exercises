@@ -3,7 +3,7 @@ class CreateSolutions < ActiveRecord::Migration
     create_table :solutions do |t|
       t.references :question, null: false
       t.text :summary
-      t.text :details, null: false
+      t.text :details, null: false, default: ''
 
       t.timestamps
     end

@@ -3,7 +3,7 @@ class CreateQuestions < ActiveRecord::Migration
     create_table :questions do |t|
       t.sortable
       t.references :part, null: false
-      t.text :stem, null: false
+      t.text :stem, null: false, default: ''
 
       t.timestamps
     end
