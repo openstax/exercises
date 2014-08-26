@@ -4,11 +4,11 @@ class CreateAnswers < ActiveRecord::Migration
       t.sortable
       t.references :question, null: false
       t.references :item
-      t.decimal :correctness, null: false, precision: 3, scale: 2, default: 0
       t.text :content
       t.string :regex
       t.float :value
       t.float :tolerance
+      t.decimal :correctness, null: false, precision: 3, scale: 2, default: 0
       t.text :feedback
 
       t.timestamps

@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(version: 20140822204013) do
     t.integer  "position",                                          null: false
     t.integer  "question_id",                                       null: false
     t.integer  "item_id"
-    t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
     t.text     "content"
     t.string   "regex"
     t.float    "value"
     t.float    "tolerance"
+    t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
     t.datetime "created_at"
     t.datetime "updated_at"
