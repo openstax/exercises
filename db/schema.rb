@@ -158,8 +158,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
 
   create_table "derivations", force: true do |t|
     t.integer  "position",               null: false
-    t.integer  "source_publication_id",  null: false
     t.integer  "derived_publication_id", null: false
+    t.integer  "source_publication_id"
+    t.text     "custom_attribution"
     t.datetime "hidden_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -262,9 +263,9 @@ ActiveRecord::Schema.define(version: 20140822204013) do
     t.text     "publishing_contract",                      null: false
     t.text     "copyright_notice",                         null: false
     t.text     "can_combine_into",    default: "--- []\n", null: false
+    t.boolean  "is_public_domain",    default: false,      null: false
     t.boolean  "allows_exercises",    default: true,       null: false
     t.boolean  "allows_solutions",    default: true,       null: false
-    t.boolean  "is_public_domain",    default: false,      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

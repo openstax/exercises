@@ -4,7 +4,12 @@ class Question < ActiveRecord::Base
 
   belongs_to :part, :inverse_of => :questions
 
-  has_many :formattable_formats, as: :formattable, dependent: :destroy
+  has_many :formattings, as: :formattable, dependent: :destroy
+  has_many :formats, through: :formattings
+
+  has_many :solutions, dependent: :destroy, inverse_of: :question
+
+  has_many :items, dependent: :destroy, inverse_of: :question
 
   validates :part, presence: true
 

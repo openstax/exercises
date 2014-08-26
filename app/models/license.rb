@@ -1,14 +1,17 @@
 class License < ActiveRecord::Base
+
   sortable
 
   serialize :can_combine_into
 
-  has_many :exercises, :inverse_of => :license
-  has_many :solutions, :inverse_of => :license
+  has_many :publications, :inverse_of => :license
 
-  validates_presence_of :name, :short_name, :url, :publishing_contract,
-                        :copyright_notice, :can_combine_into
-  validates_uniqueness_of :name, :short_name, :url
+  validates :name, presence: true, uniqueness: true
+  validates :short_name, presence: true, uniqueness: true
+  validates :url, presence: true, uniqueness: true
+  validates :publishing_contract, presence: true
+  validates :copyright_notice, presence: true
+  validates :can_combine_into, presence: true
 
   scope :for_exercises, where(:allows_exercises => true)
   scope :for_solutions, where(:allows_solutions => true)
@@ -35,4 +38,5 @@ class License < ActiveRecord::Base
     end
     pscope.all.collect{|l| [l.short_name, l.id]}
   end
+
 end

@@ -1,8 +1,9 @@
 class Solution < ActiveRecord::Base
 
-  belongs_to :part, inverse_of: :solutions
+  belongs_to :question, inverse_of: :solutions
+  has_one :exercise, through: :question
 
-  validates_presence_of :part
+  validates :question, presence: true
 
   scope :visible_for, lambda { |user|
     escope = where{exercise_id.in my{Exercise.visible_for(user).collect{|e| e.id}}}

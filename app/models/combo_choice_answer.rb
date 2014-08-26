@@ -4,7 +4,7 @@ class ComboChoiceAnswer < ActiveRecord::Base
   belongs_to :answer, inverse_of: :combo_choice_answers
 
   validates :combo_choice, presence: true
-  validates :answer, presence: true
+  validates :answer, presence: true, uniqueness: { scope: :combo_choice_id }
   validate :same_question
 
   protected
