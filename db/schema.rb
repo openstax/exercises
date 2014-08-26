@@ -211,6 +211,17 @@ ActiveRecord::Schema.define(version: 20140822204013) do
 
   add_index "formats", ["name"], name: "index_formats_on_name", unique: true
 
+  create_table "formattings", force: true do |t|
+    t.integer  "formattable_id",   null: false
+    t.string   "formattable_type", null: false
+    t.integer  "format_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "formattings", ["format_id"], name: "index_formattings_on_format_id"
+  add_index "formattings", ["formattable_id", "formattable_type", "format_id"], name: "index_formattings_on_f_id_and_f_type_and_f_id", unique: true
+
   create_table "grading_algorithms", force: true do |t|
     t.string   "name",         null: false
     t.string   "routine_name", null: false
@@ -480,16 +491,6 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true
   add_index "publications", ["published_at"], name: "index_publications_on_published_at"
 
-  create_table "question_formats", force: true do |t|
-    t.integer  "question_id", null: false
-    t.integer  "format_id",   null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "question_formats", ["format_id"], name: "index_question_formats_on_format_id"
-  add_index "question_formats", ["question_id", "format_id"], name: "index_question_formats_on_question_id_and_format_id", unique: true
-
   create_table "questions", force: true do |t|
     t.integer  "position",                null: false
     t.integer  "part_id",                 null: false
@@ -499,16 +500,6 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   end
 
   add_index "questions", ["part_id", "position"], name: "index_questions_on_part_id_and_position", unique: true
-
-  create_table "rubric_formats", force: true do |t|
-    t.integer  "rubric_id",  null: false
-    t.integer  "format_id",  null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "rubric_formats", ["format_id"], name: "index_rubric_formats_on_format_id"
-  add_index "rubric_formats", ["rubric_id", "format_id"], name: "index_rubric_formats_on_rubric_id_and_format_id", unique: true
 
   create_table "rubrics", force: true do |t|
     t.integer  "question_id",          null: false
@@ -520,16 +511,6 @@ ActiveRecord::Schema.define(version: 20140822204013) do
 
   add_index "rubrics", ["grading_algorithm_id"], name: "index_rubrics_on_grading_algorithm_id"
   add_index "rubrics", ["question_id"], name: "index_rubrics_on_question_id"
-
-  create_table "solution_formats", force: true do |t|
-    t.integer  "solution_id", null: false
-    t.integer  "format_id",   null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "solution_formats", ["format_id"], name: "index_solution_formats_on_format_id"
-  add_index "solution_formats", ["solution_id", "format_id"], name: "index_solution_formats_on_solution_id_and_format_id", unique: true
 
   create_table "solutions", force: true do |t|
     t.integer  "question_id",              null: false

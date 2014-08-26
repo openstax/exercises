@@ -1,4 +1,4 @@
 FactoryGirl.define do
-  factory :solution_format do
+  factory :attachment do
   end
 end

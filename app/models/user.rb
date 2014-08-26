@@ -2,18 +2,19 @@ class User < ActiveRecord::Base
 
   USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 
-  has_one :administrator, inverse_of: :user
-
-  belongs_to :account,
-             class_name: "OpenStax::Accounts::Account"
+  belongs_to :account, class_name: "OpenStax::Accounts::Account"
 
   delegate :username, :first_name, :last_name, :full_name, :title,
            :name, :casual_name, to: :account
+
+  has_one :administrator, inverse_of: :user
 
   has_many :authors, dependent: :destroy, inverse_of: :user
   has_many :copyright_holders, dependent: :destroy, inverse_of: :user
 
   has_many :deputies, foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer
+
+  validates :account, presence: true, uniqueness: true
 
   def is_human?
     true

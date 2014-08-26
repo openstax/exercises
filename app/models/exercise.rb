@@ -9,8 +9,6 @@ class Exercise < ActiveRecord::Base
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
   has_many :lists, :through => :list_exercises
 
-  # Embargo
-
   protected
 
   def has_parts

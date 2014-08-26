@@ -1,4 +1,4 @@
 FactoryGirl.define do
-  factory :rubric_format do
+  factory :formatting do
   end
 end
