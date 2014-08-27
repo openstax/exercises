@@ -1,6 +1,6 @@
 class Solution < ActiveRecord::Base
 
-  publishable :question
+  publishable :question_id
   logicable
 
   belongs_to :question, inverse_of: :solutions
