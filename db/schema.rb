@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140827193017) do
+ActiveRecord::Schema.define(version: 20140827221742) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -308,6 +308,16 @@ ActiveRecord::Schema.define(version: 20140827193017) do
   add_index "list_exercises", ["exercise_id", "list_id"], name: "index_list_exercises_on_exercise_id_and_list_id", unique: true
   add_index "list_exercises", ["list_id", "sortable_position"], name: "index_list_exercises_on_list_id_and_sortable_position", unique: true
 
+  create_table "list_nestings", force: true do |t|
+    t.integer  "parent_list_id", null: false
+    t.integer  "child_list_id",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "list_nestings", ["child_list_id"], name: "index_list_nestings_on_child_list_id", unique: true
+  add_index "list_nestings", ["parent_list_id"], name: "index_list_nestings_on_parent_list_id"
+
   create_table "list_owners", force: true do |t|
     t.integer  "list_id"
     t.integer  "owner_id"
@@ -331,14 +341,13 @@ ActiveRecord::Schema.define(version: 20140827193017) do
   add_index "list_readers", ["reader_id", "reader_type", "list_id"], name: "index_list_readers_on_reader_id_and_reader_type_and_list_id", unique: true
 
   create_table "lists", force: true do |t|
-    t.integer  "parent_list_id"
-    t.string   "name",                           null: false
-    t.boolean  "is_public",      default: false, null: false
+    t.string   "name",                       null: false
+    t.boolean  "is_public",  default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "lists", ["parent_list_id"], name: "index_lists_on_parent_list_id"
+  add_index "lists", ["name"], name: "index_lists_on_name"
 
   create_table "logic_library_versions", force: true do |t|
     t.integer  "logic_id",           null: false
