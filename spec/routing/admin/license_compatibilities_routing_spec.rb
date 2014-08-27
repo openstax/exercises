@@ -1,6 +1,6 @@
 require "rails_helper"
 
-module Api::V1
+module Admin
   RSpec.describe LicenseCompatibilitiesController, :type => :routing do
     describe "routing" do
 

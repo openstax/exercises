@@ -1,6 +1,7 @@
 class Collaborator < ActiveRecord::Base
 
-  sortable [:collaborable_id, :collaborable_type]
+  sortable :collaborable_id, :collaborable_type
+
   belongs_to :collaborable, polymorphic: true
   belongs_to :user, inverse_of: :collaborators
 
@@ -17,7 +18,7 @@ class Collaborator < ActiveRecord::Base
 
   def no_roles
     return unless is_author || is_copyright_holder
-    errors.add(:base, 'cannot be removed while it has roles')
+    errors.add(:base, 'cannot be removed while they have roles')
     false
   end
 

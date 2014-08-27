@@ -145,7 +145,7 @@ ActiveRecord::Schema.define(version: 20140827193017) do
   add_index "copyright_holder_requests", ["collaborator_id"], name: "index_copyright_holder_requests_on_collaborator_id", unique: true
   add_index "copyright_holder_requests", ["requestor_id"], name: "index_copyright_holder_requests_on_requestor_id"
 
-  create_table "deputies", force: true do |t|
+  create_table "deputizations", force: true do |t|
     t.integer  "deputizer_id", null: false
     t.integer  "deputy_id",    null: false
     t.string   "deputy_type",  null: false
@@ -153,8 +153,8 @@ ActiveRecord::Schema.define(version: 20140827193017) do
     t.datetime "updated_at"
   end
 
-  add_index "deputies", ["deputizer_id"], name: "index_deputies_on_deputizer_id"
-  add_index "deputies", ["deputy_id", "deputy_type", "deputizer_id"], name: "index_deputies_on_deputy_id_and_deputy_type_and_deputizer_id", unique: true
+  add_index "deputizations", ["deputizer_id"], name: "index_deputizations_on_deputizer_id"
+  add_index "deputizations", ["deputy_id", "deputy_type", "deputizer_id"], name: "index_deputizations_on_d_id_and_d_type_and_d_id", unique: true
 
   create_table "derivations", force: true do |t|
     t.integer  "sortable_position",      null: false
