@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140822204013) do
+ActiveRecord::Schema.define(version: 20140827193017) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -22,10 +22,10 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "administrators", ["user_id"], name: "index_administrators_on_user_id", unique: true
 
   create_table "answers", force: true do |t|
-    t.integer  "position",                                          null: false
-    t.integer  "question_id",                                       null: false
+    t.integer  "sortable_position",                                       null: false
+    t.integer  "question_id",                                             null: false
     t.integer  "item_id"
-    t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
+    t.decimal  "correctness",       precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
     t.text     "content"
     t.datetime "created_at"
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140822204013) do
 
   add_index "answers", ["correctness"], name: "index_answers_on_correctness"
   add_index "answers", ["item_id"], name: "index_answers_on_item_id"
-  add_index "answers", ["question_id", "position"], name: "index_answers_on_question_id_and_position", unique: true
+  add_index "answers", ["question_id", "sortable_position"], name: "index_answers_on_question_id_and_sortable_position", unique: true
 
   create_table "attachments", force: true do |t|
     t.integer  "attachable_id",   null: false
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "author_requests", ["requestor_id"], name: "index_author_requests_on_requestor_id"
 
   create_table "collaborators", force: true do |t|
-    t.integer  "position",                            null: false
+    t.integer  "sortable_position",                   null: false
     t.integer  "collaborable_id",                     null: false
     t.string   "collaborable_type",                   null: false
     t.integer  "user_id",                             null: false
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20140822204013) do
     t.datetime "updated_at"
   end
 
-  add_index "collaborators", ["collaborable_id", "collaborable_type", "position"], name: "index_collaborators_on_c_id_and_c_type_and_position", unique: true
+  add_index "collaborators", ["collaborable_id", "collaborable_type", "sortable_position"], name: "index_collaborators_on_c_id_and_c_type_and_sortable_position", unique: true
   add_index "collaborators", ["user_id", "collaborable_id", "collaborable_type"], name: "index_collaborators_on_u_id_and_c_id_and_c_type", unique: true
 
   create_table "combo_choice_answers", force: true do |t|
@@ -82,16 +82,16 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "combo_choice_answers", ["combo_choice_id"], name: "index_combo_choice_answers_on_combo_choice_id"
 
   create_table "combo_choices", force: true do |t|
-    t.integer  "position",                                          null: false
-    t.integer  "question_id",                                       null: false
-    t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
+    t.integer  "sortable_position",                                       null: false
+    t.integer  "question_id",                                             null: false
+    t.decimal  "correctness",       precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "combo_choices", ["correctness"], name: "index_combo_choices_on_correctness"
-  add_index "combo_choices", ["question_id", "position"], name: "index_combo_choices_on_question_id_and_position", unique: true
+  add_index "combo_choices", ["question_id", "sortable_position"], name: "index_combo_choices_on_question_id_and_sortable_position", unique: true
 
   create_table "commontator_comments", force: true do |t|
     t.string   "creator_type"
@@ -157,7 +157,7 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "deputies", ["deputy_id", "deputy_type", "deputizer_id"], name: "index_deputies_on_deputy_id_and_deputy_type_and_deputizer_id", unique: true
 
   create_table "derivations", force: true do |t|
-    t.integer  "position",               null: false
+    t.integer  "sortable_position",      null: false
     t.integer  "derived_publication_id", null: false
     t.integer  "source_publication_id"
     t.text     "custom_attribution"
@@ -166,7 +166,7 @@ ActiveRecord::Schema.define(version: 20140822204013) do
     t.datetime "updated_at"
   end
 
-  add_index "derivations", ["derived_publication_id", "position"], name: "index_derivations_on_derived_publication_id_and_position", unique: true
+  add_index "derivations", ["derived_publication_id", "sortable_position"], name: "index_derivations_on_d_p_id_and_sortable_position", unique: true
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true
 
   create_table "exercises", force: true do |t|
@@ -201,8 +201,8 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], name: "index_fine_print_signatures_on_u_id_and_u_type_and_c_id", unique: true
 
   create_table "formats", force: true do |t|
-    t.integer  "position",   null: false
-    t.string   "name",       null: false
+    t.integer  "sortable_position", null: false
+    t.string   "name",              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -221,14 +221,14 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "formattings", ["formattable_id", "formattable_type", "format_id"], name: "index_formattings_on_f_id_and_f_type_and_f_id", unique: true
 
   create_table "items", force: true do |t|
-    t.integer  "position",                 null: false
-    t.integer  "question_id",              null: false
-    t.text     "content",     default: "", null: false
+    t.integer  "sortable_position",              null: false
+    t.integer  "question_id",                    null: false
+    t.text     "content",           default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "items", ["question_id", "position"], name: "index_items_on_question_id_and_position", unique: true
+  add_index "items", ["question_id", "sortable_position"], name: "index_items_on_question_id_and_sortable_position", unique: true
 
   create_table "libraries", force: true do |t|
     t.integer  "owner_id"
@@ -255,24 +255,33 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "library_versions", ["deprecated_at"], name: "index_library_versions_on_deprecated_at"
   add_index "library_versions", ["library_id", "version"], name: "index_library_versions_on_library_id_and_version", unique: true
 
+  create_table "license_compatibilities", force: true do |t|
+    t.integer  "original_license_id"
+    t.integer  "combined_license_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "license_compatibilities", ["combined_license_id", "original_license_id"], name: "index_license_compatibilities_on_c_l_id_and_o_l_id", unique: true
+  add_index "license_compatibilities", ["original_license_id"], name: "index_license_compatibilities_on_original_license_id"
+
   create_table "licenses", force: true do |t|
-    t.integer  "position",                                 null: false
-    t.string   "name",                                     null: false
-    t.string   "short_name",                               null: false
-    t.string   "url",                                      null: false
-    t.text     "publishing_contract",                      null: false
-    t.text     "copyright_notice",                         null: false
-    t.text     "can_combine_into",    default: "--- []\n", null: false
-    t.boolean  "is_public_domain",    default: false,      null: false
-    t.boolean  "allows_exercises",    default: true,       null: false
-    t.boolean  "allows_solutions",    default: true,       null: false
+    t.integer  "sortable_position",                   null: false
+    t.string   "name",                                null: false
+    t.string   "short_name",                          null: false
+    t.string   "url",                                 null: false
+    t.text     "publishing_contract",                 null: false
+    t.text     "copyright_notice",                    null: false
+    t.boolean  "is_public_domain",    default: false, null: false
+    t.boolean  "allows_exercises",    default: true,  null: false
+    t.boolean  "allows_solutions",    default: true,  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "licenses", ["name"], name: "index_licenses_on_name", unique: true
-  add_index "licenses", ["position"], name: "index_licenses_on_position", unique: true
   add_index "licenses", ["short_name"], name: "index_licenses_on_short_name", unique: true
+  add_index "licenses", ["sortable_position"], name: "index_licenses_on_sortable_position", unique: true
   add_index "licenses", ["url"], name: "index_licenses_on_url", unique: true
 
   create_table "list_editors", force: true do |t|
@@ -287,17 +296,17 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "list_editors", ["list_id"], name: "index_list_editors_on_list_id"
 
   create_table "list_exercises", force: true do |t|
-    t.integer  "position",                            null: false
-    t.integer  "list_id",                             null: false
-    t.integer  "exercise_id",                         null: false
-    t.decimal  "credit",      precision: 5, scale: 2
+    t.integer  "sortable_position",                         null: false
+    t.integer  "list_id",                                   null: false
+    t.integer  "exercise_id",                               null: false
+    t.decimal  "credit",            precision: 5, scale: 2
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "list_exercises", ["credit"], name: "index_list_exercises_on_credit"
   add_index "list_exercises", ["exercise_id", "list_id"], name: "index_list_exercises_on_exercise_id_and_list_id", unique: true
-  add_index "list_exercises", ["list_id", "position"], name: "index_list_exercises_on_list_id_and_position", unique: true
+  add_index "list_exercises", ["list_id", "sortable_position"], name: "index_list_exercises_on_list_id_and_sortable_position", unique: true
 
   create_table "list_owners", force: true do |t|
     t.integer  "list_id"
@@ -425,52 +434,52 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "openstax_accounts_accounts", ["username"], name: "index_openstax_accounts_accounts_on_username", unique: true
 
   create_table "part_dependencies", force: true do |t|
-    t.integer  "position",          null: false
+    t.integer  "sortable_position", null: false
     t.integer  "parent_part_id",    null: false
     t.integer  "dependent_part_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "part_dependencies", ["dependent_part_id", "position"], name: "index_part_dependencies_on_dependent_part_id_and_position", unique: true
+  add_index "part_dependencies", ["dependent_part_id", "sortable_position"], name: "index_part_dependencies_on_d_p_id_and_sortable_position", unique: true
   add_index "part_dependencies", ["parent_part_id", "dependent_part_id"], name: "index_part_dependencies_on_p_p_id_and_d_p_id", unique: true
 
   create_table "part_supports", force: true do |t|
-    t.integer  "position",           null: false
+    t.integer  "sortable_position",  null: false
     t.integer  "supporting_part_id", null: false
     t.integer  "supported_part_id",  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "part_supports", ["supported_part_id", "position"], name: "index_part_supports_on_supported_part_id_and_position", unique: true
+  add_index "part_supports", ["supported_part_id", "sortable_position"], name: "index_part_supports_on_supported_part_id_and_sortable_position", unique: true
   add_index "part_supports", ["supporting_part_id", "supported_part_id"], name: "index_part_supports_on_s_p_id_and_s_p_id", unique: true
 
   create_table "parts", force: true do |t|
-    t.integer  "position",    null: false
-    t.integer  "exercise_id", null: false
+    t.integer  "sortable_position", null: false
+    t.integer  "exercise_id",       null: false
     t.text     "background"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "parts", ["exercise_id", "position"], name: "index_parts_on_exercise_id_and_position", unique: true
+  add_index "parts", ["exercise_id", "sortable_position"], name: "index_parts_on_exercise_id_and_sortable_position", unique: true
 
   create_table "publications", force: true do |t|
-    t.integer  "publishable_id",                   null: false
-    t.string   "publishable_type",                 null: false
+    t.integer  "publishable_id",                        null: false
+    t.string   "publishable_type",                      null: false
     t.integer  "license_id"
-    t.integer  "number",                           null: false
-    t.integer  "version",          default: 1,     null: false
+    t.integer  "number",                                null: false
+    t.integer  "version",               default: 1,     null: false
     t.datetime "published_at"
     t.datetime "embargo_until"
-    t.boolean  "allows_preview",   default: false, null: false
-    t.boolean  "is_major_change",  default: false, null: false
+    t.boolean  "embargo_children_only", default: false, null: false
+    t.boolean  "is_major_change",       default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "publications", ["allows_preview"], name: "index_publications_on_allows_preview"
+  add_index "publications", ["embargo_children_only"], name: "index_publications_on_embargo_children_only"
   add_index "publications", ["embargo_until"], name: "index_publications_on_embargo_until"
   add_index "publications", ["license_id"], name: "index_publications_on_license_id"
   add_index "publications", ["number", "publishable_type", "version"], name: "index_publications_on_number_and_publishable_type_and_version", unique: true
@@ -478,14 +487,14 @@ ActiveRecord::Schema.define(version: 20140822204013) do
   add_index "publications", ["published_at"], name: "index_publications_on_published_at"
 
   create_table "questions", force: true do |t|
-    t.integer  "position",                null: false
-    t.integer  "part_id",                 null: false
-    t.text     "stem",       default: "", null: false
+    t.integer  "sortable_position",              null: false
+    t.integer  "part_id",                        null: false
+    t.text     "stem",              default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "questions", ["part_id", "position"], name: "index_questions_on_part_id_and_position", unique: true
+  add_index "questions", ["part_id", "sortable_position"], name: "index_questions_on_part_id_and_sortable_position", unique: true
 
   create_table "solutions", force: true do |t|
     t.integer  "question_id",              null: false

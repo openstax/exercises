@@ -11,7 +11,6 @@ class License < ActiveRecord::Base
   validates :url, presence: true, uniqueness: true
   validates :publishing_contract, presence: true
   validates :copyright_notice, presence: true
-  validates :can_combine_into, presence: true
 
   scope :for_exercises, where(:allows_exercises => true)
   scope :for_solutions, where(:allows_solutions => true)

@@ -7,7 +7,7 @@ class CreatePublications < ActiveRecord::Migration
       t.integer :version, null: false, default: 1
       t.datetime :published_at
       t.datetime :embargo_until
-      t.boolean :allows_preview, null: false, default: false
+      t.boolean :embargo_children_only, null: false, default: false
       t.boolean :is_major_change, null: false, default: false
 
       t.timestamps
@@ -18,6 +18,6 @@ class CreatePublications < ActiveRecord::Migration
     add_index :publications, :license_id
     add_index :publications, :published_at
     add_index :publications, :embargo_until
-    add_index :publications, :allows_preview
+    add_index :publications, :embargo_children_only
   end
 end
