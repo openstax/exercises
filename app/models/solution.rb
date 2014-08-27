@@ -1,5 +1,8 @@
 class Solution < ActiveRecord::Base
 
+  publishable :question
+  logicable
+
   belongs_to :question, inverse_of: :solutions
   has_one :exercise, through: :question
 

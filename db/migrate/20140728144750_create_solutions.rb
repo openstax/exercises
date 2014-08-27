@@ -2,6 +2,7 @@ class CreateSolutions < ActiveRecord::Migration
   def change
     create_table :solutions do |t|
       t.references :question, null: false
+      t.string :title
       t.text :summary
       t.text :details, null: false, default: ''
 
@@ -9,5 +10,6 @@ class CreateSolutions < ActiveRecord::Migration
     end
 
     add_index :solutions, :question_id
+    add_index :solutions, :title
   end
 end

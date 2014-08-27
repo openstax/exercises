@@ -9,20 +9,6 @@ module Logicable
       end
     end
   end
-
-  module TableDefinition
-    def logicable
-      references :logic
-    end
-  end
-
-  module Migration
-    def add_logicable_index(table_name)
-      add_index table_name, :logic_id
-    end
-  end
 end
 
 ActiveRecord::Base.send :include, Logicable::ActiveRecord
-ActiveRecord::ConnectionAdapters::TableDefinition.send :include, Logicable::TableDefinition
-ActiveRecord::Migration.send :include, Logicable::Migration

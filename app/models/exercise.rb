@@ -1,5 +1,8 @@
 class Exercise < ActiveRecord::Base
 
+  publishable
+  logicable
+
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :questions, through: :parts
   has_many :items, through: :questions

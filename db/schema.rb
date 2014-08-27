@@ -341,8 +341,7 @@ ActiveRecord::Schema.define(version: 20140827221742) do
   add_index "list_readers", ["reader_id", "reader_type", "list_id"], name: "index_list_readers_on_reader_id_and_reader_type_and_list_id", unique: true
 
   create_table "lists", force: true do |t|
-    t.string   "name",                       null: false
-    t.boolean  "is_public",  default: false, null: false
+    t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -507,6 +506,7 @@ ActiveRecord::Schema.define(version: 20140827221742) do
 
   create_table "solutions", force: true do |t|
     t.integer  "question_id",              null: false
+    t.string   "title"
     t.text     "summary"
     t.text     "details",     default: "", null: false
     t.datetime "created_at"
@@ -514,6 +514,7 @@ ActiveRecord::Schema.define(version: 20140827221742) do
   end
 
   add_index "solutions", ["question_id"], name: "index_solutions_on_question_id"
+  add_index "solutions", ["title"], name: "index_solutions_on_title"
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"
