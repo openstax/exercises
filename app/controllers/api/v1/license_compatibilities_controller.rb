@@ -1,5 +1,5 @@
 module Api::V1
-  class LicenseCompatibilitiesController < ApplicationController
+  class LicenseCompatibilitiesController < OpenStax::Api::V1::ApiController
 
     resource_description do
       api_versions "v1"
