@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140828151517) do
+ActiveRecord::Schema.define(version: 20140828213912) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -23,29 +23,28 @@ ActiveRecord::Schema.define(version: 20140828151517) do
 
   create_table "answers", force: true do |t|
     t.integer  "sortable_position",                                       null: false
-    t.integer  "question_id",                                             null: false
-    t.integer  "item_id"
+    t.integer  "answerable_id",                                           null: false
+    t.string   "answerable_type",                                         null: false
+    t.text     "content",                                   default: "",  null: false
     t.decimal  "correctness",       precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
-    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "answers", ["answerable_id", "answerable_type", "sortable_position"], name: "index_answers_on_a_id_and_a_type_and_sortable_position", unique: true
   add_index "answers", ["correctness"], name: "index_answers_on_correctness"
-  add_index "answers", ["item_id"], name: "index_answers_on_item_id"
-  add_index "answers", ["question_id", "sortable_position"], name: "index_answers_on_question_id_and_sortable_position", unique: true
 
   create_table "attachments", force: true do |t|
-    t.integer  "attachable_id",   null: false
-    t.string   "attachable_type", null: false
-    t.string   "asset",           null: false
+    t.integer  "parent_id",   null: false
+    t.string   "parent_type", null: false
+    t.string   "asset",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "attachments", ["asset"], name: "index_attachments_on_asset"
-  add_index "attachments", ["attachable_id", "attachable_type", "asset"], name: "index_attachments_on_a_id_and_a_type_and_asset", unique: true
+  add_index "attachments", ["parent_id", "parent_type", "asset"], name: "index_attachments_on_parent_id_and_parent_type_and_asset", unique: true
 
   create_table "author_requests", force: true do |t|
     t.integer  "requestor_id",    null: false
@@ -178,6 +177,7 @@ ActiveRecord::Schema.define(version: 20140828151517) do
   end
 
   add_index "derivations", ["derived_publication_id", "sortable_position"], name: "index_derivations_on_d_p_id_and_sortable_position", unique: true
+  add_index "derivations", ["hidden_at"], name: "index_derivations_on_hidden_at"
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true
 
   create_table "exercises", force: true do |t|
@@ -241,34 +241,30 @@ ActiveRecord::Schema.define(version: 20140828151517) do
 
   add_index "items", ["question_id", "sortable_position"], name: "index_items_on_question_id_and_sortable_position", unique: true
 
+  create_table "languages", force: true do |t|
+    t.string   "name",        null: false
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "languages", ["name"], name: "index_languages_on_name", unique: true
+
   create_table "libraries", force: true do |t|
-    t.integer  "owner_id"
-    t.string   "name",                                   null: false
-    t.string   "language",        default: "javascript", null: false
-    t.boolean  "always_required", default: false,        null: false
-    t.text     "summary"
+    t.integer  "language_id",              null: false
+    t.string   "name"
+    t.text     "description"
+    t.text     "code",        default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "libraries", ["language", "always_required"], name: "index_libraries_on_language_and_always_required"
-  add_index "libraries", ["owner_id", "name"], name: "index_libraries_on_owner_id_and_name", unique: true
-
-  create_table "library_versions", force: true do |t|
-    t.integer  "library_id",    null: false
-    t.integer  "version",       null: false
-    t.datetime "deprecated_at"
-    t.text     "code",          null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "library_versions", ["deprecated_at"], name: "index_library_versions_on_deprecated_at"
-  add_index "library_versions", ["library_id", "version"], name: "index_library_versions_on_library_id_and_version", unique: true
+  add_index "libraries", ["language_id"], name: "index_libraries_on_language_id"
+  add_index "libraries", ["name"], name: "index_libraries_on_name"
 
   create_table "license_compatibilities", force: true do |t|
-    t.integer  "original_license_id"
-    t.integer  "combined_license_id"
+    t.integer  "original_license_id", null: false
+    t.integer  "combined_license_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -280,8 +276,8 @@ ActiveRecord::Schema.define(version: 20140828151517) do
     t.string   "name",                                null: false
     t.string   "short_name",                          null: false
     t.string   "url",                                 null: false
-    t.text     "publishing_contract",                 null: false
-    t.text     "copyright_notice",                    null: false
+    t.text     "publishing_contract", default: "",    null: false
+    t.text     "copyright_notice",    default: "",    null: false
     t.boolean  "is_public_domain",    default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -355,36 +351,47 @@ ActiveRecord::Schema.define(version: 20140828151517) do
 
   add_index "lists", ["name"], name: "index_lists_on_name"
 
-  create_table "logic_library_versions", force: true do |t|
-    t.integer  "logic_id",           null: false
-    t.integer  "library_version_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "logic_library_versions", ["library_version_id"], name: "index_logic_library_versions_on_library_version_id"
-  add_index "logic_library_versions", ["logic_id", "library_version_id"], name: "index_logic_library_versions_on_l_id_and_l_v_id", unique: true
-
-  create_table "logic_outputs", force: true do |t|
+  create_table "logic_libraries", force: true do |t|
     t.integer  "logic_id",   null: false
-    t.integer  "seed",       null: false
-    t.text     "values",     null: false
+    t.integer  "library_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "logic_outputs", ["logic_id", "seed"], name: "index_logic_outputs_on_logic_id_and_seed", unique: true
+  add_index "logic_libraries", ["library_id"], name: "index_logic_libraries_on_library_id"
+  add_index "logic_libraries", ["logic_id", "library_id"], name: "index_logic_libraries_on_logic_id_and_library_id", unique: true
+
+  create_table "logic_variable_values", force: true do |t|
+    t.integer  "logic_variable_id", null: false
+    t.integer  "seed",              null: false
+    t.text     "value",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "logic_variable_values", ["logic_variable_id", "seed"], name: "index_logic_variable_values_on_logic_variable_id_and_seed", unique: true
+  add_index "logic_variable_values", ["seed"], name: "index_logic_variable_values_on_seed"
+
+  create_table "logic_variables", force: true do |t|
+    t.integer  "logic_id",   null: false
+    t.string   "variable",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "logic_variables", ["logic_id", "variable"], name: "index_logic_variables_on_logic_id_and_variable", unique: true
 
   create_table "logics", force: true do |t|
-    t.integer  "logicable_id",   null: false
-    t.string   "logicable_type", null: false
-    t.text     "code",           null: false
-    t.text     "variables",      null: false
+    t.integer  "logicable_id",                null: false
+    t.string   "logicable_type",              null: false
+    t.integer  "language_id",                 null: false
+    t.text     "code",           default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "logics", ["logicable_id", "logicable_type"], name: "index_logics_on_logicable_id_and_logicable_type", unique: true
+  add_index "logics", ["language_id"], name: "index_logics_on_language_id"
+  add_index "logics", ["logicable_id", "logicable_type", "language_id"], name: "index_logics_on_l_id_and_l_type_and_l_id", unique: true
 
   create_table "oauth_access_grants", force: true do |t|
     t.integer  "resource_owner_id", null: false
@@ -485,8 +492,9 @@ ActiveRecord::Schema.define(version: 20140828151517) do
     t.string   "publishable_type",                      null: false
     t.integer  "license_id"
     t.integer  "number",                                null: false
-    t.integer  "version",               default: 1,     null: false
+    t.integer  "version",                               null: false
     t.datetime "published_at"
+    t.datetime "yanked_at"
     t.datetime "embargo_until"
     t.boolean  "embargo_children_only", default: false, null: false
     t.boolean  "is_major_change",       default: false, null: false
@@ -500,6 +508,7 @@ ActiveRecord::Schema.define(version: 20140828151517) do
   add_index "publications", ["number", "publishable_type", "version"], name: "index_publications_on_number_and_publishable_type_and_version", unique: true
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true
   add_index "publications", ["published_at"], name: "index_publications_on_published_at"
+  add_index "publications", ["yanked_at"], name: "index_publications_on_yanked_at"
 
   create_table "questions", force: true do |t|
     t.integer  "sortable_position",              null: false
@@ -510,6 +519,14 @@ ActiveRecord::Schema.define(version: 20140828151517) do
   end
 
   add_index "questions", ["part_id", "sortable_position"], name: "index_questions_on_part_id_and_sortable_position", unique: true
+
+  create_table "required_libraries", force: true do |t|
+    t.integer  "library_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "required_libraries", ["library_id"], name: "index_required_libraries_on_library_id", unique: true
 
   create_table "solutions", force: true do |t|
     t.integer  "question_id",              null: false

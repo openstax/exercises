@@ -3,9 +3,7 @@ class User < ActiveRecord::Base
   USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 
   belongs_to :account, class_name: "OpenStax::Accounts::Account"
-
-  delegate :username, :first_name, :last_name, :full_name, :title,
-           :name, :casual_name, to: :account
+  has_many :groups, through: :account
 
   has_one :administrator, inverse_of: :user
 
@@ -24,7 +22,23 @@ class User < ActiveRecord::Base
            as: :deputy, dependent: :destroy
   has_many :indirect_parent_deputizations, through: :groups, source: :deputizations
 
+  has_many :direct_list_owners, class_name: 'ListOwner',
+           dependent: :destroy, inverse_of: :list
+  has_many :direct_list_editors, class_name: 'ListEditor',
+           dependent: :destroy, inverse_of: :list
+  has_many :direct_list_readers, class_name: 'ListReader',
+           dependent: :destroy, inverse_of: :list
+
+  has_many :libraries, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner
+
   validates :account, presence: true, uniqueness: true
+
+  delegate :username, :first_name, :last_name, :full_name, :title,
+           :name, :casual_name, to: :account
+
+  def self.anonymous
+    AnonymousUser.instance
+  end
 
   def is_human?
     true
@@ -38,7 +52,4 @@ class User < ActiveRecord::Base
     false
   end
 
-  def self.anonymous
-    @@anonymous ||= AnonymousUser.new
-  end
 end

@@ -14,5 +14,6 @@ class CreateDerivations < ActiveRecord::Migration
                        name: 'index_derivations_on_d_p_id_and_sortable_position'
     add_index :derivations, [:source_publication_id, :derived_publication_id],
               unique: true, name: "index_derivations_on_source_p_id_and_derived_p_id"
+    add_index :derivations, :hidden_at
   end
 end

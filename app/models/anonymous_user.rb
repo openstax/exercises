@@ -1,5 +1,7 @@
 class AnonymousUser
 
+  include Singleton
+
   def is_human?
     true
   end

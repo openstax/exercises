@@ -16,15 +16,7 @@ module Api::V1
                required: true
              }
 
-    property :variables,
-             type: String,
-             writeable: true,
-             schema_info: {
-               required: true,
-               description: "JSON-stringified array of variable string names"
-             }
-
-    property :library_version_ids,
+    property :library_ids,
              type: String,
              writeable: true,
              schema_info: {
@@ -35,21 +27,14 @@ module Api::V1
                  "the code in this Logic is read/included."
              }
 
-    # this comment out of date: see below (TODO remove it)
-    # By not using parse_strategy: :sync, we effectively cause a Logic's 
-    # LogicOutputs to be overwritten with each update call.  Since Logic
-    # has a dependent destroy relationship with LogicOutput, old LogicOutputs
-    # are destroyed (which is what we want).  Little nervous not having something
-    # stronger in the model itself to take care of this (like a hash on the code
-    # that all outputs must have to be valid).  Such a hash wouldn't even have to
-    # be part of the API -- it could just be internal to the Rails app. -- call
-    # it a "Logic#version" and "LogicOutput#logic_version".  Compute the hash on 
-    # Logic#before_update -- how do we attach it to the outputs tho?
-    #
-    # Note: changed the above but leaving comment for the moment.  Realized the default
-    # setter in representable was the one doing the saving of the logic_outputs in the
-    # collection.  Added a custom setter that uses collection.build to avoid the automatic
-    # save.  Now after_update in logic we are deleting old logic_outputs.
+    property :logic_variables,
+             type: String,
+             writeable: true,
+             schema_info: {
+               required: true,
+               description: "JSON-stringified array of variable string names"
+             }
+
     collection :logic_outputs, 
                class: LogicOutput, 
                decorator: LogicOutputRepresenter, 

@@ -1,16 +1,12 @@
 class Answer < ActiveRecord::Base
 
-  sortable :question_id
+  sortable :answerable_id, :answerable_type
 
-  belongs_to :question, inverse_of: :answers
-  has_one :part, through: :question
-  has_one :exercise, through: :question
-
-  belongs_to :item, inverse_of: :answers
+  belongs_to :answerable, polymorphic: true
 
   has_many :combo_choice_answers, dependent: :destroy, inverse_of: :answer
   has_many :combo_choices, through: :combo_choice_answers
 
-  validates :question, presence: true
+  validates :answerable, presence: true
 
 end

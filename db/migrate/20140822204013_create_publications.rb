@@ -4,8 +4,9 @@ class CreatePublications < ActiveRecord::Migration
       t.references :publishable, polymorphic: true, null: false
       t.references :license
       t.integer :number, null: false
-      t.integer :version, null: false, default: 1
+      t.integer :version, null: false
       t.datetime :published_at
+      t.datetime :yanked_at
       t.datetime :embargo_until
       t.boolean :embargo_children_only, null: false, default: false
       t.boolean :is_major_change, null: false, default: false
@@ -17,6 +18,7 @@ class CreatePublications < ActiveRecord::Migration
     add_index :publications, [:number, :publishable_type, :version], unique: true
     add_index :publications, :license_id
     add_index :publications, :published_at
+    add_index :publications, :yanked_at
     add_index :publications, :embargo_until
     add_index :publications, :embargo_children_only
   end

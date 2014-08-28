@@ -4,7 +4,7 @@ class Item < ActiveRecord::Base
 
   belongs_to :question, inverse_of: :items
 
-  has_many :answers, inverse_of: :item
+  has_many :answers, as: :answerable, dependent: :destroy
 
   validates :question, presence: :true
 

@@ -1,6 +1,8 @@
 class License < ActiveRecord::Base
 
-  has_many :publications, :inverse_of => :license
+  has_many :publications, dependent: :destroy, :inverse_of => :license
+
+  has_many :class_licenses, dependent: :destroy, inverse_of: :license
 
   has_many :combined_license_compatibilities, class_name: 'LicenseCompatibility',
            dependent: :destroy, inverse_of: :original_license
@@ -11,8 +13,6 @@ class License < ActiveRecord::Base
            dependent: :destroy, inverse_of: :combined_license
   has_many :original_compatible_licenses, through: :original_license_compatibilities,
            source: :original_license
-
-  has_many :class_licenses, dependent: :destroy, inverse_of: :license
 
   validates :name, presence: true, uniqueness: true
   validates :short_name, presence: true, uniqueness: true

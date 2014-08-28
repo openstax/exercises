@@ -11,11 +11,11 @@ module Api::V1
         randomization routines, different students will see different computer-generated
         permutations of the exericse.
 
-        For a number of reasons, we do not run the author's Javascript in a student's
-        browser when they view the logic &ndash; instead, the Javascript is run in the
-        author's browser (during the authoring process).  When a "Logic" attached to an 
-        Logic is saved, the client is responsible for sending along a number of output
-        runs of the code, called "Logic Output"s.  With, say, 100 of these Logic Outputs
+        For a number of reasons, we do not run the author's Javascript in a student's browser
+        when they view the logic &ndash; instead, the Javascript is run in the author's browser
+        (during the authoring process).  When a "Logic" attached to an Exercise is saved,
+        the client is responsible for sending along a number of output runs of the code,
+        called "Logic Variable Value"s.  With, say, 100 of these Logic Variable Values,
         we can safely provide a number of permutations to a group of students.
 
         A Logic consists of some "code" as well as a list of exported variables.  These

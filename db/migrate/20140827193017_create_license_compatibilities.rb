@@ -1,8 +1,8 @@
 class CreateLicenseCompatibilities < ActiveRecord::Migration
   def change
     create_table :license_compatibilities do |t|
-      t.references :original_license
-      t.references :combined_license
+      t.references :original_license, null: false
+      t.references :combined_license, null: false
 
       t.timestamps
     end

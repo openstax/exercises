@@ -4,8 +4,8 @@ class CreateLicenses < ActiveRecord::Migration
       t.string :name, null: false
       t.string :short_name, null: false
       t.string :url, null: false
-      t.text :publishing_contract, null: false
-      t.text :copyright_notice, null: false
+      t.text :publishing_contract, null: false, default: ''
+      t.text :copyright_notice, null: false, default: ''
       t.boolean :is_public_domain, null: false, default: false
 
       t.timestamps

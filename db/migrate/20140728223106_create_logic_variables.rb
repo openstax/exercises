@@ -1,0 +1,12 @@
+class CreateLogicVariables < ActiveRecord::Migration
+  def change
+    create_table :logic_variables do |t|
+      t.references :logic, null: false
+      t.string :variable, null: false
+
+      t.timestamps
+    end
+
+    add_index :logic_variables, [:logic_id, :variable], unique: true
+  end
+end

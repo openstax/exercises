@@ -23,12 +23,7 @@ Exercises::Application.routes.draw do
 
     resources :logics, except: [:index]
 
-    resources :libraries, only: [:show, :update, :new, :create, :destroy] do
-      resources :library_versions, only: [:show, :update, :create, :destroy],
-                                   shallow: true do
-        get 'digest', on: :collection
-      end
-    end
+    resources :libraries, only: [:show, :update, :new, :create, :destroy]
 
     resources :users, only: [:index] do
       collection do

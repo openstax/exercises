@@ -10,7 +10,8 @@ class ComboChoiceAnswer < ActiveRecord::Base
   protected
 
   def same_question
-    return if combo_choice.question == answer.question
+    return if answer.answerable_type == 'Question' &&\
+              combo_choice.question_id == answer.answerable_id
     errors.add(:base, 'the combo_choice and answer must belong to the same question')
     false
   end
