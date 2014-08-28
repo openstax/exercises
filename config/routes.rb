@@ -1,7 +1,5 @@
 Exercises::Application.routes.draw do
 
-  resources :class_licenses
-
   root to: 'static_pages#home'
 
   mount OpenStax::Accounts::Engine, at: "/accounts"

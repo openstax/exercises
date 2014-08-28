@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 module Api::V1
   RSpec.describe ComboChoiceAnswersController, type: :controller do
