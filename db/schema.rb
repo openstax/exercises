@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140827221742) do
+ActiveRecord::Schema.define(version: 20140828151517) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -56,6 +56,17 @@ ActiveRecord::Schema.define(version: 20140827221742) do
 
   add_index "author_requests", ["collaborator_id"], name: "index_author_requests_on_collaborator_id", unique: true
   add_index "author_requests", ["requestor_id"], name: "index_author_requests_on_requestor_id"
+
+  create_table "class_licenses", force: true do |t|
+    t.integer  "sortable_position", null: false
+    t.integer  "license_id",        null: false
+    t.string   "class_name",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "class_licenses", ["class_name", "sortable_position"], name: "index_class_licenses_on_class_name_and_sortable_position", unique: true
+  add_index "class_licenses", ["license_id", "class_name"], name: "index_class_licenses_on_license_id_and_class_name", unique: true
 
   create_table "collaborators", force: true do |t|
     t.integer  "sortable_position",                   null: false
@@ -266,22 +277,18 @@ ActiveRecord::Schema.define(version: 20140827221742) do
   add_index "license_compatibilities", ["original_license_id"], name: "index_license_compatibilities_on_original_license_id"
 
   create_table "licenses", force: true do |t|
-    t.integer  "sortable_position",                   null: false
     t.string   "name",                                null: false
     t.string   "short_name",                          null: false
     t.string   "url",                                 null: false
     t.text     "publishing_contract",                 null: false
     t.text     "copyright_notice",                    null: false
     t.boolean  "is_public_domain",    default: false, null: false
-    t.boolean  "allows_exercises",    default: true,  null: false
-    t.boolean  "allows_solutions",    default: true,  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "licenses", ["name"], name: "index_licenses_on_name", unique: true
   add_index "licenses", ["short_name"], name: "index_licenses_on_short_name", unique: true
-  add_index "licenses", ["sortable_position"], name: "index_licenses_on_sortable_position", unique: true
   add_index "licenses", ["url"], name: "index_licenses_on_url", unique: true
 
   create_table "list_editors", force: true do |t|

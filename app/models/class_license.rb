@@ -1,5 +1,7 @@
 class ClassLicense < ActiveRecord::Base
 
+  sortable :class_name
+
   belongs_to :license
 
   validates :license, presence: true
