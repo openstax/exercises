@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe ListEditorsController, type: :controller do
+  RSpec.describe ListEditorsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # ListEditor. As you add validations to ListEditor, be sure to

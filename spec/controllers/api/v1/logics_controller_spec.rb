@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe LogicsController, type: :controller do
+  RSpec.describe LogicsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Logic. As you add validations to Logic, be sure to

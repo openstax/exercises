@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Admin
-  describe UsersController, type: :controller do
+  RSpec.describe UsersController, type: :controller do
 
     let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
     let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }

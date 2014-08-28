@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DeputizationsController do
+RSpec.describe DeputizationsController, type: :controller do
 
   # This should return the minimal set of attributes required to create a valid
   # Deputization. As you add validations to Deputization, be sure to

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe LibraryVersionsController, type: :controller do
+  RSpec.describe LibraryVersionsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # LibraryVersion. As you add validations to LibraryVersion, be sure to

@@ -30,8 +30,7 @@ License.create do |license|
   license.url                      = "http://creativecommons.org/licenses/by/4.0/"
   license.publishing_contract      = "publishing_contract placeholder"
   license.copyright_notice         = "copyright_notice placeholder"
-  license.allows_exercises         = true
-  license.allows_solutions         = true
+  license.class_licenses           << ClassLicense.new(class_name: 'Exercise')
   license.is_public_domain         = false
 end
 
@@ -41,7 +40,8 @@ License.create do |license|
   license.url                      = "http://creativecommons.org/licenses/zero/1.0/"
   license.publishing_contract      = "publishing_contract placeholder"
   license.copyright_notice         = "copyright_notice placeholder"
-  license.allows_exercises         = true
-  license.allows_solutions         = true
+  license.class_licenses           << ClassLicense.new(class_name: 'Exercise')
+  license.class_licenses           << ClassLicense.new(class_name: 'Solution')
+  license.class_licenses           << ClassLicense.new(class_name: 'List')
   license.is_public_domain         = true
 end

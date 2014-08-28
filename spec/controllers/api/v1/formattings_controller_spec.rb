@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe FormattingsController, type: :controller do
+  RSpec.describe FormattingsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Formatting. As you add validations to Formatting, be sure to

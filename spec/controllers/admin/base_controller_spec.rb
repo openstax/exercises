@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Admin
-  describe BaseController, type: :controller do
+  RSpec.describe BaseController, type: :controller do
 
     # This should return the minimal set of values that should be in the session
     # in order to pass any filters (e.g. authentication) defined in

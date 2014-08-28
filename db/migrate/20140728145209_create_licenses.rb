@@ -8,8 +8,9 @@ class CreateLicenses < ActiveRecord::Migration
       t.text :publishing_contract, null: false
       t.text :copyright_notice, null: false
       t.boolean :is_public_domain, null: false, default: false
-      t.boolean :allows_exercises, null: false, default: true
-      t.boolean :allows_solutions, null: false, default: true
+      t.boolean :allows_exercises, null: false, default: false
+      t.boolean :allows_solutions, null: false, default: false
+      t.boolean :allows_lists, null: false, default: false
 
       t.timestamps
     end

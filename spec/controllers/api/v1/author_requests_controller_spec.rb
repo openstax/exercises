@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe AuthorRequestsController, type: :controller do
+  RSpec.describe AuthorRequestsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # AuthorRequest. As you add validations to AuthorRequest, be sure to

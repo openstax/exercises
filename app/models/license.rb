@@ -20,30 +20,15 @@ class License < ActiveRecord::Base
   validates :publishing_contract, presence: true
   validates :copyright_notice, presence: true
 
-  scope :for_exercises, where(:allows_exercises => true)
-  scope :for_solutions, where(:allows_solutions => true)
-
-  def valid_for?(publishable)
-    case publishable.class
-    when Exercise
-      allows_exercises
-    when Solution
-      allows_solutions
-    else
-      false
-    end
-  end
+  scope :for, lambda { |publishable|
+    joins(:class_licenses).where(class_licenses: {class_name: publishable.class.name}) }
 
   def self.options_for(publishable)
-    case publishable.class
-    when Exercise
-      pscope = for_exercises
-    when Solution
-      pscope = for_solutions
-    else
-      pscope = none
-    end
-    pscope.all.collect{|l| [l.short_name, l.id]}
+    self.for(publishable).collect{|l| [l.short_name, l.id]}
+  end
+
+  def valid_for?(publishable)
+    class_licenses.exists?(class_name: publishable.class.name)
   end
 
 end

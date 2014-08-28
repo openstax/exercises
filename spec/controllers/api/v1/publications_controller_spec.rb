@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe PublicationsController, type: :controller do
+  RSpec.describe PublicationsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Publication. As you add validations to Publication, be sure to

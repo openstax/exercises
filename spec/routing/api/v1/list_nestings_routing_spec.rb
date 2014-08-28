@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe ListNestingsController do
+  RSpec.describe ListNestingsController, :type => :routing do
     describe "routing" do
 
       it "routes to #index" do

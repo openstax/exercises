@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Admin
-  describe LicensesController, type: :controller do
+  RSpec.describe LicensesController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # License. As you add validations to License, be sure to

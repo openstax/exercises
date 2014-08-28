@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe CollaboratorsController, type: :controller do
+  RSpec.describe CollaboratorsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Collaborator. As you add validations to Collaborator, be sure to

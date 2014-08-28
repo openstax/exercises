@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe PartsController, type: :controller do
+  RSpec.describe PartsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Part. As you add validations to Part, be sure to

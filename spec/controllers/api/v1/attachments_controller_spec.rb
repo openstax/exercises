@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe AttachmentsController, type: :controller do
+  RSpec.describe AttachmentsController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # Attachment. As you add validations to Attachment, be sure to

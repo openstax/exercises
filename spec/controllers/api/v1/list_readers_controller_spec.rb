@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  describe ListReadersController, type: :controller do
+  RSpec.describe ListReadersController, type: :controller do
 
     # This should return the minimal set of attributes required to create a valid
     # ListReader. As you add validations to ListReader, be sure to
