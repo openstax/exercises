@@ -6,4 +6,6 @@ class ListEditor < ActiveRecord::Base
   validates :list, presence: true
   validates :editor, presence: true, uniqueness: { scope: :list_id }
 
+  delegate_access_control_to :list
+
 end

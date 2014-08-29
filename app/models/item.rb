@@ -3,9 +3,13 @@ class Item < ActiveRecord::Base
   sortable :question_id
 
   belongs_to :question, inverse_of: :items
+  has_one :part, through: :question
+  has_one :exercise, through: :part
 
   has_many :answers, as: :answerable, dependent: :destroy
 
   validates :question, presence: :true
+
+  delegate_access_control_to :question
 
 end

@@ -6,4 +6,16 @@ class PartSupport < ActiveRecord::Base
   validates :supporting_part, presence: true
   validates :supported_part, presence: true, uniqueness: { scope: :supporting_part_id }
 
+  validate :same_exercise
+
+  delegate_access_control_to :supported_part
+
+  protected
+
+  def same_exercise
+    return if supporting_part.exercise_id == supported_part.exercise_id
+    error.add(:base, 'must refer to a single exercise')
+    false
+  end
+
 end

@@ -7,6 +7,8 @@ class ComboChoiceAnswer < ActiveRecord::Base
   validates :answer, presence: true, uniqueness: { scope: :combo_choice_id }
   validate :same_question
 
+  delegate_access_control_to :combo_choice
+
   protected
 
   def same_question

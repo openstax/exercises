@@ -6,4 +6,6 @@ class ListOwner < ActiveRecord::Base
   validates :list, presence: true
   validates :owner, presence: true, uniqueness: { scope: :list_id }
 
+  delegate_access_control_to :list
+
 end

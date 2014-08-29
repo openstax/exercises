@@ -1,17 +1,17 @@
-module Logicable
+module HasAttachments
   module ActiveRecord
     def self.included(base)
       base.extend(ClassMethods)
     end
     
     module ClassMethods
-      def logicable(*languages)
+      def has_attachments
         class_exec do
-          has_one :logic, as: :parent, dependent: :destroy
+          has_many :attachments, as: :parent, dependent: :destroy
         end
       end
     end
   end
 end
 
-ActiveRecord::Base.send :include, Logicable::ActiveRecord
+ActiveRecord::Base.send :include, HasAttachments::ActiveRecord

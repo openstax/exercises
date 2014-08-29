@@ -6,4 +6,6 @@ class ListNesting < ActiveRecord::Base
   validates :parent_list, presence: true
   validates :child_list, presence: true, uniqueness: true
 
+  delegate_access_control_to :list
+
 end

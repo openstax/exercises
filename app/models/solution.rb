@@ -1,10 +1,12 @@
 class Solution < ActiveRecord::Base
 
+  acts_as_votable
   publishable
-  logicable
+  has_attachments
+  has_collaborators
+  has_logic :javascript, :latex
 
   belongs_to :question, inverse_of: :solutions
-  has_one :exercise, through: :question
 
   validates :question, presence: true
 

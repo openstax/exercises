@@ -8,4 +8,6 @@ class LicenseCompatibility < ActiveRecord::Base
   validates :original_license, presence: true
   validates :combined_license, presence: true, uniqueness: { scope: :original_license_id }
 
+  delegate_access_control_to :original_license
+
 end

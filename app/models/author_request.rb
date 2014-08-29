@@ -6,4 +6,6 @@ class AuthorRequest < ActiveRecord::Base
   validates :requestor, presence: true
   validates :collaborator, presence: true, uniqueness: true
 
+  delegate_access_control_to :collaborator
+
 end

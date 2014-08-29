@@ -2,7 +2,8 @@ class Question < ActiveRecord::Base
 
   sortable :part_id
 
-  belongs_to :part, :inverse_of => :questions
+  belongs_to :part, inverse_of: :questions
+  has_one :exercise, through: :part
 
   has_many :formattings, as: :formattable, dependent: :destroy
   has_many :formats, through: :formattings

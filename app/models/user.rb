@@ -2,10 +2,13 @@ class User < ActiveRecord::Base
 
   USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 
-  belongs_to :account, class_name: "OpenStax::Accounts::Account"
-  has_many :groups, through: :account
+  acts_as_voter
 
-  has_one :administrator, inverse_of: :user
+  belongs_to :account, class_name: "OpenStax::Accounts::Account"
+  has_many :groups_as_member, through: :account
+  has_many :groups_as_owner, through: :account
+
+  has_one :administrator, dependent: :destroy, inverse_of: :user
 
   has_many :collaborators, dependent: :destroy, inverse_of: :user
   has_many :author_requests, through: :collaborators
@@ -16,20 +19,16 @@ class User < ActiveRecord::Base
   has_many :sent_copyright_holder_requests, class_name: 'CopyrightHolderRequest',
            foreign_key: :requestor_id, dependent: :destroy, inverse_of: :requestor
 
-  has_many :child_deputizations, foreign_key: :deputizer_id,
-           dependent: :destroy, inverse_of: :deputizer
-  has_many :direct_parent_deputizations, class_name: 'Deputization',
-           as: :deputy, dependent: :destroy
-  has_many :indirect_parent_deputizations, through: :groups, source: :deputizations
+  has_many :child_deputizations, class_name: 'Deputization',
+           foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer
+  #has_many_with_groups :deputizations
 
-  has_many :direct_list_owners, class_name: 'ListOwner',
-           dependent: :destroy, inverse_of: :list
-  has_many :direct_list_editors, class_name: 'ListEditor',
-           dependent: :destroy, inverse_of: :list
-  has_many :direct_list_readers, class_name: 'ListReader',
-           dependent: :destroy, inverse_of: :list
+  #has_many_with_groups :list_owners
+  #has_many_with_groups :list_editors
+  #has_many_with_groups :list_readers
 
-  has_many :libraries, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner
+  has_many :applications, class_name: 'Doorkeeper::Application',
+           as: :owner, dependent: :destroy
 
   validates :account, presence: true, uniqueness: true
 

@@ -27,7 +27,7 @@ gem 'whenever'
 # Access Control
 gem 'fine_print'
 gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
-                         ref: '0c83fb2148f5a36ff2e642947bc9866cd6117bdb'
+                         ref: '7a9e6708558fd387fa9ea779745d8827e293ab40'
 gem 'openstax_api'
 gem 'doorkeeper'
 

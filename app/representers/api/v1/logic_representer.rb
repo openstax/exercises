@@ -36,8 +36,8 @@ module Api::V1
              }
 
     collection :logic_outputs, 
-               class: LogicOutput, 
-               decorator: LogicOutputRepresenter, 
+               class: LogicVariableValue, 
+               decorator: LogicVariableValueRepresenter, 
                setter: (lambda do |logic_outputs_array, *| 
                           attributes_array = logic_outputs_array.collect{|lo| lo.attributes.except('id', 'created_at', 'updated_at') }
                           logic_outputs.build(attributes_array)

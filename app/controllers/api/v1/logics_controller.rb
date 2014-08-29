@@ -24,11 +24,9 @@ module Api::V1
         restrictions on the code and variables saved:
 
         1. The "code" data cannot contain the following standard Javascript reserved words: 
-           > #{Logic::JS_RESERVED_WORDS.join(', ')}
-        2. The "code" data also cannot contain the follow special reserved words:
-           > #{Logic::OTHER_RESERVED_WORDS.join(', ')}
+           > #{LogicVariable::JS_RESERVED_WORDS.join(', ')}
         3. The "variables" data must be a JSON stringified array of string objects, each of
-           which must match the following regular expression: #{Logic::VARIABLE_REGEX.inspect}
+           which must match the following regular expression: #{LogicVariable::VARIABLE_REGEX.inspect}
       EOS
     end
 

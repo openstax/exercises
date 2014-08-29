@@ -5,6 +5,7 @@ class CreateSolutions < ActiveRecord::Migration
       t.string :title
       t.text :summary
       t.text :details, null: false, default: ''
+      t.text :rubric
 
       t.timestamps
     end

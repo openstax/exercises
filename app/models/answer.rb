@@ -9,4 +9,6 @@ class Answer < ActiveRecord::Base
 
   validates :answerable, presence: true
 
+  delegate_access_control_to :answerable
+
 end

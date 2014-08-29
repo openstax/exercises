@@ -1,12 +1,16 @@
 class Exercise < ActiveRecord::Base
 
+  acts_as_votable
   publishable
-  logicable
+  has_attachments
+  has_collaborators
+  has_logic :javascript, :latex
 
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :questions, through: :parts
   has_many :items, through: :questions
-  has_many :answers, through: :questions
+  has_many :item_answers, through: :items, source: :answers
+  has_many :question_answers, through: :questions, source: :answers
   has_many :combo_choices, through: :questions
 
   has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise

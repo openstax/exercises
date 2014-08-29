@@ -5,7 +5,10 @@ class Part < ActiveRecord::Base
   belongs_to :exercise, inverse_of: :parts
 
   has_many :questions, dependent: :destroy, inverse_of: :part
-  has_many :solutions, dependent: :destroy, inverse_of: :part
+  has_many :items, through: :questions
+  has_many :item_answers, through: :items, source: :answers
+  has_many :question_answers, through: :questions, source: :answers
+  has_many :combo_choices, through: :questions
 
   has_many :child_dependencies, class_name: 'PartDependency',
            dependent: :destroy, inverse_of: :parent_part
@@ -19,6 +22,6 @@ class Part < ActiveRecord::Base
 
   validates :exercise, presence: true
 
-  delegate_access_control_to :exercise, include_sort: true
+  delegate_access_control_to :exercise
 
 end

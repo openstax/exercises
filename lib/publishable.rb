@@ -7,6 +7,9 @@ module Publishable
     
     module ClassMethods
       def publishable(options = {})
+        class_exec do
+          has_one :publication, as: :publishable, dependent: :destroy
+        end
       end
     end
   end

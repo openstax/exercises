@@ -7,4 +7,6 @@ class Formatting < ActiveRecord::Base
   validates :format, presence: true, uniqueness: {
     scope: [:formattable_id, :formattable_type] }
 
+  delegate_access_control_to :formattable
+
 end
