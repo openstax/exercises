@@ -21,11 +21,15 @@ class User < ActiveRecord::Base
 
   has_many :child_deputizations, class_name: 'Deputization',
            foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer
-  #has_many_with_groups :deputizations
+  has_many_through_groups :groups_as_member, :deputizations,
+                          as: :deputy, dependent: :destroy
 
-  #has_many_with_groups :list_owners
-  #has_many_with_groups :list_editors
-  #has_many_with_groups :list_readers
+  has_many_through_groups :groups_as_member, :list_owners,
+                          as: :owner, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_editors,
+                          as: :editor, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_readers,
+                          as: :reader, dependent: :destroy
 
   has_many :applications, class_name: 'Doorkeeper::Application',
            as: :owner, dependent: :destroy
