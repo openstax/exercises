@@ -6,15 +6,16 @@ class ApplicationController < ActionController::Base
 
   layout :application_body_only
 
-  before_filter :authenticate_user!, :not_destroyed!
+  interceptor :authenticate_user!
+
+  before_filter :not_destroyed!
 
   fine_print_get_signatures :general_terms_of_use, :privacy_policy
 
   protected
 
-  def authenticate_user!
-    super
-    return if current_user.destroyed_at.nil?
+  def not_destroyed!
+    return if current_user.try(:destroyed_at).nil?
     sign_out
     redirect_to home_url
   end

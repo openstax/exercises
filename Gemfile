@@ -6,8 +6,11 @@ source 'https://rubygems.org'
 # Rails
 gem 'rails', '4.1.5'
 
-# Use jquery as the JavaScript library
+# Use jQuery as the JavaScript library
 gem 'jquery-rails'
+
+# Use jQuery UI as the JavaScript UI library
+gem 'jquery-ui-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -68,18 +71,16 @@ gem 'newrelic_rpm'
 # Backup
 gem 'yaml_db'
 
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  # Use SCSS for stylesheets
-  gem 'sass-rails', '~> 4.0.3'
-  # Use Uglifier as compressor for JavaScript assets
-  gem 'uglifier', '>= 1.3.0'
-  # Use CoffeeScript for .js.coffee assets and views
-  gem 'coffee-rails', '~> 4.0.0'
-  gem 'therubyracer', platforms: :ruby
-  gem 'compass-rails'
-end
+# Assets
+# Use SCSS for stylesheets
+gem 'bootstrap-sass'
+gem 'sass-rails', '~> 4.0.3'
+gem 'compass-rails'
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
+# Use CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails', '~> 4.0.0'
+gem 'therubyracer', platforms: :ruby
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record
