@@ -1,8 +1,8 @@
 class CreateListEditors < ActiveRecord::Migration
   def change
     create_table :list_editors do |t|
-      t.references :list
-      t.references :editor, polymorphic: true
+      t.references :editor, polymorphic: true, null: false
+      t.references :list, null: false
 
       t.timestamps
     end

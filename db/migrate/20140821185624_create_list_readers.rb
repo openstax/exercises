@@ -1,8 +1,8 @@
 class CreateListReaders < ActiveRecord::Migration
   def change
     create_table :list_readers do |t|
-      t.references :list
-      t.references :reader, polymorphic: true
+      t.references :reader, polymorphic: true, null: false
+      t.references :list, null: false
 
       t.timestamps
     end

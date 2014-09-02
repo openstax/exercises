@@ -1,6 +1,6 @@
 class Collaborator < ActiveRecord::Base
 
-  sortable :collaborable_id, :collaborable_type
+  sortable :collaborable
 
   belongs_to :parent, polymorphic: true
   belongs_to :user, inverse_of: :collaborators

@@ -55,4 +55,12 @@ class User < ActiveRecord::Base
     false
   end
 
+  def destroy
+    update_attribute(:destroyed_at, Time.now)
+  end
+
+  def undestroy
+    update_attribute(:destroyed_at, nil)
+  end
+
 end

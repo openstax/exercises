@@ -1,6 +1,6 @@
 class Item < ActiveRecord::Base
 
-  sortable :question_id
+  sortable :question
 
   belongs_to :question, inverse_of: :items
   has_one :part, through: :question

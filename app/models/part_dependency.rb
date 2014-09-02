@@ -1,5 +1,7 @@
 class PartDependency < ActiveRecord::Base
 
+  sortable :dependent_part
+
   belongs_to :parent_part, class_name: 'Part', inverse_of: :child_dependencies
   belongs_to :dependent_part, class_name: 'Part', inverse_of: :parent_dependencies
 

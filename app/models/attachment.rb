@@ -1,5 +1,7 @@
 class Attachment < ActiveRecord::Base
 
+  sortable :parent
+
   belongs_to :parent, polymorphic: true
 
   validates :parent, presence: true

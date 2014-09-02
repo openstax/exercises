@@ -23,21 +23,6 @@ module Sortable
       end
     end
   end
-
-  module TableDefinition
-    def sortable
-      integer :sortable_position, null: false
-    end
-  end
-
-  module Migration
-    def add_sortable_index(table_name, sort_scope = [], options = {})
-      add_index table_name, [sort_scope].flatten + [:sortable_position],
-                {unique: true}.merge(options)
-    end
-  end
 end
 
 ActiveRecord::Base.send :include, Sortable::ActiveRecord
-ActiveRecord::ConnectionAdapters::TableDefinition.send :include, Sortable::TableDefinition
-ActiveRecord::Migration.send :include, Sortable::Migration

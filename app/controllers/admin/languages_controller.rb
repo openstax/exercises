@@ -1,5 +1,6 @@
 module Admin
-  class LanguagesController < ApplicationController
+  class LanguagesController < BaseController
+
     before_action :set_language, only: [:show, :edit, :update, :destroy]
 
     # GET /languages
@@ -47,14 +48,16 @@ module Admin
     end
 
     private
-      # Use callbacks to share common setup or constraints between actions.
-      def set_language
-        @language = Language.find(params[:id])
-      end
 
-      # Only allow a trusted parameter "white list" through.
-      def language_params
-        params.require(:language).permit(:name, :description)
-      end
+    # Use callbacks to share common setup or constraints between actions.
+    def set_language
+      @language = Language.find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def language_params
+      params.require(:language).permit(:name, :description)
+    end
+
   end
 end

@@ -9,15 +9,19 @@ class StaticPagesController < ApplicationController
   fine_print_skip_signatures :general_terms_of_use, 
                              :privacy_policy
 
+  # GET /
   def home
   end
 
+  # GET /api
   def api
   end
 
+  # GET /copyright
   def copyright
   end
 
+  # GET /developers
   def developers
   end
 

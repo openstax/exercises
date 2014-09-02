@@ -1,6 +1,6 @@
 class Answer < ActiveRecord::Base
 
-  sortable :answerable_id, :answerable_type
+  sortable :answerable
 
   belongs_to :answerable, polymorphic: true
 

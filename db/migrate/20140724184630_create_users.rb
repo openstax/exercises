@@ -3,6 +3,8 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users do |t|
       t.references :account, null: false
 
+      t.datetime :destroyed_at
+
       t.boolean :show_public_domain_attribution, null: false, default: true
       t.boolean :forward_emails_to_deputies, null: false, default: false
       t.boolean :receive_emails, null: false, default: true
@@ -14,5 +16,6 @@ class CreateUsers < ActiveRecord::Migration
     end
 
     add_index :users, :account_id, unique: true
+    add_index :users, :destroyed_at
   end
 end

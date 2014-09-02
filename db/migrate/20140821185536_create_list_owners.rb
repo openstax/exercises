@@ -1,8 +1,8 @@
 class CreateListOwners < ActiveRecord::Migration
   def change
     create_table :list_owners do |t|
-      t.references :list
-      t.references :owner, polymorphic: true
+      t.references :owner, polymorphic: true, null: false
+      t.references :list, null: false
 
       t.timestamps
     end

@@ -1,37 +1,59 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :get_user, only: [:show, :edit, :update, :destroy, :become]
+    before_filter :set_user, only: [:show, :edit, :update, :destroy, :become]
 
+  # GET /users
     def index
       handle_with(Admin::UsersIndex,
                   complete: lambda { render 'index' })
     end
 
+    # GET /users/1
+    def show
+    end
+
+    # GET /users/1/edit
+    def edit
+    end
+
+    # PATCH /users/1
     def update
       respond_to do |format|
-        if @user.update_attributes(params[:user])
-          format.html { redirect_to @user, notice: 'User profile was successfully updated.' }
+        if @user.update_attributes(user_params)
+          format.html { redirect_to user_url(@user),
+                        notice: 'User profile was successfully updated.' }
         else
           format.html { render action: "edit" }
         end
       end
     end
 
-    def destroy      
+    # DELETE /users/1
+    def destroy
       @user.destroy
       redirect_to users_url
     end
 
+    # PUT /users/1/become
     def become
       sign_in(@user)
       redirect_to request.referrer
     end
 
-  protected
+    protected
 
-    def get_user
+    # Use callbacks to share common setup or constraints between actions.
+    def set_user
       @user = User.find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def user_params
+      params.require(:user).permit(:first_name, :last_name, :full_name, :title,
+        :show_public_domain_attribution, :forward_emails_to_deputies,
+        :receive_emails, :receive_collaborator_emails,
+        :receive_list_emails, :receive_comment_emails)
     end
 
   end

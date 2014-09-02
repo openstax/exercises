@@ -13,7 +13,8 @@ gem 'jquery-rails'
 gem 'turbolinks'
 
 # Lev Framework
-gem 'lev'
+gem 'lev', git: 'https://github.com/Dantemss/lev.git',
+           ref: '4ad8d30df92458ac50c4926bcb6aa942774f7aa6'
 
 # SQL Queries
 gem 'squeel'
@@ -27,7 +28,7 @@ gem 'whenever'
 # Access Control
 gem 'fine_print'
 gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
-                         ref: 'ab5fb468e46ef65d899352b8521abea3e22dbfc6'
+                         ref: '791eeff35b913aae479c0fbc17e0fc79cd448b35'
 gem 'openstax_api'
 gem 'doorkeeper'
 

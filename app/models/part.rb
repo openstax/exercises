@@ -1,6 +1,6 @@
 class Part < ActiveRecord::Base
 
-  sortable :exercise_id
+  sortable :exercise
 
   belongs_to :exercise, inverse_of: :parts
 
