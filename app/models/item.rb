@@ -1,6 +1,7 @@
 class Item < ActiveRecord::Base
 
-  sortable :question
+  sort_domain
+  sortable
 
   belongs_to :question, inverse_of: :items
   has_one :part, through: :question

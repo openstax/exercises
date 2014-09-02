@@ -1,6 +1,6 @@
 class Formatting < ActiveRecord::Base
 
-  sortable :formattable
+  sortable
 
   belongs_to :formattable, polymorphic: true
   belongs_to :format, inverse_of: :formattings

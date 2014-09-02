@@ -1,6 +1,6 @@
 class ListOwner < ActiveRecord::Base
 
-  sortable :list, :owner
+  sortable
 
   belongs_to :list, inverse_of: :list_owners
   belongs_to :owner, polymorphic: true

@@ -1,6 +1,6 @@
 class ListExercise < ActiveRecord::Base
 
-  sortable :list
+  sortable
 
   belongs_to :list, :inverse_of => :list_exercises
   belongs_to :exercise, :inverse_of => :list_exercises

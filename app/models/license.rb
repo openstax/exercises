@@ -1,5 +1,7 @@
 class License < ActiveRecord::Base
 
+  sort_domain
+
   has_many :publications, dependent: :destroy, :inverse_of => :license
 
   has_many :class_licenses, dependent: :destroy, inverse_of: :license

@@ -5,20 +5,16 @@ module Sortable
     end
     
     module ClassMethods
-      def sortable(*sort_scope_attributes)
+      def sortable
         class_exec do
-          cattr_accessor :sort_scope_attributes
-          self.sort_scope_attributes = sort_scope_attributes.flatten
+          has_many :sorts, as: :sortable, dependent: :destroy
+        end
+      end
 
-          before_validation :assign_sortable_position
-
-          def sort_scope
-            self.class.where(Hash[sort_scope_attributes.collect{|s| [s, send(s)]}])
-          end
-
-          def assign_sortable_position
-            self.sortable_position ||= (sort_scope.maximum(:sortable_position) || 0) + 1
-          end
+      def sort_domain
+        class_exec do
+          has_many :child_sorts, class_name: 'Sort',
+                   as: :domain, dependent: :destroy
         end
       end
     end

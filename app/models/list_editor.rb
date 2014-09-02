@@ -1,6 +1,6 @@
 class ListEditor < ActiveRecord::Base
 
-  sortable :list, :editor
+  sortable
 
   belongs_to :list, inverse_of: :list_owners
   belongs_to :editor, polymorphic: true

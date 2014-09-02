@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
 
   acts_as_voter
 
+  sort_domain
+
   belongs_to :account, class_name: "OpenStax::Accounts::Account"
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account

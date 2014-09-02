@@ -1,5 +1,7 @@
 class Logic < ActiveRecord::Base
 
+  sort_domain
+
   belongs_to :parent, polymorphic: true
   belongs_to :language, inverse_of: :logics
 

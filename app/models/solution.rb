@@ -5,6 +5,7 @@ class Solution < ActiveRecord::Base
   has_attachments
   has_collaborators
   has_logic :javascript, :latex
+  sort_domain
 
   belongs_to :question, inverse_of: :solutions
 

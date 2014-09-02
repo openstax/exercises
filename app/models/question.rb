@@ -1,6 +1,7 @@
 class Question < ActiveRecord::Base
 
-  sortable :part
+  sort_domain
+  sortable
 
   belongs_to :part, inverse_of: :questions
   has_one :exercise, through: :part

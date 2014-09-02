@@ -1,6 +1,6 @@
 class ComboChoice < ActiveRecord::Base
 
-  sortable :question
+  sortable
 
   belongs_to :question, inverse_of: :combo_choices
   has_one :part, through: :question

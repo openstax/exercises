@@ -1,6 +1,6 @@
 class PartSupport < ActiveRecord::Base
 
-  sortable :supported_part
+  sortable
 
   belongs_to :supporting_part, class_name: 'Part', inverse_of: :child_supports
   belongs_to :supported_part, class_name: 'Part', inverse_of: :parent_supports

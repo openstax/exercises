@@ -1,6 +1,6 @@
 class Derivation < ActiveRecord::Base
 
-  sortable :derived_publication
+  sortable
 
   belongs_to :derived_publication, class_name: 'Publication', inverse_of: :sources
   belongs_to :source_publication, class_name: 'Publication', inverse_of: :derivations
