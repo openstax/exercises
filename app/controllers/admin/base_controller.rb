@@ -6,9 +6,6 @@ module Admin
     skip_interceptor :authenticate_user!
     fine_print_skip_signatures :general_terms_of_use, :privacy_policy
 
-    def index
-    end
-
     protected
 
     def authenticate_admin!

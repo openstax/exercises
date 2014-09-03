@@ -1,0 +1,23 @@
+<h5>Raise Exception</h5>
+<ul class="normal">
+  <li><%= link_to 'SecurityTransgression',
+                  admin_exception_url('SecurityTransgression') %></li>
+  <li><%= link_to 'ActiveRecord::RecordNotFound',
+                  admin_exception_url('ActiveRecord::RecordNotFound') %></li>
+  <li><%= link_to 'ActionController::RoutingError',
+                  admin_exception_url('ActionController::RoutingError',
+                                       args: '/blah/blah/blah'.inspect) %></li>
+  <li><%= link_to 'ActionController::UnknownController',
+                  admin_exception_url('ActionController::UnknownController') %></li>
+  <li><%= link_to 'AbstractController::ActionNotFound',
+                  admin_exception_url('AbstractController::ActionNotFound') %></li>
+  <li><%= link_to 'ActionView::MissingTemplate',
+                  admin_exception_url('ActionView::MissingTemplate',
+                                       args: [['a', 'b'], 'path',
+                                              ['pre1', 'pre2'],
+                                              'partial', 'details'].inspect) %></li>
+  <li><%= link_to 'NotYetImplemented',
+                  admin_exception_url('NotYetImplemented') %></li>
+  <li><%= link_to 'IllegalArgument',
+                  admin_exception_url('IllegalArgument') %></li>
+</ul>

@@ -6,8 +6,9 @@
   <div class="modal-header" style="border-bottom: none">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <ul class="nav nav-tabs tight-bottom">
-      <li class="active"><a href="#misc-tab" data-toggle="tab">Misc</a></li>
-      <li><a href="#users-tab" data-toggle="tab">Users</a></li>
+      <li class="active"><a href="#manage-tab" data-toggle="tab">Manage</a></li>
+      <li><a href="#cron-tab" data-toggle="tab">Cron</a></li>
+      <li><a href="#exceptions-tab" data-toggle="tab">Exceptions</a></li>
       <% unless Rails.env.production? %>
         <li class="dev">
           <a href="#dev-tab" data-toggle="tab">Dev</a>
@@ -21,19 +22,21 @@
     <div id="dialog-local-alerts"></div>
 
     <div class="tab-content">
-      <div class="tab-pane active" id="misc-tab">
-        <%= render 'misc' %>
+      <div class="tab-pane active" id="manage-tab">
+        <%= render partial: 'admin/console/manage' %>
       </div>
 
-      <div class="tab-pane" id="users-tab">
-        <%= render :partial => 'openstax/accounts/shared/accounts/index',
-                   :locals => { :search_action_path => admin_users_path,
-                                :remote => true } %>
+      <div class="tab-pane" id="cron-tab">
+        <%= render partial: 'admin/console/cron' %>
+      </div>
+
+      <div class="tab-pane" id="exceptions-tab">
+        <%= render partial: 'admin/console/exceptions' %>
       </div>
 
       <% unless Rails.env.production? %>
         <div class="tab-pane" id="dev-tab">
-          <%= render 'dev/base/index' %>
+          <%= render partial: 'dev/console/index' %>
         </div>
       <% end %>
     </div>

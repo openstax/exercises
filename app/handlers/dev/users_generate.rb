@@ -1,5 +1,6 @@
 module Dev
   class UsersGenerate
+
     lev_handler
 
     paramify :generate do
@@ -8,19 +9,16 @@ module Dev
                                         greater_than_or_equal_to: 0 }
     end
 
-    uses_routine Dev::CreateUser,
-             translations: { inputs: { scope: :create },
-                             outputs: { type: :verbatim } }
-
-  protected
+    protected
 
     def authorized?
       !Rails.env.production?
     end
 
     def handle
+      outputs[:users] = []
       generate_params.count.times do 
-        run(Dev::CreateUser, {ensure_no_errors: true})
+        outputs[:users] << FactoryGirl.create(:user, :agreed_to_terms)
       end
       outputs[:count] = generate_params.count
     end

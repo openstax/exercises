@@ -35,7 +35,7 @@ Exercises::Application.routes.draw do
   end
   
   namespace 'admin' do
-    get '/', to: 'base#index'
+    get '/', to: 'console#index'
 
     resources :administrators
 
@@ -48,6 +48,8 @@ Exercises::Application.routes.draw do
     resources :languages
 
     resources :licenses
+
+    resources :required_libraries, only: [:index, :new, :create, :destroy]
 
     resources :users, except: [:new, :create] do
       put 'become', on: :member

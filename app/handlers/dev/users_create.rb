@@ -1,30 +1,33 @@
 module Dev
   class UsersCreate
+
     lev_handler
 
     paramify :create do
+      attribute :username, type: String
       attribute :first_name, type: String
       attribute :last_name, type: String
-      attribute :username, type: String
-      attribute :is_admin, type: boolean
+      attribute :full_name, type: String
+      attribute :title, type: String
+      attribute :administrator, type: boolean
+      attribute :agreed_to_terms, type: boolean
 
       validates :username, presence: true
     end
 
-    uses_routine Dev::CreateUser,
-                 as: :create_user,
-                 translations: { inputs: { scope: :create },
-                                 outputs: { type: :verbatim } }
-
-  protected
+    protected
 
     def authorized?
       !Rails.env.production?
     end
 
     def handle
-      run(:create_user, create_params.as_hash(:first_name, :last_name, :username))
-      outputs[:user].update_attribute(:is_admin, create_params.is_admin)
+      create_symbols = []
+      create_symbols << :administrator if create_params.administrator
+      create_symbols << :agreed_to_terms if create_params.agreed_to_terms
+      create_hash = create_params.as_hash(:username, :first_name, :last_name,
+                                          :full_name, :title)
+      outputs[:user] = FactoryGirl.create(:user, *create_symbols, create_hash)
     end
 
   end 

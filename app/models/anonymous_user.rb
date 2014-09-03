@@ -1,20 +1,15 @@
-class AnonymousUser
+class AnonymousUser < User
 
   include Singleton
 
-  delegate :username, :first_name, :last_name, :full_name, :title,
-           :name, :casual_name, to: :account
+  before_save { false }
 
   def account
     OpenStax::Accounts::AnonymousAccount.instance
   end
 
-  def is_human?
-    true
-  end
-  
-  def is_application?
-    false
+  def account_id
+    nil
   end
 
   def is_anonymous?

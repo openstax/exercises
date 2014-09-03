@@ -1,10 +1,12 @@
 module UserMapper
+
   def self.account_to_user(account)
-    GetOrCreateUserFromAccount.call(account).outputs.user
+    return User.anonymous if account.is_anonymous?
+    User.find_or_create_by(account_id: account.id)
   end
 
   def self.user_to_account(user)
-    user.is_anonymous? ? OpenStax::Accounts::Account.anonymous : \
-                         user.account
+    user.account
   end
+
 end

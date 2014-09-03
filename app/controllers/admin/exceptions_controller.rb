@@ -3,7 +3,7 @@ module Admin
 
     def show
       exception_class = params[:id].classify.constantize
-      raise exception_class.new *params[:args].values
+      raise exception_class.new *eval(params[:args] || '')
     end
 
   end
