@@ -3,6 +3,7 @@ module Admin
 
     before_filter :authenticate_admin!
 
+    skip_interceptor :authenticate_user!
     fine_print_skip_signatures :general_terms_of_use, :privacy_policy
 
     def index

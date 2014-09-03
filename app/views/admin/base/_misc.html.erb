@@ -1,18 +1,29 @@
 <ul class="normal">
-  <li><%= link_to "Run cron tasks", admin_cron_path, :method => :put, :test => "run_cron_tasks" %></li>
+  <li><%= link_to "Run cron tasks", admin_cron_path, :method => :patch %></li>
   <li><%= link_to "Manage Site Terms", fine_print.root_path %></li>
   <li><%= link_to "Content Licenses", admin_licenses_path %></li>
-  <li><%= link_to "Libraries", admin_libraries_path %></li>
   <li>Raise an Exception:
     <ul class="normal">
-      <li><%= link_to "SecurityTransgression",                admin_raise_security_transgression_path %></li>
-      <li><%= link_to "ActiveRecord::RecordNotFound",         admin_raise_record_not_found_path %></li>
-      <li><%= link_to "ActionController::RoutingError",       admin_raise_routing_error_path %></li>
-      <li><%= link_to "ActionController::UnknownController",  admin_raise_unknown_controller_path %></li>
-      <li><%= link_to "ActionController::UnknownAction",      admin_raise_unknown_action_path %></li>
-      <li><%= link_to "ActionView::MissingTemplate",          admin_raise_missing_template_path %></li>
-      <li><%= link_to "NotYetImplemented",                    admin_raise_not_yet_implemented_path %></li>
-      <li><%= link_to "IllegalArgument",                      admin_raise_illegal_argument_path %></li>
+      <li><%= link_to 'SecurityTransgression',
+                      admin_exception_path('SecurityTransgression') %></li>
+      <li><%= link_to 'ActiveRecord::RecordNotFound',
+                      admin_exception_path('ActiveRecord::RecordNotFound') %></li>
+      <li><%= link_to 'ActionController::RoutingError',
+                      admin_exception_path('ActionController::RoutingError',
+                                           args: {'1' => '/blah/blah/blah'}) %></li>
+      <li><%= link_to 'ActionController::UnknownController',
+                      admin_exception_path('ActionController::UnknownController') %></li>
+      <li><%= link_to 'ActionController::UnknownAction',
+                      admin_exception_path('ActionController::UnknownAction') %></li>
+      <li><%= link_to 'ActionView::MissingTemplate',
+                      admin_exception_path('ActionView::MissingTemplate',
+                                           args: {'1' => ['a', 'b'], '2' => 'path',
+                                                  '3' => ['pre1', 'pre2'],
+                                                  '4' => 'partial', '5' => 'details'}) %></li>
+      <li><%= link_to 'NotYetImplemented',
+                      admin_exception_path('NotYetImplemented') %></li>
+      <li><%= link_to 'IllegalArgument',
+                      admin_exception_path('IllegalArgument') %></li>
     </ul>
   </li>
 </ul>

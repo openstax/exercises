@@ -39,9 +39,9 @@ Exercises::Application.routes.draw do
 
     resources :administrators
 
-    resource :cron, only: [:create]
+    resource :cron, only: [:update]
 
-    resources :exceptions, only: [:create]
+    resources :exceptions, only: [:show]
 
     resources :formats, only: [:index, :new, :create, :destroy]
 

@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 
   include Lev::HandleWith
 
-  layout :application_body_only
+  layout 'application_body_only'
 
   interceptor :authenticate_user!
 
