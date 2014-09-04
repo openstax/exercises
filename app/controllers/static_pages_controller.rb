@@ -13,16 +13,25 @@ class StaticPagesController < ApplicationController
   def home
   end
 
-  # GET /api
-  def api
+  # GET /developers
+  def developers
   end
 
   # GET /copyright
   def copyright
   end
 
-  # GET /developers
-  def developers
+  # GET /help
+  def help
+  end
+
+  # GET /share
+  def share
+  end
+
+  # Used by AWS (and others) to make sure the site is still up
+  def status
+    head :ok
   end
 
   protected

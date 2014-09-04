@@ -6,7 +6,7 @@ module Admin
   # GET /users
     def index
       handle_with(Admin::UsersIndex,
-                  complete: lambda { render 'index' })
+                  complete: lambda { render 'admin/users/index' })
     end
 
     # GET /users/1
@@ -32,15 +32,16 @@ module Admin
     # PUT /users/1/become
     def become
       sign_in(@user)
-      redirect_to request.referrer
+      redirect_to request.referrer, notice: "Logged in as #{@user.username}"
     end
 
     # PATCH /users/1/delete
     def delete
       @user.delete
       respond_to do |format|
-        format.html { redirect_to request.referrer }
-        format.js { render 'admin/users/actions' }
+        format.html { redirect_to request.referrer,
+                                  notice: "#{@user.username}'s account has been disabled." }
+        format.js { render 'admin/users/delete' }
       end
     end
 
@@ -48,8 +49,9 @@ module Admin
     def undelete
       @user.undelete
       respond_to do |format|
-        format.html { redirect_to request.referrer }
-        format.js { render 'admin/users/actions' }
+        format.html { redirect_to request.referrer,
+                                  notice: "#{@user.username}'s account has been enabled." }
+        format.js { render 'admin/users/delete' }
       end
     end
 

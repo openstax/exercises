@@ -7,8 +7,7 @@
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <ul class="nav nav-tabs tight-bottom">
       <li class="active"><a href="#manage-tab" data-toggle="tab">Manage</a></li>
-      <li><a href="#cron-tab" data-toggle="tab">Cron</a></li>
-      <li><a href="#exceptions-tab" data-toggle="tab">Exceptions</a></li>
+      <li><a href="#misc-tab" data-toggle="tab">Misc</a></li>
       <% unless Rails.env.production? %>
         <li class="dev">
           <a href="#dev-tab" data-toggle="tab" class="orange">Dev</a>
@@ -26,12 +25,8 @@
         <%= render partial: 'admin/console/manage' %>
       </div>
 
-      <div class="tab-pane" id="cron-tab">
-        <%= render partial: 'admin/console/cron' %>
-      </div>
-
-      <div class="tab-pane" id="exceptions-tab">
-        <%= render partial: 'admin/console/exceptions' %>
+      <div class="tab-pane" id="misc-tab">
+        <%= render partial: 'admin/console/misc' %>
       </div>
 
       <% unless Rails.env.production? %>

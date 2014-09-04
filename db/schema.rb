@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140902185341) do
+ActiveRecord::Schema.define(version: 20140904205107) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -413,15 +413,14 @@ ActiveRecord::Schema.define(version: 20140902185341) do
   add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true
 
   create_table "oauth_applications", force: true do |t|
-    t.string   "name",                         null: false
-    t.string   "uid",                          null: false
-    t.string   "secret",                       null: false
-    t.text     "redirect_uri",                 null: false
+    t.string   "name",         null: false
+    t.string   "uid",          null: false
+    t.string   "secret",       null: false
+    t.text     "redirect_uri", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.boolean  "trusted",      default: false, null: false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
@@ -603,6 +602,14 @@ ActiveRecord::Schema.define(version: 20140902185341) do
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true
+
+  create_table "trusted_applications", force: true do |t|
+    t.integer  "application_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "trusted_applications", ["application_id"], name: "index_trusted_applications_on_application_id", unique: true
 
   create_table "users", force: true do |t|
     t.integer  "account_id",                                     null: false

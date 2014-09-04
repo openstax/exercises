@@ -1,8 +1,3 @@
-# Admin
-OSU::AccessPolicy.register(Administrator, AdministratorAccessPolicy)
-OSU::AccessPolicy.register(Format, FormatAccessPolicy)
-OSU::AccessPolicy.register(License, LicenseAccessPolicy)
-
 # User
 OSU::AccessPolicy.register(Deputization, DeputizationAccessPolicy)
 OSU::AccessPolicy.register(User, UserAccessPolicy)

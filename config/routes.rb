@@ -6,7 +6,7 @@ Exercises::Application.routes.draw do
   mount FinePrint::Engine => "/terms"
 
   use_doorkeeper do
-    skip_controllers :applications
+    controllers :applications => 'oauth/applications'
   end
 
   apipie
@@ -37,7 +37,7 @@ Exercises::Application.routes.draw do
   namespace 'admin' do
     get '/', to: 'console#index'
 
-    resources :administrators
+    resources :administrators, only: [:index, :create, :destroy]
 
     resource :cron, only: [:update]
 
@@ -49,7 +49,9 @@ Exercises::Application.routes.draw do
 
     resources :licenses
 
-    resources :required_libraries, only: [:index, :new, :create, :destroy]
+    resources :required_libraries, only: [:index, :create, :destroy]
+
+    resources :trusted_applications, only: [:index, :create, :destroy]
 
     resources :users, only: [:index] do
       member do
@@ -71,10 +73,11 @@ Exercises::Application.routes.draw do
   resources :deputizations
 
   resource :static_page, only: [], path: '', as: '' do
-    get 'api'
     get 'copyright'
-    get 'status'
     get 'developers'
+    get 'help'
+    get 'share'
+    get 'status'
   end
 
 end

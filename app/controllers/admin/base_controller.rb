@@ -10,7 +10,7 @@ module Admin
 
     def authenticate_admin!
       return if !Rails.env.production? ||\
-                (authenticate_user! && current_user.administrator.exists?)
+                (authenticate_user! && current_user.administrator)
       raise SecurityTransgression
     end
 

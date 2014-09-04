@@ -4,12 +4,8 @@ module Admin
     # GET /administrators
     def index
       @administrators = Administrator.all
-    end
-
-    # GET /administrators/new
-    def new
       handle_with(Admin::UsersIndex,
-                  complete: lambda { render 'users/index' })
+                  complete: lambda { render 'admin/administrators/index' })
     end
 
     # POST /administrators
@@ -20,7 +16,8 @@ module Admin
         if @administrator.save
           format.html {
             redirect_to admin_administrators_url,
-              notice: "#{@administrator.user.full_name} is now an Administrator." }
+                        notice: "#{@administrator.user.full_name} is now an Administrator."
+            }
         else
           format.html { render action: "new" }
         end
@@ -31,7 +28,11 @@ module Admin
     def destroy
       @administrator = Administrator.find(params[:id])
       @administrator.destroy
-      redirect_to admin_administrators_url
+      respond_to do |format|
+        format.html { redirect_to admin_administrators_url,
+                                  notice: "#{@administrator.user.username} is no longer an Administrator."
+                    }
+      end
     end
 
     private

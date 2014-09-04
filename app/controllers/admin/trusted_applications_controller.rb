@@ -1,5 +1,5 @@
 module Admin
-  class RequiredLibrariesController < BaseController
+  class TrustedApplicationsController < BaseController
 
     respond_to :html
 

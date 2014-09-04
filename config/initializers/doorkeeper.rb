@@ -5,13 +5,14 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    current_user || warden.authenticate!(:scope => :user)
+    next current_user unless current_user.is_anonymous?
+    with_interceptor &ActionInterceptor.interceptors[:authenticate_user!]
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   admin_authenticator do
-    current_user || warden.authenticate!(:scope => :user)
-    raise SecurityTransgression unless current_user && current_user.is_admin?
+    raise SecurityTransgression if Rails.env.production? && current_user.is_anonymous?
+    current_user
   end
 
   # Authorization Code expiration time (default 10 minutes).
@@ -28,7 +29,7 @@ Doorkeeper.configure do
   # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  enable_application_owner :confirmation => true
+  # enable_application_owner :confirmation => true
 
   # Define access token scopes for your provider
   # For more information go to https://github.com/applicake/doorkeeper/wiki/Using-Scopes
@@ -69,3 +70,24 @@ Doorkeeper.configure do
   #   end
   # end
 end
+
+Rails.application.config.to_prepare do
+  # Only Applications list
+  Doorkeeper::ApplicationsController.layout "application_body_only"
+
+  # Only Authorization endpoint
+  Doorkeeper::AuthorizationsController.layout "application_body_only"
+
+  # Only Authorized Applications
+  Doorkeeper::AuthorizedApplicationsController.layout "application_body_only"
+end
+
+Doorkeeper::Application.class_exec do
+  belongs_to :owner, polymorphic: true
+
+  has_one :trusted_application, dependent: :destroy, inverse_of: :application
+
+  validates :owner, presence: true
+end
+
+OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

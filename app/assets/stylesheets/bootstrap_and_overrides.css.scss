@@ -39,6 +39,10 @@ button.standard, input[type='submit'].standard {
   } 
 }
 
+.btn-success {
+  color: white !important;
+}
+
 select, input[type='text'], input[type='search'] {
   @extend .form-control;
 }

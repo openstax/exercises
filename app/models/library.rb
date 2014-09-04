@@ -16,4 +16,8 @@ class Library < ActiveRecord::Base
     joins(:language).where(language: {name: language})
   }
 
+  scope :required, lambda { joins(:required_library) }
+  scope :not_required, lambda { joins{required_library.outer}
+                              .where(required_library: {id: nil}) }
+
 end

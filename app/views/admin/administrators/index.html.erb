@@ -1,0 +1,30 @@
+<h4>Administrators</h4>
+<%= osu.action_list(
+    records: @administrators,
+    list: {
+      headings: ['User ID', 'Username', 'Actions'],
+      widths: ['20%', '60%', '20%'],
+      data_procs:
+        [
+          lambda { |administrator| administrator.user_id },
+          lambda { |administrator| administrator.user.username || '---' },
+          lambda { |administrator| "<span id=administrator-#{administrator.id}-actions>
+                                     #{render partial: 'admin/administrators/destroy',
+                                              locals: {administrator: administrator}}
+                                   </span>".html_safe }
+        ]
+    }
+  ) %>
+
+<br><br>
+
+<h4>Add Administrator</h4>
+<%= render partial: 'openstax/accounts/shared/accounts/index',
+           locals: { search_action_path: admin_administrators_path,
+                     method: :get,
+                     remote: true } %>
+
+<div id='search-results-list'>
+  <%= render partial: 'admin/users/list',
+             locals: {action_partial: 'admin/administrators/form'} %>
+</div>

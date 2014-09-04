@@ -4,5 +4,7 @@
                      remote: true } %>
 
 <div id='search-results-list'>
-  <%= render partial: 'admin/users/search_results' %>
+  <%= render partial: 'admin/users/list',
+             locals: {action_partial: 'admin/users/delete',
+                      sign_in_as: true} %>
 </div>

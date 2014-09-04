@@ -1,19 +1,26 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
-    before_filter :get_user
-    before_filter :get_application, :only => [:show, :edit, :update, :destroy]
+    before_filter :set_user
+    before_filter :set_application, :only => [:show, :edit, :update, :destroy]
 
     def index
-      @applications = @user.is_administrator? ? Doorkeeper::Application.all :
-                                                @user.oauth_applications
+      @applications = @user.administrator ? Doorkeeper::Application.all :
+                                            @user.applications
+    end
+
+    def new
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, Doorkeeper::Application)
+      super
     end
 
     def create
-      @application = Doorkeeper::Application.new(application_params(@user))
-      @application.owner = Group.new
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, Doorkeeper::Application)
+      @application = Doorkeeper::Application.new(application_params)
+      @application.owner = OpenStax::Accounts::Group.new
+      @application.owner.requestor = current_user.account
       @application.owner.add_member(current_user)
       @application.owner.add_owner(current_user)
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
+
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
@@ -35,13 +42,7 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      if @application.update_attributes(application_params(@user))
-        flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
-                                                    :applications, :update])
-        respond_with [:oauth, @application]
-      else
-        render :edit
-      end
+      super
     end
 
     def destroy
@@ -49,33 +50,20 @@ module Oauth
       super
     end
 
-    protected
+    private
 
-    def get_user
+    # Use callbacks to share common setup or constraints between actions.
+    def set_user
       @user = current_user
     end
-    
-    def get_application
+
+    def set_application
       @application = Doorkeeper::Application.find(params[:id])
     end
 
-    private
-    
-    def user_params
-      return {} if params[:application].nil?
-      params[:application].slice(:name, :redirect_uri, :email_subject_prefix)
-    end
-
-    def admin_params
-      return {} if params[:application].nil?
-      params[:application].slice(:trusted, :email_from_address)
-    end
-
-    # We control which attributes of Doorkeeper::Applications can be updated
-    # here, since they differ for normal users and administrators
-    def application_params(user)
-      user.is_administrator? ? \
-        user_params.merge(admin_params) : user_params
+    # Only allow a trusted parameter "white list" through.
+    def application_params
+      params.require(:application).permit(:name, :redirect_uri, :email_subject_prefix)
     end
   end
 end
