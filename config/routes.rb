@@ -51,8 +51,12 @@ Exercises::Application.routes.draw do
 
     resources :required_libraries, only: [:index, :new, :create, :destroy]
 
-    resources :users, except: [:new, :create] do
-      put 'become', on: :member
+    resources :users, only: [:index] do
+      member do
+        put 'become'
+        patch 'delete'
+        patch 'undelete'
+      end
     end
   end
 

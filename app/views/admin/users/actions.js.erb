@@ -1,0 +1,2 @@
+$("#user-<%= @user.id.to_s %>-actions").html("<%= j(render partial: 'admin/users/actions',
+                                                           locals: {user: @user}) %>");

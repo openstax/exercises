@@ -57,12 +57,20 @@ class User < ActiveRecord::Base
     false
   end
 
-  def destroy
-    update_attribute(:destroyed_at, Time.now)
+  def is_deleted?
+    !deleted_at.nil?
   end
 
-  def undestroy
-    update_attribute(:destroyed_at, nil)
+  def destroy
+    update_attribute(:deleted_at, Time.now)
+  end
+
+  def delete
+    update_column(:deleted_at, Time.now)
+  end
+
+  def undelete
+    update_column(:deleted_at, nil)
   end
 
 end

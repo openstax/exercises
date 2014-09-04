@@ -7,6 +7,7 @@ module Admin
       attribute :terms, type: String
       attribute :type, type: String
       attribute :page, type: Integer
+      attribute :per_page, type: Integer
     end
 
     uses_routine OpenStax::Accounts::Dev::SearchAccounts,
@@ -20,15 +21,20 @@ module Admin
     end
 
     def handle
-      case search_params.type
+      return if search_params.terms.nil?
+
+      prefix = case search_params.type
       when 'Name'
-        query = "name:#{search_params.terms.gsub(/\s/,',')}"
+        'name:'
       when 'Username'
-        query = "username:#{search_params.terms.gsub(/\s/,',')}"
+        'username:'
       else
-        query = search_params.terms || ''
+        prefix = ''
       end
-      run(:search_users, query, page: search_params.page || 0)
+      names = search_params.terms.split(/\s/)
+      query = names.collect{|name| "#{prefix}#{name}"}.join(' ').to_s
+      run(:search_users, query, page: search_params.page,
+                                per_page: search_params.per_page)
     end
 
   end

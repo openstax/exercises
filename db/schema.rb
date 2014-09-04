@@ -606,7 +606,7 @@ ActiveRecord::Schema.define(version: 20140902185341) do
 
   create_table "users", force: true do |t|
     t.integer  "account_id",                                     null: false
-    t.datetime "destroyed_at"
+    t.datetime "deleted_at"
     t.boolean  "show_public_domain_attribution", default: true,  null: false
     t.boolean  "forward_emails_to_deputies",     default: false, null: false
     t.boolean  "receive_emails",                 default: true,  null: false
@@ -618,7 +618,7 @@ ActiveRecord::Schema.define(version: 20140902185341) do
   end
 
   add_index "users", ["account_id"], name: "index_users_on_account_id", unique: true
-  add_index "users", ["destroyed_at"], name: "index_users_on_destroyed_at"
+  add_index "users", ["deleted_at"], name: "index_users_on_deleted_at"
 
   create_table "votes", force: true do |t|
     t.integer  "votable_id"

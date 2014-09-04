@@ -1,6 +1,6 @@
 <%
   page = @handler_result.outputs[:page]
-  num_users = @handler_result.outputs[:num_matching_users]
+  num_users = @handler_result.outputs[:num_matching_accounts]
   per_page = @handler_result.outputs[:per_page]
   pages = (num_users * 1.0 / per_page).ceil 
 %>

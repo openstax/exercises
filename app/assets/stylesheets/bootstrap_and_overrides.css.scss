@@ -1,4 +1,5 @@
 @import 'common';
+@import 'bootstrap-sprockets';
 @import 'bootstrap';
 
 .modal-backdrop {
@@ -42,10 +43,14 @@ select, input[type='text'], input[type='search'] {
   @extend .form-control;
 }
 
-.dev a {
+.orange {
   color: $os_orange !important;
 }
 
-.dev a:hover {
+.orange:hover {
   color: $os_dark_orange !important;
+}
+
+table td[class*="col-"], table th[class*="col-"] {
+  text-align: center !important;
 }

@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :set_user, only: [:show, :edit, :update, :destroy, :become]
+    before_filter :set_user, only: [:show, :edit, :update, :become, :delete, :undelete]
 
   # GET /users
     def index
@@ -29,16 +29,28 @@ module Admin
       end
     end
 
-    # DELETE /users/1
-    def destroy
-      @user.destroy
-      redirect_to users_url
-    end
-
     # PUT /users/1/become
     def become
       sign_in(@user)
       redirect_to request.referrer
+    end
+
+    # PATCH /users/1/delete
+    def delete
+      @user.delete
+      respond_to do |format|
+        format.html { redirect_to request.referrer }
+        format.js { render 'admin/users/actions' }
+      end
+    end
+
+    # PATCH /users/1/undelete
+    def undelete
+      @user.undelete
+      respond_to do |format|
+        format.html { redirect_to request.referrer }
+        format.js { render 'admin/users/actions' }
+      end
     end
 
     protected

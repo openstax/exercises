@@ -17,6 +17,6 @@
 //= require jquery_ujs
 //= require jquery.remotipart
 //= require jquery-ui
-//= require bootstrap
+//= require bootstrap-sprockets
 //= require markitup
 //= require_tree ./utils

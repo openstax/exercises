@@ -30,7 +30,7 @@ gem 'whenever'
 # Access Control
 gem 'fine_print'
 gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
-                         ref: '87820b30bf8097afc14fef96ca52ca503182fa0a'
+                         ref: '2ce54857a67b488c3ab652a289344fd0c3d1fea7'
 gem 'openstax_api'
 gem 'doorkeeper'
 
@@ -75,6 +75,8 @@ gem 'yaml_db'
 gem 'bootstrap-sass'
 gem 'sass-rails', '~> 4.0.3'
 gem 'compass-rails'
+# Automatically add vendor CSS prefixes
+gem 'autoprefixer-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views

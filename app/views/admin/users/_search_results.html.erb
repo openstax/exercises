@@ -1,0 +1,26 @@
+<% accounts = @handler_result.outputs[:accounts]
+   return '' unless accounts
+   users = User.where(account_id: accounts.collect{|a| a.id})
+               .includes(:account).order(@handler_result.outputs[:order_bys]) %>
+
+<%= render partial: 'shared/users/search_pagination' %>
+
+<%= osu.action_list(
+    records: users,
+    list: {
+      headings: ['Username (click to sign in as)', 'Title', 'Name', 'Actions'],
+      widths: ['30%', '5%', '60%', '5%'],
+      data_procs:
+        [
+          lambda { |user| link_to(user.username,
+                                     become_admin_user_url(user),
+                                     method: :put) },
+          lambda { |user| user.title || '---' },
+          lambda { |user| user.name || '---' },
+          lambda { |user| "<span id=user-#{user.id}-actions>
+                             #{render partial: 'admin/users/actions',
+                                      locals: {user: user}}
+                           </span>".html_safe }
+        ]
+    }
+  ) %>

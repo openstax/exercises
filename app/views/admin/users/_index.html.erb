@@ -1,3 +1,8 @@
 <%= render partial: 'openstax/accounts/shared/accounts/index',
            locals: { search_action_path: admin_users_path,
+                     method: :get,
                      remote: true } %>
+
+<div id='search-results-list'>
+  <%= render partial: 'admin/users/search_results' %>
+</div>

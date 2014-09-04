@@ -1,27 +1,3 @@
 <%= unless_errors alerts_html_id: 'dialog-local-alerts' do %>
-  <% 
-  users = @handler_result.outputs[:users]
-
-  contents = osu.action_list(             
-    records: users,
-    list: {
-      headings: ['Username', 'First Name', 'Last Name', ''],
-      widths: ['25%', '25%', '25%', '25%'],
-      data_procs:
-        [
-          Proc.new { |user| user.username },
-          Proc.new { |user| user.first_name || '---' },
-          Proc.new { |user| user.last_name || '---' },
-          Proc.new { |user| 
-            link_to 'Sign in as', 
-                    become_admin_user_path(user),
-                    method: :post 
-          }
-        ]
-    }
-  ) %>
-
-  
-  $("#search-results-list").html("<%= j(contents) %>");  
-  $('#search-results-list').prepend("<%= j(render 'admin/users/search_pagination') %>");
+  $("#search-results-list").html("<%= j(render partial: 'admin/users/search_results') %>");
 <% end %>

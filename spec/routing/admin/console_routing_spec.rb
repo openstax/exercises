@@ -1,11 +1,11 @@
 require "rails_helper"
 
 module Admin
-  RSpec.describe BaseController, :type => :routing do
+  RSpec.describe ConsoleController, :type => :routing do
     describe "routing" do
 
       it "routes to #index" do
-        get("/").should route_to("base#index")
+        get("/").should route_to("console#index")
       end
 
     end
