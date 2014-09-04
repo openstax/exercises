@@ -1,15 +1,9 @@
-<% # Clients of this partial must provide the following variable:
+<% # Clients of this partial must provide the following variables:
+   # users
    # action_partial
    # Additionally, they can supply the following variable:
    sign_in_as ||= false
 %>
-
-<% accounts = @handler_result.outputs[:accounts]
-   return '' unless accounts
-   users = User.where(account_id: accounts.collect{|a| a.id})
-               .includes(:account).order(@handler_result.outputs[:order_bys]) %>
-
-<%= render partial: 'shared/users/search_pagination' %>
 
 <%= osu.action_list(
     records: users,

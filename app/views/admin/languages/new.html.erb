@@ -2,4 +2,8 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Back', languages_path %>
+<br>
+
+<%= link_to(admin_languages_url) do
+      '<span class="glyphicon glyphicon-list">List</span>'.html_safe
+    end %>

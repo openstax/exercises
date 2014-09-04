@@ -1,20 +1,7 @@
 <h4>Administrators</h4>
-<%= osu.action_list(
-    records: @administrators,
-    list: {
-      headings: ['User ID', 'Username', 'Actions'],
-      widths: ['20%', '60%', '20%'],
-      data_procs:
-        [
-          lambda { |administrator| administrator.user_id },
-          lambda { |administrator| administrator.user.username || '---' },
-          lambda { |administrator| "<span id=administrator-#{administrator.id}-actions>
-                                     #{render partial: 'admin/administrators/destroy',
-                                              locals: {administrator: administrator}}
-                                   </span>".html_safe }
-        ]
-    }
-  ) %>
+  <%= render partial: 'shared/users/index',
+             locals: {users: @administrators.collect{|a| a.user},
+                      action_partial: 'admin/administrators/destroy'} %>
 
 <br><br>
 
@@ -25,6 +12,6 @@
                      remote: true } %>
 
 <div id='search-results-list'>
-  <%= render partial: 'admin/users/list',
+  <%= render partial: 'shared/users/search_results',
              locals: {action_partial: 'admin/administrators/form'} %>
 </div>

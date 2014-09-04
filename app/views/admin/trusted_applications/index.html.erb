@@ -1,26 +1,11 @@
-<h4>Required Libraries</h4>
-<%= osu.action_list(
-    records: @required_libraries,
-    list: {
-      headings: ['Name', 'Description', 'Actions'],
-      widths: ['30%', '60%', '10%'],
-      data_procs:
-        [
-          lambda { |required_library| required_library.library.name || '---' },
-          lambda { |required_library|
-                     truncate(required_library.library.description) || '---'
-                 },
-          lambda { |required_library|
-            "<span id=required_library-#{required_library.id}-actions>
-               #{render partial: 'admin/required_libraries/destroy',
-                        locals: {required_library: required_library}}
-             </span>".html_safe }
-        ]
-    }
-  ) %>
+<h4>Trusted Applications</h4>
+<%= render partial: 'shared/applications/index',
+           locals: {applications: @trusted_applications.collect{|ta| ta.application},
+                    action_partial: 'admin/trusted_applications/destroy'} %>
 
 <br><br>
 
-<h4>Other Libraries</h4>
-<%= render partial: 'shared/libraries/index',
-           locals: {action_partial: 'admin/required_libraries/form'} %>
+<h4>Other Applications</h4>
+<%= render partial: 'shared/applications/index',
+           locals: {applications: @applications,
+                    action_partial: 'admin/trusted_applications/form'} %>

@@ -3,34 +3,34 @@ module Admin
 
     respond_to :html
 
-    # GET /required_libraries
+    # GET /trusted_applications
     def index
-      @required_libraries = RequiredLibrary.all
-      @libraries = Library.not_required
+      @trusted_applications = TrustedApplication.all
+      @applications = Doorkeeper::Application.not_trusted
     end
 
-    # POST /required_libraries
+    # POST /trusted_applications
     def create
-      @required_library = RequiredLibrary.new(required_library_params)
+      @trusted_application = TrustedApplication.new(trusted_application_params)
 
-      @required_library.save!
-      redirect_to admin_required_libraries_url,
-                  notice: "#{@required_library.library.name || '---'} is now a required library."
+      @trusted_application.save!
+      redirect_to admin_trusted_applications_url,
+                  notice: "#{@trusted_application.application.name || '---'} is now a trusted application."
     end
 
-    # DELETE /required_libraries/1
+    # DELETE /trusted_applications/1
     def destroy
-      @required_library = RequiredLibrary.find(params[:id])
-      @required_library.destroy
-      redirect_to admin_required_libraries_url,
-                  notice: "#{@required_library.library.name || '---'} is no longer a required library."
+      @trusted_application = TrustedApplication.find(params[:id])
+      @trusted_application.destroy
+      redirect_to admin_trusted_applications_url,
+                  notice: "#{@trusted_application.application.name || '---'} is no longer a trusted application."
     end
 
     protected
 
     # Only allow a trusted parameter "white list" through.
-    def required_library_params
-      params.require(:required_library).permit(:library_id)
+    def trusted_application_params
+      params.require(:trusted_application).permit(:application_id)
     end
 
   end

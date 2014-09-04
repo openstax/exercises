@@ -1,7 +1,7 @@
 module Admin
   class LicensesController < BaseController
 
-    before_filter :set_license, only: [:show, :edit, :update, :destroy]
+    before_action :set_license, only: [:show, :edit, :update, :destroy]
 
     # GET /licenses
     def index
@@ -25,35 +25,31 @@ module Admin
     def create
       @license = License.new(license_params)
 
-      respond_to do |format|
-        if @license.save
-          format.html { redirect_to admin_license_url(@license), notice: 'License was successfully created.' }
-        else
-          format.html { render action: "new" }
-        end
+      if @license.save
+        redirect_to admin_license_url(@license),
+                    notice: 'License was successfully created.'
+      else
+        render :new
       end
     end
 
-    # PATCH /licenses/1
+    # PATCH/PUT /licenses/1
     def update
-      @license = License.find(params[:id])
-
-      respond_to do |format|
-        if @license.update_attributes(license_params)
-          format.html { redirect_to admin_license_url(@license), notice: 'License was successfully updated.' }
-        else
-          format.html { render action: "edit" }
-        end
+      if @license.update(license_params)
+        redirect_to admin_license_url(@license),
+                    notice: 'License was successfully updated.'
+      else
+        render :edit
       end
     end
 
     # DELETE /licenses/1
     def destroy
       @license.destroy
-      redirect_to admin_licenses_url
+      redirect_to admin_licenses_url, notice: 'License was successfully destroyed.'
     end
 
-    protected
+    private
 
     # Use callbacks to share common setup or constraints between actions.
     def set_license
@@ -62,8 +58,8 @@ module Admin
 
     # Only allow a trusted parameter "white list" through.
     def license_params
-      params.require(:license).permit(:name, :short_name, :url,
-        :publishing_contract, :copyright_notice, :is_public_domain)
+      params.require(:license).permit(:name, :short_name, :url, :publishing_contract,
+                                      :copyright_notice, :is_public_domain)
     end
 
   end

@@ -26,7 +26,8 @@ module Admin
       @language = Language.new(language_params)
 
       if @language.save
-        redirect_to @language, notice: 'Language was successfully created.'
+        redirect_to admin_language_url(@language),
+                    notice: 'Language was successfully created.'
       else
         render :new
       end
@@ -35,7 +36,8 @@ module Admin
     # PATCH/PUT /languages/1
     def update
       if @language.update(language_params)
-        redirect_to @language, notice: 'Language was successfully updated.'
+        redirect_to admin_language_url(@language),
+                    notice: 'Language was successfully updated.'
       else
         render :edit
       end
@@ -44,7 +46,7 @@ module Admin
     # DELETE /languages/1
     def destroy
       @language.destroy
-      redirect_to languages_url, notice: 'Language was successfully destroyed.'
+      redirect_to admin_languages_url, notice: 'Language was successfully destroyed.'
     end
 
     private

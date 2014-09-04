@@ -1,6 +1,6 @@
 <%= user.administrator ? \
       render(partial: 'admin/administrators/destroy',
-             locals: {administrator: user.administrator}) : \
+             locals: {user: user}) : \
       link_to(admin_administrators_url(administrator: {user_id: user.id}), method: :post) do
         '<span class="glyphicon glyphicon-plus"></span>'.html_safe
       end %>

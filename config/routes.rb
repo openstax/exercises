@@ -43,7 +43,7 @@ Exercises::Application.routes.draw do
 
     resources :exceptions, only: [:show]
 
-    resources :formats, only: [:index, :new, :create, :destroy]
+    resources :formats
 
     resources :languages
 
@@ -73,11 +73,14 @@ Exercises::Application.routes.draw do
   resources :deputizations
 
   resource :static_page, only: [], path: '', as: '' do
+    get 'about'
+    get 'contact'
     get 'copyright'
     get 'developers'
     get 'help'
     get 'share'
     get 'status'
+    get 'tou'
   end
 
 end

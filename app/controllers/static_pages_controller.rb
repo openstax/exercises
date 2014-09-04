@@ -13,12 +13,20 @@ class StaticPagesController < ApplicationController
   def home
   end
 
-  # GET /developers
-  def developers
+  # GET /about
+  def about
+  end
+
+  # GET /contact
+  def contact
   end
 
   # GET /copyright
   def copyright
+  end
+
+  # GET /developers
+  def developers
   end
 
   # GET /help
@@ -29,9 +37,14 @@ class StaticPagesController < ApplicationController
   def share
   end
 
+  # GET /status
   # Used by AWS (and others) to make sure the site is still up
   def status
     head :ok
+  end
+
+  # GET /tou
+  def tou
   end
 
   protected

@@ -26,7 +26,8 @@ module Admin
       @format = Format.new(format_params)
 
       if @format.save
-        redirect_to @format, notice: 'Format was successfully created.'
+        redirect_to admin_format_url(@format),
+                    notice: 'Format was successfully created.'
       else
         render :new
       end
@@ -35,7 +36,8 @@ module Admin
     # PATCH/PUT /formats/1
     def update
       if @format.update(format_params)
-        redirect_to @format, notice: 'Format was successfully updated.'
+        redirect_to admin_format_url(@format),
+                    notice: 'Format was successfully updated.'
       else
         render :edit
       end
@@ -44,7 +46,7 @@ module Admin
     # DELETE /formats/1
     def destroy
       @format.destroy
-      redirect_to formats_url, notice: 'Format was successfully destroyed.'
+      redirect_to admin_formats_url, notice: 'Format was successfully destroyed.'
     end
 
     private

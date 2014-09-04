@@ -1,0 +1,10 @@
+<%= link_to(admin_license_url(license)) do
+      '<span class="glyphicon glyphicon-search"></span>'.html_safe
+    end %> |
+<%= link_to(edit_admin_license_url(license)) do
+      '<span class="glyphicon glyphicon-pencil"></span>'.html_safe
+    end %> |
+<%= link_to(admin_license_url(license), method: :delete,
+            data: {confirm: "Are you sure you want to delete the '#{license.short_name}' license?"}) do
+      '<span class="glyphicon glyphicon-trash orange"></span>'.html_safe
+    end %>

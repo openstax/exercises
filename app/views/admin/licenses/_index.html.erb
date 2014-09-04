@@ -1,0 +1,21 @@
+<%# Clients of this partial must provide the following variables:
+    licenses
+    action_partial %>
+
+<%= osu.action_list(
+    records: licenses,
+    list: {
+      headings: ['Name', 'Short Name', 'URL', 'Actions'],
+      widths: ['40%', '20%', '30%', '10%'],
+      data_procs:
+        [
+          lambda { |license| license.name || '---' },
+          lambda { |license| license.short_name || '---' },
+          lambda { |license| license.url || '---' },
+          lambda { |license| "<span id=license-#{license.id}-actions>
+                                #{render partial: action_partial,
+                                         locals: {license: license}}
+                              </span>".html_safe }
+        ]
+    }
+  ) %>

@@ -88,6 +88,10 @@ Doorkeeper::Application.class_exec do
   has_one :trusted_application, dependent: :destroy, inverse_of: :application
 
   validates :owner, presence: true
+
+  scope :trusted, lambda { joins(:trusted_application) }
+  scope :not_trusted, lambda { joins{trusted_application.outer}
+                               .where(trusted_application: {id: nil}) }
 end
 
 OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

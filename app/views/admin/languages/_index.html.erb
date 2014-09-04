@@ -1,19 +1,19 @@
 <%# Clients of this partial must provide the following variables:
-    libraries
+    languages
     action_partial %>
 
 <%= osu.action_list(
-    records: libraries,
+    records: languages,
     list: {
       headings: ['Name', 'Description', 'Actions'],
       widths: ['30%', '60%', '10%'],
       data_procs:
         [
-          lambda { |library| library.name || '---' },
-          lambda { |library| truncate(library.description) || '---' },
-          lambda { |library| "<span id=library-#{library.id}-actions>
+          lambda { |language| language.name || '---' },
+          lambda { |language| truncate(language.description) || '---' },
+          lambda { |language| "<span id=language-#{language.id}-actions>
                                 #{render partial: action_partial,
-                                         locals: {library: library}}
+                                         locals: {language: language}}
                               </span>".html_safe }
         ]
     }

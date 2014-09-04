@@ -3,16 +3,16 @@
 
     <div id="bottom-nav-links">
 
-      <%= link_to "Terms of Use", nil %>
+      <%= link_to "Terms of Use", main_app.tou_path %>
       <%= image_tag "links_dash.png" %>
       
-      <%= link_to "About", nil %>
+      <%= link_to "About", main_app.about_path %>
       <%= image_tag "links_dash.png" %>
 
       <%= link_to "Developers", main_app.developers_path %>
       <%= image_tag "links_dash.png" %>      
 
-      <%= link_to "Contact Us", nil %>
+      <%= link_to "Contact Us", main_app.contact_path %>
 
       <% if false %>
       <% links = [ ["Terms of Use", nil],
