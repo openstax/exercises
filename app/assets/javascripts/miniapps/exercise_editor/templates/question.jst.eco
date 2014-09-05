@@ -1,0 +1,5 @@
+<div class='question-format'></div>
+
+<button type="button" class="btn btn-sm js-delete-question">
+<span class="glyphicon glyphicon-trash"></span>
+</button>
