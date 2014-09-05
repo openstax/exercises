@@ -173,7 +173,6 @@ GEM
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
-    mysql2 (0.3.16)
     newrelic_rpm (3.9.3.241)
     nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
@@ -202,6 +201,7 @@ GEM
     openstax_utilities (3.0.0)
       rails (>= 3.1)
     pager (1.0.1)
+    pg (0.17.1)
     polyamorous (1.1.0)
       activerecord (>= 3.0)
     polyglot (0.3.5)
@@ -361,11 +361,11 @@ DEPENDENCIES
   lev
   maruku
   mini_magick
-  mysql2
   newrelic_rpm
   openstax_accounts!
   openstax_api
   openstax_utilities
+  pg
   quiet_assets
   railroady
   rails (= 4.1.5)

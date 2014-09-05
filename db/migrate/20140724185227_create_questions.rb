@@ -2,7 +2,7 @@ class CreateQuestions < ActiveRecord::Migration
   def change
     create_table :questions do |t|
       t.references :part, null: false
-      t.text :stem, null: false, default: ''
+      t.text :stem, null: false
 
       t.timestamps
     end

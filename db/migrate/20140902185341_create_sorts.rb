@@ -1,7 +1,7 @@
 class CreateSorts < ActiveRecord::Migration
   def change
     create_table :sorts do |t|
-      t.references :domain, polymorphic: true, null: false
+      t.references :domain, polymorphic: true
       t.references :sortable, polymorphic: true, null: false
       t.integer :position, null: false
 

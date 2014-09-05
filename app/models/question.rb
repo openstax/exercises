@@ -12,9 +12,8 @@ class Question < ActiveRecord::Base
   has_many :solutions, dependent: :destroy, inverse_of: :question
 
   has_many :items, dependent: :destroy, inverse_of: :question
-  has_many :answers, as: :answerable, dependent: :destroy
-
-  has_many :combo_choices, dependent: :destroy, inverse_of: :question
+  has_many :answers, through: :items
+  has_many :combo_choices, through: :items
 
   validates :part, presence: true
 

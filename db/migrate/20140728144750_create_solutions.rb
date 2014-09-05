@@ -4,7 +4,7 @@ class CreateSolutions < ActiveRecord::Migration
       t.references :question, null: false
       t.string :title
       t.text :summary
-      t.text :details, null: false, default: ''
+      t.text :details, null: false
       t.text :rubric
 
       t.timestamps

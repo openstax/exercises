@@ -22,17 +22,15 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "administrators", ["user_id"], name: "index_administrators_on_user_id", unique: true
 
   create_table "answers", force: true do |t|
-    t.integer  "answerable_id",                                         null: false
-    t.string   "answerable_type",                                       null: false
-    t.text     "content",                                 default: "",  null: false
-    t.decimal  "correctness",     precision: 3, scale: 2, default: 0.0, null: false
+    t.integer  "item_id",                                           null: false
+    t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
+    t.text     "content",                                           null: false
     t.text     "feedback"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "answers", ["answerable_id", "answerable_type"], name: "index_answers_on_answerable_id_and_answerable_type"
-  add_index "answers", ["correctness"], name: "index_answers_on_correctness"
+  add_index "answers", ["item_id", "correctness"], name: "index_answers_on_item_id_and_correctness"
 
   create_table "attachments", force: true do |t|
     t.integer  "parent_id",   null: false
@@ -89,15 +87,14 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "combo_choice_answers", ["combo_choice_id"], name: "index_combo_choice_answers_on_combo_choice_id"
 
   create_table "combo_choices", force: true do |t|
-    t.integer  "question_id",                                       null: false
+    t.integer  "item_id",                                           null: false
     t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "combo_choices", ["correctness"], name: "index_combo_choices_on_correctness"
-  add_index "combo_choices", ["question_id"], name: "index_combo_choices_on_question_id"
+  add_index "combo_choices", ["item_id", "correctness"], name: "index_combo_choices_on_item_id_and_correctness"
 
   create_table "commontator_comments", force: true do |t|
     t.string   "creator_type"
@@ -226,13 +223,14 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "formattings", ["formattable_id", "formattable_type", "format_id"], name: "index_formattings_on_f_id_and_f_type_and_f_id", unique: true
 
   create_table "items", force: true do |t|
-    t.integer  "question_id",              null: false
-    t.text     "content",     default: "", null: false
+    t.integer  "question_id", null: false
+    t.string   "reference"
+    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "items", ["question_id"], name: "index_items_on_question_id"
+  add_index "items", ["question_id", "reference"], name: "index_items_on_question_id_and_reference", unique: true
 
   create_table "languages", force: true do |t|
     t.string   "name",        null: false
@@ -244,10 +242,10 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "languages", ["name"], name: "index_languages_on_name", unique: true
 
   create_table "libraries", force: true do |t|
-    t.integer  "language_id",              null: false
+    t.integer  "language_id", null: false
     t.string   "name"
     t.text     "description"
-    t.text     "code",        default: "", null: false
+    t.text     "code",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -266,12 +264,15 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "license_compatibilities", ["original_license_id"], name: "index_license_compatibilities_on_original_license_id"
 
   create_table "licenses", force: true do |t|
-    t.string   "name",                                null: false
-    t.string   "short_name",                          null: false
-    t.string   "url",                                 null: false
-    t.text     "publishing_contract", default: "",    null: false
-    t.text     "copyright_notice",    default: "",    null: false
-    t.boolean  "is_public_domain",    default: false, null: false
+    t.string   "name",                                 null: false
+    t.string   "short_name",                           null: false
+    t.string   "url",                                  null: false
+    t.text     "publishing_contract",                  null: false
+    t.text     "copyright_notice",                     null: false
+    t.boolean  "requires_attribution", default: true,  null: false
+    t.boolean  "share_alike",          default: false, null: false
+    t.boolean  "no_derivatives",       default: false, null: false
+    t.boolean  "non_commercial",       default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -373,10 +374,10 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "logic_variables", ["logic_id", "variable"], name: "index_logic_variables_on_logic_id_and_variable", unique: true
 
   create_table "logics", force: true do |t|
-    t.integer  "parent_id",                null: false
-    t.string   "parent_type",              null: false
-    t.integer  "language_id",              null: false
-    t.text     "code",        default: "", null: false
+    t.integer  "parent_id",   null: false
+    t.string   "parent_type", null: false
+    t.integer  "language_id", null: false
+    t.text     "code",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -541,8 +542,8 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "publications", ["yanked_at"], name: "index_publications_on_yanked_at"
 
   create_table "questions", force: true do |t|
-    t.integer  "part_id",                 null: false
-    t.text     "stem",       default: "", null: false
+    t.integer  "part_id",    null: false
+    t.text     "stem",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -558,10 +559,10 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "required_libraries", ["library_id"], name: "index_required_libraries_on_library_id", unique: true
 
   create_table "solutions", force: true do |t|
-    t.integer  "question_id",              null: false
+    t.integer  "question_id", null: false
     t.string   "title"
     t.text     "summary"
-    t.text     "details",     default: "", null: false
+    t.text     "details",     null: false
     t.text     "rubric"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -571,8 +572,8 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "solutions", ["title"], name: "index_solutions_on_title"
 
   create_table "sorts", force: true do |t|
-    t.integer  "domain_id",     null: false
-    t.string   "domain_type",   null: false
+    t.integer  "domain_id"
+    t.string   "domain_type"
     t.integer  "sortable_id",   null: false
     t.string   "sortable_type", null: false
     t.integer  "position",      null: false

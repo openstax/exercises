@@ -4,7 +4,7 @@ class CreateLibraries < ActiveRecord::Migration
       t.references :language, null: false
       t.string :name
       t.text :description
-      t.text :code, null: false, default: ''
+      t.text :code, null: false
 
       t.timestamps
     end

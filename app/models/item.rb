@@ -7,7 +7,8 @@ class Item < ActiveRecord::Base
   has_one :part, through: :question
   has_one :exercise, through: :part
 
-  has_many :answers, as: :answerable, dependent: :destroy
+  has_many :answers, dependent: :destroy, inverse_of: :item
+  has_many :combo_choices, dependent: :destroy, inverse_of: :item
 
   validates :question, presence: :true
 

@@ -3,7 +3,7 @@ class CreateLogics < ActiveRecord::Migration
     create_table :logics do |t|
       t.references :parent, polymorphic: true, null: false
       t.references :language, null: false
-      t.text :code, null: false, default: ''
+      t.text :code, null: false
 
       t.timestamps
     end

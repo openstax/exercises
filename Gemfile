@@ -113,7 +113,7 @@ group :development, :test do
 end
 
 group :production do
-  gem 'mysql2'
+  gem 'pg'
 
   # Use unicorn as the app server
   # gem 'unicorn'
