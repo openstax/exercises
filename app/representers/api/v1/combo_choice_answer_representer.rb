@@ -9,18 +9,21 @@ module Api::V1
                required: true
              }
 
-    property :combo_choice_id,
-             type: Integer,
+    property :combo_choice,
+             class: ComboChoice,
+             representer: ComboChoiceRepresenter,
              writeable: true,
              schema_info: {
                required: true
              }
 
-    property :answer_id,
-             type: Integer,
+    property :answer,
+             type: Answer,
+             representer: AnswerRepresenter,
              writeable: true,
              schema_info: {
                required: true
              }
+
   end
 end

@@ -35,14 +35,14 @@ module Api::V1
       When a field is listed as using wildcard matching, it means that any
       fields that start with a comma-separated-value will be matched.
 
-      * `content` &ndash; Matches the content of exercises. (uses wildcard matching)
-      * `solution` &ndash; Matches the content of the exercises' solutions.
+      * `content` &ndash; Matches the exercise content. (uses wildcard matching)
+      * `solution` &ndash; Matches the exercise solution content.
                            (uses wildcard matching)
-      * `author` &ndash; Matches authors' first, last, or full names, case insenstive. (uses wildcard matching)
-      * `copyright_holder` &ndash; Matches copyright holders' first, last, or full names, case insenstive. (uses wildcard matching)
-      * `number` &ndash; Matches exercise numbers exactly.
-      * `version` &ndash; Matches exercise versions exactly.
-      * `id` &ndash; Matches exercise IDs exactly.
+      * `author` &ndash; Matches authors' and copyright holders' first, last, or full names.
+                         (uses wildcard matching)
+      * `number` &ndash; Matches the exercise number exactly.
+      * `version` &ndash; Matches the exercise version exactly.
+      * `id` &ndash; Matches the exercise ID exactly.
 
       You can also add search terms without prefixes, separated by spaces.
       These terms will be searched for in all of the prefix categories.
@@ -60,7 +60,9 @@ module Api::V1
       A string that indicates how to sort the results of the query. The string
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
-      The fields can be one of #{SearchExercises::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+      The fields can be one of #{
+        SearchExercises::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')
+      }.
       Sort directions can either be `ASC` for 
       an ascending sort, or `DESC` for a
       descending sort. If not provided, an ascending sort is assumed. Sort
@@ -73,7 +75,9 @@ module Api::V1
     EOS
     def index
       OSU::AccessPolicy.require_action_allowed!(:index, current_user, Exercise)
-      outputs = OpenStax::Exercises::SearchExercises.call(params[:q], params.slice(:order_by)).outputs
+      outputs = OpenStax::Exercises::SearchExercises.call(
+        params[:q], params.slice(:order_by)
+      ).outputs
       respond_with outputs, represent_with: Api::V1::ExerciseSearchRepresenter
     end
 
@@ -83,6 +87,8 @@ module Api::V1
 
     api :GET, '/exercises/:id', 'Gets the specified Exercise'
     description <<-EOS
+      Gets the Exercise that matches the provided ID.
+
       #{json_schema(Api::V1::ExerciseRepresenter, include: :readable) if true}        
     EOS
     def show
@@ -95,13 +101,24 @@ module Api::V1
 
     api :PUT, '/exercises/:id', 'Updates the specified Exercise'
     description <<-EOS
-      Updates the Exercise object whose ID matches the provided param.  Any provided 
-      transformed Content field (e.g. 'html') will be ignored.
+      Updates the Exercise that matches the provided ID.
 
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
     EOS
     def update
       standard_update(Exercise, params[:id])
+    end
+
+    ###############################################################
+    # destroy
+    ###############################################################
+
+    api :DELETE, '/exercises/:id', 'Deletes the specified Exercise'
+    description <<-EOS
+      Deletes the Exercise that matches the provided ID.
+    EOS
+    def destroy
+      standard_destroy(Exercise, params[:id])
     end
     
   end

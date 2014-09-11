@@ -12,25 +12,14 @@ Exercises::Application.routes.draw do
   apipie
 
   api :v1, :default => true do
-    
-    resources :exercises, only: [:show, :update]
-    resources :parts, only: [:show, :update, :create, :destroy]
-    resources :questions, only: [:show, :update, :create, :destroy]
 
-    resources :answers, only: [:show, :update, :create, :destroy]
-    resources :combo_choices, only: [:show, :update, :create, :destroy]
-    resources :combo_choice_answers, only: [:show, :create, :destroy]
+    resources :exercises
 
     resources :logics, except: [:index]
 
     resources :libraries, only: [:show, :update, :new, :create, :destroy]
 
-    resources :users, only: [:index] do
-      collection do
-        get 'registration'
-        put 'register'
-      end
-    end
+    resources :users, only: [:index]
 
   end
   
