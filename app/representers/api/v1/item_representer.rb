@@ -3,15 +3,20 @@ module Api::V1
     include Roar::Representer::JSON
 
     property :id,
-             writeable: false
+             writeable: false,
+             readable: true
 
     property :content,
-             type: String
+             type: String,
+             writeable: true,
+             readable: true
 
     collection :answers,
                class: Answer,
                decorator: AnswerRepresenter,
                parse_strategy: :sync,
+               writeable: true,
+               readable: true,
                schema_info: {
                  minItems: 1
                }
@@ -20,6 +25,8 @@ module Api::V1
                class: ComboChoice,
                decorator: ComboChoiceRepresenter,
                parse_strategy: :sync,
+               writeable: true,
+               readable: true,
                schema_info: {
                  minItems: 0
                }

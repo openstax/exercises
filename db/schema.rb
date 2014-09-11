@@ -43,16 +43,6 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "attachments", ["asset"], name: "index_attachments_on_asset"
   add_index "attachments", ["parent_id", "parent_type", "asset"], name: "index_attachments_on_parent_id_and_parent_type_and_asset", unique: true
 
-  create_table "author_requests", force: true do |t|
-    t.integer  "requestor_id",    null: false
-    t.integer  "collaborator_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "author_requests", ["collaborator_id"], name: "index_author_requests_on_collaborator_id", unique: true
-  add_index "author_requests", ["requestor_id"], name: "index_author_requests_on_requestor_id"
-
   create_table "class_licenses", force: true do |t|
     t.integer  "license_id", null: false
     t.string   "class_name", null: false
@@ -137,16 +127,6 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   end
 
   add_index "commontator_threads", ["commontable_id", "commontable_type"], name: "index_commontator_threads_on_c_id_and_c_type", unique: true
-
-  create_table "copyright_holder_requests", force: true do |t|
-    t.integer  "requestor_id",    null: false
-    t.integer  "collaborator_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "copyright_holder_requests", ["collaborator_id"], name: "index_copyright_holder_requests_on_collaborator_id", unique: true
-  add_index "copyright_holder_requests", ["requestor_id"], name: "index_copyright_holder_requests_on_requestor_id"
 
   create_table "deputizations", force: true do |t|
     t.integer  "deputizer_id", null: false
@@ -583,6 +563,8 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   add_index "sorts", ["domain_id", "domain_type", "sortable_type", "position"], name: "index_sorts_on_d_id_and_d_type_and_s_type_and_position", unique: true
   add_index "sorts", ["sortable_id", "sortable_type", "domain_id", "domain_type"], name: "index_sorts_on_s_id_and_s_type_and_d_id_and_d_type", unique: true
+  add_index "sorts", ["sortable_id", "sortable_type"], name: "index_sorts_on_sortable_id_and_sortable_type", unique: true, where: "domain_id IS NULL"
+  add_index "sorts", ["sortable_type", "position"], name: "index_sorts_on_sortable_type_and_position", unique: true, where: "domain_id IS NULL"
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

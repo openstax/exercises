@@ -5,16 +5,21 @@ module Api::V1
     property :id, 
              type: Integer,
              writeable: false,
-             schema_info: {
-               required: true
-             }
+             readable: true
 
     property :correctness,
-             type: Float
+             type: Float,
+             writeable: true,
+             readable: true,
+             schema_info: {
+               type: 'number'
+             }
 
     collection :combo_choice_answers,
                class: ComboChoiceAnswer,
                representer: ComboChoiceAnswerRepresenter,
+               writeable: true,
+               readable: true,
                schema_info: {
                  minItems: 1
                }

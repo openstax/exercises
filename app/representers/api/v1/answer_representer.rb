@@ -5,15 +5,23 @@ module Api::V1
     property :id, 
              type: Integer,
              writeable: false,
+             readable: true
+
+    property :content,
+             type: String,
+             writeable: true,
+             readable: true,
              schema_info: {
                required: true
              }
-             
-    property :content,
-             type: String
 
     property :correctness,
-             type: Float
+             type: Float,
+             writeable: true,
+             readable: true,
+             schema_info: {
+               type: 'number'
+             }
 
   end
 end

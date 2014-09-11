@@ -3,15 +3,23 @@ module Api::V1
     include Roar::Representer::JSON
 
     property :id,
-             writeable: false
+             writeable: false,
+             readable: true
 
     property :stem,
-             type: String
+             type: String,
+             writeable: true,
+             readable: true,
+             schema_info: {
+               required: true
+             }
 
     collection :items,
                class: Item,
                decorator: ItemRepresenter,
                parse_strategy: :sync,
+               writeable: true,
+               readable: true,
                schema_info: {
                  minItems: 1
                }

@@ -5,22 +5,19 @@ module Api::V1
     property :id, 
              type: Integer,
              writeable: false,
-             schema_info: {
-               required: true
-             }
+             readable: true
 
     property :combo_choice,
              class: ComboChoice,
              representer: ComboChoiceRepresenter,
              writeable: true,
-             schema_info: {
-               required: true
-             }
+             readable: false
 
     property :answer,
              type: Answer,
              representer: AnswerRepresenter,
              writeable: true,
+             readable: true,
              schema_info: {
                required: true
              }
