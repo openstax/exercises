@@ -13,13 +13,6 @@ class User < ActiveRecord::Base
   has_one :administrator, dependent: :destroy, inverse_of: :user
 
   has_many :collaborators, dependent: :destroy, inverse_of: :user
-  has_many :author_requests, through: :collaborators
-  has_many :copyright_holder_requests, through: :collaborators
-
-  has_many :sent_author_requests, class_name: 'AuthorRequest',
-           foreign_key: :requestor_id, dependent: :destroy, inverse_of: :requestor
-  has_many :sent_copyright_holder_requests, class_name: 'CopyrightHolderRequest',
-           foreign_key: :requestor_id, dependent: :destroy, inverse_of: :requestor
 
   has_many :child_deputizations, class_name: 'Deputization',
            foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer

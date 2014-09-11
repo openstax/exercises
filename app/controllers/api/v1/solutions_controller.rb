@@ -5,7 +5,7 @@ module Api::V1
       api_versions "v1"
       short_description 'Represents a solution for an Exercise.'
       description <<-EOS
-        Solutions teach Users how to solve an Exercise.
+        Solutions teach Users how to solve Exercises.
       EOS
     end
 
