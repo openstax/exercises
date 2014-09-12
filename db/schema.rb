@@ -184,12 +184,14 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   create_table "formats", force: true do |t|
     t.string   "name",        null: false
+    t.string   "title",       null: false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "formats", ["name"], name: "index_formats_on_name", unique: true
+  add_index "formats", ["title"], name: "index_formats_on_title", unique: true
 
   create_table "formattings", force: true do |t|
     t.integer  "formattable_id",   null: false
@@ -214,12 +216,14 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   create_table "languages", force: true do |t|
     t.string   "name",        null: false
+    t.string   "title",       null: false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "languages", ["name"], name: "index_languages_on_name", unique: true
+  add_index "languages", ["title"], name: "index_languages_on_title", unique: true
 
   create_table "libraries", force: true do |t|
     t.integer  "language_id", null: false
@@ -245,7 +249,7 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   create_table "licenses", force: true do |t|
     t.string   "name",                                 null: false
-    t.string   "short_name",                           null: false
+    t.string   "title",                                null: false
     t.string   "url",                                  null: false
     t.text     "publishing_contract",                  null: false
     t.text     "copyright_notice",                     null: false
@@ -258,7 +262,7 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   end
 
   add_index "licenses", ["name"], name: "index_licenses_on_name", unique: true
-  add_index "licenses", ["short_name"], name: "index_licenses_on_short_name", unique: true
+  add_index "licenses", ["title"], name: "index_licenses_on_title", unique: true
   add_index "licenses", ["url"], name: "index_licenses_on_url", unique: true
 
   create_table "list_editors", force: true do |t|
@@ -470,24 +474,15 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "openstax_accounts_groups", ["openstax_uid"], name: "index_openstax_accounts_groups_on_openstax_uid", unique: true
 
   create_table "part_dependencies", force: true do |t|
-    t.integer  "parent_part_id",    null: false
-    t.integer  "dependent_part_id", null: false
+    t.integer  "parent_part_id",                    null: false
+    t.integer  "dependent_part_id",                 null: false
+    t.boolean  "is_optional",       default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "part_dependencies", ["dependent_part_id", "parent_part_id"], name: "index_part_dependencies_on_dependent_p_id_and_parent_p_id", unique: true
   add_index "part_dependencies", ["parent_part_id"], name: "index_part_dependencies_on_parent_part_id"
-
-  create_table "part_supports", force: true do |t|
-    t.integer  "supporting_part_id", null: false
-    t.integer  "supported_part_id",  null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "part_supports", ["supported_part_id", "supporting_part_id"], name: "index_part_supports_on_supported_p_id_and_supporting_p_id", unique: true
-  add_index "part_supports", ["supporting_part_id"], name: "index_part_supports_on_supporting_part_id"
 
   create_table "parts", force: true do |t|
     t.integer  "exercise_id", null: false
@@ -520,6 +515,17 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true
   add_index "publications", ["published_at"], name: "index_publications_on_published_at"
   add_index "publications", ["yanked_at"], name: "index_publications_on_yanked_at"
+
+  create_table "question_dependencies", force: true do |t|
+    t.integer  "parent_question_id",                    null: false
+    t.integer  "dependent_question_id",                 null: false
+    t.boolean  "is_optional",           default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "question_dependencies", ["dependent_question_id", "parent_question_id"], name: "index_question_dependencies_on_dependent_q_id_and_parent_q_id", unique: true
+  add_index "question_dependencies", ["parent_question_id"], name: "index_question_dependencies_on_parent_question_id"
 
   create_table "questions", force: true do |t|
     t.integer  "part_id",    null: false

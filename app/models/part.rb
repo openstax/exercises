@@ -1,7 +1,6 @@
 class Part < ActiveRecord::Base
 
   sort_domain
-  sortable
 
   belongs_to :exercise, inverse_of: :parts
 
@@ -11,15 +10,13 @@ class Part < ActiveRecord::Base
   has_many :question_answers, through: :questions, source: :answers
   has_many :combo_choices, through: :questions
 
-  has_many :child_dependencies, class_name: 'PartDependency',
-           dependent: :destroy, inverse_of: :parent_part
   has_many :parent_dependencies, class_name: 'PartDependency',
            dependent: :destroy, inverse_of: :dependent_part
+  has_many :parent_parts, through: :parent_dependencies
 
-  has_many :child_supports, class_name: 'PartSupport',
-           dependent: :destroy, inverse_of: :supporting_part
-  has_many :parent_supports, class_name: 'PartSupport',
-           dependent: :destroy, inverse_of: :supported_part
+  has_many :child_dependencies, class_name: 'PartDependency',
+           dependent: :destroy, inverse_of: :parent_part
+  has_many :dependent_parts, through: :child_dependencies
 
   validates :exercise, presence: true
 

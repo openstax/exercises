@@ -17,7 +17,7 @@ class License < ActiveRecord::Base
            source: :original_license
 
   validates :name, presence: true, uniqueness: true
-  validates :short_name, presence: true, uniqueness: true
+  validates :title, presence: true, uniqueness: true
   validates :url, presence: true, uniqueness: true
   validates :publishing_contract, presence: true
   validates :copyright_notice, presence: true
@@ -26,7 +26,7 @@ class License < ActiveRecord::Base
     joins(:class_licenses).where(class_licenses: {class_name: publishable.class.name}) }
 
   def self.options_for(publishable)
-    self.for(publishable).collect{|l| [l.short_name, l.id]}
+    self.for(publishable).collect{|l| [l.title, l.id]}
   end
 
   def valid_for?(publishable)

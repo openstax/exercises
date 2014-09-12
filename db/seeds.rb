@@ -30,49 +30,57 @@ end
 
 # Question Formats
 Format.create do |format|
-  format.name        = 'Multiple Choice'
+  format.name        = 'multiple_choice'
+  format.title       = 'Multiple Choice'
   format.description = 'A format that presents several possible answers and allows only one of them to be chosen'
 end
 
 Format.create do |format|
-  format.name        = 'Multiple Select'
+  format.name        = 'multiple_select'
+  format.title       = 'Multiple Select'
   format.description = 'A format that presents several possible answers and allows any number of them to be chosen'
 end
 
 Format.create do |format|
-  format.name        = 'Short Answer'
+  format.name        = 'short_answer'
+  format.title       = 'Short Answer'
   format.description = 'A format that allows short text or numbers to be entered'
 end
 
 Format.create do |format|
-  format.name        = 'Fill in the Blank'
+  format.name        = 'fill_in_the_blank'
+  format.title       = 'Fill in the Blank'
   format.description = 'A format that allows short text or numbers to be inserted inside the question text'
 end
 
 Format.create do |format|
-  format.name        = 'Point and Click'
+  format.name        = 'point_and_click'
+  format.title       = 'Point and Click'
   format.description = 'A format that allows the user to click an object'
 end
 
 Format.create do |format|
-  format.name        = 'Matching'
+  format.name        = 'matching'
+  format.title       = 'Matching'
   format.description = 'A format that allows the user to match columns of objects'
 end
 
 Format.create do |format|
-  format.name        = 'Sorting'
+  format.name        = 'sorting'
+  format.title       = 'Sorting'
   format.description = 'A format that allows the user to sort objects'
 end
 
 Format.create do |format|
-  format.name        = 'Free Response'
+  format.name        = 'free_response'
+  format.title       = 'Free Response'
   format.description = 'A format that allows any text to be entered'
 end
 
 # Content Licenses
 License.create do |license|
-  license.name                 = 'Creative Commons Attribution 4.0 International'
-  license.short_name           = 'CC BY 4.0'
+  license.name                 = 'cc_by_4_0'
+  license.title                = 'Creative Commons Attribution 4.0 International'
   license.url                  = 'http://creativecommons.org/licenses/by/4.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -84,8 +92,8 @@ License.create do |license|
 end
 
 License.create do |license|
-  license.name                 = 'Creative Commons Attribution-ShareAlike 4.0 International'
-  license.short_name           = 'CC BY-SA 4.0'
+  license.name                 = 'cc_by-sa_4_0'
+  license.title                = 'Creative Commons Attribution-ShareAlike 4.0 International'
   license.url                  = 'http://creativecommons.org/licenses/by-sa/4.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -97,8 +105,8 @@ License.create do |license|
 end
 
 License.create do |license|
-  license.name                 = 'Creative Commons Attribution-NonCommercial 4.0 International'
-  license.short_name           = 'CC BY-NC 4.0'
+  license.name                 = 'cc_by-nc_4_0'
+  license.title                = 'Creative Commons Attribution-NonCommercial 4.0 International'
   license.url                  = 'http://creativecommons.org/licenses/by-nc/4.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -110,8 +118,8 @@ License.create do |license|
 end
 
 License.create do |license|
-  license.name                 = 'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International'
-  license.short_name           = 'CC BY-NC-SA 4.0'
+  license.name                 = 'cc_by-nc-sa_4_0'
+  license.title                = 'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International'
   license.url                  = 'http://creativecommons.org/licenses/by-nc-sa/4.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -123,8 +131,8 @@ License.create do |license|
 end
 
 License.create do |license|
-  license.name                 = 'Creative Commons Attribution-NoDerivatives 4.0 International'
-  license.short_name           = 'CC BY-ND 4.0'
+  license.name                 = 'cc_by-nd_4_0'
+  license.title                = 'Creative Commons Attribution-NoDerivatives 4.0 International'
   license.url                  = 'http://creativecommons.org/licenses/by-nd/4.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -135,8 +143,8 @@ License.create do |license|
 end
 
 License.create do |license|
-  license.name                 = 'Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International'
-  license.short_name           = 'CC BY-NC-ND 4.0'
+  license.name                 = 'cc_by-nc-nd_4_0'
+  license.title                = 'Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International'
   license.url                  = 'http://creativecommons.org/licenses/by-nc-nd/4.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -147,8 +155,8 @@ License.create do |license|
 end
 
 License.create do |license|
-  license.name                 = 'Creative Commons CC0 1.0 Universal'
-  license.short_name           = 'CC0 1.0'
+  license.name                 = 'cc0_1_0'
+  license.title                = 'Creative Commons CC0 1.0 Universal'
   license.url                  = 'http://creativecommons.org/licenses/zero/1.0/'
   license.publishing_contract  = 'publishing_contract placeholder'
   license.copyright_notice     = 'copyright_notice placeholder'
@@ -163,12 +171,14 @@ end
 
 # Logic Library Languages
 Language.create do |language|
-  language.name = 'JavaScript'
+  language.name = 'javascript'
+  language.title = 'JavaScript'
   language.description = 'Language for Logic objects'
 end
 
 Language.create do |language|
-  language.name = 'LaTeX'
+  language.name = 'lateX'
+  language.title = 'LaTeX'
   language.description = 'Language for math input'
 end
 

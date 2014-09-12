@@ -5,7 +5,6 @@ class Exercise < ActiveRecord::Base
   has_attachments
   has_collaborators
   has_logic :javascript, :latex
-  sort_domain
 
   has_many :parts, dependent: :destroy, inverse_of: :exercise
   has_many :questions, through: :parts

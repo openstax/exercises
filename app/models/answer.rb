@@ -1,7 +1,5 @@
 class Answer < ActiveRecord::Base
 
-  sortable
-
   belongs_to :item, inverse_of: :answers
   has_one :question, through: :item
   has_one :part, through: :question

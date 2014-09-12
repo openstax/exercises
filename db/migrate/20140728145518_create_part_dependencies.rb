@@ -3,6 +3,7 @@ class CreatePartDependencies < ActiveRecord::Migration
     create_table :part_dependencies do |t|
       t.references :parent_part, null: false
       t.references :dependent_part, null: false
+      t.boolean :is_optional, null: false, default: false
 
       t.timestamps
     end
