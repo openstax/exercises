@@ -7,7 +7,7 @@ module HasLogic
     module ClassMethods
       def has_logic(*languages)
         class_exec do
-          has_one :logic, as: :logicable, dependent: :destroy
+          has_one :logic, as: :parent, dependent: :destroy
         end
       end
     end

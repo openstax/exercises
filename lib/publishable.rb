@@ -24,6 +24,10 @@ module Publishable
             return super unless id.is_a?(String) && id_regex =~ id
             Publication.for(name, $1, $3).first.try(:publishable) || super
           end
+
+          def uid
+            publication.uid
+          end
         end
       end
     end

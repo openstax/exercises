@@ -2,7 +2,7 @@ module Api::V1
   class ExerciseRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
-    property :id,
+    property :uid,
              type: String,
              writeable: false,
              readable: true
@@ -31,7 +31,7 @@ module Api::V1
                writeable: true,
                readable: true,
                schema_info: {
-                 minItems: 1
+                 required: true
                }
 
   end

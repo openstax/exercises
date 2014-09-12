@@ -20,6 +20,7 @@ module Api::V1
                representer: ComboChoiceAnswerRepresenter,
                writeable: true,
                readable: true,
+               getter: lambda { |*| @correctness.to_f },
                schema_info: {
                  minItems: 1
                }

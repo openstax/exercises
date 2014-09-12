@@ -543,7 +543,6 @@ ActiveRecord::Schema.define(version: 20140904205107) do
     t.string   "title"
     t.text     "summary"
     t.text     "details",     null: false
-    t.text     "rubric"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

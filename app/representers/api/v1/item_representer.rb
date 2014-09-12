@@ -18,7 +18,7 @@ module Api::V1
                writeable: true,
                readable: true,
                schema_info: {
-                 minItems: 1
+                 required: true
                }
 
     collection :combo_choices,
@@ -26,10 +26,7 @@ module Api::V1
                decorator: ComboChoiceRepresenter,
                parse_strategy: :sync,
                writeable: true,
-               readable: true,
-               schema_info: {
-                 minItems: 0
-               }
+               readable: true
 
   end
 end

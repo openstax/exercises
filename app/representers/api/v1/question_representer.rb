@@ -21,7 +21,18 @@ module Api::V1
                writeable: true,
                readable: true,
                schema_info: {
-                 minItems: 1
+                 required: true
+               }
+
+    collection :formattings,
+               as: :formats,
+               class: Formatting,
+               decorator: FormattingRepresenter,
+               parse_strategy: :sync,
+               writeable: true,
+               readable: true,
+               schema_info: {
+                 required: true
                }
 
   end

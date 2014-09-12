@@ -27,6 +27,10 @@ class Publication < ActiveRecord::Base
     pscope.includes(:publishable)
   }
 
+  def uid
+    "#{publishable_type.first.downcase}#{number}v#{version}"
+  end
+
   protected
 
   def assign_number_and_version

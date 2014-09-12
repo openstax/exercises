@@ -18,7 +18,7 @@ module Api::V1
                writeable: true,
                readable: true,
                schema_info: {
-                 minItems: 1
+                 required: true
                }
 
   end
