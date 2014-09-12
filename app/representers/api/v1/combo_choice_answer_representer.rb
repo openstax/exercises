@@ -2,24 +2,12 @@ module Api::V1
   class ComboChoiceAnswerRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
-    property :id, 
+    property :answer_id, 
              type: Integer,
-             writeable: false,
-             readable: true
-
-    property :combo_choice,
-             class: ComboChoice,
-             representer: ComboChoiceRepresenter,
-             writeable: true,
-             readable: false
-
-    property :answer,
-             type: Answer,
-             representer: AnswerRepresenter,
              writeable: true,
              readable: true,
-             schema_info: {
-               required: true
+             setter: lambda { |val|
+               self.answer = question.answers.select{|i| (i.id || i.temp_id) == val}.first
              }
 
   end

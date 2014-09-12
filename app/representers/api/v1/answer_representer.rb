@@ -4,8 +4,17 @@ module Api::V1
 
     property :id, 
              type: Integer,
-             writeable: false,
-             readable: true
+             writeable: true,
+             readable: true,
+             setter: lambda { |val| self.temp_id = val }
+
+    property :item_id, 
+             type: Integer,
+             writeable: true,
+             readable: true,
+             setter: lambda { |val|
+               self.item = question.items.select{|i| (i.id || i.temp_id) == val}.first
+             }
 
     property :content,
              type: String,

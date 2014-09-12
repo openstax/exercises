@@ -33,4 +33,12 @@ class License < ActiveRecord::Base
     class_licenses.exists?(class_name: publishable.class.name)
   end
 
+  def attribution_for(publishable)
+    collaborators = publishable.respond_to?(:collaborators) ? publishable.collaborators : \
+                                                              Collaborator.none
+    authors = collaborators.authors.collect{|a| a.name}
+    copyright_holders = collaborators.copyright_holders.collect{|c| c.name}
+    eval copyright_notice
+  end
+
 end

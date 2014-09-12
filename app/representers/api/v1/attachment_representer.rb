@@ -1,5 +1,5 @@
 module Api::V1
-  class UploadRepresenter < Roar::Decorator
+  class AttachmentRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
   end

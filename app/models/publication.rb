@@ -31,6 +31,10 @@ class Publication < ActiveRecord::Base
     "#{publishable_type.first.downcase}#{number}v#{version}"
   end
 
+  def attribution
+    license.attribution_for(publishable)
+  end
+
   protected
 
   def assign_number_and_version

@@ -1,15 +1,18 @@
 class Answer < ActiveRecord::Base
 
-  belongs_to :item, inverse_of: :answers
-  has_one :question, through: :item
+  attr_accessor :temp_id
+
+  belongs_to :question, inverse_of: :answers
   has_one :part, through: :question
   has_one :exercise, through: :part
+
+  belongs_to :item, inverse_of: :answers
 
   has_many :combo_choice_answers, dependent: :destroy, inverse_of: :answer
   has_many :combo_choices, through: :combo_choice_answers
 
-  validates :item, presence: true
+  validates :question, presence: true
 
-  delegate_access_control_to :item
+  delegate_access_control_to :question
 
 end

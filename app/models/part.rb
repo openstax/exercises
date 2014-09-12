@@ -2,6 +2,8 @@ class Part < ActiveRecord::Base
 
   sort_domain
 
+  attr_accessor :temp_id
+
   belongs_to :exercise, inverse_of: :parts
 
   has_many :questions, dependent: :destroy, inverse_of: :part

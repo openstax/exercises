@@ -12,6 +12,17 @@ module HasLogic
       end
     end
   end
+
+  module Representable
+    module Declarative
+      def has_logic
+        class_exec do
+
+        end
+      end
+    end
+  end
 end
 
 ActiveRecord::Base.send :include, HasLogic::ActiveRecord
+Representable::Declarative.send :include, HasLogic::Representable::Declarative

@@ -12,6 +12,16 @@ module HasAttachments
       end
     end
   end
+
+  module Representable
+    module Declarative
+      def has_attachments
+        class_exec do
+        end
+      end
+    end
+  end
 end
 
 ActiveRecord::Base.send :include, HasAttachments::ActiveRecord
+Representable::Declarative.send :include, HasAttachments::Representable::Declarative

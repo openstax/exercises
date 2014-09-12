@@ -2,6 +2,8 @@ class Question < ActiveRecord::Base
 
   sort_domain
 
+  attr_accessor :temp_id
+
   belongs_to :part, inverse_of: :questions
   has_one :exercise, through: :part
 
@@ -11,8 +13,8 @@ class Question < ActiveRecord::Base
   has_many :solutions, dependent: :destroy, inverse_of: :question
 
   has_many :items, dependent: :destroy, inverse_of: :question
-  has_many :answers, through: :items
-  has_many :combo_choices, through: :items
+  has_many :answers, dependent: :destroy, inverse_of: :question
+  has_many :combo_choices, dependent: :destroy, inverse_of: :question
 
   has_many :parent_dependencies, class_name: 'QuestionDependency',
            dependent: :destroy, inverse_of: :dependent_question
