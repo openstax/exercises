@@ -13,10 +13,12 @@ class Part < ActiveRecord::Base
   has_many :combo_choices, through: :questions
 
   has_many :parent_dependencies, class_name: 'PartDependency',
+           foreign_key: :dependent_part_id,
            dependent: :destroy, inverse_of: :dependent_part
   has_many :parent_parts, through: :parent_dependencies
 
   has_many :child_dependencies, class_name: 'PartDependency',
+           foreign_key: :parent_part_id,
            dependent: :destroy, inverse_of: :parent_part
   has_many :dependent_parts, through: :child_dependencies
 

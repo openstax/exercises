@@ -22,7 +22,8 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "administrators", ["user_id"], name: "index_administrators_on_user_id", unique: true
 
   create_table "answers", force: true do |t|
-    t.integer  "item_id",                                           null: false
+    t.integer  "question_id",                                       null: false
+    t.integer  "item_id"
     t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
     t.text     "content",                                           null: false
     t.text     "feedback"
@@ -31,6 +32,7 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   end
 
   add_index "answers", ["item_id", "correctness"], name: "index_answers_on_item_id_and_correctness"
+  add_index "answers", ["question_id", "correctness"], name: "index_answers_on_question_id_and_correctness"
 
   create_table "attachments", force: true do |t|
     t.integer  "parent_id",   null: false
@@ -77,14 +79,14 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "combo_choice_answers", ["combo_choice_id"], name: "index_combo_choice_answers_on_combo_choice_id"
 
   create_table "combo_choices", force: true do |t|
-    t.integer  "item_id",                                           null: false
+    t.integer  "question_id",                                       null: false
     t.decimal  "correctness", precision: 3, scale: 2, default: 0.0, null: false
     t.text     "feedback"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "combo_choices", ["item_id", "correctness"], name: "index_combo_choices_on_item_id_and_correctness"
+  add_index "combo_choices", ["question_id", "correctness"], name: "index_combo_choices_on_question_id_and_correctness"
 
   create_table "commontator_comments", force: true do |t|
     t.string   "creator_type"

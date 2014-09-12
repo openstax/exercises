@@ -5,9 +5,9 @@ class Formatting < ActiveRecord::Base
   belongs_to :formattable, polymorphic: true
   belongs_to :format, inverse_of: :formattings
 
+  validates :format, presence: true
   validates :formattable, presence: true
-  validates :format, presence: true, uniqueness: {
-    scope: [:formattable_id, :formattable_type] }
+  validates :formattable_id, uniqueness: { scope: [:formattable_type, :format] }
 
   delegate_access_control_to :formattable
 

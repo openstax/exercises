@@ -51,6 +51,7 @@ module HasCollaborators
           end
 
           def authors=(authors)
+            raise Exception, "TODO"
             represented.collaborators.authors = authors
           end
 
@@ -59,6 +60,7 @@ module HasCollaborators
           end
 
           def copyright_holders=(copyright_holders)
+            raise Exception, "TODO"
             represented.collaborators.copyright_holders = copyright_holders
           end
         end
