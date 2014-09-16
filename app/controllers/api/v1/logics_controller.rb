@@ -30,32 +30,17 @@ module Api::V1
       EOS
     end
 
-    api :GET, '/logics/:id', 'Gets the specified Logic'
+    ########
+    # seed #
+    ########
+
+    api :POST, '/logics/:id/seeds/:seed', 'Adds a variation with seed to the specified Logic'
     description <<-EOS
-      #{json_schema(Api::V1::LogicRepresenter, include: :readable)}        
+      Adds a variation with seed to the specified Logic.
+
+      TBD
     EOS
-    def show
-      rest_get(Logic, params[:id])
-    end
-
-    api :PUT, '/logics/:id', 'Updates the specified Logic'
-    description <<-EOS
-      Updates the Logic object whose ID matches the provided param.
-    EOS
-    def update
-      # Logic.transaction do 
-        rest_update(Logic, params[:id])
-      # end
-    end
-
-    api :POST, '/logics', 'Creates a new Logic with the specified parameters'
-    def create
-      rest_create(Logic)
-    end
-
-    api :DELETE, '/logics/:id', 'Deletes the specified Logic'
-    def destroy
-      rest_destroy(Logic, params[:id])
+    def seed
     end
     
   end

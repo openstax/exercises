@@ -9,29 +9,72 @@ module Api::V1
       EOS
     end
 
+    #########
+    # index #
+    #########
+
+    api :GET, '/libraries', 'Gets a list of Libraries'
+    description <<-EOS
+      Gets a list of Libraries.
+
+      #{json_schema(Api::V1::LibrarySearchRepresenter, include: :readable)}        
+    EOS
+    def index
+      Library.all
+    end
+
+    ########
+    # show #
+    ########
+
     api :GET, '/libraries/:id', 'Gets the specified Library'
     description <<-EOS
+      Gets the Library that matches the provided ID.
+
+      #{json_schema(Api::V1::LibraryRepresenter, include: :readable)}        
     EOS
     def show
-      rest_get(Library, params[:id])
+      standard_get(Library, params[:id])
     end
+
+    ##########
+    # create #
+    ##########
+
+    api :POST, '/libraries', 'Creates a new Library'
+    description <<-EOS
+      Creates a Library with the given attributes.
+
+      #{json_schema(Api::V1::LibraryRepresenter, include: :writeable)}        
+    EOS
+    def create
+      standard_create(Library)
+    end
+
+    ##########
+    # update #
+    ##########
 
     api :PUT, '/libraries/:id', 'Updates the specified Library'
     description <<-EOS
-      Updates the Library object whose ID matches the provided param.
+      Updates the Library that matches the provided ID with the given attributes.
+
+      #{json_schema(Api::V1::LibraryRepresenter, include: :writeable)}        
     EOS
     def update
-      rest_update(Library, params[:id])
+      standard_update(Library, params[:id])
     end
 
-    api :POST, '/libraries', 'Creates a new Library with the specified parameters'
-    def create
-      rest_create(Library)
-    end
+    ###########
+    # destroy #
+    ###########
 
     api :DELETE, '/libraries/:id', 'Deletes the specified Library'
+    description <<-EOS
+      Deletes the Library that matches the provided ID.    
+    EOS
     def destroy
-      rest_destroy(Library, params[:id])
+      standard_destroy(Library, params[:id])
     end
     
   end

@@ -9,9 +9,9 @@ module Api::V1
       EOS
     end
 
-    ###############################################################
-    # index
-    ###############################################################
+    #########
+    # index #
+    #########
 
     api :GET, '/exercises', 'Return a set of Exercises matching query terms'
     description <<-EOS
@@ -81,27 +81,41 @@ module Api::V1
       respond_with outputs, represent_with: Api::V1::ExerciseSearchRepresenter
     end
 
-    ###############################################################
-    # show
-    ###############################################################
+    ########
+    # show #
+    ########
 
     api :GET, '/exercises/:id', 'Gets the specified Exercise'
     description <<-EOS
       Gets the Exercise that matches the provided ID.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable) if true}        
+      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}        
     EOS
     def show
       standard_read(Exercise, params[:id])
     end
 
-    ###############################################################
-    # update
-    ###############################################################
+    ##########
+    # create #
+    ##########
+
+    api :POST, '/exercises', 'Creates an Exercise'
+    description <<-EOS
+      Creates an Exercise with the given attributes.
+
+      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
+    EOS
+    def create
+      standard_create(Exercise)
+    end
+
+    ##########
+    # update #
+    ##########
 
     api :PUT, '/exercises/:id', 'Updates the specified Exercise'
     description <<-EOS
-      Updates the Exercise that matches the provided ID.
+      Updates the Exercise that matches the provided ID with the given attributes.
 
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
     EOS
@@ -109,9 +123,9 @@ module Api::V1
       standard_update(Exercise, params[:id])
     end
 
-    ###############################################################
-    # destroy
-    ###############################################################
+    ###########
+    # destroy #
+    ###########
 
     api :DELETE, '/exercises/:id', 'Deletes the specified Exercise'
     description <<-EOS

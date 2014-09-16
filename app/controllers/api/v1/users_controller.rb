@@ -14,9 +14,9 @@ module Api::V1
       EOS
     end
 
-    ###############################################################
-    # index
-    ###############################################################
+    #########
+    # index #
+    #########
 
     api :GET, '/users', 'Return a set of Users matching query terms'
     description <<-EOS
