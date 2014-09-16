@@ -3,9 +3,10 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Represents a List of Exercises.'
+      short_description 'A list of Exercises.'
       description <<-EOS
-        Lists represent lists of Exercises.
+        Lists represent collections of Exercises.
+        The collection itself is owned by a group of users.
       EOS
     end
 

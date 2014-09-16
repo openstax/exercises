@@ -3,7 +3,7 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Represents a solution for an Exercise.'
+      short_description 'A solution for an Exercise.'
       description <<-EOS
         Solutions teach students how to solve Exercises.
         They contain more than just the correct answer.
@@ -14,7 +14,7 @@ module Api::V1
     # index #
     #########
 
-    api :GET, '/exercises/:exercise_id/solutions', 'Lists the visible Solutions for the given exercise.'
+    api :GET, '/exercises/:exercise_id/solutions', 'Lists the visible Solutions for the given exercise'
     description <<-EOS
       Shows the list of visible Solutions for the given exercise.
 
@@ -31,7 +31,7 @@ module Api::V1
     # show #
     ########
 
-    api :GET, '/solutions/:id', 'Gets the specified Solution.'
+    api :GET, '/solutions/:id', 'Gets the specified Solution'
     description <<-EOS
       Shows the specified Solution, including high-level explanation and detailed explanation.
 
@@ -47,7 +47,7 @@ module Api::V1
     # create #
     ##########
 
-    api :POST, '/exercises/:exercise_id/solutions', 'Creates a new Solution for the given exercise.'
+    api :POST, '/exercises/:exercise_id/solutions', 'Creates a new Solution for the given exercise'
     description <<-EOS
       Creates a new Solution for the given exercise.
       The user is set as the author and copyright holder.
@@ -66,7 +66,7 @@ module Api::V1
     # update #
     ##########
 
-    api :PUT, '/solutions/:id', 'Updates the properties of a Solution.'
+    api :PUT, '/solutions/:id', 'Updates the properties of a Solution'
     description <<-EOS
       Updates the properties of the specified Solution.
 
@@ -82,7 +82,7 @@ module Api::V1
     # destroy #
     ###########
 
-    api :DELETE, '/solutions/:id', 'Deletes the specified Solution.'
+    api :DELETE, '/solutions/:id', 'Deletes the specified Solution'
     description <<-EOS
       Deletes the specified Solution.
 

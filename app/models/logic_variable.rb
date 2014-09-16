@@ -1,6 +1,6 @@
 class LogicVariable < ActiveRecord::Base
 
-  JS_RESERVED_WORDS = %w(do if in for let new try var case else enum eval 
+  RESERVED_WORDS = %w(do if in for let new try var case else enum eval 
                          false null this true void with break catch class 
                          const super throw while yield delete export 
                          import public return static switch typeof 
@@ -8,7 +8,7 @@ class LogicVariable < ActiveRecord::Base
                          debugger function arguments interface protected 
                          implements instanceof seedrandom)
 
-  JS_RESERVED_WORDS_REGEX = Regexp.compile("^[#{JS_RESERVED_WORDS.join('|')}]$")
+  RESERVED_WORDS_REGEX = Regexp.compile("^[#{RESERVED_WORDS.join('|')}]$")
                                
   VARIABLE_REGEX = /^[_a-zA-Z]{1}\w*$/
 
@@ -32,7 +32,7 @@ class LogicVariable < ActiveRecord::Base
       end
 
       reserved_variables = variables.collect do |v| 
-        match = JS_RESERVED_WORDS_REGEX.match(v) || OTHER_RESERVED_WORDS_REGEX.match(v)
+        match = RESERVED_WORDS_REGEX.match(v)
         match.nil? ? nil : match[0]
       end
       reserved_variables.compact!

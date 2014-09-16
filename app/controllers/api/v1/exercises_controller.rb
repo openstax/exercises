@@ -3,9 +3,9 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Exercises are ...'
+      short_description 'A collection of related questions.'
       description <<-EOS
-        Exercises are ...
+        Exercises are collections of related questions about a very specific situation or topic, possibly united by a common background story.
       EOS
     end
 

@@ -3,7 +3,7 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Blocks of code used to make dynamically-generated variations of Logics and Solutions'
+      short_description 'A block of code used to create dynamically-generated variations of Exercises and Solutions.'
       description <<-EOS
         #{SITE_NAME} uses Javascript to make logics "dynamic".  Authors write
         small bits of Javascript to compute variables that are substituted into special
@@ -24,7 +24,7 @@ module Api::V1
         restrictions on the code and variables saved:
 
         1. The "code" data cannot contain the following standard Javascript reserved words: 
-           > #{LogicVariable::JS_RESERVED_WORDS.join(', ')}
+           > #{LogicVariable::RESERVED_WORDS.join(', ')}
         3. The "variables" data must be a JSON stringified array of string objects, each of
            which must match the following regular expression: #{LogicVariable::VARIABLE_REGEX.inspect}
       EOS

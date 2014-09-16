@@ -3,7 +3,7 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'A code Library'
+      short_description 'A code Library.'
       description <<-EOS
         A Library is a version-controlled piece of code reusable in Logics. 
       EOS

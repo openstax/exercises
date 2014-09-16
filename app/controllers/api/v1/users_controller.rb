@@ -3,7 +3,7 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Represents a user of OpenStax Exercises.'
+      short_description 'A human user of OpenStax Exercises.'
       description <<-EOS
         Users have the following String attributes:
         username

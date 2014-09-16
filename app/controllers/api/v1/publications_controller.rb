@@ -3,10 +3,10 @@ module Api::V1
 
     resource_description do
       api_versions "v1"
-      short_description 'Represents a publishable object.'
+      short_description 'Contains information about a publishable object.'
       description <<-EOS
         Publications contain information about the publication status of
-        publishable objects, such as Exercises and Solutions.
+        publishable objects, such as Exercises, Solutions and code Libraries.
       EOS
     end
 
@@ -14,7 +14,7 @@ module Api::V1
     # show #
     ########
 
-    api :POST, '/publications/:publication_id', 'Gets the specified Publication'
+    api :POST, '/publications/:id', 'Gets the specified Publication'
     description <<-EOS
       Gets the Publication that matches the provided ID.
       The Publication contains information about the
