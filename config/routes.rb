@@ -75,6 +75,8 @@ Exercises::Application.routes.draw do
 
   resources :deputizations, only: [:index, :new, :create, :destroy]
 
+  resources :exercises, only: [:show]
+
   resource :static_page, only: [], path: '', as: '' do
     get 'about'
     get 'contact'
