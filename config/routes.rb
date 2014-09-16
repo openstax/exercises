@@ -73,7 +73,7 @@ Exercises::Application.routes.draw do
 
   resource :user, only: [:show, :edit, :update, :destroy]
 
-  resources :deputizations
+  resources :deputizations, only: [:index, :new, :create, :destroy]
 
   resource :static_page, only: [], path: '', as: '' do
     get 'about'
