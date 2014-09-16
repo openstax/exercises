@@ -11,6 +11,10 @@ Exercises::Application.routes.draw do
 
   apipie
 
+  scope module: 'apipie' do
+    get 'api', to: 'apipies#index'
+  end
+
   api :v1, :default => true do
 
     resources :exercises

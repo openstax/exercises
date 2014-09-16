@@ -35,6 +35,10 @@ class Publication < ActiveRecord::Base
     license.attribution_for(publishable)
   end
 
+  def is_published?
+    !published_at.nil?
+  end
+
   protected
 
   def assign_number_and_version

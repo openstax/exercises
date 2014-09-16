@@ -19,7 +19,8 @@ module Publishable
 
           before_validation :build_publication, on: :create
 
-          delegate :uid, :number, :version, :license, :attribution, to: :publication
+          delegate :uid, :number, :version, :license, :attribution, :is_published?,
+                   to: :publication
 
           def self.find(*args)
             return super if block_given? || args.size != 1
