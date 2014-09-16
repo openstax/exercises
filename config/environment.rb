@@ -5,7 +5,6 @@ require 'delegate_access_control_to'
 require 'publishable'
 require 'sortable'
 require 'has_attachments'
-require 'has_collaborators'
 require 'has_logic'
 
 SITE_NAME = "OpenStax Exercises"
