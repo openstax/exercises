@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140904205107) do
+ActiveRecord::Schema.define(version: 20140916214406) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -45,6 +45,16 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "attachments", ["asset"], name: "index_attachments_on_asset"
   add_index "attachments", ["parent_id", "parent_type", "asset"], name: "index_attachments_on_parent_id_and_parent_type_and_asset", unique: true
 
+  create_table "authors", force: true do |t|
+    t.integer  "publication_id", null: false
+    t.integer  "user_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "authors", ["publication_id", "user_id"], name: "index_authors_on_publication_id_and_user_id", unique: true
+  add_index "authors", ["user_id"], name: "index_authors_on_user_id"
+
   create_table "class_licenses", force: true do |t|
     t.integer  "license_id", null: false
     t.string   "class_name", null: false
@@ -54,18 +64,6 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   add_index "class_licenses", ["class_name"], name: "index_class_licenses_on_class_name"
   add_index "class_licenses", ["license_id", "class_name"], name: "index_class_licenses_on_license_id_and_class_name", unique: true
-
-  create_table "collaborators", force: true do |t|
-    t.integer  "publication_id",                      null: false
-    t.integer  "user_id",                             null: false
-    t.boolean  "is_author",           default: false, null: false
-    t.boolean  "is_copyright_holder", default: false, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "collaborators", ["publication_id", "user_id"], name: "index_collaborators_on_publication_id_and_user_id", unique: true
-  add_index "collaborators", ["user_id"], name: "index_collaborators_on_user_id"
 
   create_table "combo_choice_answers", force: true do |t|
     t.integer  "combo_choice_id", null: false
@@ -129,6 +127,16 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   add_index "commontator_threads", ["commontable_id", "commontable_type"], name: "index_commontator_threads_on_c_id_and_c_type", unique: true
 
+  create_table "copyright_holders", force: true do |t|
+    t.integer  "publication_id", null: false
+    t.integer  "user_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "copyright_holders", ["publication_id", "user_id"], name: "index_copyright_holders_on_publication_id_and_user_id", unique: true
+  add_index "copyright_holders", ["user_id"], name: "index_copyright_holders_on_user_id"
+
   create_table "deputizations", force: true do |t|
     t.integer  "deputizer_id", null: false
     t.integer  "deputy_id",    null: false
@@ -151,6 +159,16 @@ ActiveRecord::Schema.define(version: 20140904205107) do
 
   add_index "derivations", ["derived_publication_id", "hidden_at"], name: "index_derivations_on_derived_publication_id_and_hidden_at"
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true
+
+  create_table "editors", force: true do |t|
+    t.integer  "publication_id", null: false
+    t.integer  "user_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "editors", ["publication_id", "user_id"], name: "index_editors_on_publication_id_and_user_id", unique: true
+  add_index "editors", ["user_id"], name: "index_editors_on_user_id"
 
   create_table "exercises", force: true do |t|
     t.string   "title"

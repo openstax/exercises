@@ -36,51 +36,23 @@ module Api::V1
                writeable: true,
                readable: true
 
-    collection :collaborators,
-               class: Collaborator,
+    collection :editors,
+               class: Editor,
                decorator: Api::V1::CollaboratorRepresenter,
                writeable: true,
-               readable: true,
-               exec_context: :decorator
+               readable: true
 
     collection :authors,
-               class: Collaborator,
+               class: Author,
                decorator: Api::V1::CollaboratorRepresenter,
                writeable: true,
-               readable: true,
-               exec_context: :decorator
+               readable: true
 
     collection :copyright_holders,
-               class: Collaborator,
+               class: CopyrightHolder,
                decorator: Api::V1::CollaboratorRepresenter,
                writeable: true,
-               readable: true,
-               exec_context: :decorator
+               readable: true
 
-    def collaborators
-      represented.collaborators
-    end
-
-    def collaborators=(collaborators)
-      represented.collaborators = collaborators
-    end
-
-    def authors
-      represented.collaborators.authors
-    end
-
-    def authors=(authors)
-      raise Exception, "TODO"
-      represented.collaborators.authors = authors
-    end
-
-    def copyright_holders
-      represented.collaborators.copyright_holders
-    end
-
-    def copyright_holders=(copyright_holders)
-      raise Exception, "TODO"
-      represented.collaborators.copyright_holders = copyright_holders
-    end
   end
 end

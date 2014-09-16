@@ -5,7 +5,9 @@ class Publication < ActiveRecord::Base
   belongs_to :publishable, polymorphic: true
   belongs_to :license, inverse_of: :publications
 
-  has_many :collaborators, dependent: :destroy, inverse_of: :publication
+  has_many :authors, dependent: :destroy, inverse_of: :publication
+  has_many :copyright_holders, dependent: :destroy, inverse_of: :publication
+  has_many :editors, dependent: :destroy, inverse_of: :publication
 
   has_many :sources, class_name: 'Derivation', foreign_key: :derived_publication_id,
            dependent: :destroy, inverse_of: :derived_publication
