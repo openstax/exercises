@@ -29,6 +29,11 @@ module Api::V1
               self.license = License.find_by(name: val[:name])
              }
 
+    property :published_at,
+             type: String,
+             writeable: false,
+             readable: true
+
     collection :derivations,
                as: :derived_from,
                class: Publication,

@@ -202,15 +202,12 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], name: "index_fine_print_signatures_on_u_id_and_u_type_and_c_id", unique: true
 
   create_table "formats", force: true do |t|
-    t.string   "name",        null: false
-    t.string   "title",       null: false
-    t.text     "description"
+    t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "formats", ["name"], name: "index_formats_on_name", unique: true
-  add_index "formats", ["title"], name: "index_formats_on_title", unique: true
 
   create_table "formattings", force: true do |t|
     t.integer  "formattable_id",   null: false
@@ -234,15 +231,12 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   add_index "items", ["question_id", "reference"], name: "index_items_on_question_id_and_reference", unique: true
 
   create_table "languages", force: true do |t|
-    t.string   "name",        null: false
-    t.string   "title",       null: false
-    t.text     "description"
+    t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "languages", ["name"], name: "index_languages_on_name", unique: true
-  add_index "languages", ["title"], name: "index_languages_on_title", unique: true
 
   create_table "libraries", force: true do |t|
     t.integer  "language_id", null: false

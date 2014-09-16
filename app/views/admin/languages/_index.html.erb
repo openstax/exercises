@@ -10,7 +10,7 @@
       data_procs:
         [
           lambda { |language| language.name || '---' },
-          lambda { |language| truncate(language.description) || '---' },
+          lambda { |language| '---' },
           lambda { |language| "<span id=language-#{language.id}-actions>
                                 #{render partial: action_partial,
                                          locals: {language: language}}

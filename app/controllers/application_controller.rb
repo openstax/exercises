@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
 
+  respond_to :html, :js
+
   protect_from_forgery
 
   include Lev::HandleWith

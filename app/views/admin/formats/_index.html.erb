@@ -10,7 +10,7 @@
       data_procs:
         [
           lambda { |format| format.name || '---' },
-          lambda { |format| truncate(format.description) || '---' },
+          lambda { |format| '---' },
           lambda { |format| "<span id=format-#{format.id}-actions>
                                 #{render partial: action_partial,
                                          locals: {format: format}}

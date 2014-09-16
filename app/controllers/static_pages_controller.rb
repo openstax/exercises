@@ -3,6 +3,8 @@
 
 class StaticPagesController < ApplicationController
 
+  respond_to :html
+
   layout :resolve_layout
 
   skip_before_filter :authenticate_user!

@@ -31,50 +31,34 @@ end
 # Question Formats
 Format.create do |format|
   format.name        = 'multiple_choice'
-  format.title       = 'Multiple Choice'
-  format.description = 'A format that presents several possible answers and allows only one of them to be chosen'
 end
 
 Format.create do |format|
   format.name        = 'multiple_select'
-  format.title       = 'Multiple Select'
-  format.description = 'A format that presents several possible answers and allows any number of them to be chosen'
 end
 
 Format.create do |format|
   format.name        = 'short_answer'
-  format.title       = 'Short Answer'
-  format.description = 'A format that allows short text or numbers to be entered'
 end
 
 Format.create do |format|
   format.name        = 'fill_in_the_blank'
-  format.title       = 'Fill in the Blank'
-  format.description = 'A format that allows short text or numbers to be inserted inside the question text'
 end
 
 Format.create do |format|
   format.name        = 'point_and_click'
-  format.title       = 'Point and Click'
-  format.description = 'A format that allows the user to click an object'
 end
 
 Format.create do |format|
   format.name        = 'matching'
-  format.title       = 'Matching'
-  format.description = 'A format that allows the user to match columns of objects'
 end
 
 Format.create do |format|
   format.name        = 'sorting'
-  format.title       = 'Sorting'
-  format.description = 'A format that allows the user to sort objects'
 end
 
 Format.create do |format|
   format.name        = 'free_response'
-  format.title       = 'Free Response'
-  format.description = 'A format that allows any text to be entered'
 end
 
 # Content Licenses
@@ -172,14 +156,10 @@ end
 # Logic Library Languages
 Language.create do |language|
   language.name = 'javascript'
-  language.title = 'JavaScript'
-  language.description = 'Language for Logic objects'
 end
 
 Language.create do |language|
   language.name = 'lateX'
-  language.title = 'LaTeX'
-  language.description = 'Language for math input'
 end
 
-# TODO: Standard libraries (plus RequiredLibrary objects)
+# TODO: Standard logic libraries (and RequiredLibrary objects)
