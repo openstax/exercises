@@ -3,7 +3,6 @@ module Api::V1
     include Roar::Representer::JSON
 
     publishable
-    has_collaborators
     has_logic
     has_attachments
 

@@ -1,7 +1,6 @@
 class Library < ActiveRecord::Base
 
   publishable
-  has_collaborators
 
   belongs_to :language, inverse_of: :libraries
 

@@ -1,7 +1,6 @@
 class List < ActiveRecord::Base
 
   publishable
-  has_collaborators
   sort_domain
 
   has_one :parent_list_nesting, class_name: 'ListNesting', inverse_of: :child_list

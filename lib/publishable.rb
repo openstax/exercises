@@ -50,24 +50,11 @@ module Publishable
                    writeable: false,
                    readable: true
 
-          property :number,
-                   type: Integer,
-                   writeable: false,
-                   readable: true
-
-          property :version,
-                   type: Integer,
-                   writeable: false,
-                   readable: true
-
-          property :license,
-                   class: License,
-                   decorator: Api::V1::LicenseRepresenter,
+          property :publication,
+                   class: Publication,
+                   decorator: Api::V1::PublicationRepresenter,
                    writeable: true,
-                   readable: true,
-                   setter: lambda { |val|
-                    self.publication.license = License.find_by(name: val[:name])
-                   }
+                   readable: true
         end
       end
     end

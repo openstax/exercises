@@ -56,8 +56,7 @@ ActiveRecord::Schema.define(version: 20140904205107) do
   add_index "class_licenses", ["license_id", "class_name"], name: "index_class_licenses_on_license_id_and_class_name", unique: true
 
   create_table "collaborators", force: true do |t|
-    t.integer  "parent_id",                           null: false
-    t.string   "parent_type",                         null: false
+    t.integer  "publication_id",                      null: false
     t.integer  "user_id",                             null: false
     t.boolean  "is_author",           default: false, null: false
     t.boolean  "is_copyright_holder", default: false, null: false
@@ -65,8 +64,8 @@ ActiveRecord::Schema.define(version: 20140904205107) do
     t.datetime "updated_at"
   end
 
-  add_index "collaborators", ["parent_id", "parent_type"], name: "index_collaborators_on_parent_id_and_parent_type"
-  add_index "collaborators", ["user_id", "parent_id", "parent_type"], name: "index_collaborators_on_user_id_and_parent_id_and_parent_type", unique: true
+  add_index "collaborators", ["publication_id", "user_id"], name: "index_collaborators_on_publication_id_and_user_id", unique: true
+  add_index "collaborators", ["user_id"], name: "index_collaborators_on_user_id"
 
   create_table "combo_choice_answers", force: true do |t|
     t.integer  "combo_choice_id", null: false

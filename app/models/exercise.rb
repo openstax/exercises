@@ -3,7 +3,6 @@ class Exercise < ActiveRecord::Base
   acts_as_votable
   publishable
   has_attachments
-  has_collaborators
   has_logic :javascript, :latex
 
   has_many :parts, dependent: :destroy, inverse_of: :exercise
