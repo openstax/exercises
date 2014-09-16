@@ -1,6 +1,5 @@
 class Publication < ActiveRecord::Base
 
-  has_collaborators
   sort_domain
 
   belongs_to :publishable, polymorphic: true
