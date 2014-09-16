@@ -34,9 +34,9 @@ module Api::V1
     # seed #
     ########
 
-    api :POST, '/logics/:id/seeds/:seed', 'Adds a variation with seed to the specified Logic'
+    api :POST, '/logics/:id/seeds', 'Adds variations with seeds to the specified Logic'
     description <<-EOS
-      Adds a variation with seed to the specified Logic.
+      Adds variations with seeds to the specified Logic.
 
       TBD
     EOS

@@ -17,11 +17,21 @@ Exercises::Application.routes.draw do
 
   api :v1, :default => true do
 
-    resources :exercises
+    resources :exercises, except: [:new, :edit]
 
-    resources :logics, except: [:index]
+    resources :logics, only: [] do
+      post 'seeds', on: :member
+    end
 
-    resources :libraries, only: [:show, :update, :new, :create, :destroy]
+    resources :libraries, except: [:new, :edit]
+
+    resources :lists, except: [:new, :edit]
+
+    resources :publications, only: [:show] do
+      patch 'publish', on: :member
+    end
+
+    resources :solutions, except: [:new, :edit]
 
     resources :users, only: [:index]
 

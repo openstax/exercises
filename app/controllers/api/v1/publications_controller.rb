@@ -14,7 +14,7 @@ module Api::V1
     # show #
     ########
 
-    api :POST, '/publications/:id', 'Gets the specified Publication'
+    api :GET, '/publications/:id', 'Gets the specified Publication'
     description <<-EOS
       Gets the Publication that matches the provided ID.
       The Publication contains information about the
@@ -22,14 +22,14 @@ module Api::V1
 
       #{json_schema(Api::V1::PublicationRepresenter, include: :writeable)}   
     EOS
-    def publish
+    def show
     end
 
     ###########
     # publish #
     ###########
 
-    api :POST, '/publications/:publication_id', 'Sets the specified Publication as published'
+    api :PATCH, '/publications/:id/publish', 'Sets the specified Publication as published'
     description <<-EOS
       Sets the Publication that matches the provided ID as published.  
     EOS

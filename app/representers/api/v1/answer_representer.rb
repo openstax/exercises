@@ -6,7 +6,10 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val| self.temp_id = val }
+             setter: lambda { |val| self.temp_id = val },
+             schema_info: {
+               required: true
+             }
 
     property :item_id, 
              type: Integer,

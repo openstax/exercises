@@ -5,7 +5,10 @@ module Api::V1
     property :id, 
              type: Integer,
              writeable: false,
-             readable: true
+             readable: true,
+             schema_info: {
+               required: true
+             }
 
     publishable
 

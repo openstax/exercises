@@ -8,6 +8,9 @@ module Api::V1
              readable: true,
              setter: lambda { |val|
                self.answer = question.answers.select{|i| (i.id || i.temp_id) == val}.first
+             },
+             schema_info: {
+               required: true
              }
 
   end
