@@ -8,4 +8,6 @@ class Deputization < ActiveRecord::Base
   validates :deputy, presence: true
   validates :deputizer, presence: true, uniqueness: { scope: [:deputy_id, :deputy_type] }
 
+  delegate_access_control_to :deputizer
+
 end

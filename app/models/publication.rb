@@ -43,6 +43,12 @@ class Publication < ActiveRecord::Base
     !published_at.nil?
   end
 
+  def has_collaborator?(user)
+    authors.includes?(user) || \
+    copyright_holders.includes?(user) || \
+    editors.includes?(user)
+  end
+
   protected
 
   def assign_number_and_version

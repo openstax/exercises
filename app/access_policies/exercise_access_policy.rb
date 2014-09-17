@@ -3,13 +3,18 @@ class ExerciseAccessPolicy
 
   def self.action_allowed?(action, requestor, exercise)
     case action
-    when :read
+    when :index
       true
-      #exercise.is_published? || exercise.collaborators.include?(requestor)
+    when :show
+      exercise.has_collaborator?(requestor) ||\
+        exercise.is_published?
     when :create
-      !exercise.persisted?
+      exercise.has_collaborator?(requestor) && \
+        !exercise.is_persisted?
     when :update, :destroy
-      !exercise.is_published? && exercise.collaborators.include?(requestor)
+      exercise.has_collaborator?(requestor)
+    else
+      false
     end
   end
 
