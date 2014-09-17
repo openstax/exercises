@@ -1,8 +1,9 @@
 module Api::V1
   class QuestionDependencyRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
-    property :parent_question_id, 
+    property :parent_question_id,
              type: Integer,
              writeable: true,
              readable: true,

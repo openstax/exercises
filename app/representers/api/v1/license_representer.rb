@@ -1,10 +1,11 @@
 module Api::V1
   class LicenseRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :name,
              type: String,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true

@@ -17,6 +17,12 @@ module HasAttachments
     module Declarative
       def has_attachments
         class_exec do
+          collection :attachments,
+                     class: Attachment,
+                     decorator: Api::V1::AttachmentRepresenter,
+                     writeable: true,
+                     readable: true,
+                     parse_strategy: :sync
         end
       end
     end

@@ -1,5 +1,6 @@
 module Api::V1
   class PublicationRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :id, 
@@ -39,25 +40,29 @@ module Api::V1
                class: Publication,
                decorator: PublicationRepresenter,
                writeable: true,
-               readable: true
+               readable: true,
+               parse_strategy: :sync
 
     collection :editors,
                class: Editor,
-               decorator: Api::V1::CollaboratorRepresenter,
+               decorator: RoleRepresenter,
                writeable: true,
-               readable: true
+               readable: true,
+               parse_strategy: :sync
 
     collection :authors,
                class: Author,
-               decorator: Api::V1::CollaboratorRepresenter,
+               decorator: RoleRepresenter,
                writeable: true,
-               readable: true
+               readable: true,
+               parse_strategy: :sync
 
     collection :copyright_holders,
                class: CopyrightHolder,
-               decorator: Api::V1::CollaboratorRepresenter,
+               decorator: RoleRepresenter,
                writeable: true,
-               readable: true
+               readable: true,
+               parse_strategy: :sync
 
   end
 end

@@ -1,8 +1,9 @@
 module Api::V1
   class PartDependencyRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
-    property :parent_part_id, 
+    property :parent_part_id,
              type: Integer,
              writeable: true,
              readable: true,

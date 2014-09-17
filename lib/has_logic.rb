@@ -17,7 +17,11 @@ module HasLogic
     module Declarative
       def has_logic
         class_exec do
-
+          property :logic,
+                   class: Logic,
+                   decorator: Api::V1::LogicRepresenter,
+                   writeable: true,
+                   readable: true
         end
       end
     end

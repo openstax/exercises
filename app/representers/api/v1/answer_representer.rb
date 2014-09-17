@@ -1,5 +1,6 @@
 module Api::V1
   class AnswerRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :id, 

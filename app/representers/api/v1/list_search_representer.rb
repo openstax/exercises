@@ -1,5 +1,6 @@
 module Api::V1
   class ListSearchRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :name,
@@ -10,20 +11,20 @@ module Api::V1
                description: "The query name string."
              }
 
-    property :language,
+    property :visibility,
              type: String,
              writeable: true,
              readable: true,
              schema_info: {
-               description: "The query language string."
+               description: "The query visibility string."
              }
 
-    property :num_matching_libraries,
+    property :num_matching_lists,
              type: Integer,
              writeable: false,
              readable: true,
              schema_info: {
-               description: "The number of libraries that match the query, can be more than the number returned"
+               description: "The number of lists that match the query, can be more than the number returned"
              }
 
     property :page,
@@ -50,13 +51,13 @@ module Api::V1
                description: "The ordering info, which may be different than what was requested if the request was missing defaults or had bad settings."
              }
 
-
-    collection :libraries,
-               class: Library,
-               decorator: LibraryRepresenter,
+    collection :lists,
+               class: List,
+               decorator: ListRepresenter,
+               readable: true,
+               writeable: false,
                schema_info: {
-                 description: "The libraries matching the query or a subset thereof when paginating",
-                 minItems: 0
+                 description: "The lists matching the query or a subset thereof when paginating"
                }
 
   end

@@ -1,5 +1,6 @@
 module Api::V1
   class ComboChoiceAnswerRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :answer_id, 

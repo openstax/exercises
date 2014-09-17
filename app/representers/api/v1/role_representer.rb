@@ -1,5 +1,6 @@
 module Api::V1
-  class CollaboratorRepresenter < Roar::Decorator
+  class RoleRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :user_id,

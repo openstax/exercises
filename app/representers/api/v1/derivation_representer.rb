@@ -1,5 +1,6 @@
 module Api::V1
   class DerivationRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :source_publication_id

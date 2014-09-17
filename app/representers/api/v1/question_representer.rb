@@ -1,5 +1,6 @@
 module Api::V1
   class QuestionRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :id, 
@@ -19,9 +20,9 @@ module Api::V1
     collection :items,
                class: Item,
                decorator: ItemRepresenter,
-               parse_strategy: :sync,
                writeable: true,
                readable: true,
+               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -29,9 +30,9 @@ module Api::V1
     collection :answers,
                class: Answer,
                decorator: AnswerRepresenter,
-               parse_strategy: :sync,
                writeable: true,
                readable: true,
+               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -39,17 +40,17 @@ module Api::V1
     collection :combo_choices,
                class: ComboChoice,
                decorator: ComboChoiceRepresenter,
-               parse_strategy: :sync,
                writeable: true,
-               readable: true
+               readable: true,
+               parse_strategy: :sync
 
     collection :formattings,
                as: :formats,
                class: Formatting,
                decorator: FormattingRepresenter,
-               parse_strategy: :sync,
                writeable: true,
                readable: true,
+               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -58,9 +59,9 @@ module Api::V1
                as: :dependencies,
                class: QuestionDependency,
                decorator: QuestionDependencyRepresenter,
-               parse_strategy: :sync,
                writeable: true,
                readable: true,
+               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
