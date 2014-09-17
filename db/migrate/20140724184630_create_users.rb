@@ -6,11 +6,10 @@ class CreateUsers < ActiveRecord::Migration
       t.datetime :deleted_at
 
       t.boolean :show_public_domain_attribution, null: false, default: true
-      t.boolean :forward_emails_to_deputies, null: false, default: false
-      t.boolean :receive_emails, null: false, default: true
-      t.boolean :receive_collaborator_emails, null: false, default: true
-      t.boolean :receive_list_emails, null: false, default: true
-      t.boolean :receive_comment_emails, null: false, default: false
+      t.boolean :forward_notifications_to_deputies, null: false, default: false
+      t.boolean :receive_role_notifications, null: false, default: true
+      t.boolean :receive_access_notifications, null: false, default: true
+      t.boolean :receive_comment_notifications, null: false, default: true
 
       t.timestamps
     end

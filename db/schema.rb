@@ -613,14 +613,13 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   add_index "trusted_applications", ["application_id"], name: "index_trusted_applications_on_application_id", unique: true
 
   create_table "users", force: true do |t|
-    t.integer  "account_id",                                     null: false
+    t.integer  "account_id",                                        null: false
     t.datetime "deleted_at"
-    t.boolean  "show_public_domain_attribution", default: true,  null: false
-    t.boolean  "forward_emails_to_deputies",     default: false, null: false
-    t.boolean  "receive_emails",                 default: true,  null: false
-    t.boolean  "receive_collaborator_emails",    default: true,  null: false
-    t.boolean  "receive_list_emails",            default: true,  null: false
-    t.boolean  "receive_comment_emails",         default: false, null: false
+    t.boolean  "show_public_domain_attribution",    default: true,  null: false
+    t.boolean  "forward_notifications_to_deputies", default: false, null: false
+    t.boolean  "receive_role_notifications",        default: true,  null: false
+    t.boolean  "receive_access_notifications",      default: true,  null: false
+    t.boolean  "receive_comment_notifications",     default: true,  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

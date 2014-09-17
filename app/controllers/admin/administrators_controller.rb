@@ -4,8 +4,7 @@ module Admin
     # GET /administrators
     def index
       @administrators = Administrator.all
-      handle_with(Admin::UsersIndex,
-                  complete: lambda { render 'admin/administrators/index' })
+      handle_with Admin::UsersIndex
     end
 
     # POST /administrators

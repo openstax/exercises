@@ -6,15 +6,11 @@ class UsersController < ApplicationController
   def show
   end
 
-  # GET /user/edit
-  def edit
-  end
-
   # PATCH /user
   def update
     respond_to do |format|
       if @user.update_attributes(user_params)
-        format.html { redirect_to user_url(@user),
+        format.html { redirect_to user_url,
                       notice: 'User profile was successfully updated.' }
       else
         format.html { render action: "edit" }
@@ -37,10 +33,10 @@ class UsersController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :full_name, :title,
-      :show_public_domain_attribution, :forward_emails_to_deputies,
-      :receive_emails, :receive_collaborator_emails,
-      :receive_list_emails, :receive_comment_emails)
+    params.require(:user).permit(:first_name, :last_name,
+      :full_name, :title, :show_public_domain_attribution,
+      :forward_notifications_to_deputies, :receive_role_notifications,
+      :receive_access_notifications, :receive_comment_notifications)
   end
 
 end

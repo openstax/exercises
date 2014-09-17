@@ -34,7 +34,8 @@ class User < ActiveRecord::Base
   validates :account, presence: true, uniqueness: true
 
   delegate :username, :first_name, :last_name, :full_name, :title,
-           :name, :casual_name, to: :account
+           :name, :casual_name, :first_name=, :last_name=, :full_name=,
+           :title=, to: :account
 
   def self.anonymous
     AnonymousUser.instance

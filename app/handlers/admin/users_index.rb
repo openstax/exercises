@@ -17,7 +17,7 @@ module Admin
     protected
 
     def authorized?
-      !Rails.env.production?
+      true
     end
 
     def handle

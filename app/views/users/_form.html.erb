@@ -1,0 +1,58 @@
+<%= form_for(@user) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prevented your account from being updated:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :first_name %><br>
+    <%= f.text_field :first_name %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :last_name %><br>
+    <%= f.text_field :last_name %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :full_name %><br>
+    <%= f.text_field :full_name %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <br>
+  <div class="field">
+    <%= f.label :show_public_domain_attribution, 'Give me attribution for my CC0-licensed materials' %><br>
+    <%= f.check_box :show_public_domain_attribution %>
+  </div>
+  <div class="field">
+    <%= f.label :forward_notifications_to_deputies, 'Forward notifications I receive to my deputies' %><br>
+    <%= f.check_box :forward_notifications_to_deputies %>
+  </div>
+  <div class="field">
+    <%= f.label :receive_role_notifications, 'Notify me when I am set as author or copyright holder for a publishable resource' %><br>
+    <%= f.check_box :receive_role_notifications %>
+  </div>
+  <div class="field">
+    <%= f.label :receive_access_notifications, 'Notify me when I am given access to a publishable resource' %><br>
+    <%= f.check_box :receive_access_notifications %>
+  </div>
+  <div class="field">
+    <%= f.label :receive_comment_notifications, 'Notify me when someone replies to my comments' %><br>
+    <%= f.check_box :receive_comment_notifications %>
+  </div>
+  <br>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,5 +1,6 @@
 # User
 OSU::AccessPolicy.register(User, UserAccessPolicy)
+OSU::AccessPolicy.register(Deputization, DeputizationAccessPolicy)
 
 # API
 OSU::AccessPolicy.register(Exercise, ExerciseAccessPolicy)

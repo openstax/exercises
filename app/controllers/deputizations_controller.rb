@@ -2,28 +2,22 @@ class DeputizationsController < ApplicationController
 
   # GET /deputizations
   def index
-    current_user.child_deputizations
-    require_action_allowed!(:index, current_user, Deputization)
-  end
-
-  # GET /deputizations/new
-  def new
-    @deputization = Deputization.new(deputizer: current_user)
-    require_action_allowed!(:create, current_user, @deputization)
+    @deputizations = current_user.child_deputizations
+    handle_with UsersIndex
   end
 
   # POST /deputizations
   def create
     @deputization = Deputization.new(deputization_params)
     @deputization.deputizer = current_user
-    require_action_allowed!(:create, current_user, @deputization)
+    OSU::AccessPolicy.require_action_allowed!(:create, current_user, @deputization)
 
     respond_to do |format|
       if @deputization.save
         format.html { redirect_to deputizations_url,
-                                  notice: 'Deputization was successfully created.' }
+                                  notice: "#{@deputization.deputy.name} is now your deputy." }
       else
-        format.html { render action: "new" }
+        format.html { render action: "index" }
       end
     end
   end
@@ -31,10 +25,11 @@ class DeputizationsController < ApplicationController
   # DELETE /deputizations/1
   def destroy
     @deputization = Deputization.find(params[:id])
-    require_action_allowed!(:destroy, current_user, @deputization)
+    OSU::AccessPolicy.require_action_allowed!(:destroy, current_user, @deputization)
 
     @deputization.destroy
-    redirect_to deputizations_url
+    redirect_to deputizations_url,
+                notice: "#{@deputization.deputy.name} is no longer your deputy."
   end
 
   protected

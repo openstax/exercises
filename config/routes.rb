@@ -71,9 +71,9 @@ Exercises::Application.routes.draw do
     end
   end
 
-  resource :user, only: [:show, :edit, :update, :destroy]
+  resource :user, only: [:show, :update, :destroy]
 
-  resources :deputizations, only: [:index, :new, :create, :destroy]
+  resources :deputizations, only: [:index, :create, :destroy]
 
   resources :exercises, only: [:show]
 

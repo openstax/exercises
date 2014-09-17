@@ -5,8 +5,7 @@ module Admin
 
   # GET /users
     def index
-      handle_with(Admin::UsersIndex,
-                  complete: lambda { render 'admin/users/index' })
+      handle_with Admin::UsersIndex
     end
 
     # GET /users/1
