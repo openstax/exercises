@@ -73,7 +73,7 @@ Exercises::Application.routes.draw do
 
   resource :user, only: [:show, :update, :destroy]
 
-  resources :deputizations, only: [:index, :create, :destroy]
+  resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
 
   resources :exercises, only: [:show]
 
