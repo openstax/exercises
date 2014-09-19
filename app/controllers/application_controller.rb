@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :not_destroyed!
 
-  fine_print_get_signatures :general_terms_of_use, :privacy_policy
+  #fine_print_get_signatures :general_terms_of_use, :privacy_policy
 
   protected
 
