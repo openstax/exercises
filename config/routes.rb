@@ -1,6 +1,18 @@
 Exercises::Application.routes.draw do
 
-  root to: 'static_pages#home'
+  root 'static_pages#home'
+
+  scope module: 'static_pages' do
+    get 'about'
+    get 'contact'
+    get 'copyright'
+    get 'developers'
+    get 'help'
+    get 'privacy'
+    get 'share'
+    get 'status'
+    get 'tou'
+  end
 
   mount OpenStax::Accounts::Engine, at: "/accounts"
   mount FinePrint::Engine => "/terms"
@@ -76,16 +88,5 @@ Exercises::Application.routes.draw do
   resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
 
   resources :exercises, only: [:show]
-
-  scope module: 'static_pages' do
-    get 'about'
-    get 'contact'
-    get 'copyright'
-    get 'developers'
-    get 'help'
-    get 'share'
-    get 'status'
-    get 'tou'
-  end
 
 end
