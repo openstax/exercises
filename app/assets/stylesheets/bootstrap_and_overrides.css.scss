@@ -58,3 +58,7 @@ select, input[type='text'], input[type='search'] {
 table td[class*="col-"], table th[class*="col-"] {
   text-align: center !important;
 }
+
+div .field_with_errors {
+  display: inline-block;
+}

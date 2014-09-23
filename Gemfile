@@ -28,7 +28,7 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # Access Control
-gem 'fine_print', path: '../fine_print'
+gem 'fine_print'
 gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
                          ref: '2ce54857a67b488c3ab652a289344fd0c3d1fea7'
 gem 'openstax_api'
