@@ -77,7 +77,7 @@ Exercises::Application.routes.draw do
 
   resources :exercises, only: [:show]
 
-  resource :static_page, only: [], path: '', as: '' do
+  scope module: 'static_pages' do
     get 'about'
     get 'contact'
     get 'copyright'

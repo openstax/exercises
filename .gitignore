@@ -43,3 +43,6 @@ brakeman.html
 # Ignore ERD diagrams and source maps
 erd*.pdf
 public/assets/source_maps/
+
+# Ignore misc files
+notes

@@ -3,119 +3,171 @@
 
 source 'https://rubygems.org'
 
-# Rails
-gem 'rails', '4.1.5'
+# Rails framework
+gem 'rails', '4.2.0.beta1'
 
-# Use jQuery as the JavaScript library
+# Bootstrap front-end framework
+gem 'bootstrap-sass', '~> 3.2.0'
+
+# SCSS stylesheets
+gem 'sass-rails', '~> 5.0.0.beta1'
+
+# Compass stylesheets
+gem 'compass-rails'
+
+# Automatically add browser-specific CSS prefixes
+gem 'autoprefixer-rails'
+
+# JavaScript asset compressor
+gem 'uglifier', '>= 1.3.0'
+
+# CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails', '~> 4.0.0'
+
+# JavaScript asset compiler
+gem 'therubyracer', platforms: :ruby
+
+# jQuery library
 gem 'jquery-rails'
 
-# Use jQuery UI as the JavaScript UI library
+# jQuery UI library
 gem 'jquery-ui-rails'
 
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+# Automatically ajaxify links
 gem 'turbolinks'
 
-# Lev Framework
-gem 'lev'
+# Rails 5 HTML sanitizer
+gem 'rails-html-sanitizer', '~> 1.0'
 
-# SQL Queries
-gem 'squeel'
+# Utilities for OpenStax websites
+gem 'openstax_utilities', '~> 3.0.0'
 
-# Utilities
-gem 'openstax_utilities'
-
-# Cron Jobs
+# Cron job scheduling
 gem 'whenever'
 
-# Access Control
-gem 'fine_print'
-gem 'openstax_accounts'
-gem 'openstax_api'
+# OpenStax Accounts integration
+gem 'openstax_accounts', '~> 3.1.0'
+
+# Access control for API's
 gem 'doorkeeper'
 
-# File Uploads
-gem 'remotipart'
-gem 'carrierwave'
-gem 'mini_magick'
+# Respond_with and respond_to methods
+gem 'responders', '~> 2.0'
 
-# Tags
-gem 'acts-as-taggable-on'
-
-# Derivation
-gem 'deep_cloneable'
-
-# Search
-gem "keyword_search"
-
-# Logic
-gem 'ejs'
-gem 'eco'
-
-# Voting
-gem 'acts_as_votable'
-
-# Comments
-gem 'commontator'
-
-# API documentation
+# API versioning and documentation
+gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'representable'
 gem 'roar-rails'
 
-# New Relic
+# Lev framework
+gem 'lev'
+
+# Ruby dsl for SQL queries
+gem 'squeel'
+
+# Contract management
+gem 'fine_print'
+
+# Keyword search
+gem "keyword_search"
+
+# File uploads
+gem 'remotipart'
+gem 'carrierwave'
+
+# Image editing
+gem 'mini_magick'
+
+# Embedded JavaScript templates
+gem 'ejs'
+
+# Embedded CoffeeScript templates
+gem 'eco'
+
+# Object tagging
+gem 'acts-as-taggable-on'
+
+# Object cloning
+gem 'deep_cloneable'
+
+# Object comments
+gem 'commontator'
+
+# Comment voting
+gem 'acts_as_votable'
+
+# Real time application monitoring
 gem 'newrelic_rpm'
 
-# Backup
+# YAML database backups
 gem 'yaml_db'
 
-# Assets
-# Use SCSS for stylesheets
-gem 'bootstrap-sass'
-gem 'sass-rails', '~> 4.0.3'
-gem 'compass-rails'
-# Automatically add vendor CSS prefixes
-gem 'autoprefixer-rails'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
-gem 'therubyracer', platforms: :ruby
-
 group :development, :test do
-  # Use sqlite3 as the database for Active Record
-  gem 'sqlite3'
-
-  # Use debugger
-  gem 'debugger'
-
+  # Thin development server
   gem 'thin'
 
-  gem 'rspec-rails'
-  gem 'factory_girl_rails'
-  gem 'faker'
-  gem 'brakeman'
+  # SQLite3 development database
+  gem 'sqlite3'
 
-  gem 'quiet_assets'
-  gem 'timecop'
-  gem 'cheat'
-  
-  gem 'rails-erd'
-  gem 'railroady'
-  gem 'coffee-rails-source-maps'
+  # Call 'debugger' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug'
+
+  # Access an IRB console on exceptions page and /console in development
+  gem 'web-console', '~> 2.0.0.beta2'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
-  # Use Capistrano for deployment
-  # gem 'capistrano-rails'
+  # Mute asset pipeline log messages
+  gem 'quiet_assets'
+
+  # Use RSpec for tests
+  gem 'rspec-rails'
+
+  # Fixture replacement
+  gem 'factory_girl_rails'
+
+  # Lorem Ipsum
+  gem 'faker'
+
+  # Automated security checks
+  gem 'brakeman'
+
+  # Time travel gem
+  gem 'timecop'
+
+  # Command line reference
+  gem 'cheat'
+
+  # Assorted generators
+  gem 'nifty-generators'
+
+  # Class diagrams
+  gem 'rails-erd'
+  gem 'railroady'
+
+  # CoffeeScript source maps
+  gem 'coffee-rails-source-maps'
+
+  # Capistrano integration
+  gem 'capistrano-rails'
+
+  # Code Climate integration
+  gem "codeclimate-test-reporter", require: false
+
+  # Coveralls integration
+  gem 'coveralls', require: false
 end
 
 group :production do
+  # Unicorn production server
+  gem 'unicorn'
+
+  # PostgreSQL production database
   gem 'pg'
 
-  # Use unicorn as the app server
-  # gem 'unicorn'
-
+  # Notify developers of Exceptions in production
   gem 'exception_notification'
 end
