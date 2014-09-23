@@ -1,33 +1,37 @@
 module Api::V1
   class UserRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
-             writeable: false,
-             schema_info: {
-               required: true
-             }
+             readable: true,
+             writeable: false
 
     property :username,
              type: String,
-             writeable: true
+             readable: true,
+             writeable: false
 
     property :first_name,
              type: String,
-             writeable: true
+             readable: true,
+             writeable: false
 
     property :last_name,
              type: String,
-             writeable: true
+             readable: true,
+             writeable: false
 
     property :full_name,
              type: String,
-             writeable: true
+             readable: true,
+             writeable: false
 
     property :title,
              type: String,
-             writeable: true
+             readable: true,
+             writeable: false
 
   end
 end

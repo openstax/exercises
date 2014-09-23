@@ -1,0 +1,10 @@
+<%= render partial: 'openstax/accounts/shared/accounts/index',
+           locals: { search_action_path: admin_users_path,
+                     method: :get,
+                     remote: true } %>
+
+<div id='search-results-list'>
+  <%= render partial: 'shared/users/search_results',
+             locals: {action_partial: 'admin/users/delete',
+                      sign_in_as: true} %>
+</div>

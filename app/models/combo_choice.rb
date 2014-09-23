@@ -1,12 +1,15 @@
 class ComboChoice < ActiveRecord::Base
-  belongs_to :multiple_choice_question
-  has_many :combo_simple_choices, dependent: :destroy
-  has_many :simple_choices, through: :combo_simple_choices
 
-  attr_accessible :credit, :multiple_choice_question_id
+  belongs_to :item, inverse_of: :combo_choices
+  has_one :question, through: :item
+  has_one :part, through: :question
+  has_one :exercise, through: :part
 
-  validates_presence_of :multiple_choice_question
+  has_many :combo_choice_answers, dependent: :destroy, inverse_of: :combo_choice
+  has_many :answers, through: :combo_choice_answers
 
-  delegate_access_control to: :multiple_choice_question
+  validates :item, presence: true
+
+  delegate_access_control_to :item
 
 end

@@ -4,15 +4,17 @@
 module Dev
   class BaseController < ApplicationController
 
-    before_filter Proc.new{
-      raise SecurityTransgression if Rails.env.production?
-    }
+    before_filter :development_or_test!
 
-    skip_before_filter :authenticate_user!
-    skip_before_filter :require_registration!
+    skip_interceptor :authenticate_user!
+    fine_print_skip :general_terms_of_use, :privacy_policy
 
-    fine_print_skip_signatures :general_terms_of_use,
-                               :privacy_policy
+    protected
+
+    def development_or_test!
+      return if Rails.env.development? || Rails.env.test?
+      raise SecurityTransgression
+    end
 
   end
 end

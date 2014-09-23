@@ -1,19 +1,11 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
-require 'utilities'
-require 'shared_application_methods'
-require 'api_constraints'
-
-require 'attachable'
-require 'content'
-require 'credit'
-require 'exercise_search'
-require 'lockable'
+require 'delegate_access_control_to'
 require 'publishable'
-require 'solution_search'
 require 'sortable'
-require 'user_search'
+require 'has_attachments'
+require 'has_logic'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"

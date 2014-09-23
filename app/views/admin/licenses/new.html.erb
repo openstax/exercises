@@ -1,5 +1,9 @@
-<%= page_heading 'New license' %>
+<h1>New license</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Back', admin_licenses_path %>
+<br>
+
+<%= link_to(admin_licenses_url) do
+      '<span class="glyphicon glyphicon-list">List</span>'.html_safe
+    end %>

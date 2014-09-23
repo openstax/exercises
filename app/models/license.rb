@@ -1,52 +1,44 @@
 class License < ActiveRecord::Base
-  sortable
 
-  has_many :exercises, :inverse_of => :license
-  has_many :solutions, :inverse_of => :license
+  sort_domain
 
-  attr_accessible :name, :short_name, :url, :publishing_contract_name, :allow_exercises, :allow_solutions
+  has_many :publications, dependent: :destroy, :inverse_of => :license
 
-  validates_presence_of :name, :short_name, :url, :publishing_contract_name
+  has_many :class_licenses, dependent: :destroy, inverse_of: :license
 
-  scope :for_exercises, where(:allow_exercises => true)
-  scope :for_solutions, where(:allow_solutions => true)
+  has_many :combined_license_compatibilities, class_name: 'LicenseCompatibility',
+           dependent: :destroy, inverse_of: :original_license
+  has_many :combined_compatible_licenses, through: :combined_license_compatibilities,
+           source: :combined_license
 
-  def valid_for?(publishable)
-    case publishable.class.name
-    when 'Exercise'
-      allow_exercises
-    when 'Solution'
-      allow_solutions
-    else
-      false
-    end
-  end
+  has_many :original_license_compatibilities, class_name: 'LicenseCompatibility',
+           dependent: :destroy, inverse_of: :combined_license
+  has_many :original_compatible_licenses, through: :original_license_compatibilities,
+           source: :original_license
+
+  validates :name, presence: true, uniqueness: true
+  validates :title, presence: true, uniqueness: true
+  validates :url, presence: true, uniqueness: true
+  validates :publishing_contract, presence: true
+  validates :copyright_notice, presence: true
+
+  scope :for, lambda { |publishable|
+    joins(:class_licenses).where(class_licenses: {class_name: publishable.class.name}) }
 
   def self.options_for(publishable)
-    case publishable.class.name
-    when 'Exercise'
-      pscope = for_exercises
-    when 'Solution'
-      pscope = for_solutions
-    else
-      pscope = none
-    end
-    pscope.all.collect{|l| [l.short_name, l.id]}
+    self.for(publishable).collect{|l| [l.title, l.id]}
   end
 
-  ##################
-  # Access Control #
-  ##################
-    
-  def can_be_created_by?(user)
-    !user.nil? && user.is_admin?
+  def valid_for?(publishable)
+    class_licenses.exists?(class_name: publishable.class.name)
   end
-  
-  def can_be_updated_by?(user)
-    can_be_created_by?(user)
+
+  def attribution_for(publishable)
+    collaborators = publishable.respond_to?(:collaborators) ? publishable.collaborators : \
+                                                              Collaborator.none
+    authors = collaborators.authors.collect{|a| a.name}
+    copyright_holders = collaborators.copyright_holders.collect{|c| c.name}
+    eval copyright_notice
   end
-  
-  def can_be_destroyed_by?(user)
-    exercises.empty? && solutions.empty? && can_be_updated_by?(user)
-  end
+
 end

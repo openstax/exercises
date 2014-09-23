@@ -1,0 +1,7 @@
+<% deputization = user.deputizations.select{|d| d.deputizer_id = current_user.id}.first %>
+<%= deputization ? \
+      render(partial: 'deputizations/destroy',
+             locals: {deputization: deputization}) : \
+      link_to(deputizations_url(deputization: {deputy_type: 'User', deputy_id: user.id}), method: :post) do
+        '<span class="glyphicon glyphicon-plus"></span>'.html_safe
+      end %>

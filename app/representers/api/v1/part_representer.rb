@@ -1,30 +1,39 @@
 module Api::V1
   class PartRepresenter < Roar::Decorator
+
     include Roar::Representer::JSON
 
     property :id, 
-             writeable: false
+             type: Integer,
+             writeable: true,
+             readable: true,
+             setter: lambda { |val| self.temp_id = val }
 
-    property :position, 
-              writeable: false
+    property :background,
+             type: String,
+             writeable: true,
+             readable: true
 
-    property :credit
-
-    property :background, 
-             class: Content, 
-             decorator: ContentRepresenter, 
-             parse_strategy: :sync
-
-    collection :questions, 
-               # class: Question, 
-               # decorator: QuestionRepresenter, 
-               class: lambda { |hsh, *| Api::V1::QuestionRepresenter.sub_model_for(hsh) },
-               decorator: lambda { |question, *| Api::V1::QuestionRepresenter.sub_representer_for(question) },
+    collection :questions,
+               class: Question,
+               decorator: QuestionRepresenter,
+               writeable: true,
+               readable: true,
                parse_strategy: :sync,
                schema_info: {
-                 minItems: 0
+                 required: true
+               }
+
+    collection :parent_dependencies,
+               as: :dependencies,
+               class: PartDependency,
+               decorator: PartDependencyRepresenter,
+               writeable: true,
+               readable: true,
+               parse_strategy: :sync,
+               schema_info: {
+                 required: true
                }
 
   end
 end
-

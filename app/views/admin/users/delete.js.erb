@@ -1,0 +1,4 @@
+$("#user-<%= @user.id.to_s %>-actions").html("<%= j(render partial: 'admin/users/delete',
+                                                           locals: {user: @user}) %>");
+$("#user-<%= @user.id.to_s %>-actions").parent('td').prev('td').html("<%= yn(
+                                                                       @user.is_deleted?) %>");

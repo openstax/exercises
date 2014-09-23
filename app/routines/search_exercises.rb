@@ -2,7 +2,9 @@ class SearchExercises
 
   lev_routine
 
-protected
+  SORTABLE_FIELDS = []
+
+  protected
 
   def exec(text, part, type, answer_type, user)
     case type

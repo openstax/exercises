@@ -1,90 +1,121 @@
-# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2014 Rice University. Licensed under the Affero General Public 
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.17'
+# Rails
+gem 'rails', '4.1.5'
 
-gem 'jquery-rails', '2.3.0'
+# Use jQuery as the JavaScript library
+gem 'jquery-rails'
+
+# Use jQuery UI as the JavaScript UI library
+gem 'jquery-ui-rails'
+
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
+
+# Lev Framework
+gem 'lev'
+
+# SQL Queries
 gem 'squeel'
 
-gem 'lev', "~> 2.0.4"
+# Utilities
+gem 'openstax_utilities'
 
-# gem 'jbuilder'
-gem 'whenever', :require => false
-gem 'newrelic_rpm'
-gem 'yaml_db'
+# Cron Jobs
+gem 'whenever'
 
-gem 'nested_form'
+# Access Control
+gem 'fine_print'
+gem 'openstax_accounts'
+gem 'openstax_api'
+gem 'doorkeeper'
 
+# File Uploads
+gem 'remotipart'
 gem 'carrierwave'
 gem 'mini_magick'
-gem 'parslet', '~> 1.5'
 
-gem 'will_paginate', '~> 3.0.5'
+# Tags
 gem 'acts-as-taggable-on'
-gem 'acts_as_votable'
+
+# Derivation
 gem 'deep_cloneable'
-gem 'remotipart', '~> 1.2'
 
-gem 'commontator', '~> 4.2.0'
-gem 'fine_print', '~> 1.2.0'
-gem 'openstax_accounts', :git => 'https://github.com/openstax/accounts-rails/'
-gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 1.0.4'
+# Search
+gem "keyword_search"
 
-# API documentation
-gem 'apipie-rails', '~> 0.1.1'
-gem 'maruku'
-gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
-gem 'roar', '~> 0.12.4'
-gem 'roar-rails'
-
-gem 'doorkeeper', '~> 0.6.7'
-gem 'exception_notification'
-
-gem "keyword_search", "~> 1.5.0"
-
+# Logic
 gem 'ejs'
 gem 'eco'
 
-gem 'tinymce-rails', git: 'git://github.com/spohlenz/tinymce-rails.git', branch: 'tinymce-4'
+# Voting
+gem 'acts_as_votable'
 
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',     '~> 3.2.3'
-  gem 'coffee-rails',   '~> 3.2.1'
-  gem 'bootstrap-sass', '~> 3.0.2.0'
-  gem 'therubyracer', :platforms => :ruby
-  gem 'uglifier', '>= 1.0.3'
-  gem 'compass-rails'
-end
+# Comments
+gem 'commontator'
+
+# API documentation
+gem 'apipie-rails'
+gem 'maruku'
+gem 'representable'
+gem 'roar-rails'
+
+# New Relic
+gem 'newrelic_rpm'
+
+# Backup
+gem 'yaml_db'
+
+# Assets
+# Use SCSS for stylesheets
+gem 'bootstrap-sass'
+gem 'sass-rails', '~> 4.0.3'
+gem 'compass-rails'
+# Automatically add vendor CSS prefixes
+gem 'autoprefixer-rails'
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
+# Use CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails', '~> 4.0.0'
+gem 'therubyracer', platforms: :ruby
 
 group :development, :test do
-  gem 'rails-erd'
-  gem 'sqlite3', '~> 1.3.6'
-  gem 'debugger', '~> 1.5.0'
+  # Use sqlite3 as the database for Active Record
+  gem 'sqlite3'
+
+  # Use debugger
+  gem 'debugger'
+
+  gem 'thin'
+
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem 'brakeman'
+
   gem 'quiet_assets'
   gem 'timecop'
-  gem 'rspec-rails'
-  gem 'capybara', '<2.1.0'  ## see: https://github.com/thoughtbot/capybara-webkit/issues/507
-  gem 'capybara-screenshot'
-  gem 'capybara-webkit'
-  gem 'database_cleaner'
-  gem 'faker'
-  gem 'thin'
   gem 'cheat'
-  gem 'brakeman'
+  
+  gem 'rails-erd'
   gem 'railroady'
-  gem 'rspec-rerun'
-  gem 'cucumber-rails', :require => false
-  gem 'nifty-generators'
-  gem 'rack-test', require: "rack/test"
-  gem 'factory_girl_rails'
   gem 'coffee-rails-source-maps'
+
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+
+  # Use Capistrano for deployment
+  # gem 'capistrano-rails'
 end
 
 group :production do
-  gem 'mysql2', '~> 0.3.11'
+  gem 'pg'
+
+  # Use unicorn as the app server
+  # gem 'unicorn'
+
+  gem 'exception_notification'
 end

@@ -1,0 +1,4 @@
+<%= link_to(admin_administrator_url(user.administrator), method: :delete,
+            data: {confirm: "Are you sure you want to remove this administrator?"}) do
+      '<span class="glyphicon glyphicon-minus orange"></span>'.html_safe
+    end %>

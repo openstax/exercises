@@ -1,8 +1,0 @@
-<% # Clients of this partial must supply the following variable:
-   # exercise %>
-
-<div class="questions">
-  <% exercise.questions.each do |question| %>
-    <%= render :partial => 'exercises/questions/show', :locals => {:question => question} %>
-  <% end %>
-</div>

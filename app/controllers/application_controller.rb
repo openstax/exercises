@@ -1,48 +1,25 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
 
-  include SharedApplicationMethods
+  respond_to :html, :js
+
+  protect_from_forgery
 
   include Lev::HandleWith
 
-  layout :layout
+  layout 'application_body_only'
 
-  before_filter :authenticate_user!
-  before_filter :require_registration!
+  interceptor :authenticate_user!
 
-  fine_print_get_signatures :general_terms_of_use, 
-                            :privacy_policy
+  before_filter :not_destroyed!
 
-protected
+  fine_print_require :general_terms_of_use, :privacy_policy
 
-  def require_registration!
-    redirect_to users_registration_path if signed_in? &&
-      (current_user.is_a?(OpenStax::Api::ApiUser) ?
-         !current_user.human_user.try(:is_registered?) :
-         !current_user.is_registered?)
+  protected
+
+  def not_destroyed!
+    return if current_user.try(:destroyed_at).nil?
+    sign_out
+    redirect_to home_url
   end
 
-  def raise_exception_unless_admin
-    return if user_is_admin?
-    raise SecurityTransgression
-  end
-
-  def raise_exception_unless(authorized)
-    return if authorized
-    raise_exception_unless_admin
-  end
-
-  def authenticate_admin!
-    raise SecurityTransgression unless signed_in? && current_user.is_admin?
-  end
-
-  def include_mathjax
-    @include_mathjax = true
-  end
-
-  private
-
-  def layout
-    "application_body_only"
-  end
 end

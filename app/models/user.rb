@@ -1,54 +1,44 @@
 class User < ActiveRecord::Base
 
-  USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
+  USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 
-  belongs_to :openstax_accounts_user,
-             class_name: "OpenStax::Accounts::User",
-             dependent: :destroy
+  acts_as_voter
 
-  delegate :username, :first_name, :last_name, :name, :casual_name,
-           to: :openstax_accounts_user
+  sort_domain
 
-  has_many :collaborators, :dependent => :destroy, :inverse_of => :user
+  belongs_to :account, class_name: "OpenStax::Accounts::Account"
+  has_many :groups_as_member, through: :account
+  has_many :groups_as_owner, through: :account
 
-  has_many :user_group_users, :dependent => :destroy, :inverse_of => :user
-  has_many :user_groups, :through => :user_group_users
+  has_one :administrator, dependent: :destroy, inverse_of: :user
 
-  has_one :deputy_user_group, :class_name => 'UserGroup',
-                              :as => 'container', :dependent => :destroy
-  has_many :deputies, :through => :deputy_user_group, :source => :users
-  has_many :deputizers, :through => :user_groups, :class_name => 'User',
-           :source => :container, :source_type => 'User'
+  has_many :authors, dependent: :destroy, inverse_of: :user
+  has_many :copyright_holders, dependent: :destroy, inverse_of: :user
+  has_many :editors, dependent: :destroy, inverse_of: :user
 
-  belongs_to :default_list, :class_name => 'List'
-  has_many :lists, :through => :user_groups,
-                   :source => :container, :source_type => 'List'
-  has_many :listed_exercises, :through => :lists, :source => :exercises
+  has_many :child_deputizations, class_name: 'Deputization',
+           foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer
+  has_many_through_groups :groups_as_member, :deputizations,
+                          as: :deputy, dependent: :destroy
 
-  before_save :force_first_admin
+  has_many_through_groups :groups_as_member, :list_owners,
+                          as: :owner, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_editors,
+                          as: :editor, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_readers,
+                          as: :reader, dependent: :destroy
 
-  validates_presence_of :default_list
+  has_many :applications, class_name: 'Doorkeeper::Application',
+           as: :owner, dependent: :destroy
 
-  attr_accessible :announcement_email, :auto_author_subscribe,
-                  :collaborator_request_email, :user_group_member_email
+  validates :account, presence: true, uniqueness: true
 
-  scope :registered, where(is_registered: true)
-  scope :unregistered, where{is_registered != true}
+  delegate :username, :first_name, :last_name, :full_name, :title,
+           :name, :casual_name, :first_name=, :last_name=, :full_name=,
+           :title=, to: :account
 
-  def is_disabled?
-    !disabled_at.nil?
-  end
-
-  def disable
-    update_attribute(:disabled_at, Time.now)
-  end
-
-  def editable_lists
-    lists.select{|l| l.can_be_edited_by?(self)}
-  end
-
-  def owned_lists
-    lists.select{|l| l.can_be_updated_by?(self)}
+  def self.anonymous
+    AnonymousUser.instance
   end
 
   def is_human?
@@ -59,92 +49,24 @@ class User < ActiveRecord::Base
     false
   end
 
-  #
-  # Anonymous User stuff
-  #
-
-  attr_accessor :is_anonymous
-
   def is_anonymous?
-    is_anonymous
+    false
   end
 
-  def self.anonymous
-    @@anonymous ||= AnonymousUser.new
+  def is_deleted?
+    !deleted_at.nil?
   end
 
-  class AnonymousUser < User
-    before_save { false } 
-    def initialize(attributes=nil)
-      super
-      self.is_anonymous          = true
-      self.is_registered         = false
-      self.openstax_accounts_user = OpenStax::Accounts::User.anonymous
-    end
+  def destroy
+    update_attribute(:deleted_at, Time.now)
   end
 
-  #
-  # OpenStax Accounts "user_provider" methods
-  #
-
-  def self.accounts_user_to_app_user(accounts_user)
-    GetOrCreateUserFromAccountsUser.call(accounts_user).outputs.user
+  def delete
+    update_column(:deleted_at, Time.now)
   end
 
-  def self.app_user_to_accounts_user(app_user)
-    app_user.is_anonymous? ? OpenStax::Accounts::User.anonymous : app_user.openstax_accounts_user
+  def undelete
+    update_column(:deleted_at, nil)
   end
 
-  ##################
-  # Access Control #
-  ##################
-
-  def can_be_updated_by?(user)
-    !user.nil? && user.is_admin?
-  end
-
-  def can_be_destroyed_by?(user)
-    can_be_updated_by?(user)
-  end
-
-  ##########################
-  # Access Control Helpers #
-  ##########################
-
-  def can_read?(resource)
-    resource.can_be_read_by?(self)
-  end
-  
-  def can_create?(resource)
-    resource.can_be_created_by?(self)
-  end
-  
-  def can_update?(resource)
-    resource.can_be_updated_by?(self)
-  end
-    
-  def can_destroy?(resource)
-    resource.can_be_destroyed_by?(self)
-  end
-
-  def can_vote_on?(resource)
-    resource.can_be_voted_on_by?(self)
-  end
-
-  def can_sort?(resource)
-    resource.can_be_sorted_by?(self)
-  end
-
-  protected
-
-  #############
-  # Callbacks #
-  #############
-
-  def force_first_admin
-    if self == User.first
-      self.is_admin = true
-      self.disabled_at = nil
-    end
-  end
 end

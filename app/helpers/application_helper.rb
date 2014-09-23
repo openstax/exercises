@@ -2,7 +2,9 @@
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 module ApplicationHelper
-  include SharedApplicationMethods
+  def user_is_admin?
+    signed_in? && current_user.is_admin?
+  end
 
   def vertical_bar(options={})
     options = add_class(options, "vertical-bar")

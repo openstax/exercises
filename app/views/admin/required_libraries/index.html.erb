@@ -1,0 +1,11 @@
+<h4>Required Libraries</h4>
+<%= render partial: 'shared/libraries/index',
+           locals: {libraries: @required_libraries.collect{|rl| rl.library},
+                    action_partial: 'admin/required_libraries/destroy'} %>
+
+<br><br>
+
+<h4>Other Libraries</h4>
+<%= render partial: 'shared/libraries/index',
+           locals: {libraries: @libraries,
+                    action_partial: 'admin/required_libraries/form'} %>

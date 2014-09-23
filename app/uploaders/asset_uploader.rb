@@ -4,10 +4,10 @@ class AssetUploader < CarrierWave::Uploader::Base
   storage :file
 
   version :medium, :if => :is_image? do
-    process :resize_to_fit => [350, 350]
+    process :resize_to_fit => [350, 1000]
   end
 
-  version :thumb, :if => :is_image?, :from_version => :medium do
+  version :thumb, :if => :is_image? do
     process :resize_to_fill => [100, 100]
   end
 

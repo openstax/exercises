@@ -1,29 +1,38 @@
-<%= page_heading @license.name %>
+<p id="notice"><%= notice %></p>
 
 <p>
-  <b>Short name:</b>
+  <strong>Name:</strong>
+  <%= @license.name %>
+</p>
+
+<p>
+  <strong>Short Name:</strong>
   <%= @license.short_name %>
 </p>
 
 <p>
-  <b>Url:</b>
+  <strong>URL:</strong>
   <%= @license.url %>
 </p>
 
 <p>
-  <b>Partial filename:</b>
-  <%= @license.partial_filename %>
+  <strong>Publishing Contract:</strong>
+  <%= @license.publishing_contract %>
 </p>
 
 <p>
-  <b>Exercises allowed?</b>
-  <%= yn(@license.allow_exercises) %>
+  <strong>Copyright Notice:</strong>
+  <%= @license.copyright_notice %>
 </p>
 
 <p>
-  <b>Solutions allowed?</b>
-  <%= yn(@license.allow_solutions) %>
+  <strong>Public Domain?</strong>
+  <%= yn(@license.is_public_domain) %>
 </p>
 
-<%= link_to 'Edit', edit_admin_license_path(@license) %> |
-<%= link_to 'Back', admin_licenses_path %>
+<%= link_to(edit_admin_license_url(@license)) do
+      '<span class="glyphicon glyphicon-pencil">Edit</span>'.html_safe
+    end %> |
+<%= link_to(admin_licenses_url) do
+      '<span class="glyphicon glyphicon-list">List</span>'.html_safe
+    end %>

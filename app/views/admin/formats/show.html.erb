@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @format.name %>
+</p>
+
+<%= link_to(edit_admin_format_url(@format)) do
+      '<span class="glyphicon glyphicon-pencil">Edit</span>'.html_safe
+    end %> |
+<%= link_to(admin_formats_url) do
+      '<span class="glyphicon glyphicon-list">List</span>'.html_safe
+    end %>

@@ -1,17 +1,29 @@
 class Part < ActiveRecord::Base
-  sortable :exercise_id
+
+  sort_domain
+
+  attr_accessor :temp_id
 
   belongs_to :exercise, inverse_of: :parts
-  belongs_to :background, class_name: 'Content', dependent: :destroy
-  has_many :solutions, :dependent => :destroy, :inverse_of => :part
+
   has_many :questions, dependent: :destroy, inverse_of: :part
+  has_many :items, through: :questions
+  has_many :item_answers, through: :items, source: :answers
+  has_many :question_answers, through: :questions, source: :answers
+  has_many :combo_choices, through: :questions
 
-  attr_accessible :credit, :background_attributes
+  has_many :parent_dependencies, class_name: 'PartDependency',
+           foreign_key: :dependent_part_id,
+           dependent: :destroy, inverse_of: :dependent_part
+  has_many :parent_parts, through: :parent_dependencies
 
-  accepts_nested_attributes_for :background
+  has_many :child_dependencies, class_name: 'PartDependency',
+           foreign_key: :parent_part_id,
+           dependent: :destroy, inverse_of: :parent_part
+  has_many :dependent_parts, through: :child_dependencies
 
-  validate :exercise_id, presence: true
+  validates :exercise, presence: true
 
-  delegate_access_control to: :exercise,
-                          include_sort: true
+  delegate_access_control_to :exercise
+
 end

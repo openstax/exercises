@@ -1,6 +1,12 @@
-<%= page_heading 'Editing license' %>
+<h1>Editing license</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', admin_license_path(@license) %> |
-<%= link_to 'Back', admin_licenses_path %>
+<br>
+
+<%= link_to(admin_license_url(@license)) do
+      '<span class="glyphicon glyphicon-search">View</span>'.html_safe
+    end %>|
+<%= link_to(admin_licenses_url) do
+      '<span class="glyphicon glyphicon-list">List</span>'.html_safe
+    end %>

@@ -4,38 +4,38 @@
       <h2><%= pluralize(@license.errors.count, "error") %> prohibited this license from being saved:</h2>
 
       <ul>
-      <% @license.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+      <% @license.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name %><br>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :short_name %><br />
+    <%= f.label :short_name %><br>
     <%= f.text_field :short_name %>
   </div>
   <div class="field">
-    <%= f.label :url %><br />
+    <%= f.label :url %><br>
     <%= f.text_field :url %>
   </div>
   <div class="field">
-    <%= f.label :partial_filename %><br />
-    <%= f.text_field :partial_filename %>
+    <%= f.label :publishing_contract %><br>
+    <%= f.text_area :publishing_contract %>
   </div>
   <div class="field">
-    <%= f.label :allow_exercises %><br />
-    <%= f.check_box :allow_exercises %>
+    <%= f.label :copyright_notice %><br>
+    <%= f.text_area :copyright_notice %>
   </div>
   <div class="field">
-    <%= f.label :allow_solutions %><br />
-    <%= f.check_box :allow_solutions %>
+    <%= f.label :is_public_domain %><br>
+    <%= f.check_box :is_public_domain %>
   </div>
   <div class="actions">
-    <%= f.submit :class => submit_classes %>
+    <%= f.submit %>
   </div>
 <% end %>

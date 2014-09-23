@@ -1,0 +1,10 @@
+<h1>Question Formats</h1>
+
+<%= render partial: 'index', locals: {formats: @formats,
+                                      action_partial: 'admin/formats/actions'} %>
+
+<br>
+
+<%= link_to(new_admin_format_url) do
+      '<span class="glyphicon glyphicon-plus">Add</span>'.html_safe
+    end %>

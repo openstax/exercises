@@ -1,0 +1,17 @@
+<h4>Administrators</h4>
+  <%= render partial: 'shared/users/index',
+             locals: {users: @administrators.collect{|a| a.user},
+                      action_partial: 'admin/administrators/destroy'} %>
+
+<br><br>
+
+<h4>Add Administrator</h4>
+<%= render partial: 'openstax/accounts/shared/accounts/index',
+           locals: { search_action_path: admin_administrators_path,
+                     method: :get,
+                     remote: true } %>
+
+<div id='search-results-list'>
+  <%= render partial: 'shared/users/search_results',
+             locals: {action_partial: 'admin/administrators/form'} %>
+</div>

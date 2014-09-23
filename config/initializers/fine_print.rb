@@ -1,41 +1,51 @@
 # Change the settings below to suit your needs
-# All settings are initially set to their default values
+# All options are initially set to their default values
 FinePrint.configure do |config|
+
   # Engine Configuration
 
-  # Proc called with controller as argument that returns the current user.
-  # Default: lambda { |controller| controller.current_user }
-  config.current_user_proc = lambda { |controller| controller.current_user }
+  # Proc called with a controller as self.
+  # Returns the current user.
+  # Default: lambda { current_user }
+  config.current_user_proc = lambda { current_user }
 
-  # Proc called with user as argument that returns true iif the user is an admin.
-  # Admins can create and edit agreements and terminate accepted agreements.
-  # Default: lambda { |user| false } (no admins)
-  config.user_admin_proc = lambda { |user| user.is_admin? }
+  # Proc called with a user as argument and a controller as self.
+  # This proc is called when a user tries to access FinePrint's controllers.
+  # Should raise and exception, render or redirect unless the user can manage contracts.
+  # Contract managers can create and edit agreements and terminate accepted agreements.
+  # The default does not allow anyone to manage contracts.
+  # Note: Proc must account for nil users, if current_user_proc returns nil.
+  # Default: lambda { |user| false || raise(ActionController::RoutingError, 'Not Found') }
+  config.can_manage_proc = lambda { |user| user.administrator || \
+                                      raise(ActionController::RoutingError, 'Not Found') }
 
-  # Proc called with user as argument that returns true iif the user is logged in.
-  # In many systems, a non-logged-in user is represented by nil.
-  # However, some systems use something like an AnonymousUser class to represent this state.
-  # This proc is mostly used to help the developer realize that they should only be asking
-  # signed in users to sign contracts; without this, developers would get a cryptic SQL error.
-  # Default: lambda { |user| user }
-  config.user_signed_in_proc = lambda { |user| !user.is_anonymous? }
+  # Proc called with a user as argument and a controller as self.
+  # This proc is called to check that the given user is allowed to sign contracts.
+  # Should raise and exception, render or redirect unless the user can sign contracts.
+  # You might want to redirect users to a login page if they are not signed in.
+  # The default renders 401 Unauthorized for nil users.
+  # Default: lambda { |user| !user.nil? || head(:unauthorized) }
+  config.can_sign_proc = lambda { |user| !user.is_anonymous? || \
+                                         redirect_to(openstax_accounts.login_path) }
 
-  # Path to redirect users to when an error occurs (e.g. permission denied on admin pages).
-  # Default: '/'
-  config.redirect_path = '/'
+  # Controller Configuration
 
-  # Signature (fine_print_get_signatures) Configuration
+  # Proc called with a user and an array of contract ids as arguments and a controller as self.
+  # This proc is called when a user tries to access a resource protected by FinePrint,
+  # but has not signed all the required contracts.
+  # Should raise and exception, render or redirect the user.
+  # The `contract_ids` variable contains the contract ids that need to be signed.
+  # The default redirects users to FinePrint's contract signing views.
+  # The `fine_print_return` method can be used to return from a redirect made here.
+  # Default: lambda { |user, contract_ids| redirect_to(
+  #   fine_print.new_contract_signature_path(:contract_id => contract_ids.first)) }
+  config.must_sign_proc = lambda { |user, contract_ids| redirect_to(
+    fine_print.new_contract_signature_path(:contract_id => contract_ids.first)) }
 
-  # Path to redirect users to when they need to agree to contract(s).
-  # A list of contract names that must be agreed to will be available in the 'contracts' parameter.
-  # Your code doesn't have to deal with all of them at once, e.g. you can get
-  # the user to agree to the first one and then they'll just eventually be
-  # redirected back to this page with the remaining contract names.
-  # Default: '/'
-  config.pose_contracts_path = '/terms/pose'
 end
 
-class FinePrint::ApplicationController < ActionController::Base
-  helper ApplicationAccountBarHelper, ::ApplicationHelper, ApplicationTopNavHelper, AlertHelper, OpenStax::Utilities::OsuHelper
+FinePrint::ApplicationController.class_exec do
+  helper ApplicationAccountBarHelper, ::ApplicationHelper, ApplicationTopNavHelper, AlertsHelper, OpenStax::Utilities::OsuHelper
+
   layout "layouts/application_body_only"
 end

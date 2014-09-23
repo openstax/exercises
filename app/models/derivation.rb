@@ -1,32 +1,27 @@
 class Derivation < ActiveRecord::Base
-  sortable [:publishable_type, :derived_publishable_id]
 
-  belongs_to :source_publishable, :polymorphic => true, :foreign_type => 'publishable_type'
-  belongs_to :derived_publishable, :polymorphic => true, :foreign_type => 'publishable_type'
+  sortable
 
-  attr_accessible :source_publishable, :derived_publishable
+  belongs_to :derived_publication, class_name: 'Publication', inverse_of: :sources
+  belongs_to :source_publication, class_name: 'Publication', inverse_of: :derivations
 
-  validates_presence_of :source_publishable, :derived_publishable
-  validates_uniqueness_of :derived_publishable_id, :scope => [:publishable_type, :source_publishable_id]
-  validate :different_ids
-
-  ##################
-  # Access Control #
-  ##################
-
-  def can_be_destroyed_by?(user)
-    derived_publishable.can_be_updated_by?(user)
-  end
+  validates :derived_publication, presence: true
+  validates :source_publication, uniqueness: { scope: :derived_publication_id },
+                                 allow_nil: true
+  validate :different_ids, :source_or_custom
 
   protected
 
-  ###############
-  # Validations #
-  ###############
-
   def different_ids
-    return if source_publishable_id != derived_publishable_id
-    errors.add(:base, 'An object cannot be derived from itself.')
+    return if source_publication_id != derived_publication_id
+    errors.add(:derived_publication, 'cannot be derived from itself.')
     false
   end
+
+  def source_or_custom
+    return if source_publication_id || custom_attribution
+    errors.add(:base, 'must have either a source publication or a custom attribution')
+    false
+  end
+
 end

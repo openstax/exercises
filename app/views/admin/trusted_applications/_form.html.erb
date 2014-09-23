@@ -1,0 +1,7 @@
+<%= application.trusted_application ? \
+      render(partial: 'admin/trusted_applications/destroy',
+             locals: {trusted_application: application.trusted_application}) : \
+      link_to(admin_trusted_applications_url(
+        trusted_application: {application_id: application.id}), method: :post) do
+        '<span class="glyphicon glyphicon-arrow-up"></span>'.html_safe
+      end %>
