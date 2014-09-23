@@ -9,6 +9,7 @@ Exercises::Application.routes.draw do
     get 'developers'
     get 'help'
     get 'privacy'
+    get 'publishing'
     get 'share'
     get 'status'
     get 'tou'

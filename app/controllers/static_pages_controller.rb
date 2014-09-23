@@ -38,6 +38,10 @@ class StaticPagesController < ApplicationController
   def privacy
   end
 
+  # GET /publishing
+  def publishing
+  end
+
   # GET /share
   def share
   end
