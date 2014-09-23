@@ -1,20 +1,3 @@
-GIT
-  remote: https://github.com/Dantemss/accounts-rails.git
-  revision: 2ce54857a67b488c3ab652a289344fd0c3d1fea7
-  ref: 2ce54857a67b488c3ab652a289344fd0c3d1fea7
-  specs:
-    openstax_accounts (2.0.1.alpha)
-      action_interceptor (>= 0.3)
-      keyword_search (>= 1.0.0)
-      lev (>= 2.2.1)
-      oauth2 (>= 0.5.0)
-      omniauth (>= 1.1)
-      omniauth-oauth2 (>= 1.1)
-      openstax_utilities (>= 2.2.3)
-      rails (>= 4.1)
-      roar (>= 0.8)
-      squeel (>= 0.5.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -192,6 +175,17 @@ GEM
       multi_json (~> 1.3)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
+    openstax_accounts (3.0.0)
+      action_interceptor (>= 0.3)
+      keyword_search (>= 1.0.0)
+      lev (>= 2.2.1)
+      oauth2 (>= 0.5.0)
+      omniauth (>= 1.1)
+      omniauth-oauth2 (>= 1.1)
+      openstax_utilities (>= 2.2.3)
+      rails (>= 4.1)
+      roar (>= 0.8)
+      squeel (>= 0.5.0)
     openstax_api (2.2.4)
       doorkeeper (>= 0.5)
       exception_notification (>= 4.0)
@@ -364,7 +358,7 @@ DEPENDENCIES
   maruku
   mini_magick
   newrelic_rpm
-  openstax_accounts!
+  openstax_accounts
   openstax_api
   openstax_utilities
   pg
