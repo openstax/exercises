@@ -53,7 +53,12 @@ module Api
 
         # TODO freak out if the models are from different languages
 
-        render json: {code: @versions.collect{|vv| vv.code}.join("\n\n")}
+        render json: {code: @versions.collect{|vv| vv.code}.join("\n\n"), ids: ids, }
+      end
+
+      api :GET, '/library_versions', 'Returns the specified LibraryVersions in the given order'
+      def index
+
       end
       
     end
