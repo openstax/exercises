@@ -9,8 +9,9 @@ OpenStax::Accounts.configure do |config|
   config.enable_stubbing = true
 end
 
-OpenStax::Accounts::ApplicationController.class_eval do
+OpenStax::Accounts::ApplicationController.class_exec do
   helper ApplicationAccountBarHelper, ApplicationHelper, ApplicationTopNavHelper,
   AlertsHelper, OpenStax::Utilities::OsuHelper
+
   layout "layouts/application_body_only"
 end
