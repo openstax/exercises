@@ -1,4 +1,4 @@
-# This migration comes from openstax_accounts (originally 20140811182433)
+# This migration comes from openstax_accounts (originally 1)
 class CreateOpenStaxAccountsGroups < ActiveRecord::Migration
   def change
     create_table :openstax_accounts_groups do |t|

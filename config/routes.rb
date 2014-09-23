@@ -1,9 +1,22 @@
 Exercises::Application.routes.draw do
 
-  root to: 'static_pages#home'
+  root 'static_pages#home'
+
+  scope module: 'static_pages' do
+    get 'about'
+    get 'contact'
+    get 'copyright'
+    get 'developers'
+    get 'help'
+    get 'privacy'
+    get 'publishing'
+    get 'share'
+    get 'status'
+    get 'terms'
+  end
 
   mount OpenStax::Accounts::Engine, at: "/accounts"
-  mount FinePrint::Engine => "/terms"
+  mount FinePrint::Engine => "/fine_print"
 
   use_doorkeeper do
     controllers :applications => 'oauth/applications'
@@ -12,7 +25,7 @@ Exercises::Application.routes.draw do
   apipie
 
   scope module: 'apipie' do
-    get 'api', to: 'apipies#index'
+    get 'api', action: 'index'
   end
 
   api :v1, :default => true do
@@ -76,16 +89,5 @@ Exercises::Application.routes.draw do
   resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
 
   resources :exercises, only: [:show]
-
-  scope module: 'static_pages' do
-    get 'about'
-    get 'contact'
-    get 'copyright'
-    get 'developers'
-    get 'help'
-    get 'share'
-    get 'status'
-    get 'tou'
-  end
 
 end

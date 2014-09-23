@@ -1,3 +1,4 @@
+# This migration comes from openstax_accounts (originally 0)
 class CreateOpenStaxAccountsAccounts < ActiveRecord::Migration
   def change
     create_table :openstax_accounts_accounts do |t|

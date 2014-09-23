@@ -48,11 +48,11 @@ gem 'whenever'
 # OpenStax Accounts integration
 gem 'openstax_accounts', '~> 3.1.0'
 
-# Access control for API's
-gem 'doorkeeper'
-
 # Respond_with and respond_to methods
 gem 'responders', '~> 2.0'
+
+# Access control for API's
+gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'openstax_api'
@@ -150,9 +150,6 @@ group :development, :test do
 
   # CoffeeScript source maps
   gem 'coffee-rails-source-maps'
-
-  # Capistrano integration
-  gem 'capistrano-rails'
 
   # Code Climate integration
   gem "codeclimate-test-reporter", require: false
