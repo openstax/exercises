@@ -3,6 +3,7 @@ OpenStax Exercises
 
 [![Build Status](https://travis-ci.org/openstax/exercises.svg?branch=master)](https://travis-ci.org/openstax/exercises)
 [![Code Climate](https://codeclimate.com/github/openstax/exercises.png)](https://codeclimate.com/github/openstax/exercises)
+[![Coverage Status](https://img.shields.io/coveralls/openstax/exercises.svg)](https://coveralls.io/r/openstax/exercises)
 
 Successor to github.com/lml/quadbase (quadbase.org)
 
