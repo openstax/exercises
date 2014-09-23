@@ -581,8 +581,6 @@ ActiveRecord::Schema.define(version: 20140916214406) do
 
   add_index "sorts", ["domain_id", "domain_type", "sortable_type", "position"], name: "index_sorts_on_d_id_and_d_type_and_s_type_and_position", unique: true
   add_index "sorts", ["sortable_id", "sortable_type", "domain_id", "domain_type"], name: "index_sorts_on_s_id_and_s_type_and_d_id_and_d_type", unique: true
-  add_index "sorts", ["sortable_id", "sortable_type"], name: "index_sorts_on_sortable_id_and_sortable_type", unique: true, where: "domain_id IS NULL"
-  add_index "sorts", ["sortable_type", "position"], name: "index_sorts_on_sortable_type_and_position", unique: true, where: "domain_id IS NULL"
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"
