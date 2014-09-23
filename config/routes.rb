@@ -12,11 +12,11 @@ Exercises::Application.routes.draw do
     get 'publishing'
     get 'share'
     get 'status'
-    get 'tou'
+    get 'terms'
   end
 
   mount OpenStax::Accounts::Engine, at: "/accounts"
-  mount FinePrint::Engine => "/terms"
+  mount FinePrint::Engine => "/fine_print"
 
   use_doorkeeper do
     controllers :applications => 'oauth/applications'
@@ -25,7 +25,7 @@ Exercises::Application.routes.draw do
   apipie
 
   scope module: 'apipie' do
-    get 'api', to: 'apipies#index'
+    get 'api', action: 'index'
   end
 
   api :v1, :default => true do

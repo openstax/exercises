@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :user do
+    deleted_at nil
 
     ignore do
       username { SecureRandom.hex.to_s }
