@@ -4,31 +4,31 @@ RSpec.describe StaticPagesController, :type => :routing do
   describe "routing" do
 
     it "routes to #index" do
-      get("/static_pages").should route_to("static_pages#index")
+      expect(get("/static_pages")).to route_to("static_pages#index")
     end
 
     it "routes to #new" do
-      get("/static_pages/new").should route_to("static_pages#new")
+      expect(get("/static_pages/new")).to route_to("static_pages#new")
     end
 
     it "routes to #show" do
-      get("/static_pages/1").should route_to("static_pages#show", :id => "1")
+      expect(get("/static_pages/1")).to route_to("static_pages#show", :id => "1")
     end
 
     it "routes to #edit" do
-      get("/static_pages/1/edit").should route_to("static_pages#edit", :id => "1")
+      expect(get("/static_pages/1/edit")).to route_to("static_pages#edit", :id => "1")
     end
 
     it "routes to #create" do
-      post("/static_pages").should route_to("static_pages#create")
+      expect(post("/static_pages")).to route_to("static_pages#create")
     end
 
     it "routes to #update" do
-      put("/static_pages/1").should route_to("static_pages#update", :id => "1")
+      expect(put("/static_pages/1")).to route_to("static_pages#update", :id => "1")
     end
 
     it "routes to #destroy" do
-      delete("/static_pages/1").should route_to("static_pages#destroy", :id => "1")
+      expect(delete("/static_pages/1")).to route_to("static_pages#destroy", :id => "1")
     end
 
   end

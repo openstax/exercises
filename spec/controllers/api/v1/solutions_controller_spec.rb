@@ -17,7 +17,7 @@ module Api::V1
       it "assigns all solutions as @solutions" do
         solution = Solution.create! valid_attributes
         get :index, {}, valid_session
-        assigns(:solutions).should eq([solution])
+        expect(assigns(:solutions)).to eq([solution])
       end
     end
 
@@ -25,14 +25,14 @@ module Api::V1
       it "assigns the requested solution as @solution" do
         solution = Solution.create! valid_attributes
         get :show, {:id => solution.to_param}, valid_session
-        assigns(:solution).should eq(solution)
+        expect(assigns(:solution)).to eq(solution)
       end
     end
 
     describe "GET new" do
       it "assigns a new solution as @solution" do
         get :new, {}, valid_session
-        assigns(:solution).should be_a_new(Solution)
+        expect(assigns(:solution)).to be_a_new(Solution)
       end
     end
 
@@ -40,7 +40,7 @@ module Api::V1
       it "assigns the requested solution as @solution" do
         solution = Solution.create! valid_attributes
         get :edit, {:id => solution.to_param}, valid_session
-        assigns(:solution).should eq(solution)
+        expect(assigns(:solution)).to eq(solution)
       end
     end
 
@@ -54,13 +54,13 @@ module Api::V1
 
         it "assigns a newly created solution as @solution" do
           post :create, {:solution => valid_attributes}, valid_session
-          assigns(:solution).should be_a(Solution)
-          assigns(:solution).should be_persisted
+          expect(assigns(:solution)).to be_a(Solution)
+          expect(assigns(:solution)).to be_persisted
         end
 
         it "redirects to the created solution" do
           post :create, {:solution => valid_attributes}, valid_session
-          response.should redirect_to(Solution.last)
+          expect(response).to redirect_to(Solution.last)
         end
       end
 
@@ -69,14 +69,14 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Solution.any_instance.stub(:save).and_return(false)
           post :create, {:solution => { "number" => "invalid value" }}, valid_session
-          assigns(:solution).should be_a_new(Solution)
+          expect(assigns(:solution)).to be_a_new(Solution)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           Solution.any_instance.stub(:save).and_return(false)
           post :create, {:solution => { "number" => "invalid value" }}, valid_session
-          response.should render_template("new")
+          expect(response).to render_template("new")
         end
       end
     end
@@ -89,20 +89,20 @@ module Api::V1
           # specifies that the Solution created on the previous line
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
-          Solution.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+          expect(Solution.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
           put :update, {:id => solution.to_param, :solution => { "number" => "1" }}, valid_session
         end
 
         it "assigns the requested solution as @solution" do
           solution = Solution.create! valid_attributes
           put :update, {:id => solution.to_param, :solution => valid_attributes}, valid_session
-          assigns(:solution).should eq(solution)
+          expect(assigns(:solution)).to eq(solution)
         end
 
         it "redirects to the solution" do
           solution = Solution.create! valid_attributes
           put :update, {:id => solution.to_param, :solution => valid_attributes}, valid_session
-          response.should redirect_to(solution)
+          expect(response).to redirect_to(solution)
         end
       end
 
@@ -112,7 +112,7 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Solution.any_instance.stub(:save).and_return(false)
           put :update, {:id => solution.to_param, :solution => { "number" => "invalid value" }}, valid_session
-          assigns(:solution).should eq(solution)
+          expect(assigns(:solution)).to eq(solution)
         end
 
         it "re-renders the 'edit' template" do
@@ -120,7 +120,7 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Solution.any_instance.stub(:save).and_return(false)
           put :update, {:id => solution.to_param, :solution => { "number" => "invalid value" }}, valid_session
-          response.should render_template("edit")
+          expect(response).to render_template("edit")
         end
       end
     end
@@ -136,7 +136,7 @@ module Api::V1
       it "redirects to the solutions list" do
         solution = Solution.create! valid_attributes
         delete :destroy, {:id => solution.to_param}, valid_session
-        response.should redirect_to(solutions_url)
+        expect(response).to redirect_to(solutions_url)
       end
     end
 

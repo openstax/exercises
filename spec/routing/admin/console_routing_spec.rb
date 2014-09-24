@@ -5,7 +5,7 @@ module Admin
     describe "routing" do
 
       it "routes to #index" do
-        get("/").should route_to("console#index")
+        expect(get("/")).to route_to("console#index")
       end
 
     end

@@ -17,7 +17,7 @@ module Api::V1
       it "assigns all publications as @publications" do
         publication = Publication.create! valid_attributes
         get :index, {}, valid_session
-        assigns(:publications).should eq([publication])
+        expect(assigns(:publications)).to eq([publication])
       end
     end
 
@@ -25,14 +25,14 @@ module Api::V1
       it "assigns the requested publication as @publication" do
         publication = Publication.create! valid_attributes
         get :show, {:id => publication.to_param}, valid_session
-        assigns(:publication).should eq(publication)
+        expect(assigns(:publication)).to eq(publication)
       end
     end
 
     describe "GET new" do
       it "assigns a new publication as @publication" do
         get :new, {}, valid_session
-        assigns(:publication).should be_a_new(Publication)
+        expect(assigns(:publication)).to be_a_new(Publication)
       end
     end
 
@@ -40,7 +40,7 @@ module Api::V1
       it "assigns the requested publication as @publication" do
         publication = Publication.create! valid_attributes
         get :edit, {:id => publication.to_param}, valid_session
-        assigns(:publication).should eq(publication)
+        expect(assigns(:publication)).to eq(publication)
       end
     end
 
@@ -54,13 +54,13 @@ module Api::V1
 
         it "assigns a newly created publication as @publication" do
           post :create, {:publication => valid_attributes}, valid_session
-          assigns(:publication).should be_a(Publication)
-          assigns(:publication).should be_persisted
+          expect(assigns(:publication)).to be_a(Publication)
+          expect(assigns(:publication)).to be_persisted
         end
 
         it "redirects to the created publication" do
           post :create, {:publication => valid_attributes}, valid_session
-          response.should redirect_to(Publication.last)
+          expect(response).to redirect_to(Publication.last)
         end
       end
 
@@ -69,14 +69,14 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Publication.any_instance.stub(:save).and_return(false)
           post :create, {:publication => { "number" => "invalid value" }}, valid_session
-          assigns(:publication).should be_a_new(Publication)
+          expect(assigns(:publication)).to be_a_new(Publication)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           Publication.any_instance.stub(:save).and_return(false)
           post :create, {:publication => { "number" => "invalid value" }}, valid_session
-          response.should render_template("new")
+          expect(response).to render_template("new")
         end
       end
     end
@@ -89,20 +89,20 @@ module Api::V1
           # specifies that the Publication created on the previous line
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
-          Publication.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+          expect(Publication.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
           put :update, {:id => publication.to_param, :publication => { "number" => "1" }}, valid_session
         end
 
         it "assigns the requested publication as @publication" do
           publication = Publication.create! valid_attributes
           put :update, {:id => publication.to_param, :publication => valid_attributes}, valid_session
-          assigns(:publication).should eq(publication)
+          expect(assigns(:publication)).to eq(publication)
         end
 
         it "redirects to the publication" do
           publication = Publication.create! valid_attributes
           put :update, {:id => publication.to_param, :publication => valid_attributes}, valid_session
-          response.should redirect_to(publication)
+          expect(response).to redirect_to(publication)
         end
       end
 
@@ -112,7 +112,7 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Publication.any_instance.stub(:save).and_return(false)
           put :update, {:id => publication.to_param, :publication => { "number" => "invalid value" }}, valid_session
-          assigns(:publication).should eq(publication)
+          expect(assigns(:publication)).to eq(publication)
         end
 
         it "re-renders the 'edit' template" do
@@ -120,7 +120,7 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Publication.any_instance.stub(:save).and_return(false)
           put :update, {:id => publication.to_param, :publication => { "number" => "invalid value" }}, valid_session
-          response.should render_template("edit")
+          expect(response).to render_template("edit")
         end
       end
     end
@@ -136,7 +136,7 @@ module Api::V1
       it "redirects to the publications list" do
         publication = Publication.create! valid_attributes
         delete :destroy, {:id => publication.to_param}, valid_session
-        response.should redirect_to(publications_url)
+        expect(response).to redirect_to(publications_url)
       end
     end
 

@@ -17,7 +17,7 @@ module Api::V1
       it "assigns all exercises as @exercises" do
         exercise = Exercise.create! valid_attributes
         get :index, {}, valid_session
-        assigns(:exercises).should eq([exercise])
+        expect(assigns(:exercises)).to eq([exercise])
       end
     end
 
@@ -25,14 +25,14 @@ module Api::V1
       it "assigns the requested exercise as @exercise" do
         exercise = Exercise.create! valid_attributes
         get :show, {:id => exercise.to_param}, valid_session
-        assigns(:exercise).should eq(exercise)
+        expect(assigns(:exercise)).to eq(exercise)
       end
     end
 
     describe "GET new" do
       it "assigns a new exercise as @exercise" do
         get :new, {}, valid_session
-        assigns(:exercise).should be_a_new(Exercise)
+        expect(assigns(:exercise)).to be_a_new(Exercise)
       end
     end
 
@@ -40,7 +40,7 @@ module Api::V1
       it "assigns the requested exercise as @exercise" do
         exercise = Exercise.create! valid_attributes
         get :edit, {:id => exercise.to_param}, valid_session
-        assigns(:exercise).should eq(exercise)
+        expect(assigns(:exercise)).to eq(exercise)
       end
     end
 
@@ -54,13 +54,13 @@ module Api::V1
 
         it "assigns a newly created exercise as @exercise" do
           post :create, {:exercise => valid_attributes}, valid_session
-          assigns(:exercise).should be_a(Exercise)
-          assigns(:exercise).should be_persisted
+          expect(assigns(:exercise)).to be_a(Exercise)
+          expect(assigns(:exercise)).to be_persisted
         end
 
         it "redirects to the created exercise" do
           post :create, {:exercise => valid_attributes}, valid_session
-          response.should redirect_to(Exercise.last)
+          expect(response).to redirect_to(Exercise.last)
         end
       end
 
@@ -69,14 +69,14 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Exercise.any_instance.stub(:save).and_return(false)
           post :create, {:exercise => { "number" => "invalid value" }}, valid_session
-          assigns(:exercise).should be_a_new(Exercise)
+          expect(assigns(:exercise)).to be_a_new(Exercise)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           Exercise.any_instance.stub(:save).and_return(false)
           post :create, {:exercise => { "number" => "invalid value" }}, valid_session
-          response.should render_template("new")
+          expect(response).to render_template("new")
         end
       end
     end
@@ -89,20 +89,20 @@ module Api::V1
           # specifies that the Exercise created on the previous line
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
-          Exercise.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+          expect(Exercise.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
           put :update, {:id => exercise.to_param, :exercise => { "number" => "1" }}, valid_session
         end
 
         it "assigns the requested exercise as @exercise" do
           exercise = Exercise.create! valid_attributes
           put :update, {:id => exercise.to_param, :exercise => valid_attributes}, valid_session
-          assigns(:exercise).should eq(exercise)
+          expect(assigns(:exercise)).to eq(exercise)
         end
 
         it "redirects to the exercise" do
           exercise = Exercise.create! valid_attributes
           put :update, {:id => exercise.to_param, :exercise => valid_attributes}, valid_session
-          response.should redirect_to(exercise)
+          expect(response).to redirect_to(exercise)
         end
       end
 
@@ -112,7 +112,7 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Exercise.any_instance.stub(:save).and_return(false)
           put :update, {:id => exercise.to_param, :exercise => { "number" => "invalid value" }}, valid_session
-          assigns(:exercise).should eq(exercise)
+          expect(assigns(:exercise)).to eq(exercise)
         end
 
         it "re-renders the 'edit' template" do
@@ -120,7 +120,7 @@ module Api::V1
           # Trigger the behavior that occurs when invalid params are submitted
           Exercise.any_instance.stub(:save).and_return(false)
           put :update, {:id => exercise.to_param, :exercise => { "number" => "invalid value" }}, valid_session
-          response.should render_template("edit")
+          expect(response).to render_template("edit")
         end
       end
     end
@@ -136,7 +136,7 @@ module Api::V1
       it "redirects to the exercises list" do
         exercise = Exercise.create! valid_attributes
         delete :destroy, {:id => exercise.to_param}, valid_session
-        response.should redirect_to(exercises_url)
+        expect(response).to redirect_to(exercises_url)
       end
     end
 

@@ -16,7 +16,7 @@ RSpec.describe DeputizationsController, type: :controller do
     it "assigns all deputizations as @deputizations" do
       deputization = Deputization.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:deputizations).should eq([deputization])
+      expect(assigns(:deputizations)).to eq([deputization])
     end
   end
 
@@ -24,14 +24,14 @@ RSpec.describe DeputizationsController, type: :controller do
     it "assigns the requested deputization as @deputization" do
       deputization = Deputization.create! valid_attributes
       get :show, {:id => deputization.to_param}, valid_session
-      assigns(:deputization).should eq(deputization)
+      expect(assigns(:deputization)).to eq(deputization)
     end
   end
 
   describe "GET new" do
     it "assigns a new deputization as @deputization" do
       get :new, {}, valid_session
-      assigns(:deputization).should be_a_new(Deputization)
+      expect(assigns(:deputization)).to be_a_new(Deputization)
     end
   end
 
@@ -39,7 +39,7 @@ RSpec.describe DeputizationsController, type: :controller do
     it "assigns the requested deputization as @deputization" do
       deputization = Deputization.create! valid_attributes
       get :edit, {:id => deputization.to_param}, valid_session
-      assigns(:deputization).should eq(deputization)
+      expect(assigns(:deputization)).to eq(deputization)
     end
   end
 
@@ -53,13 +53,13 @@ RSpec.describe DeputizationsController, type: :controller do
 
       it "assigns a newly created deputization as @deputization" do
         post :create, {:deputization => valid_attributes}, valid_session
-        assigns(:deputization).should be_a(Deputization)
-        assigns(:deputization).should be_persisted
+        expect(assigns(:deputization)).to be_a(Deputization)
+        expect(assigns(:deputization)).to be_persisted
       end
 
       it "redirects to the created deputization" do
         post :create, {:deputization => valid_attributes}, valid_session
-        response.should redirect_to(Deputization.last)
+        expect(response).to redirect_to(Deputization.last)
       end
     end
 
@@ -68,14 +68,14 @@ RSpec.describe DeputizationsController, type: :controller do
         # Trigger the behavior that occurs when invalid params are submitted
         Deputization.any_instance.stub(:save).and_return(false)
         post :create, {:deputization => { "number" => "invalid value" }}, valid_session
-        assigns(:deputization).should be_a_new(Deputization)
+        expect(assigns(:deputization)).to be_a_new(Deputization)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         Deputization.any_instance.stub(:save).and_return(false)
         post :create, {:deputization => { "number" => "invalid value" }}, valid_session
-        response.should render_template("new")
+        expect(response).to render_template("new")
       end
     end
   end
@@ -88,20 +88,20 @@ RSpec.describe DeputizationsController, type: :controller do
         # specifies that the Deputization created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        Deputization.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+        expect(Deputization.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
         put :update, {:id => deputization.to_param, :deputization => { "number" => "1" }}, valid_session
       end
 
       it "assigns the requested deputization as @deputization" do
         deputization = Deputization.create! valid_attributes
         put :update, {:id => deputization.to_param, :deputization => valid_attributes}, valid_session
-        assigns(:deputization).should eq(deputization)
+        expect(assigns(:deputization)).to eq(deputization)
       end
 
       it "redirects to the deputization" do
         deputization = Deputization.create! valid_attributes
         put :update, {:id => deputization.to_param, :deputization => valid_attributes}, valid_session
-        response.should redirect_to(deputization)
+        expect(response).to redirect_to(deputization)
       end
     end
 
@@ -111,7 +111,7 @@ RSpec.describe DeputizationsController, type: :controller do
         # Trigger the behavior that occurs when invalid params are submitted
         Deputization.any_instance.stub(:save).and_return(false)
         put :update, {:id => deputization.to_param, :deputization => { "number" => "invalid value" }}, valid_session
-        assigns(:deputization).should eq(deputization)
+        expect(assigns(:deputization)).to eq(deputization)
       end
 
       it "re-renders the 'edit' template" do
@@ -119,7 +119,7 @@ RSpec.describe DeputizationsController, type: :controller do
         # Trigger the behavior that occurs when invalid params are submitted
         Deputization.any_instance.stub(:save).and_return(false)
         put :update, {:id => deputization.to_param, :deputization => { "number" => "invalid value" }}, valid_session
-        response.should render_template("edit")
+        expect(response).to render_template("edit")
       end
     end
   end
@@ -135,7 +135,7 @@ RSpec.describe DeputizationsController, type: :controller do
     it "redirects to the deputizations list" do
       deputization = Deputization.create! valid_attributes
       delete :destroy, {:id => deputization.to_param}, valid_session
-      response.should redirect_to(deputizations_url)
+      expect(response).to redirect_to(deputizations_url)
     end
   end
 

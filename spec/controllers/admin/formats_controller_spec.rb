@@ -17,7 +17,7 @@ module Admin
       it "assigns all formats as @formats" do
         format = Format.create! valid_attributes
         get :index, {}, valid_session
-        assigns(:formats).should eq([format])
+        expect(assigns(:formats)).to eq([format])
       end
     end
 
@@ -25,14 +25,14 @@ module Admin
       it "assigns the requested format as @format" do
         format = Format.create! valid_attributes
         get :show, {:id => format.to_param}, valid_session
-        assigns(:format).should eq(format)
+        expect(assigns(:format)).to eq(format)
       end
     end
 
     describe "GET new" do
       it "assigns a new format as @format" do
         get :new, {}, valid_session
-        assigns(:format).should be_a_new(Format)
+        expect(assigns(:format)).to be_a_new(Format)
       end
     end
 
@@ -40,7 +40,7 @@ module Admin
       it "assigns the requested format as @format" do
         format = Format.create! valid_attributes
         get :edit, {:id => format.to_param}, valid_session
-        assigns(:format).should eq(format)
+        expect(assigns(:format)).to eq(format)
       end
     end
 
@@ -54,13 +54,13 @@ module Admin
 
         it "assigns a newly created format as @format" do
           post :create, {:format => valid_attributes}, valid_session
-          assigns(:format).should be_a(Format)
-          assigns(:format).should be_persisted
+          expect(assigns(:format)).to be_a(Format)
+          expect(assigns(:format)).to be_persisted
         end
 
         it "redirects to the created format" do
           post :create, {:format => valid_attributes}, valid_session
-          response.should redirect_to(Format.last)
+          expect(response).to redirect_to(Format.last)
         end
       end
 
@@ -69,14 +69,14 @@ module Admin
           # Trigger the behavior that occurs when invalid params are submitted
           Format.any_instance.stub(:save).and_return(false)
           post :create, {:format => { "number" => "invalid value" }}, valid_session
-          assigns(:format).should be_a_new(Format)
+          expect(assigns(:format)).to be_a_new(Format)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           Format.any_instance.stub(:save).and_return(false)
           post :create, {:format => { "number" => "invalid value" }}, valid_session
-          response.should render_template("new")
+          expect(response).to render_template("new")
         end
       end
     end
@@ -89,20 +89,20 @@ module Admin
           # specifies that the Format created on the previous line
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
-          Format.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+          expect(Format.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
           put :update, {:id => format.to_param, :format => { "number" => "1" }}, valid_session
         end
 
         it "assigns the requested format as @format" do
           format = Format.create! valid_attributes
           put :update, {:id => format.to_param, :format => valid_attributes}, valid_session
-          assigns(:format).should eq(format)
+          expect(assigns(:format)).to eq(format)
         end
 
         it "redirects to the format" do
           format = Format.create! valid_attributes
           put :update, {:id => format.to_param, :format => valid_attributes}, valid_session
-          response.should redirect_to(format)
+          expect(response).to redirect_to(format)
         end
       end
 
@@ -112,7 +112,7 @@ module Admin
           # Trigger the behavior that occurs when invalid params are submitted
           Format.any_instance.stub(:save).and_return(false)
           put :update, {:id => format.to_param, :format => { "number" => "invalid value" }}, valid_session
-          assigns(:format).should eq(format)
+          expect(assigns(:format)).to eq(format)
         end
 
         it "re-renders the 'edit' template" do
@@ -120,7 +120,7 @@ module Admin
           # Trigger the behavior that occurs when invalid params are submitted
           Format.any_instance.stub(:save).and_return(false)
           put :update, {:id => format.to_param, :format => { "number" => "invalid value" }}, valid_session
-          response.should render_template("edit")
+          expect(response).to render_template("edit")
         end
       end
     end
@@ -136,7 +136,7 @@ module Admin
       it "redirects to the formats list" do
         format = Format.create! valid_attributes
         delete :destroy, {:id => format.to_param}, valid_session
-        response.should redirect_to(formats_url)
+        expect(response).to redirect_to(formats_url)
       end
     end
 

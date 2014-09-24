@@ -16,7 +16,7 @@ RSpec.describe UsersController, type: :controller do
     it "assigns the requested user as @user" do
       user = User.create! valid_attributes
       get :show, {:id => user.to_param}, valid_session
-      assigns(:user).should eq(user)
+      expect(assigns(:user)).to eq(user)
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe UsersController, type: :controller do
     it "assigns the requested user as @user" do
       user = User.create! valid_attributes
       get :edit, {:id => user.to_param}, valid_session
-      assigns(:user).should eq(user)
+      expect(assigns(:user)).to eq(user)
     end
   end
 
@@ -36,20 +36,20 @@ RSpec.describe UsersController, type: :controller do
         # specifies that the User created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        User.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+        expect(User.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
         put :update, {:id => user.to_param, :user => { "number" => "1" }}, valid_session
       end
 
       it "assigns the requested user as @user" do
         user = User.create! valid_attributes
         put :update, {:id => user.to_param, :user => valid_attributes}, valid_session
-        assigns(:user).should eq(user)
+        expect(assigns(:user)).to eq(user)
       end
 
       it "redirects to the user" do
         user = User.create! valid_attributes
         put :update, {:id => user.to_param, :user => valid_attributes}, valid_session
-        response.should redirect_to(user)
+        expect(response).to redirect_to(user)
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe UsersController, type: :controller do
         # Trigger the behavior that occurs when invalid params are submitted
         User.any_instance.stub(:save).and_return(false)
         put :update, {:id => user.to_param, :user => { "number" => "invalid value" }}, valid_session
-        assigns(:user).should eq(user)
+        expect(assigns(:user)).to eq(user)
       end
 
       it "re-renders the 'edit' template" do
@@ -67,7 +67,7 @@ RSpec.describe UsersController, type: :controller do
         # Trigger the behavior that occurs when invalid params are submitted
         User.any_instance.stub(:save).and_return(false)
         put :update, {:id => user.to_param, :user => { "number" => "invalid value" }}, valid_session
-        response.should render_template("edit")
+        expect(response).to render_template("edit")
       end
     end
   end
@@ -83,7 +83,7 @@ RSpec.describe UsersController, type: :controller do
     it "redirects to the users list" do
       user = User.create! valid_attributes
       delete :destroy, {:id => user.to_param}, valid_session
-      response.should redirect_to(users_url)
+      expect(response).to redirect_to(users_url)
     end
   end
 

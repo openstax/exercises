@@ -17,7 +17,7 @@ module Admin
       it "assigns all administrators as @administrators" do
         administrator = Administrator.create! valid_attributes
         get :index, {}, valid_session
-        assigns(:administrators).should eq([administrator])
+        expect(assigns(:administrators)).to eq([administrator])
       end
     end
 
@@ -25,14 +25,14 @@ module Admin
       it "assigns the requested administrator as @administrator" do
         administrator = Administrator.create! valid_attributes
         get :show, {:id => administrator.to_param}, valid_session
-        assigns(:administrator).should eq(administrator)
+        expect(assigns(:administrator)).to eq(administrator)
       end
     end
 
     describe "GET new" do
       it "assigns a new administrator as @administrator" do
         get :new, {}, valid_session
-        assigns(:administrator).should be_a_new(Administrator)
+        expect(assigns(:administrator)).to be_a_new(Administrator)
       end
     end
 
@@ -40,7 +40,7 @@ module Admin
       it "assigns the requested administrator as @administrator" do
         administrator = Administrator.create! valid_attributes
         get :edit, {:id => administrator.to_param}, valid_session
-        assigns(:administrator).should eq(administrator)
+        expect(assigns(:administrator)).to eq(administrator)
       end
     end
 
@@ -54,13 +54,13 @@ module Admin
 
         it "assigns a newly created administrator as @administrator" do
           post :create, {:administrator => valid_attributes}, valid_session
-          assigns(:administrator).should be_a(Administrator)
-          assigns(:administrator).should be_persisted
+          expect(assigns(:administrator)).to be_a(Administrator)
+          expect(assigns(:administrator)).to be_persisted
         end
 
         it "redirects to the created administrator" do
           post :create, {:administrator => valid_attributes}, valid_session
-          response.should redirect_to(Administrator.last)
+          expect(response).to redirect_to(Administrator.last)
         end
       end
 
@@ -69,14 +69,14 @@ module Admin
           # Trigger the behavior that occurs when invalid params are submitted
           Administrator.any_instance.stub(:save).and_return(false)
           post :create, {:administrator => { "number" => "invalid value" }}, valid_session
-          assigns(:administrator).should be_a_new(Administrator)
+          expect(assigns(:administrator)).to be_a_new(Administrator)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           Administrator.any_instance.stub(:save).and_return(false)
           post :create, {:administrator => { "number" => "invalid value" }}, valid_session
-          response.should render_template("new")
+          expect(response).to render_template("new")
         end
       end
     end
@@ -89,20 +89,20 @@ module Admin
           # specifies that the Administrator created on the previous line
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
-          Administrator.any_instance.should_receive(:update_attributes).with({ "number" => "1" })
+          expect(Administrator.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
           put :update, {:id => administrator.to_param, :administrator => { "number" => "1" }}, valid_session
         end
 
         it "assigns the requested administrator as @administrator" do
           administrator = Administrator.create! valid_attributes
           put :update, {:id => administrator.to_param, :administrator => valid_attributes}, valid_session
-          assigns(:administrator).should eq(administrator)
+          expect(assigns(:administrator)).to eq(administrator)
         end
 
         it "redirects to the administrator" do
           administrator = Administrator.create! valid_attributes
           put :update, {:id => administrator.to_param, :administrator => valid_attributes}, valid_session
-          response.should redirect_to(administrator)
+          expect(response).to redirect_to(administrator)
         end
       end
 
@@ -112,7 +112,7 @@ module Admin
           # Trigger the behavior that occurs when invalid params are submitted
           Administrator.any_instance.stub(:save).and_return(false)
           put :update, {:id => administrator.to_param, :administrator => { "number" => "invalid value" }}, valid_session
-          assigns(:administrator).should eq(administrator)
+          expect(assigns(:administrator)).to eq(administrator)
         end
 
         it "re-renders the 'edit' template" do
@@ -120,7 +120,7 @@ module Admin
           # Trigger the behavior that occurs when invalid params are submitted
           Administrator.any_instance.stub(:save).and_return(false)
           put :update, {:id => administrator.to_param, :administrator => { "number" => "invalid value" }}, valid_session
-          response.should render_template("edit")
+          expect(response).to render_template("edit")
         end
       end
     end
@@ -136,7 +136,7 @@ module Admin
       it "redirects to the administrators list" do
         administrator = Administrator.create! valid_attributes
         delete :destroy, {:id => administrator.to_param}, valid_session
-        response.should redirect_to(administrators_url)
+        expect(response).to redirect_to(administrators_url)
       end
     end
 
