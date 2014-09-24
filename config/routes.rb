@@ -24,12 +24,7 @@ Exercises::Application.routes.draw do
 
   apipie
 
-  scope module: 'apipie' do
-    get 'api', action: 'index'
-  end
-
   api :v1, :default => true do
-
     resources :exercises, except: [:new, :edit]
 
     resources :logics, only: [] do
@@ -48,6 +43,10 @@ Exercises::Application.routes.draw do
 
     resources :users, only: [:index]
 
+    resource :user, only: [:show, :update, :destroy] do
+      resources :deputizations, only: [:index, :create, :destroy],
+                shallow: true, path: 'deputies'
+    end
   end
   
   namespace 'admin' do
@@ -83,10 +82,6 @@ Exercises::Application.routes.draw do
       post 'generate', on: :collection
     end
   end
-
-  resource :user, only: [:show, :update, :destroy]
-
-  resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
 
   resources :exercises, only: [:show]
 

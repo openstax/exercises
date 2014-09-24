@@ -86,5 +86,58 @@ module Api::V1
                    represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
     end
 
+    ########
+    # show #
+    ########
+
+    api :GET, '/user', "Gets the current user's profile"
+    description <<-EOS
+      Gets the current user's profile.
+
+      #{json_schema(Api::V1::UserRepresenter, include: :readable)}        
+    EOS
+    def show
+      respond_with current_human_user
+    end
+
+    ##########
+    # update #
+    ##########
+
+    api :PATCH, '/user', "Updates the current user's profile"
+    description <<-EOS
+      Updates the current user's profile.
+
+      #{json_schema(Api::V1::UserRepresenter, include: :writeable)}        
+    EOS
+    def update
+      @user = current_human_user
+      consume!(@user)
+      
+      if @user.save
+        head :no_content
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
+    end
+
+    ###########
+    # destroy #
+    ###########
+
+    api :DELETE, '/user', "Disables the current user's account"
+    description <<-EOS
+      Disables the current user's account.     
+    EOS
+    def destroy
+      @user = current_human_user
+
+      if @user.destroy
+        head :no_content
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
+    end
+
   end
 end
