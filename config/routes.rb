@@ -25,27 +25,32 @@ Exercises::Application.routes.draw do
   apipie
 
   api :v1, :default => true do
-    resources :exercises, except: [:new, :edit]
+    resources :exercises do
+      publishable
+      has_logic
+
+      resources :solutions do
+        publishable
+        has_logic
+      end
+    end
 
     resources :logics, only: [] do
       post 'seeds', on: :member
     end
 
-    resources :libraries, except: [:new, :edit]
-
-    resources :lists, except: [:new, :edit]
-
-    resources :publications, only: [:show] do
-      patch 'publish', on: :member
+    resources :libraries do
+      publishable
     end
 
-    resources :solutions, except: [:new, :edit]
+    resources :lists do
+      publishable
+    end
 
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy] do
-      resources :deputizations, only: [:index, :create, :destroy],
-                shallow: true, path: 'deputies'
+      resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
     end
   end
   

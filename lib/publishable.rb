@@ -35,9 +35,10 @@ module Publishable
   end
 
   module Routing
-    module Mapper
-      def publishable
-      end
+    def publishable
+      resource :publication, only: [:show]
+
+      post 'publish', to: 'publications#publish'
     end
   end
 
@@ -62,5 +63,5 @@ module Publishable
 end
 
 ActiveRecord::Base.send :include, Publishable::ActiveRecord
-ActionDispatch::Routing::Mapper.send :include, Publishable::Routing::Mapper
+ActionDispatch::Routing::Mapper.send :include, Publishable::Routing
 Representable::Declarative.send :include, Publishable::Representable::Declarative

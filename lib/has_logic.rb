@@ -13,6 +13,14 @@ module HasLogic
     end
   end
 
+  module Routing
+    def has_logic
+      resources :logics, only: [] do
+        post 'seeds', on: :member
+      end
+    end
+  end
+
   module Representable
     module Declarative
       def has_logic
@@ -29,4 +37,5 @@ module HasLogic
 end
 
 ActiveRecord::Base.send :include, HasLogic::ActiveRecord
+ActionDispatch::Routing::Mapper.send :include, HasLogic::Routing
 Representable::Declarative.send :include, HasLogic::Representable::Declarative
