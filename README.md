@@ -69,10 +69,10 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 3. Run the following shell commands from the OpenStax Exercises folder:
 
 ```sh
-bundle --without production
-rake db:migrate
-rails g secrets
-rails s
+$ bundle --without production
+$ rake db:migrate
+$ rails g secrets
+$ rails s
 ```
 
 If any of the above commands fail, try prepending `bundle exec`, e.g. `bundle exec rake db:migrate`
