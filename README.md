@@ -67,12 +67,14 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 1. Install a ruby version manager on your machine, such as rbenv or rvm
 2. Install ruby 2.1.3
 3. Run the following shell commands from the OpenStax Exercises folder:
-   ```sh
-     bundle --without production
-     rake db:migrate
-     rails g secrets
-     rails s
-   ```
-   If any of the commands fail, try prepending `bundle exec`, e.g. `bundle exec rake db:migrate`
+
+```sh
+bundle --without production
+rake db:migrate
+rails g secrets
+rails s
+```
+
+If any of the above commands fail, try prepending `bundle exec`, e.g. `bundle exec rake db:migrate`
 
 That's it! You should then be able to point a web browser to http://localhost:3000.
