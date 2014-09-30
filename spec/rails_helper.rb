@@ -1,5 +1,11 @@
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
+
+# Generates the secrets.yml file if not present
+unless File.exists?('config/secrets.yml')
+  require 'rails/generators'
+  Rails::Generators.invoke('secrets') 
+end
+
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
