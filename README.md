@@ -71,10 +71,11 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 ```sh
 $ bundle --without production
 $ rake db:migrate
+$ rake db:seed
 $ rails g secrets
 $ rails s
 ```
 
 If any of the above commands fail, try prepending `bundle exec`, e.g. `bundle exec rake db:migrate`
 
-That's it! You should then be able to point a web browser to http://localhost:3000.
+You should then be able to point a web browser to http://localhost:3000 and access OpenStax Exercises.
