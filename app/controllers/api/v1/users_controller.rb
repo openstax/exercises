@@ -79,7 +79,7 @@ module Api::V1
       `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
     EOS
     def index
-      OSU::AccessPolicy.require_action_allowed!(:index, current_user, User)
+      OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, User)
       outputs = OpenStax::Accounts::SearchAccounts.call(
                   params[:q], params.slice(:order_by)).outputs
       respond_with outputs,
@@ -113,7 +113,7 @@ module Api::V1
     def update
       @user = current_human_user
       consume!(@user)
-      
+
       if @user.save
         head :no_content
       else
