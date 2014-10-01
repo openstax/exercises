@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-module Dev
-  RSpec.describe "users/show", :type => :view do
+module Admin
+  RSpec.describe "licenses/show", :type => :view do
     before(:each) do
-      @user = assign(:user, User.create!())
+      @license = assign(:license, License.create!())
     end
 
     it "renders attributes in <p>" do
