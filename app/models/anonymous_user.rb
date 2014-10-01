@@ -1,8 +1,10 @@
-class AnonymousUser < User
+class AnonymousUser
 
   include Singleton
 
-  before_save { false }
+  def id
+    nil
+  end
 
   def account
     OpenStax::Accounts::AnonymousAccount.instance
@@ -12,8 +14,16 @@ class AnonymousUser < User
     nil
   end
 
+  def username
+    'Anonymous'
+  end
+
   def is_anonymous?
     true
+  end
+
+  def is_deleted?
+    false
   end
 
 end

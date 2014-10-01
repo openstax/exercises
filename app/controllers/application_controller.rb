@@ -12,14 +12,14 @@ class ApplicationController < ActionController::Base
 
   interceptor :authenticate_user!
 
-  before_filter :not_destroyed!
+  before_filter :valid_user!
 
   fine_print_require :general_terms_of_use, :privacy_policy
 
   protected
 
-  def not_destroyed!
-    return if current_user.try(:destroyed_at).nil?
+  def valid_user!
+    return unless current_user.is_deleted?
     sign_out
     redirect_to home_url
   end
