@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe SolutionsController, type: :controller do
+  RSpec.describe SolutionsController, type: :controller, api: true, version: :v1 do
 
     # This should return the minimal set of attributes required to create a valid
     # Solution. As you add validations to Solution, be sure to

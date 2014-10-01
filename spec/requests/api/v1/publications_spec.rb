@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe "Publications", :type => :request do
+  RSpec.describe "Publications", :type => :request, api: true, version: :v1 do
     describe "GET /publications" do
       it "works! (now write some real specs)" do
         get publications_path

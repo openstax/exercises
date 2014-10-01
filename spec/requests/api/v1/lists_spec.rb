@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe "Lists", :type => :request do
+  RSpec.describe "Lists", :type => :request, api: true, version: :v1 do
     describe "GET /lists" do
       it "works! (now write some real specs)" do
         get lists_path

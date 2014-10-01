@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe ExercisesController, type: :controller do
+  RSpec.describe ExercisesController, type: :controller, api: true, version: :v1 do
 
     # This should return the minimal set of attributes required to create a valid
     # Exercise. As you add validations to Exercise, be sure to

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe "Deputizations", :type => :request do
+  RSpec.describe "Deputizations", :type => :request, api: true, version: :v1 do
     describe "GET /deputizations" do
       it "works! (now write some real specs)" do
         get deputizations_path
