@@ -2,6 +2,8 @@ Exercises::Application.routes.draw do
 
   root 'static_pages#home'
 
+  get 'status', to: lambda { |env| [204, {}, ['']] }
+
   scope module: 'static_pages' do
     get 'about'
     get 'contact'
@@ -11,7 +13,6 @@ Exercises::Application.routes.draw do
     get 'privacy'
     get 'publishing'
     get 'share'
-    get 'status'
     get 'terms'
   end
 

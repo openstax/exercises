@@ -17,19 +17,10 @@
 
 # Ignore files containing keys and passwords
 config/secrets.yml
-config/deploy_settings.yml
+config/*settings.yml
 
-# Ignore OS X's Desktop Service Store files
-*.DS_Store
-
-# Ignore editor temp files
-*~
-
-# Ignore Cucumber and RSpec failure information
-cucumber_rerun.txt
-rspec.failures
-
-# Ignore uploaded files
+# Ignore compiled assets and uploaded files
+public/assets/**/*
 public/uploads/**/*
 
 # Ignore vagrant and berkshelf files
@@ -37,15 +28,22 @@ public/uploads/**/*
 .vagrant_setup.json
 Berksfile.lock
 
+# Ignore Cucumber and RSpec failure information
+cucumber_rerun.txt
+rspec.failures
+
 # Ignore brakeman reports
 brakeman.html
 
 # Ignore coveralls reports
 coverage/*
 
-# Ignore ERD diagrams and source maps
+# Ignore ERD diagrams
 erd*.pdf
-public/assets/source_maps/
 
 # Ignore misc files
 notes
+
+# Ignore gedit and OSX temp files
+*~
+*.DS_Store
