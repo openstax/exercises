@@ -2,8 +2,6 @@ Exercises::Application.routes.draw do
 
   root 'static_pages#home'
 
-  get 'status', to: lambda { |env| [204, {}, ['']] }
-
   scope module: 'static_pages' do
     get 'about'
     get 'contact'
@@ -14,13 +12,6 @@ Exercises::Application.routes.draw do
     get 'publishing'
     get 'share'
     get 'terms'
-  end
-
-  mount OpenStax::Accounts::Engine, at: "/accounts"
-  mount FinePrint::Engine => "/fine_print"
-
-  use_doorkeeper do
-    controllers :applications => 'oauth/applications'
   end
 
   apipie
@@ -53,6 +44,13 @@ Exercises::Application.routes.draw do
     resource :user, only: [:show, :update, :destroy] do
       resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
     end
+  end
+
+  mount OpenStax::Accounts::Engine, at: "/accounts"
+  mount FinePrint::Engine => "/fine_print"
+
+  use_doorkeeper do
+    controllers :applications => 'oauth/applications'
   end
   
   namespace 'admin' do
@@ -89,6 +87,6 @@ Exercises::Application.routes.draw do
     end
   end
 
-  resources :exercises, only: [:show]
+  get 'status', to: lambda { |env| [204, {}, ['']] }
 
 end
