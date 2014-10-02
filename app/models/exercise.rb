@@ -24,7 +24,7 @@ class Exercise < ActiveRecord::Base
 
   def has_content
     return unless background.blank?
-    errors.add(:background, "can't be blank")
+    errors.add(:content, "can't be blank")
     false
   end
 
