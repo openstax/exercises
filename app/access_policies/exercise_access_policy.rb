@@ -6,12 +6,11 @@ class ExerciseAccessPolicy
     when :index
       true
     when :read
-      exercise.has_collaborator?(requestor) ||\
-        exercise.is_published?
+      exercise.is_published? || exercise.has_collaborator?(requestor)
     when :create
-      !exercise.persisted?
+      !requestor.is_anonymous? && requestor.is_human? && !exercise.persisted?
     when :update, :destroy
-      exercise.has_collaborator?(requestor)
+      !exercise.is_published? && exercise.has_collaborator?(requestor)
     else
       false
     end

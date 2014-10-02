@@ -92,6 +92,18 @@ Doorkeeper::Application.class_exec do
   scope :trusted, lambda { joins(:trusted_application) }
   scope :not_trusted, lambda { joins{trusted_application.outer}
                                .where(trusted_application: {id: nil}) }
+
+  def is_anonymous?
+    false
+  end
+
+  def is_human?
+    false
+  end
+
+  def is_application?
+    true
+  end
 end
 
 OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)
