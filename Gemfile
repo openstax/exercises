@@ -105,32 +105,25 @@ gem 'newrelic_rpm'
 gem 'yaml_db'
 
 group :development, :test do
-  # Thin development server
+  # Thin webserver
   gem 'thin'
 
-  # SQLite3 development database
+  # SQLite3 database
   gem 'sqlite3'
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
+  # Mute asset pipeline log messages
+  gem 'quiet_assets'
+end
+
+group :development do
   # Access an IRB console on exceptions page and /console in development
   gem 'web-console', '~> 2.0.0.beta2'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-
-  # Mute asset pipeline log messages
-  gem 'quiet_assets'
-
-  # Use RSpec for tests
-  gem 'rspec-rails'
-
-  # Fixture replacement
-  gem 'factory_girl_rails'
-
-  # Lorem Ipsum
-  gem 'faker'
 
   # Automated security checks
   gem 'brakeman'
@@ -150,6 +143,20 @@ group :development, :test do
 
   # CoffeeScript source maps
   gem 'coffee-rails-source-maps'
+end
+
+group :test do
+  # Use RSpec for tests
+  gem 'rspec-rails'
+
+  # Fixture replacement
+  gem 'factory_girl_rails'
+
+  # Lorem Ipsum
+  gem 'faker'
+
+  # Spec helpers
+  gem 'shoulda-matchers', require: false
 
   # Code Climate integration
   gem "codeclimate-test-reporter", require: false
