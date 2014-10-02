@@ -17,10 +17,12 @@ module Publishable
 
           has_one :publication, as: :publishable, dependent: :destroy
 
-          before_validation :build_publication, on: :create
+          before_validation :build_publication, on: :create, unless: :publication
 
-          delegate :uid, :number, :version, :license, :attribution,
-                   :is_published?, :has_collaborator?, to: :publication
+          delegate :uid, :number, :version, :published_at, :license, :editors,
+                   :authors, :copyright_holders, :derivations, :is_published?,
+                   :has_collaborator?, :license=, :editors=, :authors=,
+                   :copyright_holders=, :derivations=, to: :publication
 
           def self.find(*args)
             return super if block_given? || args.size != 1
@@ -41,27 +43,7 @@ module Publishable
       post 'publish', to: 'publications#publish'
     end
   end
-
-  module Representable
-    module Declarative
-      def publishable
-        class_exec do
-          property :uid,
-                   type: String,
-                   writeable: false,
-                   readable: true
-
-          property :publication,
-                   class: Publication,
-                   decorator: Api::V1::PublicationRepresenter,
-                   writeable: true,
-                   readable: true
-        end
-      end
-    end
-  end
 end
 
 ActiveRecord::Base.send :include, Publishable::ActiveRecord
 ActionDispatch::Routing::Mapper.send :include, Publishable::Routing
-Representable::Declarative.send :include, Publishable::Representable::Declarative

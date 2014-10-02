@@ -1,16 +1,8 @@
 module Api::V1
-  class ExerciseRepresenter < Roar::Decorator
+  class ExerciseRepresenter < PublicationRepresenter
 
-    include Roar::Representer::JSON
-
-    publishable
     has_logic
     has_attachments
-
-    property :id, 
-             type: Integer,
-             writeable: false,
-             readable: true
 
     property :title,
              type: String,
@@ -27,7 +19,6 @@ module Api::V1
                decorator: PartRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }

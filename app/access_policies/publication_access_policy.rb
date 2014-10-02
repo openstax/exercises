@@ -3,7 +3,7 @@ class PublicationAccessPolicy
 
   def self.action_allowed?(action, requestor, publication)
     case action
-    when :show, :publish
+    when :read, :publish
       publication.editors.include?(requestor) || \
         publication.authors.include?(requestor) || \
         publication.copyright_holders.include?(requestor)

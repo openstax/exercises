@@ -6,7 +6,10 @@ class SearchExercises
 
   protected
 
-  def exec(text, part, type, answer_type, user)
+  def exec(params)
+    outputs[:exercises] = Exercise.all
+    return
+
     case type
     when 'published exercises'
       tscope = visible_for(user).published

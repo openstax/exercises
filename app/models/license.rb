@@ -29,16 +29,8 @@ class License < ActiveRecord::Base
     self.for(publishable).collect{|l| [l.title, l.id]}
   end
 
-  def valid_for?(publishable)
-    class_licenses.exists?(class_name: publishable.class.name)
-  end
-
-  def attribution_for(publishable)
-    collaborators = publishable.respond_to?(:collaborators) ? publishable.collaborators : \
-                                                              Collaborator.none
-    authors = collaborators.authors.collect{|a| a.name}
-    copyright_holders = collaborators.copyright_holders.collect{|c| c.name}
-    eval copyright_notice
+  def valid_for?(klass_name)
+    class_licenses.any?{|cl| cl.class_name == klass_name}
   end
 
 end

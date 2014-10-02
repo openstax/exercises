@@ -22,7 +22,6 @@ module Api::V1
                decorator: ItemRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -32,7 +31,6 @@ module Api::V1
                decorator: AnswerRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -41,8 +39,7 @@ module Api::V1
                class: ComboChoice,
                decorator: ComboChoiceRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :formattings,
                as: :formats,
@@ -50,7 +47,6 @@ module Api::V1
                decorator: FormattingRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -61,7 +57,6 @@ module Api::V1
                decorator: QuestionDependencyRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }

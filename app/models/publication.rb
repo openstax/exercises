@@ -18,6 +18,7 @@ class Publication < ActiveRecord::Base
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :number, presence: true
   validates :version, presence: true, uniqueness: { scope: [:number, :publishable_type] }
+  validate  :valid_license
 
   before_validation :assign_number_and_version, on: :create
 
@@ -35,18 +36,14 @@ class Publication < ActiveRecord::Base
     "#{publishable_type.first.downcase}#{number}v#{version}"
   end
 
-  def attribution
-    license.attribution_for(publishable)
-  end
-
   def is_published?
     !published_at.nil?
   end
 
   def has_collaborator?(user)
-    authors.includes?(user) || \
-    copyright_holders.includes?(user) || \
-    editors.includes?(user)
+    authors.any?{|c| c.user_id == user.id} || \
+    copyright_holders.any?{|c| c.user_id == user.id} || \
+    editors.any?{|c| c.user_id == user.id}
   end
 
   protected
@@ -60,6 +57,12 @@ class Publication < ActiveRecord::Base
                                 .maximum(:number) || 0) + 1
       self.version = 1
     end
+  end
+
+  def valid_license
+    return if license.nil? || license.valid_for?(publishable_type)
+    errors.add(:license, "is not valid for #{publishable_type}")
+    false
   end
 
 end

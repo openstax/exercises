@@ -1,16 +1,7 @@
 module Api::V1
-  class ListRepresenter < Roar::Decorator
+  class ListRepresenter < PublicationRepresenter
 
-    include Roar::Representer::JSON
-
-    publishable
-
-    property :id, 
-             type: Integer,
-             writeable: false,
-             readable: true
-
-    property :parent_list_id,
+    property :parent_list_uid,
              type: Integer,
              writeable: false,
              readable: true

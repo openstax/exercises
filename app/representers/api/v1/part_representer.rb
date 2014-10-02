@@ -19,7 +19,6 @@ module Api::V1
                decorator: QuestionRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }
@@ -30,7 +29,6 @@ module Api::V1
                decorator: PartDependencyRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
                schema_info: {
                  required: true
                }

@@ -5,7 +5,7 @@ class ListAccessPolicy
     case action
     when :index
       true
-    when :show
+    when :read
       list.has_collaborator?(requestor) ||\
         list.is_published?
     when :create

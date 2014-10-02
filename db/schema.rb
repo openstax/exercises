@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   add_index "commontator_comments", ["cached_votes_down"], name: "index_commontator_comments_on_cached_votes_down"
   add_index "commontator_comments", ["cached_votes_up"], name: "index_commontator_comments_on_cached_votes_up"
   add_index "commontator_comments", ["creator_id", "creator_type", "thread_id"], name: "index_commontator_comments_on_c_id_and_c_type_and_t_id"
-  add_index "commontator_comments", ["thread_id"], name: "index_commontator_comments_on_thread_id"
+  add_index "commontator_comments", ["thread_id", "created_at"], name: "index_commontator_comments_on_thread_id_and_created_at"
 
   create_table "commontator_subscriptions", force: true do |t|
     t.string   "subscriber_type", null: false
@@ -514,16 +514,17 @@ ActiveRecord::Schema.define(version: 20140916214406) do
     t.integer  "version",                               null: false
     t.datetime "published_at"
     t.datetime "yanked_at"
-    t.datetime "embargo_until"
+    t.datetime "embargoed_until"
     t.boolean  "embargo_children_only", default: false, null: false
-    t.boolean  "is_major_change",       default: false, null: false
+    t.boolean  "major_change",          default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "publications", ["embargo_children_only"], name: "index_publications_on_embargo_children_only"
-  add_index "publications", ["embargo_until"], name: "index_publications_on_embargo_until"
+  add_index "publications", ["embargoed_until"], name: "filtered_index_publications_on_embargoed_until", where: "embargo_children_only=0"
+  add_index "publications", ["embargoed_until"], name: "index_publications_on_embargoed_until"
   add_index "publications", ["license_id"], name: "index_publications_on_license_id"
+  add_index "publications", ["number", "publishable_type", "version"], name: "filtered_index_publications_on_number_and_p_type_and_version", where: "major_change=0"
   add_index "publications", ["number", "publishable_type", "version"], name: "index_publications_on_number_and_publishable_type_and_version", unique: true
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true
   add_index "publications", ["published_at"], name: "index_publications_on_published_at"
@@ -581,6 +582,8 @@ ActiveRecord::Schema.define(version: 20140916214406) do
 
   add_index "sorts", ["domain_id", "domain_type", "sortable_type", "position"], name: "index_sorts_on_d_id_and_d_type_and_s_type_and_position", unique: true
   add_index "sorts", ["sortable_id", "sortable_type", "domain_id", "domain_type"], name: "index_sorts_on_s_id_and_s_type_and_d_id_and_d_type", unique: true
+  add_index "sorts", ["sortable_id", "sortable_type"], name: "index_sorts_on_sortable_id_and_sortable_type", unique: true, where: "domain_id IS NULL"
+  add_index "sorts", ["sortable_type", "position"], name: "index_sorts_on_sortable_type_and_position", unique: true, where: "domain_id IS NULL"
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

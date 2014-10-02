@@ -8,8 +8,7 @@ class Part < ActiveRecord::Base
 
   has_many :questions, dependent: :destroy, inverse_of: :part
   has_many :items, through: :questions
-  has_many :item_answers, through: :items, source: :answers
-  has_many :question_answers, through: :questions, source: :answers
+  has_many :answers, through: :questions
   has_many :combo_choices, through: :questions
 
   has_many :parent_dependencies, class_name: 'PartDependency',

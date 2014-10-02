@@ -5,7 +5,7 @@ class UserAccessPolicy
     case action
     when :index
       !requestor.is_human? || !requestor.is_anonymous?
-    when :show, :update, :destroy
+    when :read, :update, :destroy
       requestor.is_human? && !requestor.is_anonymous?
     else
       false

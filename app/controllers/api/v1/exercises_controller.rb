@@ -74,10 +74,8 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      OSU::AccessPolicy.require_action_allowed!(:index, current_user, Exercise)
-      outputs = OpenStax::Exercises::SearchExercises.call(
-        params[:q], params.slice(:order_by)
-      ).outputs
+      OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, Exercise)
+      outputs = SearchExercises.call(params[:q]).outputs
       respond_with outputs, represent_with: Api::V1::ExerciseSearchRepresenter
     end
 

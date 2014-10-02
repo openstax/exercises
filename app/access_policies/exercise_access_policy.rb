@@ -5,12 +5,11 @@ class ExerciseAccessPolicy
     case action
     when :index
       true
-    when :show
+    when :read
       exercise.has_collaborator?(requestor) ||\
         exercise.is_published?
     when :create
-      exercise.has_collaborator?(requestor) && \
-        !exercise.is_persisted?
+      !exercise.persisted?
     when :update, :destroy
       exercise.has_collaborator?(requestor)
     else

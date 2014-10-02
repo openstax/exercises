@@ -5,7 +5,7 @@ class SolutionAccessPolicy
     case action
     when :index
       true
-    when :show
+    when :read
       solution.has_collaborator?(requestor) ||\
         solution.is_published?
     when :create

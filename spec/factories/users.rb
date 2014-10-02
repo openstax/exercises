@@ -3,7 +3,7 @@ FactoryGirl.define do
     deleted_at nil
 
     ignore do
-      username   { SecureRandom.hex.to_s }
+      username   { Faker::Lorem.characters }
       first_name { Faker::Name.first_name }
       last_name  { Faker::Name.last_name }
       full_name  { "#{first_name} #{last_name}" }

@@ -3,13 +3,10 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :id, 
-             type: Integer,
+    property :uid,
+             type: String,
              writeable: false,
-             readable: true,
-             schema_info: {
-               required: true
-             }
+             readable: true
 
     property :number,
              type: Integer,
@@ -35,34 +32,30 @@ module Api::V1
                self.license = License.find_by(name: val[:name])
              }
 
-    collection :derivations,
-               as: :derived_from,
-               class: Publication,
-               decorator: PublicationRepresenter,
-               writeable: true,
-               readable: true,
-               parse_strategy: :sync
-
     collection :editors,
                class: Editor,
                decorator: RoleRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :authors,
                class: Author,
                decorator: RoleRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :copyright_holders,
                class: CopyrightHolder,
                decorator: RoleRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
+
+    collection :derivations,
+               as: :derived_from,
+               class: Publication,
+               decorator: PublicationRepresenter,
+               writeable: true,
+               readable: true
 
   end
 end

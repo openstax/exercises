@@ -1,143 +1,240 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe ExercisesController, type: :controller, api: true, version: :v1 do
+  describe ExercisesController, :type => :controller, :api => true, :version => :v1 do
 
-    # This should return the minimal set of attributes required to create a valid
-    # Exercise. As you add validations to Exercise, be sure to
-    # adjust the attributes here as well.
-    let(:valid_attributes) { { "number" => "1" } }
+    let!(:application) { FactoryGirl.create :doorkeeper_application }
+    let!(:exercise)    { FactoryGirl.create  :exercise }
+    let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
+    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
-    # This should return the minimal set of values that should be in the session
-    # in order to pass any filters (e.g. authentication) defined in
-    # ExercisesController. Be sure to keep this updated too.
-    let(:valid_session) { {} }
+    let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application, 
+                                                  resource_owner_id: exercise.id }
+    let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application, 
+                                                  resource_owner_id: admin.id }
+    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token, 
+                                                  application: application, 
+                                                  resource_owner_id: nil }
+
+    before(:each) do
+      FactoryGirl.create(:editor, publication: exercise.publication, user: user)
+    end
 
     describe "GET index" do
-      it "assigns all exercises as @exercises" do
-        exercise = Exercise.create! valid_attributes
-        get :index, {}, valid_session
-        expect(assigns(:exercises)).to eq([exercise])
+
+      before(:each) do
+        skip
+        10.times do
+          u = FactoryGirl.build(:exercise)
+          next if u.title.include?("adipisci") || \
+                  u.background.include?("adipisci") || \
+                  u.parts.any? do |p|
+                    p.background.include?("adipisci") || \
+                    p.questions.any? do |q|
+                      q.stem.include?("adipisci") || \
+                      q.items.any? {|i| i.content.include?("adipisci")} || \
+                      q.answers.any? {|a| a.content.include?("adipisci")}
+                    end
+                  end
+          u.save!
+        end
+
+        @exercise_1 = Exercise.new
+        Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
+          title: "Lorem ipsum",
+          background: "Dolor",
+          parts: [{
+            background: "Sit amet",
+            questions: [{
+              stem: "Consectetur adipiscing elit",
+              answers: [{
+                content: "Sed do eiusmod tempor"
+              }]
+            }]
+          }]
+        }.to_json)
+        @exercise_1.save!
+        @exercise_2 = Exercise.new
+        Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
+          title: "Dolorem ipsum",
+          background: "Quia dolor",
+          parts: [{
+            background: "Sit amet",
+            questions: [{
+              stem: "Consectetur adipisci velit",
+              answers: [{
+                content: "Sed quia non numquam"
+              }]
+            }]
+          }]
+        }.to_json)
+        @exercise_2.save!
+        @exercises_count = Exercise.count
       end
+
+      it "returns a single matching Exercise" do
+        api_get :index, application_token, parameters: {q: 'content:aDiPiScInG,eLiT'}
+        expect(response).to have_http_status(:success)
+
+        expected_response = {
+          total_count: 1,
+          items: [
+            {
+              id: @exercise_1.uid,
+              title: "Lorem ipsum",
+              background: "Dolor",
+              parts: [{
+                background: "Sit amet",
+                questions: [{
+                  stem: "Consectetur adipiscing elit",
+                  answers: [{
+                    content: "Sed do eiusmod tempor"
+                  }]
+                }]
+              }]
+            }
+          ]
+        }.to_json
+
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns multiple matching Exercises" do
+        api_get :index, user_token, parameters: {q: 'content:AdIpIsCi'}
+        expect(response).to have_http_status(:success)
+
+        expected_response = {
+          total_count: 2,
+          items: [
+            {
+              id: @exercise_1.uid,
+              title: "Lorem ipsum",
+              background: "Dolor",
+              parts: [{
+                background: "Sit amet",
+                questions: [{
+                  stem: "Consectetur adipiscing elit",
+                  answers: [{
+                    content: "Sed do eiusmod tempor"
+                  }]
+                }]
+              }]
+            },
+            {
+              id: @exercise_2.uid,
+              title: "Dolorem ipsum",
+              background: "Quia dolor",
+              parts: [{
+                background: "Sit amet",
+                questions: [{
+                  stem: "Consectetur adipisci velit",
+                  answers: [{
+                    content: "Sed quia non numquam"
+                  }]
+                }]
+              }]
+            }
+          ]
+        }.to_json
+
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "sorts by multiple fields in different directions" do
+        api_get :index, user_token, parameters: {q: 'content:aDiPiScI',
+                                                 order_by: "number DESC, version ASC"}
+        expect(response).to have_http_status(:success)
+
+        expected_response = {
+          total_count: 2,
+          items: [
+            {
+              id: @exercise_2.uid,
+              title: "Dolorem ipsum",
+              background: "Quia dolor",
+              parts: [{
+                background: "Sit amet",
+                questions: [{
+                  stem: "Consectetur adipisci velit",
+                  answers: [{
+                    content: "Sed quia non numquam"
+                  }]
+                }]
+              }]
+            },
+            {
+              id: @exercise_1.uid,
+              title: "Lorem ipsum",
+              background: "Dolor",
+              parts: [{
+                background: "Sit amet",
+                questions: [{
+                  stem: "Consectetur adipiscing elit",
+                  answers: [{
+                    content: "Sed do eiusmod tempor"
+                  }]
+                }]
+              }]
+            }
+          ]
+        }.to_json
+
+        expect(response.body).to eq(expected_response)
+      end
+
     end
 
     describe "GET show" do
-      it "assigns the requested exercise as @exercise" do
-        exercise = Exercise.create! valid_attributes
-        get :show, {:id => exercise.to_param}, valid_session
-        expect(assigns(:exercise)).to eq(exercise)
-      end
-    end
 
-    describe "GET new" do
-      it "assigns a new exercise as @exercise" do
-        get :new, {}, valid_session
-        expect(assigns(:exercise)).to be_a_new(Exercise)
-      end
-    end
+      it "returns the requested Exercise" do
+        api_get :show, user_token, parameters: { id: exercise.uid }
+        expect(response).to have_http_status(:success)
 
-    describe "GET edit" do
-      it "assigns the requested exercise as @exercise" do
-        exercise = Exercise.create! valid_attributes
-        get :edit, {:id => exercise.to_param}, valid_session
-        expect(assigns(:exercise)).to eq(exercise)
+        expected_response = Api::V1::ExerciseRepresenter.new(exercise).to_json
+        
+        expect(response.body).to eq(expected_response)
       end
+
     end
 
     describe "POST create" do
-      describe "with valid params" do
-        it "creates a new Exercise" do
-          expect {
-            post :create, {:exercise => valid_attributes}, valid_session
-          }.to change(Exercise, :count).by(1)
-        end
 
-        it "assigns a newly created exercise as @exercise" do
-          post :create, {:exercise => valid_attributes}, valid_session
-          expect(assigns(:exercise)).to be_a(Exercise)
-          expect(assigns(:exercise)).to be_persisted
-        end
-
-        it "redirects to the created exercise" do
-          post :create, {:exercise => valid_attributes}, valid_session
-          expect(response).to redirect_to(Exercise.last)
-        end
+      it "creates the requested Exercise" do
+        expect { api_post :create, user_token,
+                          raw_post_data: exercise.attributes.to_json
+        }.to change(Exercise, :count).by(1)
+        expect(response).to have_http_status(:success)
+        expect(exercise.persisted?).to eq true
       end
 
-      describe "with invalid params" do
-        it "assigns a newly created but unsaved exercise as @exercise" do
-          # Trigger the behavior that occurs when invalid params are submitted
-          Exercise.any_instance.stub(:save).and_return(false)
-          post :create, {:exercise => { "number" => "invalid value" }}, valid_session
-          expect(assigns(:exercise)).to be_a_new(Exercise)
-        end
-
-        it "re-renders the 'new' template" do
-          # Trigger the behavior that occurs when invalid params are submitted
-          Exercise.any_instance.stub(:save).and_return(false)
-          post :create, {:exercise => { "number" => "invalid value" }}, valid_session
-          expect(response).to render_template("new")
-        end
-      end
     end
 
-    describe "PUT update" do
-      describe "with valid params" do
-        it "updates the requested exercise" do
-          exercise = Exercise.create! valid_attributes
-          # Assuming there are no other exercises in the database, this
-          # specifies that the Exercise created on the previous line
-          # receives the :update_attributes message with whatever params are
-          # submitted in the request.
-          expect(Exercise.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
-          put :update, {:id => exercise.to_param, :exercise => { "number" => "1" }}, valid_session
-        end
+    describe "PATCH update" do
 
-        it "assigns the requested exercise as @exercise" do
-          exercise = Exercise.create! valid_attributes
-          put :update, {:id => exercise.to_param, :exercise => valid_attributes}, valid_session
-          expect(assigns(:exercise)).to eq(exercise)
-        end
-
-        it "redirects to the exercise" do
-          exercise = Exercise.create! valid_attributes
-          put :update, {:id => exercise.to_param, :exercise => valid_attributes}, valid_session
-          expect(response).to redirect_to(exercise)
-        end
+      it "updates the requested Exercise" do
+        exercise.save!
+        api_put :update, user_token, parameters: { id: exercise.uid },
+                raw_post_data: { title: "Ipsum lorem" }
+        expect(response).to have_http_status(:success)
+        exercise.reload
+        expect(exercise.title).to eq "Ipsum lorem"
       end
 
-      describe "with invalid params" do
-        it "assigns the exercise as @exercise" do
-          exercise = Exercise.create! valid_attributes
-          # Trigger the behavior that occurs when invalid params are submitted
-          Exercise.any_instance.stub(:save).and_return(false)
-          put :update, {:id => exercise.to_param, :exercise => { "number" => "invalid value" }}, valid_session
-          expect(assigns(:exercise)).to eq(exercise)
-        end
-
-        it "re-renders the 'edit' template" do
-          exercise = Exercise.create! valid_attributes
-          # Trigger the behavior that occurs when invalid params are submitted
-          Exercise.any_instance.stub(:save).and_return(false)
-          put :update, {:id => exercise.to_param, :exercise => { "number" => "invalid value" }}, valid_session
-          expect(response).to render_template("edit")
-        end
-      end
     end
 
     describe "DELETE destroy" do
-      it "destroys the requested exercise" do
-        exercise = Exercise.create! valid_attributes
-        expect {
-          delete :destroy, {:id => exercise.to_param}, valid_session
+
+      it "deletes the requested Exercise" do
+        exercise.save!
+        expect{ api_delete :destroy, user_token,
+                           parameters: { id: exercise.uid }
         }.to change(Exercise, :count).by(-1)
+        expect(response).to have_http_status(:success)
+        expect(Exercise.where(id: exercise.id)).not_to exist
       end
 
-      it "redirects to the exercises list" do
-        exercise = Exercise.create! valid_attributes
-        delete :destroy, {:id => exercise.to_param}, valid_session
-        expect(response).to redirect_to(exercises_url)
-      end
     end
 
   end

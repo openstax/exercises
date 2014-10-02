@@ -19,7 +19,7 @@ module Api::V1
                                                   application: application, 
                                                   resource_owner_id: nil }
 
-    describe "GET users" do
+    describe "GET index" do
 
       before(:each) do
         100.times do
@@ -146,7 +146,7 @@ module Api::V1
 
     end
 
-    describe "GET user" do
+    describe "GET show" do
 
       it "returns the current User's info" do
         api_get :show, user_token
@@ -182,7 +182,7 @@ module Api::V1
 
     end
 
-    describe "PATCH user" do
+    describe "PATCH update" do
 
       it "updates the current User's profile" do
         api_put :update, user_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}
@@ -205,7 +205,7 @@ module Api::V1
 
     end
 
-    describe "DELETE user" do
+    describe "DELETE destroy" do
 
       it "deactivates the current User's account" do
         api_delete :destroy, user_token

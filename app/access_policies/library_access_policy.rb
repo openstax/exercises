@@ -5,7 +5,7 @@ class LibraryAccessPolicy
     case action
     when :index
       true
-    when :show
+    when :read
       library.has_collaborator?(requestor) ||\
         library.is_published?
     when :create
