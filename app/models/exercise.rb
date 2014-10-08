@@ -5,7 +5,7 @@ class Exercise < ActiveRecord::Base
   has_attachments
   has_logic :javascript, :latex
 
-  has_many :parts, dependent: :destroy, inverse_of: :exercise
+  has_many :parts, dependent: :destroy, inverse_of: :exercise, autosave: true
   has_many :questions, through: :parts
   has_many :items, through: :questions
   has_many :answers, through: :questions

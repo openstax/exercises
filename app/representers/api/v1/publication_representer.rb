@@ -28,7 +28,7 @@ module Api::V1
              decorator: LicenseRepresenter,
              writeable: true,
              readable: true,
-             setter: lambda { |val|
+             setter: lambda { |val, args|
                self.license = License.find_by(name: val[:name])
              }
 

@@ -11,6 +11,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |exercise, evaluator|
+      exercise.publication = FactoryGirl.build(:publication, publishable: exercise)
       evaluator.parts_count.times do
         exercise.parts << FactoryGirl.build(
           :part, exercise: exercise, questions_count: evaluator.questions_count,
@@ -21,8 +22,7 @@ FactoryGirl.define do
 
     trait :published do
       after(:build) do |exercise|
-        exercise.publication = FactoryGirl.build(:publication, :published,
-                                                 publishable: exercise)
+        exercise.publication.published_at = Time.now
       end
     end
   end

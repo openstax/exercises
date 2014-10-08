@@ -1,6 +1,8 @@
 module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
+    before_filter :get_exercise, only: [:show, :update, :destroy]
+
     resource_description do
       api_versions "v1"
       short_description 'A collection of related questions.'
@@ -74,24 +76,8 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, Exercise)
-      query = params[:q] || params[:query]
-      outputs = SearchExercises.call(query, params).outputs
-      respond_with outputs, represent_with: Api::V1::ExerciseSearchRepresenter
-    end
-
-    ########
-    # show #
-    ########
-
-    api :GET, '/exercises/:id', 'Gets the specified Exercise'
-    description <<-EOS
-      Gets the Exercise that matches the provided ID.
-
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}        
-    EOS
-    def show
-      standard_read(Exercise, params[:id])
+      standard_search(SearchExercises, params[:q],
+                      params.except(:q), ExerciseSearchRepresenter)
     end
 
     ##########
@@ -105,7 +91,23 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
     EOS
     def create
-      standard_create(Exercise)
+      exercise = Exercise.new
+      exercise.build_publication
+      standard_create(exercise)
+    end
+
+    ########
+    # show #
+    ########
+
+    api :GET, '/exercises/:id', 'Gets the specified Exercise'
+    description <<-EOS
+      Gets the Exercise that matches the provided ID.
+
+      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}        
+    EOS
+    def show
+      standard_read(@exercise)
     end
 
     ##########
@@ -119,7 +121,7 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
     EOS
     def update
-      standard_update(Exercise, params[:id])
+      standard_update(@exercise)
     end
 
     ###########
@@ -131,7 +133,13 @@ module Api::V1
       Deletes the Exercise that matches the provided ID.
     EOS
     def destroy
-      standard_destroy(Exercise, params[:id])
+      standard_destroy(@exercise)
+    end
+
+    protected
+
+    def get_exercise
+      @exercise = Exercise.find(params[:id])
     end
     
   end

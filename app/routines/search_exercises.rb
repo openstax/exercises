@@ -5,46 +5,56 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
     with.default_keyword :content
 
     with.keyword :id, :uid do |ids|
-      sanitized_ids = to_string_array(ids).collect{|id| id.split('v')}
-      sanitized_numbers = sanitized_ids.collect{|sid| sid.first}.compact
-                                       .collect{|snum| snum.gsub(/\Ae/, '')}
-      sanitized_versions = sanitized_ids.collect{|sid| sid.second}.compact
-      if sanitized_numbers.empty?
-        @items = @items.where{publication.version.like_any sanitized_versions}
-      elsif sanitized_versions.empty?
-        @items = @items.where{publication.number.like_any sanitized_numbers}
-      else
-        @items = @items.where{(publication.number.like_any sanitized_numbers) &\
-                              (publication.version.like_any sanitized_versions)}
+      ids.each do |id|
+        sanitized_ids = to_string_array(id).collect{|id| id.split('v')}
+        sanitized_numbers = sanitized_ids.collect{|sid| sid.first}.compact
+                                         .collect{|snum| snum.gsub(/\Ae/, '')}
+        sanitized_versions = sanitized_ids.collect{|sid| sid.second}.compact
+        if sanitized_numbers.empty?
+          @items = @items.where{publication.version.like_any sanitized_versions}
+        elsif sanitized_versions.empty?
+          @items = @items.where{publication.number.like_any sanitized_numbers}
+        else
+          @items = @items.where{(publication.number.like_any sanitized_numbers) &\
+                                (publication.version.like_any sanitized_versions)}
+        end
       end
     end
 
     with.keyword :number do |numbers|
-      sanitized_numbers = to_string_array(numbers)
-      @items = @items.where{publication.number.like_any sanitized_numbers}
+      numbers.each do |number|
+        sanitized_numbers = to_string_array(numbers)
+        @items = @items.where{publication.number.like_any sanitized_numbers}
+      end
     end
 
     with.keyword :version do |versions|
-      sanitized_versions = to_string_array(versions)
-      @items = @items.where{publication.version.like_any sanitized_versions}
+      versions.each do |version|
+        sanitized_versions = to_string_array(version)
+        @items = @items.where{publication.version.like_any sanitized_versions}
+      end
     end
 
     with.keyword :title do |titles|
-      sanitized_titles = to_string_array(titles, append_wildcard: true,
-                                                 prepend_wildcard: true)
-      @items = @items.where{title.like_any sanitized_titles}
+      titles.each do |title|
+        sanitized_titles = to_string_array(title, append_wildcard: true,
+                                                   prepend_wildcard: true)
+        @items = @items.where{title.like_any sanitized_titles}
+      end
     end
 
     with.keyword :content do |contents|
-      sanitized_contents = to_string_array(contents, append_wildcard: true,
-                                                     prepend_wildcard: true)
-      @items = @items.includes(parts: {questions: [:items, :answers]})
-                     .where{(title.like_any sanitized_contents) |\
-                            (background.like_any sanitized_contents) |\
-                            (parts.background.like_any sanitized_contents) |\
-                            (questions.stem.like_any sanitized_contents) |\
-                            (items.content.like_any sanitized_contents) |\
-                            (answers.content.like_any sanitized_contents)}
+      contents.each do |content|
+        sanitized_contents = to_string_array(content, append_wildcard: true,
+                                                       prepend_wildcard: true)
+        @items = @items.includes(parts: {questions: [:items, :answers]})
+                       .where{(title.like_any sanitized_contents) |\
+                              (background.like_any sanitized_contents) |\
+                              (parts.background.like_any sanitized_contents) |\
+                              (questions.stem.like_any sanitized_contents) |\
+                              (items.content.like_any sanitized_contents) |\
+                              (answers.content.like_any sanitized_contents)}
+      end
     end
 
     with.keyword :solution do |solutions|
@@ -113,8 +123,8 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
 
   self.sortable_fields_map = {
     'title' => :title,
-    'number' => :number,
-    'version' => :version,
+    'number' => Publication.arel_table[:number],
+    'version' => Publication.arel_table[:version],
     'created_at' => :created_at
   }
 end
