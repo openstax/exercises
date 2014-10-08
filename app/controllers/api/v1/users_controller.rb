@@ -79,7 +79,10 @@ module Api::V1
       `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
     EOS
     def index
-      OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, User)
+      #standard_search(OpenStax::Accounts::SearchAccounts,
+      #                params[:q], params.slice(:order_by),
+      #                OpenStax::Accounts::Api::V1::AccountSearchRepresenter)
+      OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
       outputs = OpenStax::Accounts::SearchAccounts.call(
                   params[:q], params.slice(:order_by)).outputs
       respond_with outputs,
@@ -97,7 +100,7 @@ module Api::V1
       #{json_schema(Api::V1::UserRepresenter, include: :readable)}        
     EOS
     def show
-      respond_with current_human_user
+      standard_read(current_human_user)
     end
 
     ##########
@@ -111,14 +114,7 @@ module Api::V1
       #{json_schema(Api::V1::UserRepresenter, include: :writeable)}        
     EOS
     def update
-      @user = current_human_user
-      consume!(@user)
-
-      if @user.save
-        head :no_content
-      else
-        render json: @user.errors, status: :unprocessable_entity
-      end
+      standard_update(current_human_user)
     end
 
     ###########
@@ -130,13 +126,7 @@ module Api::V1
       Disables the current user's account.     
     EOS
     def destroy
-      @user = current_human_user
-
-      if @user.destroy
-        head :no_content
-      else
-        render json: @user.errors, status: :unprocessable_entity
-      end
+      standard_destroy(current_human_user)
     end
 
   end

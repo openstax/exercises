@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/Dantemss/openstax_utilities.git
-  revision: f0962bb99c955c758580114ed20eea7882c51a04
-  ref: f0962bb99c955c758580114ed20eea7882c51a04
+  revision: 0960cbb3026d717a69243669b76f0f829890eaf7
+  ref: 0960cbb3026d717a69243669b76f0f829890eaf7
   specs:
     openstax_utilities (4.0.1.alpha)
       keyword_search

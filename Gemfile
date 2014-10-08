@@ -41,7 +41,7 @@ gem 'rails-html-sanitizer', '~> 1.0'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities', git: 'https://github.com/Dantemss/openstax_utilities.git',
-                          ref: 'f0962bb99c955c758580114ed20eea7882c51a04'
+                          ref: '0960cbb3026d717a69243669b76f0f829890eaf7'
 
 # Cron job scheduling
 gem 'whenever'
