@@ -25,7 +25,6 @@ module Api::V1
     describe "GET index" do
 
       before(:each) do
-        skip
         10.times do
           u = FactoryGirl.build(:exercise)
           next if u.title.include?("adipisci") || \

@@ -17,6 +17,12 @@ module Publishable
 
           has_one :publication, as: :publishable, dependent: :destroy
 
+          has_many :authors, through: :publication
+          has_many :copyright_holders, through: :publication
+          has_many :editors, through: :publication
+          has_many :sources, through: :publication
+          has_many :derivations, through: :publication
+
           before_validation :build_publication, on: :create, unless: :publication
 
           delegate :uid, :number, :version, :published_at, :license, :editors,

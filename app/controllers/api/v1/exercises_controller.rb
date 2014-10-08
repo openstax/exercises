@@ -61,7 +61,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{
-        SearchExercises::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')
+        SearchExercises.sortable_fields_map.keys.collect{|sf| "`"+sf+"`"}.join(', ')
       }.
       Sort directions can either be `ASC` for 
       an ascending sort, or `DESC` for a
@@ -75,7 +75,8 @@ module Api::V1
     EOS
     def index
       OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, Exercise)
-      outputs = SearchExercises.call(params[:q]).outputs
+      query = params[:q] || params[:query]
+      outputs = SearchExercises.call(query, params).outputs
       respond_with outputs, represent_with: Api::V1::ExerciseSearchRepresenter
     end
 

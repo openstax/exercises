@@ -40,7 +40,7 @@ gem 'turbolinks'
 gem 'rails-html-sanitizer', '~> 1.0'
 
 # Utilities for OpenStax websites
-gem 'openstax_utilities', '~> 3.0.0'
+gem 'openstax_utilities', '~> 4.0.0'
 
 # Cron job scheduling
 gem 'whenever'
@@ -55,7 +55,7 @@ gem 'responders', '~> 2.0'
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api'
+gem 'openstax_api', git: 'https://github.com/openstax/openstax_api.git', ref: '1b6e39ff0bcdb44998891bf1319a13db31aa1b14'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'representable'
