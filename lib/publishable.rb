@@ -23,6 +23,23 @@ module Publishable
           has_many :sources, through: :publication
           has_many :derivations, through: :publication
 
+          scope :published, lambda { joins(:publication).includes(:publication)
+                                       .where{publication.published_at != nil} }
+
+          scope :visible_for, lambda { |user|
+            user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+            next published if !user.is_a?(User) || user.is_anonymous?
+            next joins(:publication).includes(:publication) if user.administrator
+            user_id = user.id
+            joins(:publication)
+              .includes(publication: [:authors, :copyright_holders, :editors])
+              .references(publication: [:authors, :copyright_holders, :editors])
+              .where{(publication.published_at != nil) | \
+                     (authors.user_id == user_id) | \
+                     (copyright_holders.user_id == user_id) | \
+                     (editors.user_id == user_id)}
+          }
+
           before_validation :build_publication, on: :create, unless: :publication
 
           delegate :uid, :number, :version, :published_at, :license, :editors,

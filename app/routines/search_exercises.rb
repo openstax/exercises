@@ -1,6 +1,4 @@
 class SearchExercises < OSU::AbstractKeywordSearchRoutine
-  self.initial_relation = Exercise.unscoped.includes(:publication).joins(:publication)
-
   self.search_proc = lambda { |with|
     with.default_keyword :content
 
@@ -48,6 +46,7 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
         sanitized_contents = to_string_array(content, append_wildcard: true,
                                                        prepend_wildcard: true)
         @items = @items.includes(parts: {questions: [:items, :answers]})
+                       .references(parts: {questions: [:items, :answers]})
                        .where{(title.like_any sanitized_contents) |\
                               (background.like_any sanitized_contents) |\
                               (parts.background.like_any sanitized_contents) |\

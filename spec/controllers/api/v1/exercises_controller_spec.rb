@@ -70,7 +70,7 @@ module Api::V1
       end
 
       it "returns a single matching Exercise" do
-        api_get :index, application_token, parameters: {q: 'content:aDiPiScInG eLiT'}
+        api_get :index, admin_token, parameters: {q: 'content:aDiPiScInG eLiT'}
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -82,7 +82,7 @@ module Api::V1
       end
 
       it "returns multiple matching Exercises" do
-        api_get :index, user_token, parameters: {q: 'content:AdIpIsCi'}
+        api_get :index, admin_token, parameters: {q: 'content:AdIpIsCi'}
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -95,7 +95,7 @@ module Api::V1
       end
 
       it "sorts by multiple fields in different directions" do
-        api_get :index, user_token, parameters: {q: 'content:aDiPiScI',
+        api_get :index, admin_token, parameters: {q: 'content:aDiPiScI',
                                                  order_by: "number DESC, version ASC"}
         expect(response).to have_http_status(:success)
 

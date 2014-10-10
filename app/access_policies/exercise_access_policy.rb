@@ -8,9 +8,11 @@ class ExerciseAccessPolicy
     when :create
       !requestor.is_anonymous? && requestor.is_human? && !exercise.persisted?
     when :read
-      exercise.is_published? || exercise.has_collaborator?(requestor)
+      exercise.is_published? || exercise.has_collaborator?(requestor) || \
+      requestor.administrator
     when :update, :destroy
-      !exercise.is_published? && exercise.has_collaborator?(requestor)
+      !exercise.is_published? && exercise.has_collaborator?(requestor) || \
+      requestor.administrator
     else
       false
     end

@@ -41,7 +41,7 @@ gem 'rails-html-sanitizer', '~> 1.0'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities', git: 'https://github.com/Dantemss/openstax_utilities.git',
-                          ref: '0960cbb3026d717a69243669b76f0f829890eaf7'
+                          ref: '0e58d3a2183a9cdd85ba65c8c3d9be65345b5d4e'
 
 # Cron job scheduling
 gem 'whenever'
@@ -56,7 +56,8 @@ gem 'responders', '~> 2.0'
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 3.0.1'
+gem 'openstax_api', git: 'https://github.com/openstax/openstax_api.git',
+                          ref: 'b5137ca22da5edc11b956b49deb37511a9c915da'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'representable'
