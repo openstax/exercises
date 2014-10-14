@@ -5,6 +5,7 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
     with.keyword :id, :uid do |ids|
       ids.each do |id|
         sanitized_ids = to_string_array(id).collect{|id| id.split('v')}
+        next @items = @items.none if sanitized_ids.empty?
         sanitized_numbers = sanitized_ids.collect{|sid| sid.first}.compact
                                          .collect{|snum| snum.gsub(/\Ae/, '')}
         sanitized_versions = sanitized_ids.collect{|sid| sid.second}.compact
@@ -22,6 +23,7 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
     with.keyword :number do |numbers|
       numbers.each do |number|
         sanitized_numbers = to_string_array(numbers)
+        next @items = @items.none if sanitized_numbers.empty?
         @items = @items.where{publication.number.like_any sanitized_numbers}
       end
     end
@@ -29,6 +31,7 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
     with.keyword :version do |versions|
       versions.each do |version|
         sanitized_versions = to_string_array(version)
+        next @items = @items.none if sanitized_versions.empty?
         @items = @items.where{publication.version.like_any sanitized_versions}
       end
     end
@@ -36,7 +39,8 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
     with.keyword :title do |titles|
       titles.each do |title|
         sanitized_titles = to_string_array(title, append_wildcard: true,
-                                                   prepend_wildcard: true)
+                                                  prepend_wildcard: true)
+        next @items = @items.none if sanitized_titles.empty?
         @items = @items.where{title.like_any sanitized_titles}
       end
     end
@@ -45,6 +49,7 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
       contents.each do |content|
         sanitized_contents = to_string_array(content, append_wildcard: true,
                                                        prepend_wildcard: true)
+        next @items = @items.none if sanitized_contents.empty?
         @items = @items.includes(parts: {questions: [:items, :answers]})
                        .references(parts: {questions: [:items, :answers]})
                        .where{(title.like_any sanitized_contents) |\
@@ -57,66 +62,75 @@ class SearchExercises < OSU::AbstractKeywordSearchRoutine
     end
 
     with.keyword :solution do |solutions|
-      sanitized_solutions = to_string_array(solutions, append_wildcard: true,
-                                                       prepend_wildcard: true)
-      @items = @items.includes(:solutions).joins(:solutions)
-                     .where{(solutions.summary.like_any sanitized_solutions) |\
-                            (solutions.details.like_any sanitized_solutions)}
+      solutions.each do |solution|
+        sanitized_solutions = to_string_array(solution, append_wildcard: true,
+                                                         prepend_wildcard: true)
+        next @items = @items.none if sanitized_solutions.empty?
+        @items = @items.includes(:solutions).joins(:solutions)
+                       .where{(solutions.summary.like_any sanitized_solutions) |\
+                              (solutions.details.like_any sanitized_solutions)}
+      end
     end
 
     with.keyword :author do |names|
-      sn = to_string_array(names, append_wildcard: true)
-      @items = @items.includes(authors: {user: :account})
-                     .joins(authors: {user: :account})
-                     .where{(authors.user.account.username.like_any sn) |\
-                            (authors.user.account.first_name.like_any sn) |\
-                            (authors.user.account.last_name.like_any sn) |\
-                            (authors.user.account.full_name.like_any sn) |\
-                            (authors.user.account.title.like_any sn)}
+      names.each do |name|
+        sn = to_string_array(name, append_wildcard: true)
+        next @items = @items.none if sn.empty?
+        @items = @items.includes(authors: {user: :account})
+                       .joins(authors: {user: :account})
+                       .where{(authors.user.account.username.like_any sn) |\
+                              (authors.user.account.first_name.like_any sn) |\
+                              (authors.user.account.last_name.like_any sn) |\
+                              (authors.user.account.full_name.like_any sn)}
+      end
     end
 
     with.keyword :copyright_holder do |names|
-      sn = to_string_array(names, append_wildcard: true)
-      @items = @items.includes(copyright_holders: {user: :account})
-                     .joins(copyright_holders: {user: :account})
-                     .where{(copyright_holders.user.account.username.like_any sn) |\
-                            (copyright_holders.user.account.first_name.like_any sn) |\
-                            (copyright_holders.user.account.last_name.like_any sn) |\
-                            (copyright_holders.user.account.full_name.like_any sn) |\
-                            (copyright_holders.user.account.title.like_any sn)}
+      names.each do |name|
+        sn = to_string_array(name, append_wildcard: true)
+        next @items = @items.none if sn.empty?
+        @items = @items.includes(copyright_holders: {user: :account})
+                       .joins(copyright_holders: {user: :account})
+                       .where{(copyright_holders.user.account.username.like_any sn) |\
+                              (copyright_holders.user.account.first_name.like_any sn) |\
+                              (copyright_holders.user.account.last_name.like_any sn) |\
+                              (copyright_holders.user.account.full_name.like_any sn)}
+      end
     end
 
     with.keyword :editor do |names|
-      sn = to_string_array(names, append_wildcard: true)
-      @items = @items.includes(editors: {user: :account})
-                     .joins(editors: {user: :account})
-                     .where{(editors.user.account.username.like_any sn) |\
-                            (editors.user.account.first_name.like_any sn) |\
-                            (editors.user.account.last_name.like_any sn) |\
-                            (editors.user.account.full_name.like_any sn) |\
-                            (editors.user.account.title.like_any sn)}
+      names.each do |name|
+        sn = to_string_array(name, append_wildcard: true)
+        next @items = @items.none if sn.empty?
+        @items = @items.includes(editors: {user: :account})
+                       .joins(editors: {user: :account})
+                       .where{(editors.user.account.username.like_any sn) |\
+                              (editors.user.account.first_name.like_any sn) |\
+                              (editors.user.account.last_name.like_any sn) |\
+                              (editors.user.account.full_name.like_any sn)}
+      end
     end
 
     with.keyword :collaborator do |names|
-      sn = to_string_array(names, append_wildcard: true)
-      @items = @items.includes(authors: {user: :account},
-                               copyright_holders: {user: :account},
-                               editors: {user: :account})
-                     .where{(authors.user.account.username.like_any sn) |\
-                            (authors.user.account.first_name.like_any sn) |\
-                            (authors.user.account.last_name.like_any sn) |\
-                            (authors.user.account.full_name.like_any sn) |\
-                            (authors.user.account.title.like_any sn) |\
-                            (copyright_holders.user.account.username.like_any sn) |\
-                            (copyright_holders.user.account.first_name.like_any sn) |\
-                            (copyright_holders.user.account.last_name.like_any sn) |\
-                            (copyright_holders.user.account.full_name.like_any sn) |\
-                            (copyright_holders.user.account.title.like_any sn) |\
-                            (editors.user.account.username.like_any sn) |\
-                            (editors.user.account.first_name.like_any sn) |\
-                            (editors.user.account.last_name.like_any sn) |\
-                            (editors.user.account.full_name.like_any sn) |\
-                            (editors.user.account.title.like_any sn)}
+      names.each do |name|
+        sn = to_string_array(name, append_wildcard: true)
+        next @items = @items.none if sn.empty?
+        @items = @items.includes(authors: {user: :account},
+                                 copyright_holders: {user: :account},
+                                 editors: {user: :account})
+                       .where{(authors.user.account.username.like_any sn) |\
+                              (authors.user.account.first_name.like_any sn) |\
+                              (authors.user.account.last_name.like_any sn) |\
+                              (authors.user.account.full_name.like_any sn) |\
+                              (copyright_holders.user.account.username.like_any sn) |\
+                              (copyright_holders.user.account.first_name.like_any sn) |\
+                              (copyright_holders.user.account.last_name.like_any sn) |\
+                              (copyright_holders.user.account.full_name.like_any sn) |\
+                              (editors.user.account.username.like_any sn) |\
+                              (editors.user.account.first_name.like_any sn) |\
+                              (editors.user.account.last_name.like_any sn) |\
+                              (editors.user.account.full_name.like_any sn)}
+      end
     end
   }
 
