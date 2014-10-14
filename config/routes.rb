@@ -62,10 +62,6 @@ Exercises::Application.routes.draw do
 
     resources :exceptions, only: [:show]
 
-    resources :formats
-
-    resources :languages
-
     resources :licenses
 
     resources :required_libraries, only: [:index, :create, :destroy]

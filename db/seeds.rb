@@ -28,39 +28,6 @@ FinePrint::Contract.create do |contract|
   contract.content = 'Placeholder for agreement to publish content under the available licenses, required for new installations to function'
 end
 
-# Question Formats
-Format.create do |format|
-  format.name        = 'multiple_choice'
-end
-
-Format.create do |format|
-  format.name        = 'multiple_select'
-end
-
-Format.create do |format|
-  format.name        = 'short_answer'
-end
-
-Format.create do |format|
-  format.name        = 'fill_in_the_blank'
-end
-
-Format.create do |format|
-  format.name        = 'point_and_click'
-end
-
-Format.create do |format|
-  format.name        = 'matching'
-end
-
-Format.create do |format|
-  format.name        = 'sorting'
-end
-
-Format.create do |format|
-  format.name        = 'free_response'
-end
-
 # Content Licenses
 License.create do |license|
   license.name                 = 'cc_by_4_0'
@@ -151,15 +118,6 @@ License.create do |license|
   license.non_commercial       = false
   license.share_alike          = false
   license.no_derivatives       = false
-end
-
-# Logic Library Languages
-Language.create do |language|
-  language.name = 'javascript'
-end
-
-Language.create do |language|
-  language.name = 'lateX'
 end
 
 # TODO: Standard logic libraries (and RequiredLibrary objects)

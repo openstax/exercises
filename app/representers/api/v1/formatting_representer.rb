@@ -3,23 +3,15 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :name,
+    property :format,
+             as: :name,
              type: String,
              writeable: true,
              readable: true,
-             exec_context: :decorator,
              schema_info: {
                required: true,
-               description: "The associated format's name"
+               description: "The associated format"
              }
-
-    def name
-      represented.format.name
-    end
-
-    def name=(name)
-      represented.format = Format.find_by(name: name)
-    end
 
   end
 end

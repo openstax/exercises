@@ -8,7 +8,6 @@ class Question < ActiveRecord::Base
   has_one :exercise, through: :part
 
   has_many :formattings, as: :formattable, dependent: :destroy
-  has_many :formats, through: :formattings
 
   has_many :solutions, dependent: :destroy, inverse_of: :question
 

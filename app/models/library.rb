@@ -2,17 +2,15 @@ class Library < ActiveRecord::Base
 
   publishable
 
-  belongs_to :language, inverse_of: :libraries
-
   has_one :required_library, dependent: :destroy, inverse_of: :library
 
   has_many :logic_libraries, dependent: :destroy, inverse_of: :library
   has_many :logics, through: :logic_libraries
 
-  validates :language, presence: true
+  validates :language, presence: true, inclusion: { in: Language.all }
 
   scope :for, lambda { |language|
-    joins(:language).where(language: {name: language})
+    where(language: language)
   }
 
   scope :required, lambda { joins(:required_library) }

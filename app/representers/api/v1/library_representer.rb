@@ -9,6 +9,14 @@ module Api::V1
                required: true
              }
 
+    property :language, 
+             type: String,
+             writeable: true,
+             readable: true,
+             schema_info: {
+               required: true
+             }
+
     property :description, 
              type: String,
              writeable: true,

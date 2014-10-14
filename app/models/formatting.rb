@@ -3,9 +3,8 @@ class Formatting < ActiveRecord::Base
   sortable
 
   belongs_to :formattable, polymorphic: true
-  belongs_to :format, inverse_of: :formattings
 
-  validates :format, presence: true
+  validates :format, presence: true, inclusion: { in: Format.all }
   validates :formattable, presence: true
   validates :formattable_id, uniqueness: { scope: [:formattable_type, :format] }
 
