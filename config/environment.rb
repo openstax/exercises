@@ -1,7 +1,6 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
-require 'delegate_access_control_to'
 require 'publishable'
 require 'sortable'
 require 'has_attachments'
