@@ -40,7 +40,6 @@ module Importers
     def self.convert_html(html)
       attachments = html.to_s.scan(QUADBASE_ATTACHMENTS_REGEX)
       attachments.each do |url, filename|
-        debugger
         html = html.gsub(url, download_attachment(url, filename))
       end
       html
