@@ -1,16 +1,16 @@
 module Api::V1
-  class FormattingRepresenter < Roar::Decorator
+  class StylingRepresenter < Roar::Decorator
 
     include Roar::Representer::JSON
 
-    property :format,
+    property :style,
              as: :name,
              type: String,
              writeable: true,
              readable: true,
              schema_info: {
                required: true,
-               description: "The associated format"
+               description: "The associated style"
              }
 
   end

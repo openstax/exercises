@@ -14,6 +14,7 @@ module Api::V1
              }
 
     property :is_optional,
+             as: :optional,
              writeable: true,
              readable: true,
              schema_info: {

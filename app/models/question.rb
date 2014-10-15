@@ -7,7 +7,7 @@ class Question < ActiveRecord::Base
   belongs_to :part, inverse_of: :questions
   has_one :exercise, through: :part
 
-  has_many :formattings, as: :formattable, dependent: :destroy
+  has_many :stylings, as: :stylable, dependent: :destroy
 
   has_many :solutions, dependent: :destroy, inverse_of: :question
 

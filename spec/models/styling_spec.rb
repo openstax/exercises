@@ -1,5 +1,5 @@
 require "rails_helper"
 
-RSpec.describe Format do
+RSpec.describe Styling do
   pending "add some examples to (or delete) #{__FILE__}"
 end

@@ -1,4 +1,4 @@
-module Format
+module Style
 
   MULTIPLE_CHOICE   = 'multiple_choice'
   MULTIPLE_SELECT   = 'multiple_select'

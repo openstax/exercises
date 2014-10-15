@@ -41,10 +41,10 @@ module Api::V1
                writeable: true,
                readable: true
 
-    collection :formattings,
-               as: :formats,
-               class: Formatting,
-               decorator: FormattingRepresenter,
+    collection :stylings,
+               as: :styles,
+               class: Styling,
+               decorator: StylingRepresenter,
                writeable: true,
                readable: true,
                schema_info: {

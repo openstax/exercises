@@ -201,25 +201,6 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   add_index "fine_print_signatures", ["contract_id"], name: "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], name: "index_fine_print_signatures_on_u_id_and_u_type_and_c_id", unique: true
 
-  create_table "formats", force: true do |t|
-    t.string   "name",       null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "formats", ["name"], name: "index_formats_on_name", unique: true
-
-  create_table "formattings", force: true do |t|
-    t.integer  "formattable_id",   null: false
-    t.string   "formattable_type", null: false
-    t.integer  "format_id",        null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "formattings", ["format_id"], name: "index_formattings_on_format_id"
-  add_index "formattings", ["formattable_id", "formattable_type", "format_id"], name: "index_formattings_on_f_id_and_f_type_and_f_id", unique: true
-
   create_table "items", force: true do |t|
     t.integer  "question_id", null: false
     t.string   "reference"
@@ -230,24 +211,16 @@ ActiveRecord::Schema.define(version: 20140916214406) do
 
   add_index "items", ["question_id", "reference"], name: "index_items_on_question_id_and_reference", unique: true
 
-  create_table "languages", force: true do |t|
-    t.string   "name",       null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "languages", ["name"], name: "index_languages_on_name", unique: true
-
   create_table "libraries", force: true do |t|
-    t.integer  "language_id", null: false
     t.string   "name"
+    t.string   "language",    null: false
     t.text     "description"
     t.text     "code",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "libraries", ["language_id"], name: "index_libraries_on_language_id"
+  add_index "libraries", ["language"], name: "index_libraries_on_language"
   add_index "libraries", ["name"], name: "index_libraries_on_name"
 
   create_table "license_compatibilities", force: true do |t|
@@ -373,14 +346,14 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   create_table "logics", force: true do |t|
     t.integer  "parent_id",   null: false
     t.string   "parent_type", null: false
-    t.integer  "language_id", null: false
+    t.string   "language",    null: false
     t.text     "code",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "logics", ["language_id"], name: "index_logics_on_language_id"
-  add_index "logics", ["parent_id", "parent_type", "language_id"], name: "index_logics_on_parent_id_and_parent_type_and_language_id", unique: true
+  add_index "logics", ["language"], name: "index_logics_on_language"
+  add_index "logics", ["parent_id", "parent_type", "language"], name: "index_logics_on_parent_id_and_parent_type_and_language", unique: true
 
   create_table "oauth_access_grants", force: true do |t|
     t.integer  "resource_owner_id", null: false
@@ -584,6 +557,17 @@ ActiveRecord::Schema.define(version: 20140916214406) do
   add_index "sorts", ["sortable_id", "sortable_type", "domain_id", "domain_type"], name: "index_sorts_on_s_id_and_s_type_and_d_id_and_d_type", unique: true
   add_index "sorts", ["sortable_id", "sortable_type"], name: "index_sorts_on_sortable_id_and_sortable_type", unique: true, where: "domain_id IS NULL"
   add_index "sorts", ["sortable_type", "position"], name: "index_sorts_on_sortable_type_and_position", unique: true, where: "domain_id IS NULL"
+
+  create_table "stylings", force: true do |t|
+    t.integer  "stylable_id",   null: false
+    t.string   "stylable_type", null: false
+    t.string   "style",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stylings", ["stylable_id", "stylable_type", "style"], name: "index_stylings_on_stylable_id_and_stylable_type_and_style", unique: true
+  add_index "stylings", ["style"], name: "index_stylings_on_style"
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"
