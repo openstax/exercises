@@ -99,7 +99,8 @@ module Importers
     # Returns a Part
     def self.import_multipart(hash)
       part = Part.new
-      part.background = convert_html(hash['introduction']['html'])
+      part.background = convert_html(hash['introduction']['html']) \
+        unless hash['introduction'].nil?
       id_map = {}
       dependency_map = {}
 
@@ -118,7 +119,7 @@ module Importers
       dependency_map.each do |question, ds|
         ds[:prerequisites].each do |d|
           pq = id_map.delete(d)
-          next unless pq
+          next if pq.nil?
           dependency = QuestionDependency.new(parent_question: pq,
                                               is_optional: false)
           question.parent_dependencies << dependency
@@ -126,7 +127,7 @@ module Importers
 
         ds[:supports].each do |d|
           pq = id_map.delete(d)
-          next unless pq
+          next if pq.nil?
           dependency = QuestionDependency.new(parent_question: pq,
                                               is_optional: true)
           question.parent_dependencies << dependency
@@ -138,13 +139,14 @@ module Importers
 
     # Imports and saves an Exercise
     # Returns true if the Exercise was saved or false otherwise
-    def self.import_exercise(json)
-      hash = JSON.parse(json)
+    def self.import_exercise(hash)
       exercise = Exercise.new
 
       if hash['multipart_question']
         exercise.parts << import_multipart(hash['multipart_question'])
       elsif hash['simple_question']
+        # Skip simple questions with a setup (these likely belong to a multipart)
+        #return false if hash['simple_question']['introduction']
         part = Part.new
         part.questions << import_simple(hash['simple_question'])
         exercise.parts << part
@@ -155,12 +157,25 @@ module Importers
 
     # Imports an Exercise from Quadbase by Question ID
     # Returns true if the Exercise was saved or false otherwise
-    def self.remote_import(id)
+    def self.remote_import_exercise(id)
       id = id.to_s
       id[0] = '' if id[0] == 'q'
 
       url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
-      import_exercise(http_get(url))
+      content = http_get(url)
+      return false if content.blank?
+
+      import_exercise(JSON.parse(content))
+    end
+
+    # Imports all Quadbase questions in the given ID range
+    def self.remote_import_range(id_range)
+      puts 'Importing...'
+      for id in id_range
+        puts "Question q#{id}"
+        remote_import_exercise(id)
+      end
+      puts 'Done.'
     end
   end
 end
