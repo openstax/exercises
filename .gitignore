@@ -21,7 +21,7 @@ config/*settings.yml
 
 # Ignore compiled assets and uploaded files
 public/assets/**/*
-public/uploads/**/*
+public/attachments/**/*
 
 # Ignore vagrant and berkshelf files
 .vagrant*
