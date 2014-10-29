@@ -45,12 +45,39 @@ module Importers
       html
     end
 
-    # Imports a collaborator
+    # Imports a collaborator (requires username, email attributes in the hash)
     # Returns the collaborator
     def self.import_collaborator(hash, klass)
-      account = OpenStax::Accounts::Account.find_or_create_by(openstax_uid: hash['id'])
-      account.full_name ||= hash['name']
-      user = User.find_or_create_by(account: account)
+      username = hash['username']
+      return if username.nil?
+
+      account = OpenStax::Accounts::Account.find_by(username: username)
+      if account.nil?
+        email = hash.delete('email')
+        return if email.nil?
+
+        hash.delete('id')
+        hash['full_name'] = hash.delete('name')
+
+        #  TODO: Make an API in OpenStax Accounts that finds or creates an Account
+        #  for an email address (returns only the openstax_uid, no other info)
+        #  Call that API and link the local account to the remote one by ID
+        # hash['openstax_uid'] = OpenStax::Accounts.configuration.enable_stubbing? ? -SecureRandom.hex.to_i(16) : \
+        #  OpenStax::Accounts.find_or_create_account_by_email(email)
+        hash['openstax_uid'] = -SecureRandom.hex.to_i(16)
+
+        # Create the local Account
+        begin
+          OpenStax::Accounts.syncing = true
+          # Just noticed that syncing in accounts-rails is not thread-safe...
+          account = OpenStax::Accounts::Account.create!(hash)
+        ensure
+          OpenStax::Accounts.syncing = false
+        end
+      end
+
+      user = User.find_or_create_by(account_id: account.id)
+
       collaborator = klass.new(user: user)
       collaborator
     end
@@ -62,10 +89,12 @@ module Importers
       publication.license = default_license
 
       (hash['authors'] || []).each do |author|
-        publication.authors << import_collaborator(author, Author)
+        c = import_collaborator(author, Author)
+        publication.authors << c unless c.nil?
       end
       (hash['copyright_holders'] || []).each do |cr|
-        publication.copyright_holders << import_collaborator(cr, CopyrightHolder)
+        c = import_collaborator(cr, CopyrightHolder)
+        publication.copyright_holders << c unless c.nil?
       end
 
       publication
@@ -113,6 +142,7 @@ module Importers
         dependency_map[question] = {prerequisites: prerequisites,
                                     supports: supports}
         part.questions << question
+        part
       end
 
       # Then assign question dependencies
@@ -143,16 +173,28 @@ module Importers
       exercise = Exercise.new
 
       if hash['multipart_question']
-        exercise.parts << import_multipart(hash['multipart_question'])
+        hash = hash['multipart_question']
+        exercise.parts << import_multipart(hash)
       elsif hash['simple_question']
-        # Skip simple questions with a setup (these likely belong to a multipart)
-        #return false if hash['simple_question']['introduction']
+        hash = hash['simple_question']
+        # Skip simple questions with a setup (these belong to a multipart)
+        return false unless hash['introduction'].try(:[], 'html').blank?
         part = Part.new
-        part.questions << import_simple(hash['simple_question'])
+        part.questions << import_simple(hash)
         exercise.parts << part
       end
+      exercise.publication = import_metadata(hash['attribution'])
 
       exercise.save
+    end
+
+    # Imports Quadbase exercises from the given file
+    def self.import_file(filename)
+      json = File.open(filename, 'r') { |file| file.read }
+      hash = JSON.parse(json)
+      questions = hash['questions']
+      puts "Importing #{questions.length} exercises"
+      questions.each { |q| import_exercise(q) }
     end
 
     # Imports an Exercise from Quadbase by Question ID
