@@ -1,6 +1,7 @@
 class Exercise < ActiveRecord::Base
 
   acts_as_votable
+  parsable :background
   publishable
   has_attachments
   has_logic :javascript, :latex

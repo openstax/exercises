@@ -1,5 +1,6 @@
 class Question < ActiveRecord::Base
 
+  parsable :stem
   sort_domain
 
   attr_accessor :temp_id

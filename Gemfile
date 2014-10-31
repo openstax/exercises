@@ -39,6 +39,9 @@ gem 'turbolinks'
 # Rails 5 HTML sanitizer
 gem 'rails-html-sanitizer', '~> 1.0'
 
+# Converts links in Strings to HTML anchors
+gem 'rails_autolink'
+
 # Utilities for OpenStax websites
 gem 'openstax_utilities', '~> 4.1.0'
 

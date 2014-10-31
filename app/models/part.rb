@@ -1,5 +1,6 @@
 class Part < ActiveRecord::Base
 
+  parsable :background
   sort_domain
 
   attr_accessor :temp_id

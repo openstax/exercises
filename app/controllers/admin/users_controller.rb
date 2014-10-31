@@ -5,7 +5,7 @@ module Admin
 
   # GET /users
     def index
-      handle_with Admin::UsersIndex
+      handle_with Admin::UsersSearch
     end
 
     # GET /users/1

@@ -4,6 +4,7 @@ require File.expand_path('../application', __FILE__)
 require 'style'
 require 'language'
 
+require 'parsable'
 require 'publishable'
 require 'sortable'
 require 'has_attachments'

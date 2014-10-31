@@ -4,7 +4,7 @@ module Admin
     # GET /administrators
     def index
       @administrators = Administrator.all
-      handle_with Admin::UsersIndex
+      handle_with Admin::UsersSearch
     end
 
     # POST /administrators

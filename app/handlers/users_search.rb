@@ -1,4 +1,4 @@
-class UsersIndex
+class UsersSearch
 
   lev_handler transaction: :no_transaction
 
