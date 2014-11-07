@@ -220,17 +220,17 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   add_index "license_compatibilities", ["original_license_id"], name: "index_license_compatibilities_on_original_license_id"
 
   create_table "licenses", force: true do |t|
-    t.string   "name",                                 null: false
-    t.string   "title",                                null: false
-    t.string   "url",                                  null: false
-    t.text     "publishing_contract",                  null: false
-    t.text     "copyright_notice",                     null: false
-    t.boolean  "requires_attribution", default: true,  null: false
-    t.boolean  "share_alike",          default: false, null: false
-    t.boolean  "no_derivatives",       default: false, null: false
-    t.boolean  "non_commercial",       default: false, null: false
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.string   "name",                                  null: false
+    t.string   "title",                                 null: false
+    t.string   "url",                                   null: false
+    t.text     "publishing_contract",                   null: false
+    t.text     "copyright_notice",                      null: false
+    t.boolean  "requires_attribution",  default: true,  null: false
+    t.boolean  "requires_share_alike",  default: false, null: false
+    t.boolean  "allows_derivatives",    default: true,  null: false
+    t.boolean  "allows_commercial_use", default: true,  null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   add_index "licenses", ["name"], name: "index_licenses_on_name", unique: true
