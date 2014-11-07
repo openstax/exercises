@@ -18,7 +18,6 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             getter: lambda { |*| @correctness.to_f },
              schema_info: {
                type: 'number'
              }

@@ -16,7 +16,7 @@ class QuestionDependency < ActiveRecord::Base
   protected
 
   def same_exercise
-    return if parent_question.exercise_id == dependent_question.exercise_id
+    return if parent_question.exercise == dependent_question.exercise
     error.add(:dependent_question,
               'must belong to the same exercise as the parent question')
     false

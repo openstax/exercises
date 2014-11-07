@@ -10,7 +10,7 @@ require 'sortable'
 require 'has_attachments'
 require 'has_logic'
 
-require 'importers/quadbase_question'
+require 'importers/quadbase'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"

@@ -16,8 +16,8 @@ class StemAnswer < ActiveRecord::Base
   protected
 
   def same_question
-    return if stem.question_id == answer.question_id
-    error.add(:answer, 'must belong to the same question as the stem')
+    return if stem.question == answer.question
+    errors.add(:answer, 'must belong to the same question as the stem')
     false
   end
 

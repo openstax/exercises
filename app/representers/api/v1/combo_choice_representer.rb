@@ -8,8 +8,6 @@ module Api::V1
                representer: ComboChoiceAnswerRepresenter,
                writeable: true,
                readable: true,
-               parse_strategy: :sync,
-               getter: lambda { |*| @correctness.to_f },
                schema_info: {
                  required: true
                }
@@ -18,7 +16,6 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             getter: lambda { |*| @correctness.to_f },
              schema_info: {
                type: 'number'
              }
