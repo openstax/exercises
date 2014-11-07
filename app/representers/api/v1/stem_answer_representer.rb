@@ -1,5 +1,5 @@
 module Api::V1
-  class ComboChoiceAnswerRepresenter < Roar::Decorator
+  class StemAnswerRepresenter < Roar::Decorator
 
     include Roar::Representer::JSON
 
@@ -12,6 +12,15 @@ module Api::V1
              },
              schema_info: {
                required: true
+             }
+
+    property :correctness,
+             type: Float,
+             writeable: true,
+             readable: true,
+             getter: lambda { |*| @correctness.to_f },
+             schema_info: {
+               type: 'number'
              }
 
   end

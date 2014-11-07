@@ -1,16 +1,17 @@
 module Api::V1
-  class PartDependencyRepresenter < Roar::Decorator
+  class QuestionDependencyRepresenter < Roar::Decorator
 
     include Roar::Representer::JSON
 
-    property :parent_part_id,
+    property :parent_question_id,
              type: Integer,
              writeable: true,
              readable: true,
              setter: lambda { |val|
-               self.parent_part = dependent_part.exercise.parts.select{ |i|
-                 (i.id || i.temp_id) == val
-               }.first
+               self.parent_question = dependent_question.exercise.questions
+                                        .select{ |i|
+                                          (i.id || i.temp_id) == val
+                                        }.first
              }
 
     property :is_optional,

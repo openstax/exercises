@@ -14,9 +14,9 @@ module Api::V1
              writeable: true,
              readable: true
 
-    collection :parts,
-               class: Part,
-               decorator: PartRepresenter,
+    collection :questions,
+               class: Question,
+               decorator: QuestionRepresenter,
                writeable: true,
                readable: true,
                schema_info: {

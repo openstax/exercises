@@ -9,17 +9,24 @@ module Api::V1
              readable: true,
              setter: lambda { |val| self.temp_id = val }
 
-    property :stem,
+    property :stimulus,
              type: String,
              writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
+             readable: true
 
-    collection :items,
-               class: Item,
-               decorator: ItemRepresenter,
+    collection :stylings,
+               as: :formats,
+               class: Styling,
+               decorator: StylingRepresenter,
+               writeable: true,
+               readable: true,
+               schema_info: {
+                 required: true
+               }
+
+    collection :stems,
+               class: Stem,
+               decorator: StemRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
@@ -29,22 +36,6 @@ module Api::V1
     collection :answers,
                class: Answer,
                decorator: AnswerRepresenter,
-               writeable: true,
-               readable: true,
-               schema_info: {
-                 required: true
-               }
-
-    collection :combo_choices,
-               class: ComboChoice,
-               decorator: ComboChoiceRepresenter,
-               writeable: true,
-               readable: true
-
-    collection :stylings,
-               as: :styles,
-               class: Styling,
-               decorator: StylingRepresenter,
                writeable: true,
                readable: true,
                schema_info: {

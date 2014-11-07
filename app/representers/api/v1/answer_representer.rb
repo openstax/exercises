@@ -3,7 +3,7 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              writeable: true,
              readable: true,
@@ -12,13 +12,10 @@ module Api::V1
                required: true
              }
 
-    property :item_id, 
+    property :question_id,
              type: Integer,
-             writeable: true,
-             readable: true,
-             setter: lambda { |val|
-               self.item = question.items.select{|i| (i.id || i.temp_id) == val}.first
-             }
+             writeable: false,
+             readable: true
 
     property :content,
              type: String,
@@ -26,15 +23,6 @@ module Api::V1
              readable: true,
              schema_info: {
                required: true
-             }
-
-    property :correctness,
-             type: Float,
-             writeable: true,
-             readable: true,
-             getter: lambda { |*| @correctness.to_f },
-             schema_info: {
-               type: 'number'
              }
 
   end
