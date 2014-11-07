@@ -4,7 +4,7 @@ class CreateLogicVariables < ActiveRecord::Migration
       t.references :logic, null: false
       t.string :variable, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :logic_variables, [:logic_id, :variable], unique: true

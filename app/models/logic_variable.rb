@@ -14,9 +14,9 @@ class LogicVariable < ActiveRecord::Base
 
   sortable
 
-  belongs_to :logic, inverse_of: :logic_variables
+  belongs_to :logic
 
-  has_many :logic_variable_values, dependent: :destroy, inverse_of: :logic_variable
+  has_many :logic_variable_values, dependent: :destroy
 
   validate :variables_well_formatted
 

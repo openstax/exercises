@@ -5,7 +5,7 @@ class CreateSorts < ActiveRecord::Migration
       t.references :sortable, polymorphic: true, null: false
       t.integer :position, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :sorts, [:sortable_id, :sortable_type, :domain_id, :domain_type],

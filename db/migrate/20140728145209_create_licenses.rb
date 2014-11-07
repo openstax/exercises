@@ -11,7 +11,7 @@ class CreateLicenses < ActiveRecord::Migration
       t.boolean :no_derivatives, null: false, default: false
       t.boolean :non_commercial, null: false, default: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :licenses, :name, unique: true

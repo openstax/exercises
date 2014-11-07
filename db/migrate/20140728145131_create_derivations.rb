@@ -6,7 +6,7 @@ class CreateDerivations < ActiveRecord::Migration
       t.text :custom_attribution
       t.datetime :hidden_at
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :derivations, [:source_publication_id, :derived_publication_id],

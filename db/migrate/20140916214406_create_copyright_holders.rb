@@ -4,7 +4,7 @@ class CreateCopyrightHolders < ActiveRecord::Migration
       t.references :publication, null: false
       t.references :user, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :copyright_holders, [:publication_id, :user_id], unique: true

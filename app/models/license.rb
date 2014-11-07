@@ -2,18 +2,20 @@ class License < ActiveRecord::Base
 
   sort_domain
 
-  has_many :publications, dependent: :destroy, :inverse_of => :license
+  has_many :publications, dependent: :destroy
 
-  has_many :class_licenses, dependent: :destroy, inverse_of: :license
+  has_many :class_licenses, dependent: :destroy
 
-  has_many :combined_license_compatibilities, class_name: 'LicenseCompatibility',
-           dependent: :destroy, inverse_of: :original_license
-  has_many :combined_compatible_licenses, through: :combined_license_compatibilities,
+  has_many :combined_license_compatibilities,
+           class_name: 'LicenseCompatibility', dependent: :destroy
+  has_many :combined_compatible_licenses,
+           through: :combined_license_compatibilities,
            source: :combined_license
 
-  has_many :original_license_compatibilities, class_name: 'LicenseCompatibility',
-           dependent: :destroy, inverse_of: :combined_license
-  has_many :original_compatible_licenses, through: :original_license_compatibilities,
+  has_many :original_license_compatibilities,
+           class_name: 'LicenseCompatibility', dependent: :destroy
+  has_many :original_compatible_licenses,
+           through: :original_license_compatibilities,
            source: :original_license
 
   validates :name, presence: true, uniqueness: true

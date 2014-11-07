@@ -5,7 +5,7 @@ class CreateLogicVariableValues < ActiveRecord::Migration
       t.integer :seed, null: false
       t.text :value, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :logic_variable_values, [:logic_variable_id, :seed], unique: true

@@ -4,7 +4,7 @@ class CreateClassLicenses < ActiveRecord::Migration
       t.references :license, null: false
       t.string :class_name, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :class_licenses, [:license_id, :class_name], unique: true

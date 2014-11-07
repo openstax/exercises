@@ -4,7 +4,7 @@ class CreateListOwners < ActiveRecord::Migration
       t.references :owner, polymorphic: true, null: false
       t.references :list, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :list_owners, [:owner_id, :owner_type, :list_id], unique: true

@@ -2,12 +2,12 @@ class Derivation < ActiveRecord::Base
 
   sortable
 
-  belongs_to :derived_publication, class_name: 'Publication', inverse_of: :sources
-  belongs_to :source_publication, class_name: 'Publication', inverse_of: :derivations
+  belongs_to :derived_publication, class_name: 'Publication'
+  belongs_to :source_publication, class_name: 'Publication'
 
   validates :derived_publication, presence: true
-  validates :source_publication, uniqueness: { scope: :derived_publication_id },
-                                 allow_nil: true
+  validates :source_publication,
+            uniqueness: { scope: :derived_publication_id }, allow_nil: true
   validate :different_ids, :source_or_custom
 
   protected

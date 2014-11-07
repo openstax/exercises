@@ -6,7 +6,7 @@ class CreateSolutions < ActiveRecord::Migration
       t.text :summary
       t.text :details, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :solutions, :question_id

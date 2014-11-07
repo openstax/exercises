@@ -13,7 +13,7 @@ class InstallCommontator < ActiveRecord::Migration
       t.integer :cached_votes_up, :default => 0
       t.integer :cached_votes_down, :default => 0
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :commontator_comments, [:creator_id, :creator_type, :thread_id],

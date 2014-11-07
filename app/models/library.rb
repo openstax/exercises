@@ -2,9 +2,9 @@ class Library < ActiveRecord::Base
 
   publishable
 
-  has_one :required_library, dependent: :destroy, inverse_of: :library
+  has_one :required_library, dependent: :destroy
 
-  has_many :logic_libraries, dependent: :destroy, inverse_of: :library
+  has_many :logic_libraries, dependent: :destroy
   has_many :logics, through: :logic_libraries
 
   validates :language, presence: true, inclusion: { in: Language.all }

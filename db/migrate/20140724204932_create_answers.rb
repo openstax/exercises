@@ -7,7 +7,7 @@ class CreateAnswers < ActiveRecord::Migration
       t.text :content, null: false
       t.text :feedback
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :answers, [:question_id, :correctness]

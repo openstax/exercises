@@ -11,7 +11,7 @@ class CreatePublications < ActiveRecord::Migration
       t.boolean :embargo_children_only, null: false, default: false
       t.boolean :major_change, null: false, default: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :publications, [:publishable_id, :publishable_type], unique: true

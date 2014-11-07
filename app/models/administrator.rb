@@ -1,6 +1,6 @@
 class Administrator < ActiveRecord::Base
 
-  belongs_to :user, inverse_of: :administrator
+  belongs_to :user
 
   validates :user, presence: true, uniqueness: true
 

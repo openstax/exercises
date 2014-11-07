@@ -4,7 +4,7 @@ class CreateExercises < ActiveRecord::Migration
       t.string :title
       t.text :background
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :exercises, :title

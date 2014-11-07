@@ -4,11 +4,11 @@ class Item < ActiveRecord::Base
 
   parsable :content
 
-  belongs_to :question, inverse_of: :items
+  belongs_to :question
   has_one :part, through: :question
   has_one :exercise, through: :part
 
-  has_many :answers, dependent: :destroy, inverse_of: :item
+  has_many :answers, dependent: :destroy
 
   validates :question, presence: :true
 

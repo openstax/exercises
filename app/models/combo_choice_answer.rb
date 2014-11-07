@@ -1,7 +1,7 @@
 class ComboChoiceAnswer < ActiveRecord::Base
 
-  belongs_to :combo_choice, inverse_of: :combo_choice_answers
-  belongs_to :answer, inverse_of: :combo_choice_answers
+  belongs_to :combo_choice
+  belongs_to :answer
 
   validates :combo_choice, presence: true
   validates :answer, presence: true, uniqueness: { scope: :combo_choice_id }

@@ -7,7 +7,7 @@ class Solution < ActiveRecord::Base
   has_logic :javascript, :latex
   sort_domain
 
-  belongs_to :question, inverse_of: :solutions
+  belongs_to :question
 
   validates :question, presence: true
 

@@ -9,7 +9,7 @@ module Api::V1
              readable: true,
              setter: lambda { |val| self.temp_id = val }
 
-    property :background,
+    property :stimulus,
              type: String,
              writeable: true,
              readable: true

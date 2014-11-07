@@ -3,7 +3,7 @@ class CreateLists < ActiveRecord::Migration
     create_table :lists do |t|
       t.string :name, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :lists, :name

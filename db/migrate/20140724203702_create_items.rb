@@ -5,7 +5,7 @@ class CreateItems < ActiveRecord::Migration
       t.string :reference
       t.text :content
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :items, [:question_id, :reference], unique: true

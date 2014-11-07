@@ -6,13 +6,13 @@ class Exercise < ActiveRecord::Base
   has_attachments
   has_logic :javascript, :latex
 
-  has_many :parts, dependent: :destroy, inverse_of: :exercise, autosave: true
+  has_many :parts, dependent: :destroy, autosave: true
   has_many :questions, through: :parts
   has_many :items, through: :questions
   has_many :answers, through: :questions
   has_many :combo_choices, through: :questions
 
-  has_many :list_exercises, :dependent => :destroy, :inverse_of => :exercise
+  has_many :list_exercises, :dependent => :destroy
   has_many :lists, :through => :list_exercises
 
   protected

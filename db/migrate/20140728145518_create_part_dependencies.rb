@@ -5,7 +5,7 @@ class CreatePartDependencies < ActiveRecord::Migration
       t.references :dependent_part, null: false
       t.boolean :is_optional, null: false, default: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :part_dependencies, [:dependent_part_id, :parent_part_id], unique: true,

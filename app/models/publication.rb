@@ -3,16 +3,16 @@ class Publication < ActiveRecord::Base
   sort_domain
 
   belongs_to :publishable, polymorphic: true
-  belongs_to :license, inverse_of: :publications
+  belongs_to :license
 
-  has_many :authors, dependent: :destroy, inverse_of: :publication
-  has_many :copyright_holders, dependent: :destroy, inverse_of: :publication
-  has_many :editors, dependent: :destroy, inverse_of: :publication
+  has_many :authors, dependent: :destroy
+  has_many :copyright_holders, dependent: :destroy
+  has_many :editors, dependent: :destroy
 
-  has_many :sources, class_name: 'Derivation', foreign_key: :derived_publication_id,
-           dependent: :destroy, inverse_of: :derived_publication
+  has_many :sources, class_name: 'Derivation',
+                     foreign_key: :derived_publication_id, dependent: :destroy
   has_many :derivations, foreign_key: :source_publication_id,
-           dependent: :destroy, inverse_of: :source_publication
+                         dependent: :destroy
 
   validates :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }

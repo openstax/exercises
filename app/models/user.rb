@@ -6,18 +6,19 @@ class User < ActiveRecord::Base
 
   sort_domain
 
-  belongs_to :account, class_name: "OpenStax::Accounts::Account", autosave: true
+  belongs_to :account, class_name: "OpenStax::Accounts::Account",
+                       autosave: true
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
 
-  has_one :administrator, dependent: :destroy, inverse_of: :user
+  has_one :administrator, dependent: :destroy
 
-  has_many :authors, dependent: :destroy, inverse_of: :user
-  has_many :copyright_holders, dependent: :destroy, inverse_of: :user
-  has_many :editors, dependent: :destroy, inverse_of: :user
+  has_many :authors, dependent: :destroy
+  has_many :copyright_holders, dependent: :destroy
+  has_many :editors, dependent: :destroy
 
   has_many :child_deputizations, class_name: 'Deputization',
-           foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer
+           foreign_key: :deputizer_id, dependent: :destroy
   has_many_through_groups :groups_as_member, :deputizations,
                           as: :deputy, dependent: :destroy
 

@@ -4,7 +4,7 @@ class CreateDeputizations < ActiveRecord::Migration
       t.references :deputizer, null: false
       t.references :deputy, polymorphic: true, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :deputizations, [:deputy_id, :deputy_type, :deputizer_id], unique: true,

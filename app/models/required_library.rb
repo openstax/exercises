@@ -1,6 +1,6 @@
 class RequiredLibrary < ActiveRecord::Base
 
-  belongs_to :library, inverse_of: :required_library
+  belongs_to :library
 
   validates :library, presence: true, uniqueness: true
 

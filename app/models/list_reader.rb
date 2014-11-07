@@ -2,7 +2,7 @@ class ListReader < ActiveRecord::Base
 
   sortable
 
-  belongs_to :list, inverse_of: :list_owners
+  belongs_to :list
   belongs_to :reader, polymorphic: true
 
   validates :list, presence: true

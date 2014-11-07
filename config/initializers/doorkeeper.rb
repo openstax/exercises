@@ -85,7 +85,7 @@ end
 Doorkeeper::Application.class_exec do
   belongs_to :owner, polymorphic: true
 
-  has_one :trusted_application, dependent: :destroy, inverse_of: :application
+  has_one :trusted_application, dependent: :destroy
 
   validates :owner, presence: true
 

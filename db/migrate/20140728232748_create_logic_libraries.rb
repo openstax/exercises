@@ -4,7 +4,7 @@ class CreateLogicLibraries < ActiveRecord::Migration
       t.references :logic, null: false
       t.references :library, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :logic_libraries, [:logic_id, :library_id], unique: true

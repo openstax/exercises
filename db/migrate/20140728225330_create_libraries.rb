@@ -6,7 +6,7 @@ class CreateLibraries < ActiveRecord::Migration
       t.text :description
       t.text :code, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :libraries, :name

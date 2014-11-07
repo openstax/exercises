@@ -4,7 +4,7 @@ class CreateStylings < ActiveRecord::Migration
       t.references :stylable, polymorphic: true, null: false
       t.string :style, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :stylings, [:stylable_id, :stylable_type, :style], unique: true

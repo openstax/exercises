@@ -5,7 +5,7 @@ class CreateComboChoices < ActiveRecord::Migration
       t.decimal :correctness, null: false, precision: 3, scale: 2, default: 0
       t.text :feedback
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :combo_choices, [:question_id, :correctness]

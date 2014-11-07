@@ -11,7 +11,7 @@ class CreateUsers < ActiveRecord::Migration
       t.boolean :receive_access_notifications, null: false, default: true
       t.boolean :receive_comment_notifications, null: false, default: true
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :users, :account_id, unique: true

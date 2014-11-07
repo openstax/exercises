@@ -1,10 +1,10 @@
 class ComboChoice < ActiveRecord::Base
 
-  belongs_to :question, inverse_of: :combo_choices
+  belongs_to :question
   has_one :part, through: :question
   has_one :exercise, through: :part
 
-  has_many :combo_choice_answers, dependent: :destroy, inverse_of: :combo_choice
+  has_many :combo_choice_answers, dependent: :destroy
   has_many :answers, through: :combo_choice_answers
 
   validates :question, presence: true

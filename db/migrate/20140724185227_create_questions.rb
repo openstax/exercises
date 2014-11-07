@@ -4,7 +4,7 @@ class CreateQuestions < ActiveRecord::Migration
       t.references :part, null: false
       t.text :stem, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :questions, :part_id
