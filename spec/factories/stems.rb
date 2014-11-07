@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :item do
+  factory :stem do
     question
     content { Faker::Lorem.paragraph }
   end

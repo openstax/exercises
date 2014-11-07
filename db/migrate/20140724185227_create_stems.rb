@@ -1,12 +1,12 @@
-class CreateAnswers < ActiveRecord::Migration
+class CreateStems < ActiveRecord::Migration
   def change
-    create_table :answers do |t|
+    create_table :stems do |t|
       t.references :question, null: false
       t.text :content, null: false
 
       t.timestamps null: false
     end
 
-    add_index :answers, :question_id
+    add_index :stems, :question_id
   end
 end

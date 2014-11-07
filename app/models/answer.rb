@@ -5,8 +5,7 @@ class Answer < ActiveRecord::Base
   parsable :content
 
   belongs_to :question
-  has_one :part, through: :question
-  has_one :exercise, through: :part
+  has_one :exercise, through: :question
 
   belongs_to :item
 

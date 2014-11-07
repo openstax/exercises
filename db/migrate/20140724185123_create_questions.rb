@@ -1,12 +1,12 @@
 class CreateQuestions < ActiveRecord::Migration
   def change
     create_table :questions do |t|
-      t.references :part, null: false
-      t.text :stem, null: false
+      t.references :exercise, null: false
+      t.text :stimulus
 
       t.timestamps null: false
     end
 
-    add_index :questions, :part_id
+    add_index :questions, :exercise_id
   end
 end

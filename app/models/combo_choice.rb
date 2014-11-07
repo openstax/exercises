@@ -1,14 +1,15 @@
 class ComboChoice < ActiveRecord::Base
 
-  belongs_to :question
-  has_one :part, through: :question
-  has_one :exercise, through: :part
+  belongs_to :stem
+  has_one :question, through: :stem
+  has_one :exercise, through: :question
 
   has_many :combo_choice_answers, dependent: :destroy
   has_many :answers, through: :combo_choice_answers
 
-  validates :question, presence: true
+  validates :stem, presence: true
+  validates :correctness, presence: true, numericality: true
 
-  delegate_access_control_to :question
+  delegate_access_control_to :stem
 
 end
