@@ -6,22 +6,21 @@ class Derivation < ActiveRecord::Base
   belongs_to :source_publication, class_name: 'Publication'
 
   validates :derived_publication, presence: true
-  validates :source_publication,
-            uniqueness: { scope: :derived_publication_id }, allow_nil: true
+  validates :source_publication, uniqueness: { scope: :derived_publication_id }
   validate :different_ids, :source_or_custom
 
   protected
 
-  def different_ids
-    return if source_publication_id != derived_publication_id
-    errors.add(:derived_publication, 'cannot be derived from itself.')
+  def different_publications
+    return if source_publication != derived_publication
+    errors.add(:base, 'must have different publications')
     false
   end
 
   def source_or_custom
-    return unless source_publication_id.nil? && custom_attribution.blank?
+    return unless source_publication.nil? && custom_attribution.blank?
     errors.add(:base,
-               'must have either a source publication or a custom attribution')
+               'must have either a source publication or custom attribution')
     false
   end
 

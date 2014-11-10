@@ -10,6 +10,4 @@ class ComboChoice < ActiveRecord::Base
   validates :stem, presence: true
   validates :correctness, presence: true, numericality: true
 
-  delegate_access_control_to :stem
-
 end

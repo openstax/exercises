@@ -15,9 +15,9 @@ class Exercise < ActiveRecord::Base
 
   protected
 
-  def has_parts
-    return unless parts.first.nil?
-    errors.add(:parts, "can't be blank")
+  def has_questions
+    return unless questions.first.nil?
+    errors.add(:questions, "can't be blank")
     false
   end
 

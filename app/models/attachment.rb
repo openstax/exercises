@@ -8,6 +8,4 @@ class Attachment < ActiveRecord::Base
   validates :asset, presence: true,
                     uniqueness: { scope: [:parent_id, :parent_type] }
 
-  delegate_access_control_to :parent
-
 end

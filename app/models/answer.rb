@@ -7,13 +7,10 @@ class Answer < ActiveRecord::Base
   belongs_to :question
   has_one :exercise, through: :question
 
-  belongs_to :item
-
   has_many :combo_choice_answers, dependent: :destroy
   has_many :combo_choices, through: :combo_choice_answers
 
   validates :question, presence: true
-
-  delegate_access_control_to :question
+  validates :content, presence: true
 
 end

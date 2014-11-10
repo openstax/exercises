@@ -3,7 +3,6 @@ class License < ActiveRecord::Base
   sort_domain
 
   has_many :publications, dependent: :destroy
-
   has_many :class_licenses, dependent: :destroy
 
   has_many :combined_license_compatibilities,
