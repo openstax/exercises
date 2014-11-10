@@ -11,6 +11,7 @@ module Importers
     ATTACHMENT_EXTENSIONS = ['jpeg', 'jpg', 'png', 'gif', 'pdf']
     FILENAME_EXPRESSION = "[\\w-]+\\.(?:#{ATTACHMENT_EXTENSIONS.join('|')})"
     QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/(#{FILENAME_EXPRESSION}))\\\"></center></p>"
+    QUADBASE_MATH_REGEX = /\$+[^\$]*\$+/m
 
     # Returns the license to be applied to quadbase questions
     def self.default_license
@@ -38,11 +39,27 @@ module Importers
       "#{EXERCISES_ATTACHMENTS_URL}/#{filename}"
     end
 
+    # Converts Quadbase's dollar sign math to a math tag
+    def self.math_tag(math)
+      inner_math = math[1..-2]
+      tag = 'span'
+      if QUADBASE_MATH_REGEX =~ inner_math
+        inner_math = inner_math[1..-2]
+        tag = 'div'
+      end
+
+      "<#{tag} data-math=\"#{inner_math.gsub('"', '&quot;')}\"></#{tag}>"
+    end
+
     # Converts Quadbase HTML to Exercises HTML
     def self.convert_html(html)
       attachments = html.to_s.scan(QUADBASE_ATTACHMENTS_REGEX)
       attachments.each do |url, filename|
         html = html.gsub(url, download_attachment(url, filename))
+      end
+      maths = html.scan(QUADBASE_MATH_REGEX)
+      maths.each do |math|
+        html = html.gsub(math, math_tag(math))
       end
       html
     end
@@ -186,8 +203,8 @@ module Importers
         exercise = import_multipart(hash)
       elsif hash['simple_question']
         hash = hash['simple_question']
-        # Skip simple questions with a setup (these belong to a multipart)
-        return false unless hash['introduction'].try(:[], 'html').blank?
+        # Skip duplicate questions (these most often belong to a multipart)
+        #return false unless hash['introduction'].try(:[], 'html').blank?
         exercise = Exercise.new
         question = import_simple(hash)
         question.exercise = exercise
