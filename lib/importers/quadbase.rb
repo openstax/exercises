@@ -119,9 +119,17 @@ module Importers
       publication
     end
 
-    # Imports a simple question
-    # Returns a Question
-    def self.import_simple(hash)
+    # Imports the introduction for a Quadbase question
+    # Returns an Exercise
+    def self.import_introduction(hash)
+      exercise = Exercise.new
+      exercise.background = convert_html(hash['html']) unless hash.nil?
+      exercise
+    end
+
+    # Imports a Quadbase question without the introduction
+    # Returns the Question
+    def self.import_without_introduction(hash)
       question = Question.new
       stem = Stem.new(question: question,
                       content: convert_html(hash['content']['html']))
@@ -150,18 +158,26 @@ module Importers
       question
     end
 
+    # Imports a simple question
+    # Returns an Exercise
+    def self.import_simple(hash)
+      exercise = import_introduction(hash['introduction'])
+      question = import_without_introduction(hash)
+      question.exercise = exercise
+      exercise.questions << question
+      exercise
+    end
+
     # Imports a multipart question
     # Returns an Exercise
     def self.import_multipart(hash)
-      exercise = Exercise.new
-      exercise.background = convert_html(hash['introduction']['html']) \
-        unless hash['introduction'].nil?
+      exercise = import_introduction(hash['introduction'])
       id_map = {}
       dependency_map = {}
 
       # First construct all question objects and the maps
       hash['parts'].each do |p|
-        question = import_simple(p['simple_question'])
+        question = import_without_introduction(p['simple_question'])
         question.exercise = exercise
         id_map[p['simple_question']['id']] = question
         prerequisites = (p['prerequisites'] || []).collect{|pre| pre['id']}
@@ -203,12 +219,15 @@ module Importers
         exercise = import_multipart(hash)
       elsif hash['simple_question']
         hash = hash['simple_question']
-        # Skip duplicate questions (these most often belong to a multipart)
-        #return false unless hash['introduction'].try(:[], 'html').blank?
-        exercise = Exercise.new
-        question = import_simple(hash)
-        question.exercise = exercise
-        exercise.questions << import_simple(hash)
+        exercise = import_simple(hash)
+
+        # Skip duplicates (to avoid importing the individual
+        #                  parts of multipart questions)
+        background = ParseContent.call(exercise.background).outputs[:content]
+        content = ParseContent.call(exercise.questions.first.stems.first.content).outputs[:content]
+        return false if Exercise.joins(:stems)
+                                .where(background: background)
+                                .where{stems.content == content}.exists?
       end
       publication = import_metadata(hash['attribution'])
       publication.publishable = exercise
