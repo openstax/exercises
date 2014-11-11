@@ -123,7 +123,7 @@ module Importers
     # Returns an Exercise
     def self.import_introduction(hash)
       exercise = Exercise.new
-      exercise.background = convert_html(hash['html']) unless hash.nil?
+      exercise.stimulus = convert_html(hash['html']) unless hash.nil?
       exercise
     end
 

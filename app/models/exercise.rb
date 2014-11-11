@@ -1,7 +1,7 @@
 class Exercise < ActiveRecord::Base
 
   acts_as_votable
-  parsable :background
+  parsable :stimulus
   publishable
   has_attachments
   has_logic :javascript, :latex
@@ -18,12 +18,6 @@ class Exercise < ActiveRecord::Base
   def has_questions
     return unless questions.first.nil?
     errors.add(:questions, "can't be blank")
-    false
-  end
-
-  def has_content
-    return unless background.blank?
-    errors.add(:content, "can't be blank")
     false
   end
 

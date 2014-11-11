@@ -9,17 +9,16 @@ module Api::V1
              writeable: true,
              readable: true
 
-    property :background,
+    property :stimulus,
              type: String,
              writeable: true,
              readable: true
 
     collection :questions,
                class: Question,
-               decorator: lambda { |klass, *| klass.nil? || \
-                                           klass.stems.length != 1 ? \
-                                             QuestionRepresenter : \
-                                             SimpleQuestionRepresenter },
+               decorator: lambda { |klass, *|
+                klass.nil? || klass.stems.length != 1 ? \
+                  QuestionRepresenter : SimpleQuestionRepresenter },
                writeable: true,
                readable: true,
                schema_info: {

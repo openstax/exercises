@@ -168,7 +168,7 @@ ActiveRecord::Schema.define(version: 20141107194147) do
 
   create_table "exercises", force: true do |t|
     t.string   "title"
-    t.text     "background"
+    t.text     "stimulus"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

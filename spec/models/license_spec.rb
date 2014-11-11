@@ -19,4 +19,7 @@ RSpec.describe License, :type => :model do
   it { is_expected.to validate_uniqueness_of(:title) }
   it { is_expected.to validate_uniqueness_of(:url) }
 
+  it 'should return select options for publishable objects' do
+  end
+
 end
