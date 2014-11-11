@@ -14,45 +14,35 @@ module Api::V1
              writeable: true,
              readable: true
 
-    collection :stylings,
-               as: :formats,
-               class: Styling,
-               decorator: StylingRepresenter,
-               writeable: true,
-               readable: true,
-               schema_info: {
-                 required: true
-               }
-
     property :stem,
-             class: Stem,
-             decorator: SimpleStemRepresenter,
+             type: String,
              writeable: true,
              readable: true,
-             getter: lambda { |*| stems.first },
-             setter: lambda { |val| stems.first = val },
+             getter: lambda { |*| stems.first.content },
+             setter: lambda { |val|
+               stems << Stem.new(question: self) unless stems.exists?
+               stems.first.content = val },
              schema_info: {
                required: true
              }
 
     collection :answers,
                class: Answer,
-               decorator: AnswerRepresenter,
+               decorator: SimpleAnswerRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
                  required: true
                }
 
-    collection :parent_dependencies,
-               as: :dependencies,
-               class: QuestionDependency,
-               decorator: QuestionDependencyRepresenter,
+    collection :combo_choices,
+               class: ComboChoice,
+               decorator: ComboChoiceRepresenter,
                writeable: true,
                readable: true,
-               schema_info: {
-                 required: true
-               }
+               getter: lambda { |*| stems.first.try(:combo_choices) },
+               instance: lambda { |val| stems.find_or_instantiate_by(
+                                          :answer_id, val) }
 
   end
 end

@@ -3,12 +3,6 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :id,
-             type: Integer,
-             writeable: true,
-             readable: true,
-             setter: lambda { |val| self.temp_id = val }
-
     property :content,
              type: String,
              writeable: true,
@@ -20,12 +14,6 @@ module Api::V1
     collection :stem_answers,
                class: StemAnswer,
                decorator: StemAnswerRepresenter,
-               writeable: true,
-               readable: true
-
-    collection :combo_choices,
-               class: ComboChoice,
-               decorator: ComboChoiceRepresenter,
                writeable: true,
                readable: true
 
