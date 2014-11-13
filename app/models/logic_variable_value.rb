@@ -6,6 +6,4 @@ class LogicVariableValue < ActiveRecord::Base
   validates :seed, presence: true, uniqueness: { scope: :logic_variable_id }
   validates :value, presence: true
 
-  delegate_access_control to: :logic_variable
-
 end

@@ -10,11 +10,13 @@ module Api::V1
              readable: true
 
     property :summary,
+             as: :summary_html,
              type: String,
              writeable: true,
              readable: true
 
     property :details,
+             as: :details_html,
              type: String,
              writeable: true,
              readable: true,

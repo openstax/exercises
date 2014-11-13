@@ -10,6 +10,7 @@ module Api::V1
              readable: true
 
     property :stimulus,
+             as: :stimulus_html,
              type: String,
              writeable: true,
              readable: true

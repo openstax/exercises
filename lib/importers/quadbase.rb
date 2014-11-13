@@ -133,15 +133,14 @@ module Importers
       question = Question.new
       stem = Stem.new(question: question,
                       content: convert_html(hash['content']['html']))
-      question.stems << stem
 
-      question.stylings << Styling.new(stylable: question,
-                                       style: Style::DRAWING) \
+      stem.stylings << Styling.new(stylable: stem,
+                                   style: Style::DRAWING) \
         if hash['answer_can_be_sketched']
 
       if hash['answer_choices']
-        question.stylings << Styling.new(stylable: question,
-                                         style: Style::MULTIPLE_CHOICE)
+        stem.stylings << Styling.new(stylable: stem,
+                                     style: Style::MULTIPLE_CHOICE)
 
         hash['answer_choices'].each do |ac|
           answer = Answer.new(question: question,
@@ -151,10 +150,11 @@ module Importers
                                               correctness: ac['credit'])
         end
       else
-        question.stylings << Styling.new(stylable: question,
-                                         style: Style::FREE_RESPONSE)
+        stem.stylings << Styling.new(stylable: stem,
+                                     style: Style::FREE_RESPONSE)
       end
 
+      question.stems << stem
       question
     end
 
@@ -223,11 +223,11 @@ module Importers
 
         # Skip duplicates (to avoid importing the individual
         #                  parts of multipart questions)
-        background = ParseContent.call(exercise.background).outputs[:content]
-        content = ParseContent.call(exercise.questions.first.stems.first.content).outputs[:content]
+        stimulus = ParseContent.call(exercise.stimulus).outputs[:content]
+        stem = ParseContent.call(exercise.questions.first.stems.first.content).outputs[:content]
         return false if Exercise.joins(:stems)
-                                .where(background: background)
-                                .where{stems.content == content}.exists?
+                                .where(stimulus: stimulus)
+                                .where{stems.content == stem}.exists?
       end
       publication = import_metadata(hash['attribution'])
       publication.publishable = exercise

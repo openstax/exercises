@@ -11,8 +11,6 @@ class QuestionDependency < ActiveRecord::Base
 
   validate :same_exercise
 
-  delegate_access_control_to :dependent_question
-
   protected
 
   def same_exercise

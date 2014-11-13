@@ -18,6 +18,7 @@ module Api::V1
              readable: true
 
     property :content,
+             as: :content_html,
              type: String,
              writeable: true,
              readable: true,

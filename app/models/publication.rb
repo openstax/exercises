@@ -22,8 +22,6 @@ class Publication < ActiveRecord::Base
 
   before_validation :assign_number_and_version, on: :create
 
-  delegate_access_control_to :publishable
-
   default_scope lambda { order{[number.asc, version.desc]} }
 
   scope :for, lambda { |publishable_type, number, version = nil|

@@ -11,8 +11,6 @@ class StemAnswer < ActiveRecord::Base
 
   validate :same_question
 
-  delegate_access_control_to :stem
-
   protected
 
   def same_question

@@ -7,22 +7,13 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val| self.temp_id = val }
+             setter: lambda { |val, *| self.temp_id = val }
 
     property :stimulus,
+             as: :stimulus_html,
              type: String,
              writeable: true,
              readable: true
-
-    collection :stylings,
-               as: :formats,
-               class: Styling,
-               decorator: StylingRepresenter,
-               writeable: true,
-               readable: true,
-               schema_info: {
-                 required: true
-               }
 
     collection :stems,
                class: Stem,

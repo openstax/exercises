@@ -2,6 +2,7 @@ class Stem < ActiveRecord::Base
 
   parsable :content
   sort_domain
+  stylable
 
   attr_accessor :temp_id
 
@@ -15,7 +16,5 @@ class Stem < ActiveRecord::Base
   has_many :combo_choice_answers, through: :combo_choices
 
   validates :question, presence: true
-
-  delegate_access_control_to :question
 
 end

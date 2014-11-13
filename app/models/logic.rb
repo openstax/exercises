@@ -13,6 +13,4 @@ class Logic < ActiveRecord::Base
   validates :parent, presence: true, uniqueness: true
   validates :language, presence: true, inclusion: { in: Language.all }
 
-  delegate_access_control_to :parent
-
 end

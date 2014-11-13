@@ -7,7 +7,7 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val| self.temp_id = val },
+             setter: lambda { |val, *| self.temp_id = val },
              schema_info: {
                required: true
              }
@@ -18,6 +18,7 @@ module Api::V1
              readable: true
 
     property :content,
+             as: :content_html,
              type: String,
              writeable: true,
              readable: true,

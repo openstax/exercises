@@ -3,7 +3,10 @@ module Api::V1
 
     include Roar::Representer::JSON
 
+    stylable
+
     property :content,
+             as: :content_html,
              type: String,
              writeable: true,
              readable: true,

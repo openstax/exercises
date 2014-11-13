@@ -6,6 +6,7 @@ class Solution < ActiveRecord::Base
   has_attachments
   has_logic :javascript, :latex
   sort_domain
+  stylable
 
   belongs_to :question
 

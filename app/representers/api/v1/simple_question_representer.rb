@@ -10,6 +10,7 @@ module Api::V1
              setter: lambda { |val| self.temp_id = val }
 
     property :stimulus,
+             as: :stimulus_html,
              type: String,
              writeable: true,
              readable: true
@@ -34,6 +35,22 @@ module Api::V1
                schema_info: {
                  required: true
                }
+
+          collection :formats,
+                     type: String,
+                     writeable: true,
+                     readable: true,
+                     getter: lambda { |*| stems.first.stylings.collect{ |s|
+                                            s.style } },
+                     setter: lambda { |val|
+                       styling = stems.first.stylings.find_or_initialize_by(
+                                   style: val)
+                       stems.first.stylings << styling unless styling.persisted?
+                     },
+                     schema_info: {
+                       required: true,
+                       description: 'The formats allowed for this object'
+                     }
 
     collection :combo_choices,
                class: ComboChoice,

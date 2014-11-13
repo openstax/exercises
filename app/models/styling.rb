@@ -8,6 +8,4 @@ class Styling < ActiveRecord::Base
   validates :style, presence: true, inclusion: { in: Style.all },
                     uniqueness: { scope: [:stylable_type, :stylable_id] }
 
-  delegate_access_control_to :stylable
-
 end

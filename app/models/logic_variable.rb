@@ -20,8 +20,6 @@ class LogicVariable < ActiveRecord::Base
 
   validate :variables_well_formatted
 
-  delegate_access_control to: :logic
-
   protected
 
   def variables_well_formatted

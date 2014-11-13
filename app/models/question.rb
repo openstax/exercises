@@ -11,7 +11,7 @@ class Question < ActiveRecord::Base
   has_many :answers, dependent: :destroy
   has_many :solutions, dependent: :destroy
 
-  has_many :stylings, as: :stylable, dependent: :destroy
+  has_many :stylings, through: :stems
 
   has_many :parent_dependencies, class_name: 'QuestionDependency',
            foreign_key: :dependent_question_id, dependent: :destroy
@@ -22,7 +22,5 @@ class Question < ActiveRecord::Base
   has_many :dependent_questions, through: :child_dependencies
 
   validates :exercise, presence: true
-
-  delegate_access_control_to :exercise
 
 end

@@ -3,7 +3,7 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :source_publication_id
+    property :source_publication_id,
              type: Integer,
              readable: true,
              writeable: true,

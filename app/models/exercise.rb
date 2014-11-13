@@ -10,6 +10,8 @@ class Exercise < ActiveRecord::Base
   has_many :stems, through: :questions
   has_many :answers, through: :questions
 
+  has_many :stylings, through: :stems
+
   has_many :list_exercises, :dependent => :destroy
   has_many :lists, :through => :list_exercises
 
