@@ -31,10 +31,6 @@ Exercises::Application.routes.draw do
       post 'seeds', on: :member
     end
 
-    resources :libraries do
-      publishable
-    end
-
     resources :lists do
       publishable
     end
@@ -42,7 +38,8 @@ Exercises::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy] do
-      resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
+      resources :deputizations, only: [:index, :create, :destroy],
+                                path: 'deputies'
     end
   end
 
@@ -63,8 +60,6 @@ Exercises::Application.routes.draw do
     resources :exceptions, only: [:show]
 
     resources :licenses
-
-    resources :required_libraries, only: [:index, :create, :destroy]
 
     resources :trusted_applications, only: [:index, :create, :destroy]
 

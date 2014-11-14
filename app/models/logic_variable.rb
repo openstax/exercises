@@ -12,8 +12,6 @@ class LogicVariable < ActiveRecord::Base
                                
   VARIABLE_REGEX = /^[_a-zA-Z]{1}\w*$/
 
-  sortable
-
   belongs_to :logic
 
   has_many :logic_variable_values, dependent: :destroy

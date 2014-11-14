@@ -1,7 +1,5 @@
 class ListEditor < ActiveRecord::Base
 
-  sortable
-
   belongs_to :list
   belongs_to :editor, polymorphic: true
 

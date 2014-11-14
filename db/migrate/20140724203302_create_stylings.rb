@@ -8,6 +8,5 @@ class CreateStylings < ActiveRecord::Migration
     end
 
     add_index :stylings, [:stylable_id, :stylable_type, :style], unique: true
-    add_index :stylings, :style
   end
 end

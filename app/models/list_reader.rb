@@ -1,7 +1,5 @@
 class ListReader < ActiveRecord::Base
 
-  sortable
-
   belongs_to :list
   belongs_to :reader, polymorphic: true
 

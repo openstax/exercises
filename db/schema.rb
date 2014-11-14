@@ -38,27 +38,28 @@ ActiveRecord::Schema.define(version: 20141107194147) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "attachments", ["asset"], name: "index_attachments_on_asset"
   add_index "attachments", ["parent_id", "parent_type", "asset"], name: "index_attachments_on_parent_id_and_parent_type_and_asset", unique: true
 
   create_table "authors", force: true do |t|
+    t.integer  "sort_position",  null: false
     t.integer  "publication_id", null: false
     t.integer  "user_id",        null: false
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
 
-  add_index "authors", ["publication_id", "user_id"], name: "index_authors_on_publication_id_and_user_id", unique: true
-  add_index "authors", ["user_id"], name: "index_authors_on_user_id"
+  add_index "authors", ["publication_id", "sort_position"], name: "index_authors_on_publication_id_and_sort_position", unique: true
+  add_index "authors", ["user_id", "publication_id"], name: "index_authors_on_user_id_and_publication_id", unique: true
 
   create_table "class_licenses", force: true do |t|
-    t.integer  "license_id", null: false
-    t.string   "class_name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "sort_position", null: false
+    t.integer  "license_id",    null: false
+    t.string   "class_name",    null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
-  add_index "class_licenses", ["class_name"], name: "index_class_licenses_on_class_name"
+  add_index "class_licenses", ["class_name", "sort_position"], name: "index_class_licenses_on_class_name_and_sort_position", unique: true
   add_index "class_licenses", ["license_id", "class_name"], name: "index_class_licenses_on_license_id_and_class_name", unique: true
 
   create_table "combo_choice_answers", force: true do |t|
@@ -124,14 +125,15 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   add_index "commontator_threads", ["commontable_id", "commontable_type"], name: "index_commontator_threads_on_c_id_and_c_type", unique: true
 
   create_table "copyright_holders", force: true do |t|
+    t.integer  "sort_position",  null: false
     t.integer  "publication_id", null: false
     t.integer  "user_id",        null: false
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
 
-  add_index "copyright_holders", ["publication_id", "user_id"], name: "index_copyright_holders_on_publication_id_and_user_id", unique: true
-  add_index "copyright_holders", ["user_id"], name: "index_copyright_holders_on_user_id"
+  add_index "copyright_holders", ["publication_id", "sort_position"], name: "index_copyright_holders_on_publication_id_and_sort_position", unique: true
+  add_index "copyright_holders", ["user_id", "publication_id"], name: "index_copyright_holders_on_user_id_and_publication_id", unique: true
 
   create_table "deputizations", force: true do |t|
     t.integer  "deputizer_id", null: false
@@ -145,6 +147,7 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   add_index "deputizations", ["deputy_id", "deputy_type", "deputizer_id"], name: "index_deputizations_on_d_id_and_d_type_and_d_id", unique: true
 
   create_table "derivations", force: true do |t|
+    t.integer  "sort_position",          null: false
     t.integer  "derived_publication_id", null: false
     t.integer  "source_publication_id"
     t.text     "custom_attribution"
@@ -154,17 +157,19 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   end
 
   add_index "derivations", ["derived_publication_id", "hidden_at"], name: "index_derivations_on_derived_publication_id_and_hidden_at"
+  add_index "derivations", ["derived_publication_id", "sort_position"], name: "index_derivations_on_derived_publication_id_and_sort_position", unique: true
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true
 
   create_table "editors", force: true do |t|
+    t.integer  "sort_position",  null: false
     t.integer  "publication_id", null: false
     t.integer  "user_id",        null: false
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
 
-  add_index "editors", ["publication_id", "user_id"], name: "index_editors_on_publication_id_and_user_id", unique: true
-  add_index "editors", ["user_id"], name: "index_editors_on_user_id"
+  add_index "editors", ["publication_id", "sort_position"], name: "index_editors_on_publication_id_and_sort_position", unique: true
+  add_index "editors", ["user_id", "publication_id"], name: "index_editors_on_user_id_and_publication_id", unique: true
 
   create_table "exercises", force: true do |t|
     t.string   "title"
@@ -196,18 +201,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
 
   add_index "fine_print_signatures", ["contract_id"], name: "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], name: "index_fine_print_signatures_on_u_id_and_u_type_and_c_id", unique: true
-
-  create_table "libraries", force: true do |t|
-    t.string   "name"
-    t.string   "language",    null: false
-    t.text     "description"
-    t.text     "code",        null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "libraries", ["language"], name: "index_libraries_on_language"
-  add_index "libraries", ["name"], name: "index_libraries_on_name"
 
   create_table "license_compatibilities", force: true do |t|
     t.integer  "original_license_id", null: false
@@ -249,15 +242,15 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   add_index "list_editors", ["list_id"], name: "index_list_editors_on_list_id"
 
   create_table "list_exercises", force: true do |t|
-    t.integer  "list_id",                             null: false
-    t.integer  "exercise_id",                         null: false
-    t.decimal  "credit",      precision: 5, scale: 2
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.integer  "sort_position", null: false
+    t.integer  "list_id",       null: false
+    t.integer  "exercise_id",   null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "list_exercises", ["exercise_id", "list_id"], name: "index_list_exercises_on_exercise_id_and_list_id", unique: true
-  add_index "list_exercises", ["list_id", "credit"], name: "index_list_exercises_on_list_id_and_credit"
+  add_index "list_exercises", ["list_id", "sort_position"], name: "index_list_exercises_on_list_id_and_sort_position", unique: true
 
   create_table "list_nestings", force: true do |t|
     t.integer  "parent_list_id", null: false
@@ -299,16 +292,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
 
   add_index "lists", ["name"], name: "index_lists_on_name"
 
-  create_table "logic_libraries", force: true do |t|
-    t.integer  "logic_id",   null: false
-    t.integer  "library_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "logic_libraries", ["library_id"], name: "index_logic_libraries_on_library_id"
-  add_index "logic_libraries", ["logic_id", "library_id"], name: "index_logic_libraries_on_logic_id_and_library_id", unique: true
-
   create_table "logic_variable_values", force: true do |t|
     t.integer  "logic_variable_id", null: false
     t.integer  "seed",              null: false
@@ -318,7 +301,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   end
 
   add_index "logic_variable_values", ["logic_variable_id", "seed"], name: "index_logic_variable_values_on_logic_variable_id_and_seed", unique: true
-  add_index "logic_variable_values", ["seed"], name: "index_logic_variable_values_on_seed"
 
   create_table "logic_variables", force: true do |t|
     t.integer  "logic_id",   null: false
@@ -338,7 +320,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "logics", ["language"], name: "index_logics_on_language"
   add_index "logics", ["parent_id", "parent_type", "language"], name: "index_logics_on_parent_id_and_parent_type_and_language", unique: true
 
   create_table "oauth_access_grants", force: true do |t|
@@ -489,14 +470,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
 
   add_index "questions", ["exercise_id"], name: "index_questions_on_exercise_id"
 
-  create_table "required_libraries", force: true do |t|
-    t.integer  "library_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "required_libraries", ["library_id"], name: "index_required_libraries_on_library_id", unique: true
-
   create_table "solutions", force: true do |t|
     t.integer  "question_id", null: false
     t.string   "title"
@@ -508,18 +481,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
 
   add_index "solutions", ["question_id"], name: "index_solutions_on_question_id"
   add_index "solutions", ["title"], name: "index_solutions_on_title"
-
-  create_table "sortings", force: true do |t|
-    t.integer  "sortable_id",   null: false
-    t.string   "sortable_type", null: false
-    t.integer  "user_id",       null: false
-    t.integer  "position",      null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  add_index "sortings", ["sortable_id", "sortable_type", "user_id"], name: "index_sortings_on_sortable_id_and_sortable_type_and_user_id", unique: true
-  add_index "sortings", ["user_id", "sortable_type", "position"], name: "index_sortings_on_user_id_and_sortable_type_and_position", unique: true
 
   create_table "stem_answers", force: true do |t|
     t.integer  "stem_id",                                           null: false
@@ -551,7 +512,6 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   end
 
   add_index "stylings", ["stylable_id", "stylable_type", "style"], name: "index_stylings_on_stylable_id_and_stylable_type_and_style", unique: true
-  add_index "stylings", ["style"], name: "index_stylings_on_style"
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"

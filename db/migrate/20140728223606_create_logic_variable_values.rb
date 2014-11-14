@@ -9,6 +9,5 @@ class CreateLogicVariableValues < ActiveRecord::Migration
     end
 
     add_index :logic_variable_values, [:logic_variable_id, :seed], unique: true
-    add_index :logic_variable_values, :seed
   end
 end

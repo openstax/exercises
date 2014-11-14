@@ -1,7 +1,5 @@
 class LicenseCompatibility < ActiveRecord::Base
 
-  sortable
-
   belongs_to :original_license, class_name: 'License'
   belongs_to :combined_license, class_name: 'License'
 

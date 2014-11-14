@@ -7,7 +7,8 @@ class CreateDeputizations < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :deputizations, [:deputy_id, :deputy_type, :deputizer_id], unique: true,
+    add_index :deputizations, [:deputy_id, :deputy_type, :deputizer_id],
+              unique: true,
               name: 'index_deputizations_on_d_id_and_d_type_and_d_id'
     add_index :deputizations, :deputizer_id
   end

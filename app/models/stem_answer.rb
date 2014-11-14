@@ -1,7 +1,5 @@
 class StemAnswer < ActiveRecord::Base
 
-  sortable
-
   belongs_to :stem
   belongs_to :answer
 

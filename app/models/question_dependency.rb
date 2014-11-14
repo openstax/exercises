@@ -1,7 +1,5 @@
 class QuestionDependency < ActiveRecord::Base
 
-  sortable
-
   belongs_to :parent_question, class_name: 'Question'
   belongs_to :dependent_question, class_name: 'Question'
 

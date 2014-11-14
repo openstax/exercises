@@ -9,6 +9,5 @@ class CreateLogics < ActiveRecord::Migration
     end
 
     add_index :logics, [:parent_id, :parent_type, :language], unique: true
-    add_index :logics, :language
   end
 end

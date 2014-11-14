@@ -1,7 +1,5 @@
 class Styling < ActiveRecord::Base
 
-  sortable
-
   belongs_to :stylable, polymorphic: true
 
   validates :stylable, presence: true
