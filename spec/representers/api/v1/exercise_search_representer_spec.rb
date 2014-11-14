@@ -1,9 +1,5 @@
 module Api::V1
-  class ExerciseSearchRepresenter < OpenStax::Api::V1::AbstractSearchRepresenter
-
-    collection :items, inherit: true,
-                       class: Exercise,
-                       decorator: ExerciseRepresenter
-
+  RSpec.describe ExerciseSearchRepresenter do
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end

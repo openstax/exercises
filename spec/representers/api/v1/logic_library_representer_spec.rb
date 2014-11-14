@@ -1,15 +1,5 @@
 module Api::V1
-  class LogicLibraryRepresenter < Roar::Decorator
-
-    include Roar::Representer::JSON
-
-    property :library_id,
-             type: Integer,
-             writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
-
+  RSpec.describe LogicLibraryRepresenter do
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end

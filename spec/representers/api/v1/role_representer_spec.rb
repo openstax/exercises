@@ -1,15 +1,5 @@
 module Api::V1
-  class RoleRepresenter < Roar::Decorator
-
-    include Roar::Representer::JSON
-
-    property :user_id,
-             type: Integer,
-             writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
-
+  RSpec.describe RoleRepresenter do
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end

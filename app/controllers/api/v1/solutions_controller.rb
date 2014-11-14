@@ -21,10 +21,11 @@ module Api::V1
       Visible solutions include solutions written by
       the user, as well as published solutions.
 
-      #{json_schema(Api::V1::SolutionsRepresenter, include: :readable)}
+      #{json_schema(Api::V1::SolutionSearchRepresenter, include: :readable)}
     EOS
     def index
-      respond_with Solution.visible_for(current_human_user)
+      standard_index(Solution.visible_for(current_human_user),
+                     represent_with: Api::V1::SolutionSearchRepresenter)
     end
 
     ########

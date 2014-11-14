@@ -20,7 +20,8 @@ module Api::V1
       #{json_schema(Api::V1::LibrarySearchRepresenter, include: :readable)}        
     EOS
     def index
-      Library.all
+      standard_index(Library.all,
+                     represent_with: Api::V1::LibrarySearchRepresenter)
     end
 
     ########

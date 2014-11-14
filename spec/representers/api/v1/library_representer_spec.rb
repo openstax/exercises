@@ -1,34 +1,5 @@
 module Api::V1
-  class LibraryRepresenter < PublicationRepresenter
-
-    property :name, 
-             type: String,
-             writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
-
-    property :language, 
-             type: String,
-             writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
-
-    property :description, 
-             type: String,
-             writeable: true,
-             readable: true
-
-    property :code, 
-             type: String,
-             writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
-
+  RSpec.describe LibraryRepresenter do
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end

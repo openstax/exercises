@@ -1,15 +1,5 @@
 module Api::V1
-  class ListExerciseRepresenter < Roar::Decorator
-
-    include Roar::Representer::JSON
-
-    property :exercise_id,
-             type: Integer,
-             writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
-
+  RSpec.describe ListExerciseRepresenter do
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end

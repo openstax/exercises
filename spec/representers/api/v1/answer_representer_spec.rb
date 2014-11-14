@@ -1,8 +1,5 @@
 module Api::V1
   RSpec.describe AnswerRepresenter do
-
-    xit '' do
-    end
-
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end

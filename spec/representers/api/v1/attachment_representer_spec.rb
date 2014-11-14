@@ -1,15 +1,5 @@
 module Api::V1
-  class AttachmentRepresenter < Roar::Decorator
-
-    include Roar::Representer::JSON
-
-    property :asset, 
-             type: String,
-             readable: true,
-             writeable: false,
-             schema_info: {
-               required: true
-             }
-
+  RSpec.describe AttachmentRepresenter do
+    pending "add some examples to (or delete) #{__FILE__}"
   end
 end
