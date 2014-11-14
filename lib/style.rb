@@ -1,13 +1,13 @@
 module Style
 
-  MULTIPLE_CHOICE   = 'multiple_choice'
-  MULTIPLE_SELECT   = 'multiple_select'
-  SHORT_ANSWER      = 'short_answer'
-  FILL_IN_THE_BLANK = 'fill_in_the_blank'
-  POINT_AND_CLICK   = 'point_and_click'
+  MULTIPLE_CHOICE   = 'multiple-choice'
+  MULTIPLE_SELECT   = 'multiple-select'
+  SHORT_ANSWER      = 'short-answer'
+  FILL_IN_THE_BLANK = 'fill-in-the-blank'
+  POINT_AND_CLICK   = 'point-and-click'
   MATCHING          = 'matching'
   SORTING           = 'sorting'
-  FREE_RESPONSE     = 'free_response'
+  FREE_RESPONSE     = 'free-response'
   DRAWING           = 'drawing'
 
   def self.all
