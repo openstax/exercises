@@ -1,7 +1,6 @@
 class Stem < ActiveRecord::Base
 
   parsable :content
-  sort_domain
   stylable
 
   attr_accessor :temp_id

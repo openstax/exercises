@@ -1,7 +1,6 @@
 class Question < ActiveRecord::Base
 
   parsable :stimulus
-  sort_domain
 
   attr_accessor :temp_id
 

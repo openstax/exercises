@@ -1,5 +1,5 @@
 require "rails_helper"
 
-RSpec.describe ListEditor do
+RSpec.describe ListEditor, :type => :model do
   pending "add some examples to (or delete) #{__FILE__}"
 end

@@ -4,8 +4,6 @@ class User < ActiveRecord::Base
 
   acts_as_voter
 
-  sort_domain
-
   belongs_to :account, class_name: "OpenStax::Accounts::Account",
                        autosave: true
   has_many :groups_as_member, through: :account
@@ -31,6 +29,8 @@ class User < ActiveRecord::Base
 
   has_many :applications, class_name: 'Doorkeeper::Application',
            as: :owner, dependent: :destroy
+
+  has_many :sortings, dependent: :destroy
 
   validates :account, presence: true, uniqueness: true
 

@@ -1,5 +1,5 @@
 require "rails_helper"
 
-RSpec.describe LogicVariableValue do
+RSpec.describe LogicVariableValue, :type => :model do
   pending "add some examples to (or delete) #{__FILE__}"
 end

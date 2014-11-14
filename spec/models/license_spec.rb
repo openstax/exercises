@@ -19,7 +19,15 @@ RSpec.describe License, :type => :model do
   it { is_expected.to validate_uniqueness_of(:title) }
   it { is_expected.to validate_uniqueness_of(:url) }
 
-  it 'should return select options for publishable objects' do
+  it 'should know which licenses are valid for which publishable objects' do
+    license = FactoryGirl.create :license
+    expect(License.for(Exercise.new)).to be_empty
+    expect(license.valid_for?(Exercise.name)).to be_false
+
+    class_license = FactoryGirl.create :class_license, license: license,
+                                                       class_name: 'Exercise'
+    expect(License.for(Exercise.new)).to include(license)
+    expect(license.reload.valid_for?(Exercise.name)).to be_true
   end
 
 end

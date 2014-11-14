@@ -1,7 +1,5 @@
 class License < ActiveRecord::Base
 
-  sort_domain
-
   has_many :publications, dependent: :destroy
   has_many :class_licenses, dependent: :destroy
 
@@ -24,11 +22,8 @@ class License < ActiveRecord::Base
   validates :copyright_notice, presence: true
 
   scope :for, lambda { |publishable|
-    joins(:class_licenses).where(class_licenses: {class_name: publishable.class.name}) }
-
-  def self.options_for(publishable)
-    self.for(publishable).collect{|l| [l.title, l.id]}
-  end
+    joins(:class_licenses)
+      .where(class_licenses: {class_name: publishable.class.name}) }
 
   def valid_for?(klass_name)
     class_licenses.any?{|cl| cl.class_name == klass_name}

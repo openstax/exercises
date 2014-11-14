@@ -1,7 +1,5 @@
 class Publication < ActiveRecord::Base
 
-  sort_domain
-
   belongs_to :publishable, polymorphic: true
   belongs_to :license
 

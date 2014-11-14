@@ -1,7 +1,6 @@
 class List < ActiveRecord::Base
 
   publishable
-  sort_domain
 
   has_one :parent_list_nesting, class_name: 'ListNesting'
   has_one :parent_list, through: :parent_list_nesting

@@ -509,20 +509,17 @@ ActiveRecord::Schema.define(version: 20141107194147) do
   add_index "solutions", ["question_id"], name: "index_solutions_on_question_id"
   add_index "solutions", ["title"], name: "index_solutions_on_title"
 
-  create_table "sorts", force: true do |t|
-    t.integer  "domain_id"
-    t.string   "domain_type"
+  create_table "sortings", force: true do |t|
     t.integer  "sortable_id",   null: false
     t.string   "sortable_type", null: false
+    t.integer  "user_id",       null: false
     t.integer  "position",      null: false
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
 
-  add_index "sorts", ["domain_id", "domain_type", "sortable_type", "position"], name: "index_sorts_on_d_id_and_d_type_and_s_type_and_position", unique: true
-  add_index "sorts", ["sortable_id", "sortable_type", "domain_id", "domain_type"], name: "index_sorts_on_s_id_and_s_type_and_d_id_and_d_type", unique: true
-  add_index "sorts", ["sortable_id", "sortable_type"], name: "index_sorts_on_sortable_id_and_sortable_type", unique: true, where: "domain_id IS NULL"
-  add_index "sorts", ["sortable_type", "position"], name: "index_sorts_on_sortable_type_and_position", unique: true, where: "domain_id IS NULL"
+  add_index "sortings", ["sortable_id", "sortable_type", "user_id"], name: "index_sortings_on_sortable_id_and_sortable_type_and_user_id", unique: true
+  add_index "sortings", ["user_id", "sortable_type", "position"], name: "index_sortings_on_user_id_and_sortable_type_and_position", unique: true
 
   create_table "stem_answers", force: true do |t|
     t.integer  "stem_id",                                           null: false

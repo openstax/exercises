@@ -1,5 +1,5 @@
 require "rails_helper"
 
-RSpec.describe ListReader do
+RSpec.describe ListReader, :type => :model do
   pending "add some examples to (or delete) #{__FILE__}"
 end

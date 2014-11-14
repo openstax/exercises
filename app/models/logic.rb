@@ -1,7 +1,5 @@
 class Logic < ActiveRecord::Base
 
-  sort_domain
-
   belongs_to :parent, polymorphic: true
 
   has_many :logic_libraries, dependent: :destroy
