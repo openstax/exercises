@@ -1,6 +1,7 @@
 class CopyrightHolder < ActiveRecord::Base
 
-  sortable
+  sortable container: :publication, records: :copyright_holders,
+           scope: :publication_id
 
   belongs_to :publication
   belongs_to :user

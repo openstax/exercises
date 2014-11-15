@@ -20,7 +20,7 @@ class Publication < ActiveRecord::Base
 
   before_validation :assign_number_and_version, on: :create
 
-  default_scope lambda { order{[number.asc, version.desc]} }
+  default_scope { order{[number.asc, version.desc]} }
 
   scope :for, lambda { |publishable_type, number, version = nil|
     pscope = where(publishable_type: publishable_type, number: number)

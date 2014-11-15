@@ -1,6 +1,7 @@
 class Derivation < ActiveRecord::Base
 
-  sortable
+  sortable container: :derived_publication, records: :sources,
+           scope: :derived_publication_id
 
   belongs_to :derived_publication, class_name: 'Publication'
   belongs_to :source_publication, class_name: 'Publication'

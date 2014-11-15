@@ -11,25 +11,29 @@ module Sortable
           container = options[:container]
           if container.nil?
             container = :class
-            relation = :all
+            records = :all
             uniqueness = true
           else
-            relation = options[:relation] || name.tableize
+            records = options[:records] || name.tableize
             uniqueness = { scope: options[:scope] || "#{container.to_s}_id" }
           end
+          mname = "set_#{on.to_s}"
 
           class_exec do
             validates on, presence: true,
                           numericality: { only_integer: true },
                           uniqueness: uniqueness
 
-            before_validation :set_sort_position
+            before_validation mname
+
+            default_scope { order(on) }
 
             protected
 
-            define_method :set_sort_position do
+            define_method mname do
               return unless send(on).nil?
-              sort_siblings = send(container).send(relation).to_a
+              sort_container = container == :self ? self : send(container)
+              sort_siblings = sort_container.send(records).to_a
               max_position = sort_siblings.max_by{|ss| ss.send(on)}
                                           .try(on) || -1
               send("#{on.to_s}=", max_position + 1)

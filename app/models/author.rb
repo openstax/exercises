@@ -1,6 +1,6 @@
 class Author < ActiveRecord::Base
 
-  sortable
+  sortable container: :publication, records: :authors, scope: :publication_id
 
   belongs_to :publication
   belongs_to :user

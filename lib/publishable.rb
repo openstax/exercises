@@ -42,10 +42,11 @@ module Publishable
 
             before_validation :build_publication, on: :create, unless: :publication
 
-            delegate :uid, :number, :version, :published_at, :license, :editors,
-                     :authors, :copyright_holders, :derivations, :is_published?,
-                     :has_collaborator?, :license=, :editors=, :authors=,
-                     :copyright_holders=, :derivations=, to: :publication
+            delegate :uid, :number, :version, :published_at, :license,
+                     :editors, :authors, :copyright_holders, :derivations,
+                     :is_published?, :has_collaborator?, :license=, :editors=,
+                     :authors=, :copyright_holders=, :derivations=,
+                     to: :publication
 
             def self.find(*args)
               return super if block_given? || args.size != 1

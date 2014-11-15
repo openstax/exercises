@@ -1,6 +1,6 @@
 class Editor < ActiveRecord::Base
 
-  sortable
+  sortable container: :publication, records: :editors, scope: :publication_id
 
   belongs_to :publication
   belongs_to :user
