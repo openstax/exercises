@@ -6,7 +6,7 @@ class Exercise < ActiveRecord::Base
   has_attachments
   has_logic :javascript, :latex
 
-  has_many :questions, dependent: :destroy, autosave: true
+  has_many :questions, dependent: :destroy
   has_many :stems, through: :questions
   has_many :answers, through: :questions
 

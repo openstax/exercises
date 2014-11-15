@@ -12,7 +12,7 @@ FactoryGirl.define do
 
     after(:build) do |license, evaluator|
       next if evaluator.skip_class_licenses
-      ['Exercise', 'Solution', 'Library', 'List'].each do |class_name|
+      ['Exercise', 'Solution', 'List'].each do |class_name|
         license.class_licenses << FactoryGirl.build(:class_license,
                                                     license: license,
                                                     class_name: class_name)

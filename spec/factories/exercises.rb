@@ -4,18 +4,19 @@ FactoryGirl.define do
     stimulus { Faker::Lorem.paragraph }
 
     ignore do
-      parts_count { parts.empty? ? 1 : 0 }
-      questions_count 1
-      items_count 0
-      answers_count 4
+      questions_count { questions.empty? ? 1 : 0 }
+      stems_count 1
+      answers_count 3
     end
 
     after(:build) do |exercise, evaluator|
-      exercise.publication = FactoryGirl.build(:publication, publishable: exercise)
-      evaluator.parts_count.times do
-        exercise.parts << FactoryGirl.build(
-          :part, exercise: exercise, questions_count: evaluator.questions_count,
-          items_count: evaluator.items_count, answers_count: evaluator.answers_count
+      exercise.publication = FactoryGirl.build(:publication,
+                                               publishable: exercise)
+      evaluator.questions_count.times do
+        exercise.questions << FactoryGirl.build(
+          :question, exercise: exercise,
+                     stems_count: evaluator.stems_count,
+                     answers_count: evaluator.answers_count
         )
       end
     end
