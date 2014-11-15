@@ -34,7 +34,7 @@ module Sortable
               return unless send(on).nil?
               sort_container = container == :self ? self : send(container)
               sort_siblings = sort_container.send(records).to_a
-              max_position = sort_siblings.max_by{|ss| ss.send(on)}
+              max_position = sort_siblings.max_by{|ss| ss.send(on) || -1}
                                           .try(on) || -1
               send("#{on.to_s}=", max_position + 1)
             end

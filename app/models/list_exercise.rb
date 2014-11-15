@@ -1,6 +1,6 @@
 class ListExercise < ActiveRecord::Base
 
-  sortable container: :list, records: :exercises, scope: :list_id
+  sortable container: :list, records: :list_exercises, scope: :list_id
 
   belongs_to :list
   belongs_to :exercise

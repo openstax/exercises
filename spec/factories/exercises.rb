@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :exercise do
     title { Faker::Lorem.words.join(' ').capitalize }
-    background { Faker::Lorem.paragraph }
+    stimulus { Faker::Lorem.paragraph }
 
     ignore do
       parts_count { parts.empty? ? 1 : 0 }
