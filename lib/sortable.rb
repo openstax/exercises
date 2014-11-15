@@ -55,6 +55,13 @@ module Sortable
     end
 
     module Migration
+      def add_sortable_column(table, options = {})
+          options[:null] = false if options[:null].nil?
+          on = options.delete(:on) || :sort_position
+
+          add_column table, on, :integer, options
+      end
+
       def add_sortable_index(table, options = {})
         options[:unique] = true if options[:unique].nil?
         scope = options.delete(:scope)
