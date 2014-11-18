@@ -20,5 +20,11 @@ module Api::V1
                writeable: true,
                readable: true
 
+    collection :combo_choices,
+               class: ComboChoice,
+               decorator: ComboChoiceRepresenter,
+               writeable: true,
+               readable: true
+
   end
 end

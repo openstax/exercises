@@ -1,10 +1,9 @@
 class Derivation < ActiveRecord::Base
 
-  sortable container: :derived_publication, records: :sources,
-           scope: :derived_publication_id
-
-  belongs_to :derived_publication, class_name: 'Publication'
-  belongs_to :source_publication, class_name: 'Publication'
+  sortable_belongs_to :derived_publication, class_name: 'Publication',
+                                            inverse_of: :sources
+  belongs_to :source_publication, class_name: 'Publication',
+                                  inverse_of: :derivations
 
   validates :derived_publication, presence: true
   validates :source_publication, uniqueness: { scope: :derived_publication_id }

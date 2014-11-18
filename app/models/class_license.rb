@@ -1,6 +1,6 @@
 class ClassLicense < ActiveRecord::Base
 
-  sortable container: :self, records: :same_class, scope: :class_name
+  sortable_class scope: :class_name
 
   belongs_to :license
 

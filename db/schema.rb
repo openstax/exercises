@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141107194147) do
+ActiveRecord::Schema.define(version: 20141118174146) do
 
   create_table "administrators", force: true do |t|
     t.integer  "user_id",    null: false
@@ -201,6 +201,16 @@ ActiveRecord::Schema.define(version: 20141107194147) do
 
   add_index "fine_print_signatures", ["contract_id"], name: "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], name: "index_fine_print_signatures_on_u_id_and_u_type_and_c_id", unique: true
+
+  create_table "hints", force: true do |t|
+    t.integer  "sort_position", null: false
+    t.integer  "question_id",   null: false
+    t.text     "content",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "hints", ["question_id", "sort_position"], name: "index_hints_on_question_id_and_sort_position", unique: true
 
   create_table "license_compatibilities", force: true do |t|
     t.integer  "original_license_id", null: false
@@ -441,10 +451,8 @@ ActiveRecord::Schema.define(version: 20141107194147) do
     t.datetime "updated_at",                            null: false
   end
 
-  add_index "publications", ["embargoed_until"], name: "filtered_index_publications_on_embargoed_until", where: "embargo_children_only=0"
   add_index "publications", ["embargoed_until"], name: "index_publications_on_embargoed_until"
   add_index "publications", ["license_id"], name: "index_publications_on_license_id"
-  add_index "publications", ["number", "publishable_type", "version"], name: "filtered_index_publications_on_number_and_p_type_and_version", where: "major_change=0"
   add_index "publications", ["number", "publishable_type", "version"], name: "index_publications_on_number_and_publishable_type_and_version", unique: true
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true
   add_index "publications", ["published_at"], name: "index_publications_on_published_at"

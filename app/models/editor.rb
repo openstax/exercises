@@ -1,8 +1,7 @@
 class Editor < ActiveRecord::Base
 
-  sortable container: :publication, records: :editors, scope: :publication_id
+  sortable_belongs_to :publication
 
-  belongs_to :publication
   belongs_to :user
 
   validates :publication, presence: true

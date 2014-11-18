@@ -33,6 +33,20 @@ module Api::V1
                  required: true
                }
 
+    collection :hints,
+               type: String,
+               writeable: true,
+               readable: true,
+               getter: lambda { |*| hints.collect{|h| h.content} },
+               setter: lambda { |val|
+                 hint = hints.find_or_initialize_by(content: val)
+                 hints << hint unless hint.persisted?
+               },
+               schema_info: {
+                 required: true,
+                 description: 'Author-supplied hints for the question'
+               }
+
     collection :parent_dependencies,
                as: :dependencies,
                class: QuestionDependency,

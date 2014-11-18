@@ -11,7 +11,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |license, evaluator|
-      licensed_classes.each do |class_name|
+      evaluator.licensed_classes.each do |class_name|
         license.class_licenses << build(:class_license,
                                         license: license,
                                         class_name: class_name)

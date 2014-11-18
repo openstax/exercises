@@ -12,6 +12,8 @@ class Question < ActiveRecord::Base
 
   has_many :stylings, through: :stems
 
+  sortable_has_many :hints, dependent: :destroy
+
   has_many :parent_dependencies, class_name: 'QuestionDependency',
            foreign_key: :dependent_question_id, dependent: :destroy
   has_many :parent_questions, through: :parent_dependencies

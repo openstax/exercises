@@ -12,7 +12,7 @@ class List < ActiveRecord::Base
   has_many :list_editors, dependent: :destroy
   has_many :list_readers, dependent: :destroy
 
-  has_many :list_exercises, dependent: :destroy
+  sortable_has_many :list_exercises, dependent: :destroy
   has_many :exercises, through: :list_exercises
 
   validates :name, presence: true
