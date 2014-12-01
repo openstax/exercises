@@ -15,102 +15,135 @@ module Sortable
       end
 
       module ClassMethods
-        def sortable_has_many(records, options = {})
-          class_sort = (records == :all || records == :unscoped)
-          define_mname = class_sort ? :define_singleton_method : \
-                                      :define_method
-          on = options.delete(:on) || :sort_position
+        def sortable_methods(options = {})
+          on = options[:on] || :sort_position
+          container = options[:container]
+          inverse_of = options[:inverse_of]
+          scope = options[:scope]
           onname = on.to_s
-          rname = records.to_s.singularize
           setter_mname = "#{onname}="
-          sort_to_mname = "sort_#{rname}_to"
-          sort_before_mname = "sort_#{rname}_before"
+          max_mname = "max_#{onname}"
+          siblings_mname = "#{onname}_siblings"
+          set_to_mname = "set_#{onname}_to"
+          set_before_mname = "set_#{onname}_before"
+          filter_mname = "#{onname}_filter"
 
           class_exec do
-            has_many records, lambda { order(on) }, options unless class_sort
+            before_validation filter_mname
 
-            send(define_mname, sort_to_mname) do |record, *args|
-              ss = send(records)
-              old_val = record.send(on)
-              new_val = args[0] || old_val
+            define_method siblings_mname do
+              return send(container).send(inverse_of) \
+                unless container.nil? || inverse_of.nil?
 
-              if new_val.nil? # Not saved yet
-                maxon = ss.to_a.max_by{|r| r.send(on)}.try(on) || 0
-                record.send(setter_mname, maxon + 1)
-              elsif Sortable::ActiveRecord.deferred_constraints?
-                ss.base_class.transaction do
-                  ss.where{__send__(on) > old_val}
-                    .update_all("#{onname} = #{onname} - 1") \
-                      unless old_val.nil?
-                  ss.where{__send__(on) >= new_val}
-                    .update_all("#{onname} = #{onname} + 1")
-                  record.update_column(onname, new_val)
-                end
-              else # Workaround in case deferred constraints not supported
-                maxon = ss.maximum(on) || 0
-                new_neg_val = new_val - maxon
-                ss.base_class.transaction do
-                  unless old_val.nil?
-                    ss.where{__send__(on) < old_val}
-                      .update_all("#{onname} = #{onname} - #{maxon}")
+              relation = self.class.unscoped
+              [scope].flatten.compact.each do |s|
+                relation = relation.where(s => send(s))
+              end
+              relation
+            end
+
+            define_method max_mname do |arr|
+              arr ||= send(siblings_mname)
+              arr.max_by{|r| r.send(on) || 0}.try(on) || 0
+            end
+
+            define_method set_to_mname do |new_val|
+              ss = send(siblings_mname)
+
+              if new_val.nil?
+                new_val = send(max_mname, ss.to_a) + 1
+                record.update_column(onname, new_val)
+              else
+                old_val = record.send(on)
+
+                if Sortable::ActiveRecord.deferred_constraints?
+                  self.class.transaction do
                     ss.where{__send__(on) > old_val}
-                      .update_all("#{onname} = #{onname} - #{maxon + 1}")
+                      .update_all("#{onname} = #{onname} - 1") \
+                        unless old_val.nil?
+                    ss.where{__send__(on) >= new_val}
+                      .update_all("#{onname} = #{onname} + 1")
+                    record.update_column(onname, new_val)
                   end
-                  record.update_column(onname, new_val)
-                  ss.where{__send__(on) < new_neg_val}
-                    .update_all("#{onname} = #{onname} + #{maxon}")
-                  ss.where{(__send__(on) >= new_neg_val) & (__send__(on) < 0)}
-                    .update_all("#{onname} = #{onname} + #{maxon + 1}")
+                else # Workaround in case deferred constraints are not supported
+                  maxon = send(max_mname, ss.to_a)
+                  new_neg_val = new_val - maxon
+                  self.class.transaction do
+                    unless old_val.nil?
+                      ss.where{__send__(on) < old_val}
+                        .update_all("#{onname} = #{onname} - #{maxon}")
+                      ss.where{__send__(on) > old_val}
+                        .update_all("#{onname} = #{onname} - #{maxon + 1}")
+                    end
+                    record.update_column(onname, new_val)
+                    ss.where{__send__(on) < new_neg_val}
+                      .update_all("#{onname} = #{onname} + #{maxon}")
+                    ss.where{(__send__(on) >= new_neg_val) & (__send__(on) < 0)}
+                      .update_all("#{onname} = #{onname} + #{maxon + 1}")
+                  end
                 end
               end
             end
 
-            send(define_mname, sort_before_mname) do |record, *args|
-              send(sort_to_mname, record, args[0].try(on))
+            define_method set_before_mname do |before|
+              before_val = before.try(on)
+              new_val = before_val.nil? ? nil : before_val - 1
+              send(set_to_mname, new_val)
             end
-          end
-        end
-
-        def sortable_belongs_to(container, options = {})
-          class_sort = container == :class
-          on = options.delete(:on) || :sort_position
-          onname = on.to_s
-          rname = (options[:inverse_of].try(:to_s) || \
-                   name.tableize).singularize
-          scope = options[:scope] || \
-                    (class_sort ? nil : "#{container.to_s}_id")
-          uniqueness = scope.nil? ? true : { scope: scope }
-          validation = scope.nil? ? true : scope
-          filter_mname = "#{onname}_filter"
-          sort_to_mname = "sort_#{rname}_to"
-
-          class_exec do
-            belongs_to container, options unless class_sort
-
-            validates on, presence: true,
-                          numericality: { only_integer: true,
-                                          greater_than: 0 },
-                          uniqueness: uniqueness,
-                          if: validation
-
-            before_validation filter_mname
 
             define_method filter_mname do
               return unless send(on).nil?
 
-              send(container).send(sort_to_mname, self)
+              send(setter_mname, send(max_mname, send(siblings_mname).to_a) + 1)
             end
           end
         end
 
+        def sortable_has_many(records, options = {})
+          on = options[:on] || :sort_position
+
+          class_exec do
+            has_many records, lambda { order(on) }, options.except(:on)
+          end
+        end
+
+        def sortable_belongs_to(container, options = {})
+          on = options[:on] || :sort_position
+
+          class_exec do
+            belongs_to container, options.except(:on, :scope)
+
+            reflection = reflect_on_association(container)
+            options[:scope] ||= reflection.polymorphic? ? \
+                                  [reflection.foreign_type,
+                                   reflection.foreign_key] : \
+                                  reflection.foreign_key
+            options[:inverse_of] ||= reflection.inverse_of.try(:name)
+
+            validates on, presence: true,
+                          numericality: { only_integer: true,
+                                          greater_than: 0 },
+                          uniqueness: { scope: options[:scope] }
+          end
+
+          options[:container] = container
+          sortable_methods(options)
+        end
+
         def sortable_class(options = {})
           on = options[:on] || :sort_position
-          sortable_has_many(:all, options)
-          sortable_belongs_to(:class, options.merge(inverse_of: :all))
+          scope = options[:scope]
 
           class_exec do
             default_scope { order(on) }
+
+            validates on, presence: true,
+                          numericality: { only_integer: true,
+                                          greater_than: 0 },
+                          uniqueness: (scope.nil? ? true : { scope: scope })
           end
+
+          sortable_methods(options)
         end
       end
     end
