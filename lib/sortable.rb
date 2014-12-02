@@ -1,14 +1,5 @@
 module Sortable
   module ActiveRecord
-    def self.deferred_constraints?
-      c = ::ActiveRecord::Base.connection
-      @@deferred_constraints ||= \
-        (defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) && \
-         c.is_a?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)) || \
-        (defined?(::ActiveRecord::ConnectionAdapters::SQLite3Adapter)    && \
-         c.is_a?(::ActiveRecord::ConnectionAdapters::SQLite3Adapter))
-    end
-
     module Base
       def self.included(base)
         base.extend(ClassMethods)
@@ -22,10 +13,8 @@ module Sortable
           scope = options[:scope]
           onname = on.to_s
           setter_mname = "#{onname}="
-          max_mname = "max_#{onname}"
           siblings_mname = "#{onname}_siblings"
           set_to_mname = "set_#{onname}_to"
-          set_before_mname = "set_#{onname}_before"
           filter_mname = "#{onname}_filter"
 
           class_exec do
@@ -42,59 +31,38 @@ module Sortable
               relation
             end
 
-            define_method max_mname do |arr|
-              arr ||= send(siblings_mname)
-              arr.max_by{|r| r.send(on) || 0}.try(on) || 0
-            end
-
             define_method set_to_mname do |new_val|
-              ss = send(siblings_mname)
+              ss = send(siblings_mname).reorder(nil)
+              old_val = send(on)
+              return if !old_val.nil? && (new_val.nil? || new_val == old_val)
 
-              if new_val.nil?
-                new_val = send(max_mname, ss.to_a) + 1
-                record.update_column(onname, new_val)
-              else
-                old_val = record.send(on)
-
-                if Sortable::ActiveRecord.deferred_constraints?
-                  self.class.transaction do
-                    ss.where{__send__(on) > old_val}
-                      .update_all("#{onname} = #{onname} - 1") \
-                        unless old_val.nil?
-                    ss.where{__send__(on) >= new_val}
-                      .update_all("#{onname} = #{onname} + 1")
-                    record.update_column(onname, new_val)
-                  end
-                else # Workaround in case deferred constraints are not supported
-                  maxon = send(max_mname, ss.to_a)
-                  new_neg_val = new_val - maxon
-                  self.class.transaction do
-                    unless old_val.nil?
-                      ss.where{__send__(on) < old_val}
-                        .update_all("#{onname} = #{onname} - #{maxon}")
-                      ss.where{__send__(on) > old_val}
-                        .update_all("#{onname} = #{onname} - #{maxon + 1}")
-                    end
-                    record.update_column(onname, new_val)
-                    ss.where{__send__(on) < new_neg_val}
-                      .update_all("#{onname} = #{onname} + #{maxon}")
-                    ss.where{(__send__(on) >= new_neg_val) & (__send__(on) < 0)}
-                      .update_all("#{onname} = #{onname} + #{maxon + 1}")
-                  end
+              self.class.transaction do
+                if new_val.nil?
+                  new_val = (ss.maximum(on) || 0) + 1
+                elsif old_val.nil?
+                  ss.where{(__send__(on) >= new_val)}
+                    .update_all("#{onname} = - (#{onname} + 1)")
+                elsif new_val > old_val
+                  ss.where{(__send__(on) > old_val) & \
+                           (__send__(on) <= new_val)}
+                    .update_all("#{onname} = - (#{onname} - 1)")
+                else
+                  ss.where{(__send__(on) >= new_val) & \
+                           (__send__(on) < old_val)}
+                    .update_all("#{onname} = - (#{onname} + 1)")
                 end
+                update_column(onname, new_val)
+                ss.where{__send__(on) <= 0}
+                  .update_all("#{onname} = - #{onname}")
               end
-            end
-
-            define_method set_before_mname do |before|
-              before_val = before.try(on)
-              new_val = before_val.nil? ? nil : before_val - 1
-              send(set_to_mname, new_val)
             end
 
             define_method filter_mname do
               return unless send(on).nil?
 
-              send(setter_mname, send(max_mname, send(siblings_mname).to_a) + 1)
+              next_val = (send(siblings_mname).to_a.max_by{|r| r.send(on) || 0}
+                                              .try(on) || 0) + 1
+              send(setter_mname, next_val)
             end
           end
         end
@@ -161,21 +129,19 @@ module Sortable
 
     module Migration
       def add_sortable_column(table, options = {})
-          options[:null] = false if options[:null].nil?
-          on = options.delete(:on) || :sort_position
+        options[:null] = false if options[:null].nil?
+        on = options.delete(:on) || :sort_position
 
-          add_column table, on, :integer, options
+        add_column table, on, :integer, options
       end
 
       def add_sortable_index(table, options = {})
-        options[:unique] = true \
-          if options[:unique].nil? && \
-             Sortable::ActiveRecord.deferred_constraints?
+        options[:unique] = true if options[:unique].nil?
         scope = options.delete(:scope)
         on = options.delete(:on) || :sort_position
-        on = ([scope] << on).flatten unless scope.nil?
+        columns = ([scope] << on).flatten.compact
 
-        add_index table, on, options
+        add_index table, columns, options
       end
     end
   end
