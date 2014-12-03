@@ -13,14 +13,18 @@ module Sortable
           scope = options[:scope]
           onname = on.to_s
           setter_mname = "#{onname}="
-          siblings_mname = "#{onname}_siblings"
-          set_to_mname = "set_#{onname}_to"
-          filter_mname = "#{onname}_filter"
+          peers_mname = "#{onname}_peers"
+          before_validation_mname = "#{onname}_before_validation"
+          after_save_mname = "#{onname}_after_save"
+          next_by_mname = "next_by_#{onname}"
+          prev_by_mname = "prev_by_#{onname}"
+          compact_peers_mname = "compact_#{onname}_peers"
 
           class_exec do
-            before_validation filter_mname
+            before_validation before_validation_mname
+            after_save after_save_mname
 
-            define_method siblings_mname do
+            define_method peers_mname do
               return send(container).send(inverse_of) \
                 unless container.nil? || inverse_of.nil?
 
@@ -31,38 +35,54 @@ module Sortable
               relation
             end
 
-            define_method set_to_mname do |new_val|
-              ss = send(siblings_mname).reorder(nil)
-              old_val = send(on)
-              return if !old_val.nil? && (new_val.nil? || new_val == old_val)
+            define_method before_validation_mname do
+              val = send(on)
 
-              self.class.transaction do
-                if new_val.nil?
-                  new_val = (ss.maximum(on) || 0) + 1
-                elsif old_val.nil?
-                  ss.where{(__send__(on) >= new_val)}
-                    .update_all("#{onname} = - (#{onname} + 1)")
-                elsif new_val > old_val
-                  ss.where{(__send__(on) > old_val) & \
-                           (__send__(on) <= new_val)}
-                    .update_all("#{onname} = - (#{onname} - 1)")
-                else
-                  ss.where{(__send__(on) >= new_val) & \
-                           (__send__(on) < old_val)}
-                    .update_all("#{onname} = - (#{onname} + 1)")
+              if val.nil?
+                peers = send(peers_mname)
+                next_val = (peers.to_a.max_by{|r| r.send(on) || 0}
+                                      .try(on) || 0) + 1
+                send(setter_mname, next_val)
+              else
+                peers = send(peers_mname)
+                if peers.to_a.any?{|p| p != self && p.send(on) == val}
+                  peers.where{__send__(on) >= val}.reorder(nil)
+                       .update_all("#{onname} = - (#{onname} + 1)")
                 end
-                update_column(onname, new_val)
-                ss.where{__send__(on) <= 0}
-                  .update_all("#{onname} = - #{onname}")
               end
             end
 
-            define_method filter_mname do
-              return unless send(on).nil?
+            define_method after_save_mname do
+              peers = send(peers_mname)
+              peers.reload if peers.where{__send__(on) < 0}.reorder(nil)
+                                   .update_all("#{onname} = - #{onname}") > 0
+            end
 
-              next_val = (send(siblings_mname).to_a.max_by{|r| r.send(on) || 0}
-                                              .try(on) || 0) + 1
-              send(setter_mname, next_val)
+            define_method next_by_mname do
+              val = send(on)
+              send(peers_mname).where{__send__(on) > val}.first
+            end
+
+            define_method prev_by_mname do
+              val = send(on)
+              send(peers_mname).where{__send__(on) < val}.last
+            end
+
+            define_method compact_peers_mname do
+              mysql = \
+                defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter) && \
+                ActiveRecord::Base.connection.instance_of?(
+                  ActiveRecord::ConnectionAdapters::MysqlAdapter)
+              cend = mysql ? 'END CASE' : 'END'
+              peers = send(peers_mname)
+              cases = peers.to_a.collect.with_index{ |p, i|
+                "WHEN #{p.send(on)} THEN #{- (i + 1)}"}.join(' ')
+              self.class.transaction do
+                peers.reorder(nil)
+                     .update_all("#{onname} = CASE #{onname} #{cases} #{cend}")
+                peers.reorder(nil).update_all("#{onname} = - #{onname}")
+              end
+              peers.reload
             end
           end
         end
