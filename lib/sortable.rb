@@ -82,7 +82,6 @@ module Sortable
                 peers.where{__send__(on) < val}.last
             end
 
-            # TODO: Move to class method or to relation class
             # Renumbers the peers so that their numbers are sequential,
             # starting at 1
             define_method compact_peers_mname do
@@ -93,9 +92,12 @@ module Sortable
               cend = mysql ? 'END CASE' : 'END'
 
               peers = send(peers_mname)
-              cases = peers.to_a.collect.with_index { |p, i|
+              cases = peers.to_a.collect.with_index do |p, i|
+                # Make sure "on" field in self is up to date
+                send(setter_mname, i + 1) if p == self
+
                 "WHEN #{p.send(on)} THEN #{- (i + 1)}"
-              }.join(' ')
+              end.join(' ')
 
               self.class.transaction do
                 peers.reorder(nil)
@@ -103,7 +105,9 @@ module Sortable
                 peers.reorder(nil).update_all("#{onname} = - #{onname}")
               end
 
-              # Cause peers to load from the DB the next time they are used
+              # Mark self as not dirty
+              changes_applied
+              # Force peers to load from the DB the next time they are used
               peers.reset
             end
           end
