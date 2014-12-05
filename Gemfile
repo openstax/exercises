@@ -95,6 +95,9 @@ gem 'acts-as-taggable-on'
 # Object cloning
 gem 'deep_cloneable'
 
+# Sortable objects
+gem 'sortability'
+
 # Object comments
 gem 'commontator'
 

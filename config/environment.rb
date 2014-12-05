@@ -8,7 +8,6 @@ require 'has_attachments'
 require 'has_logic'
 require 'parsable'
 require 'publishable'
-require 'sortable'
 require 'stylable'
 
 require 'importers/quadbase'
