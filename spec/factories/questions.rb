@@ -3,7 +3,7 @@ FactoryGirl.define do
     exercise
     stimulus { Faker::Lorem.paragraph }
 
-    ignore do
+    transient do
       stems_count { stems.empty? ? 1 : 0 }
       answers_count { answers.empty? ? 3 : 0 }
     end

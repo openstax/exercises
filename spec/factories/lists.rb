@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :list do
     name { Faker::Lorem.words.join(' ').capitalize }
 
-    ignore do
+    transient do
       list_exercises_count { list_exercises.empty? ? 5 : 0 }
     end
 

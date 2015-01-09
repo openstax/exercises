@@ -6,7 +6,7 @@ FactoryGirl.define do
     publishing_contract { Faker::Lorem.paragraphs }
     copyright_notice { Faker::Lorem.sentence }
 
-    ignore do
+    transient do
       licensed_classes ['Exercise', 'Solution', 'List']
     end
 

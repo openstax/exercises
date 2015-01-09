@@ -3,7 +3,7 @@ FactoryGirl.define do
     question
     content { Faker::Lorem.paragraph }
 
-    ignore do
+    transient do
       stem_answers_count { stem_answers.empty? ? 3 : 0 }
       styles [Style::FREE_RESPONSE]
     end

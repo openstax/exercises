@@ -27,16 +27,14 @@ module HasLogic
     end
   end
 
-  module Representable
-    module Declarative
+  module Roar
+    module Decorator
       def has_logic
-        class_exec do
-          property :logic,
-                   class: Logic,
-                   decorator: Api::V1::LogicRepresenter,
-                   writeable: true,
-                   readable: true
-        end
+        property :logic,
+                 class: Logic,
+                 decorator: Api::V1::LogicRepresenter,
+                 writeable: true,
+                 readable: true
       end
     end
   end
@@ -45,4 +43,4 @@ end
 ActiveRecord::Base.send :include, HasLogic::ActiveRecord::Base
 ActionDispatch::Routing::Mapper.send :include,
                                      HasLogic::ActionDispatch::Routing::Mapper
-Representable::Declarative.send :include, HasLogic::Representable::Declarative
+Roar::Decorator.extend HasLogic::Roar::Decorator

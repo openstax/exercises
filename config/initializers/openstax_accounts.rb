@@ -8,10 +8,3 @@ OpenStax::Accounts.configure do |config|
   config.account_user_mapper = UserMapper
   config.enable_stubbing = true
 end
-
-OpenStax::Accounts::ApplicationController.class_exec do
-  helper ApplicationAccountBarHelper, ApplicationHelper, ApplicationTopNavHelper,
-  AlertsHelper, OpenStax::Utilities::OsuHelper
-
-  layout "layouts/application_body_only"
-end

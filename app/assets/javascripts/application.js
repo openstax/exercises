@@ -20,3 +20,4 @@
 //= require bootstrap-sprockets
 //= require markitup
 //= require_tree ./utils
+//= require turbolinks

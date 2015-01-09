@@ -67,7 +67,7 @@ module Api::V1
       A string that indicates how to sort the results of the query. The string
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
-      The fields can be one of #{OpenStax::Accounts::SearchAccounts::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+      The fields can be one of #{OpenStax::Accounts::SearchLocalAccounts::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')}.
       Sort directions can either be `ASC` for 
       an ascending sort, or `DESC` for a
       descending sort. If not provided, an ascending sort is assumed. Sort

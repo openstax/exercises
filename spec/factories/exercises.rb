@@ -3,7 +3,7 @@ FactoryGirl.define do
     title { Faker::Lorem.words.join(' ').capitalize }
     stimulus { Faker::Lorem.paragraph }
 
-    ignore do
+    transient do
       questions_count { questions.empty? ? 1 : 0 }
       stems_count 1
       answers_count 3

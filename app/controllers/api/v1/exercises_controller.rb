@@ -63,7 +63,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{
-        SearchExercises.sortable_fields_map.keys.collect{|sf| "`"+sf+"`"}.join(', ')
+        SearchExercises::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')
       }.
       Sort directions can either be `ASC` for 
       an ascending sort, or `DESC` for a
