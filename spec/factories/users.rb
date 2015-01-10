@@ -11,17 +11,17 @@ FactoryGirl.define do
     end
 
     after(:build) do |user, evaluator|
-      user.account = build(:openstax_accounts_account,
-                           username: evaluator.username,
-                           first_name: evaluator.first_name,
-                           last_name: evaluator.last_name,
-                           full_name: evaluator.full_name,
-                           title: evaluator.title)
+      user.account ||= build(:openstax_accounts_account,
+                             username: evaluator.username,
+                             first_name: evaluator.first_name,
+                             last_name: evaluator.last_name,
+                             full_name: evaluator.full_name,
+                             title: evaluator.title)
     end
 
     trait :administrator do
       after(:build) do |user|
-        user.administrator = build(:administrator, user: user)
+        user.administrator ||= build(:administrator, user: user)
       end
     end
 

@@ -2,11 +2,14 @@ require "rails_helper"
 
 RSpec.describe Derivation, :type => :model do
 
+  subject { FactoryGirl.create(:derivation) }
+
   it { is_expected.to belong_to(:derived_publication) }
   it { is_expected.to belong_to(:source_publication) }
 
   it { is_expected.to validate_presence_of(:derived_publication) }
   it { is_expected.to validate_presence_of(:source_publication) }
+
   it { is_expected.to validate_uniqueness_of(:source_publication)
                         .scoped_to(:derived_publication_id) }
 

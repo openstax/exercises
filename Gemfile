@@ -42,9 +42,6 @@ gem 'rails-html-sanitizer'
 # Converts links in Strings to HTML anchors
 gem 'rails_autolink'
 
-# Allow OpenURI to follow HTTP -> HTTPS redirections
-gem 'open_uri_redirections'
-
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
 
@@ -135,6 +132,9 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
+  # Use RSpec for tests
+  gem 'rspec-rails'
+
   # Mute asset pipeline log messages
   gem 'quiet_assets'
 
@@ -167,9 +167,6 @@ group :development do
 end
 
 group :test do
-  # Use RSpec for tests
-  gem 'rspec-rails'
-
   # Spec helpers
   gem 'shoulda-matchers', require: false
 

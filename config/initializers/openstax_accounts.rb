@@ -8,3 +8,7 @@ OpenStax::Accounts.configure do |config|
   config.account_user_mapper = UserMapper
   config.enable_stubbing = true
 end
+
+OpenStax::Accounts::Account.class_exec do
+  has_one :user, dependent: :destroy, inverse_of: :account
+end

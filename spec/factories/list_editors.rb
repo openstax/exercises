@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :list_editor do
-    list nil
-    editor nil
+    list
+    association :editor, factory: :user
   end
 end

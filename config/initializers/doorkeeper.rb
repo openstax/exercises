@@ -81,29 +81,3 @@ Rails.application.config.to_prepare do
   # Only Authorized Applications
   Doorkeeper::AuthorizedApplicationsController.layout "application_body_only"
 end
-
-Doorkeeper::Application.class_exec do
-  belongs_to :owner, polymorphic: true
-
-  has_one :trusted_application, dependent: :destroy
-
-  validates :owner, presence: true
-
-  scope :trusted, lambda { joins(:trusted_application) }
-  scope :not_trusted, lambda { joins{trusted_application.outer}
-                               .where(trusted_application: {id: nil}) }
-
-  def is_anonymous?
-    false
-  end
-
-  def is_human?
-    false
-  end
-
-  def is_application?
-    true
-  end
-end
-
-OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

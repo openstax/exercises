@@ -3,17 +3,23 @@ require "rails_helper"
 RSpec.describe User, :type => :model do
 
   it { is_expected.to belong_to(:account) }
+
+  it { is_expected.to have_one(:administrator).dependent(:destroy) }
+
   it { is_expected.to have_many(:groups_as_member) }
   it { is_expected.to have_many(:groups_as_owner) }
-  it { is_expected.to have_one(:administrator).dependent(:destroy) }
+
   it { is_expected.to have_many(:authors).dependent(:destroy) }
   it { is_expected.to have_many(:copyright_holders).dependent(:destroy) }
   it { is_expected.to have_many(:editors).dependent(:destroy) }
+
   it { is_expected.to have_many(:child_deputizations).dependent(:destroy) }
   it { is_expected.to have_many(:direct_deputizations).dependent(:destroy) }
+
   it { is_expected.to have_many(:direct_list_owners).dependent(:destroy) }
   it { is_expected.to have_many(:direct_list_editors).dependent(:destroy) }
   it { is_expected.to have_many(:direct_list_readers).dependent(:destroy) }
+
   it { is_expected.to have_many(:applications).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:account) }

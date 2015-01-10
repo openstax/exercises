@@ -2,11 +2,14 @@ require "rails_helper"
 
 RSpec.describe ComboChoiceAnswer, :type => :model do
 
+  subject { FactoryGirl.create(:combo_choice_answer) }
+
   it { is_expected.to belong_to(:combo_choice) }
   it { is_expected.to belong_to(:answer) }
 
   it { is_expected.to validate_presence_of(:combo_choice) }
   it { is_expected.to validate_presence_of(:answer) }
+
   it { is_expected.to validate_uniqueness_of(:answer)
                         .scoped_to(:combo_choice_id) }
 

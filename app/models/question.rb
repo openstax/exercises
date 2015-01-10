@@ -10,17 +10,15 @@ class Question < ActiveRecord::Base
   has_many :answers, dependent: :destroy
   has_many :solutions, dependent: :destroy
 
-  has_many :stylings, through: :stems
-
   sortable_has_many :hints, dependent: :destroy
 
   has_many :parent_dependencies, class_name: 'QuestionDependency',
-           foreign_key: :dependent_question_id, dependent: :destroy
-  has_many :parent_questions, through: :parent_dependencies
+           foreign_key: :dependent_question_id, dependent: :destroy,
+           inverse_of: :dependent_question
 
   has_many :child_dependencies, class_name: 'QuestionDependency',
-           foreign_key: :parent_question_id, dependent: :destroy
-  has_many :dependent_questions, through: :child_dependencies
+           foreign_key: :parent_question_id, dependent: :destroy,
+           inverse_of: :parent_question
 
   validates :exercise, presence: true
 

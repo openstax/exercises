@@ -10,7 +10,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |exercise, evaluator|
-      exercise.publication = build(:publication, publishable: exercise)
+      exercise.publication ||= build(:publication, publishable: exercise)
       evaluator.questions_count.times do
         exercise.questions << build(:question, exercise: exercise,
                                     stems_count: evaluator.stems_count,

@@ -40,7 +40,8 @@ module Publishable
                        (editors.user_id == user_id)}
             }
 
-            before_validation :build_publication, on: :create, unless: :publication
+            before_validation :build_publication, on: :create,
+                                                  unless: :publication
 
             delegate :uid, :number, :version, :published_at, :license,
                      :editors, :authors, :copyright_holders, :derivations,
@@ -52,7 +53,9 @@ module Publishable
               return super if block_given? || args.size != 1
               id = args.first
               return super unless id.is_a?(String) && id_regex =~ id
-              Publication.for(name, $1, $3).first.try(:publishable) || super
+              Publication.find_by(publishable_type: name,
+                                  number: $1,
+                                  version: $3).first.try(:publishable) || super
             end
 
           end

@@ -5,7 +5,8 @@ class User < ActiveRecord::Base
   acts_as_voter
 
   belongs_to :account, class_name: "OpenStax::Accounts::Account",
-                       autosave: true
+                       autosave: true,
+                       inverse_of: :user
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
 
@@ -16,7 +17,8 @@ class User < ActiveRecord::Base
   has_many :editors, dependent: :destroy
 
   has_many :child_deputizations, class_name: 'Deputization',
-           foreign_key: :deputizer_id, dependent: :destroy
+           foreign_key: :deputizer_id, dependent: :destroy,
+           inverse_of: :deputizer
   has_many_through_groups :groups_as_member, :deputizations,
                           as: :deputy, dependent: :destroy
 

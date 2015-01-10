@@ -1,6 +1,6 @@
 class Deputization < ActiveRecord::Base
 
-  belongs_to :deputizer, class_name: 'User'
+  belongs_to :deputizer, class_name: 'User', inverse_of: :child_deputizations
   belongs_to :deputy, polymorphic: true
 
   validates :deputy, presence: true

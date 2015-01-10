@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe License, :type => :model do
 
+  subject { FactoryGirl.create(:license) }
+
   it { is_expected.to have_many(:publications).dependent(:destroy) }
   it { is_expected.to have_many(:class_licenses).dependent(:destroy) }
 
@@ -15,18 +17,17 @@ RSpec.describe License, :type => :model do
   it { is_expected.to validate_presence_of(:url) }
   it { is_expected.to validate_presence_of(:publishing_contract) }
   it { is_expected.to validate_presence_of(:copyright_notice) }
+
   it { is_expected.to validate_uniqueness_of(:name) }
   it { is_expected.to validate_uniqueness_of(:title) }
   it { is_expected.to validate_uniqueness_of(:url) }
 
   it 'should know which licenses are valid for which publishable objects' do
     license = FactoryGirl.create :license
-    expect(License.for(Exercise.new)).to be_empty
     expect(license.valid_for?(Exercise.name)).to be_false
 
     class_license = FactoryGirl.create :class_license, license: license,
                                                        class_name: 'Exercise'
-    expect(License.for(Exercise.new)).to include(license)
     expect(license.reload.valid_for?(Exercise.name)).to be_true
   end
 
