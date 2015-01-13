@@ -4,6 +4,6 @@ class Attachment < ActiveRecord::Base
 
   validates :parent, presence: true
   validates :asset, presence: true,
-                    uniqueness: { scope: [:parent_id, :parent_type] }
+                    uniqueness: { scope: [:parent_type, :parent_id] }
 
 end

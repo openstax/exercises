@@ -2,6 +2,7 @@
 require File.expand_path('../application', __FILE__)
 
 require 'style'
+require 'solution_type'
 require 'language'
 
 require 'has_attachments'

@@ -5,6 +5,6 @@ class Deputization < ActiveRecord::Base
 
   validates :deputy, presence: true
   validates :deputizer, presence: true,
-                        uniqueness: { scope: [:deputy_id, :deputy_type] }
+                        uniqueness: { scope: [:deputy_type, :deputy_id] }
 
 end

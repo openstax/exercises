@@ -11,7 +11,7 @@ RSpec.describe Exercise, :type => :model do
     exercise.send :has_questions
     expect(exercise.errors).to be_empty
 
-    exercise.parts = []
+    exercise.questions = []
     exercise.send :has_questions
     expect(exercise.errors[:questions]).to include("can't be blank")
   end

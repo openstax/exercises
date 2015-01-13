@@ -9,5 +9,6 @@ RSpec.describe Stem, :type => :model do
   it { is_expected.to have_many(:combo_choices).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:question) }
+  it { is_expected.to validate_presence_of(:content) }
 
 end

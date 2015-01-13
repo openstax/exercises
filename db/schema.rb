@@ -479,15 +479,16 @@ ActiveRecord::Schema.define(version: 20141118174146) do
   add_index "questions", ["exercise_id"], name: "index_questions_on_exercise_id"
 
   create_table "solutions", force: :cascade do |t|
-    t.integer  "question_id", null: false
+    t.integer  "question_id",   null: false
     t.string   "title"
-    t.text     "summary"
-    t.text     "details",     null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.text     "solution_type", null: false
+    t.text     "content",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "solutions", ["question_id"], name: "index_solutions_on_question_id"
+  add_index "solutions", ["solution_type"], name: "index_solutions_on_solution_type"
   add_index "solutions", ["title"], name: "index_solutions_on_title"
 
   create_table "stem_answers", force: :cascade do |t|

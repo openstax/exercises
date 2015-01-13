@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe User, :type => :model do
 
+  subject { FactoryGirl.create :user }
+
   it { is_expected.to belong_to(:account) }
 
   it { is_expected.to have_one(:administrator).dependent(:destroy) }
@@ -24,12 +26,7 @@ RSpec.describe User, :type => :model do
 
   it { is_expected.to validate_presence_of(:account) }
 
-  it 'validates the uniqueness of account' do
-    user_1 = FactoryGirl.create(:user)
-    user_2 = FactoryGirl.create(:user)
-    user_2.account = user_1.account
-    expect(user_2).not_to be_valid
-  end
+  it { is_expected.to validate_uniqueness_of(:account) }
 
   [:username, :first_name, :last_name, :full_name,
    :title, :name, :casual_name].each do |method|

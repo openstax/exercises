@@ -10,7 +10,8 @@ class ComboChoiceAnswer < ActiveRecord::Base
   protected
 
   def same_question
-    return if combo_choice.stem.question == answer.question
+    return if combo_choice.nil? || combo_choice.stem.nil? || answer.nil? || \
+              combo_choice.stem.question == answer.question
     errors.add(:answer, 'must belong to the same question as the combo choice')
     false
   end

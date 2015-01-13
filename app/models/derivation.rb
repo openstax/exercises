@@ -6,8 +6,9 @@ class Derivation < ActiveRecord::Base
                                   inverse_of: :derivations
 
   validates :derived_publication, presence: true
-  validates :source_publication, uniqueness: { scope: :derived_publication_id }
-  validate :different_ids, :source_or_custom
+  validates :source_publication,
+            uniqueness: { scope: :derived_publication_id, allow_nil: true }
+  validate :different_publications, :source_or_custom
 
   protected
 

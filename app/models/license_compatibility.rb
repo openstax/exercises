@@ -6,6 +6,7 @@ class LicenseCompatibility < ActiveRecord::Base
                                 inverse_of: :original_license_compatibilities
 
   validates :original_license, presence: true
-  validates :combined_license, presence: true, uniqueness: { scope: :original_license_id }
+  validates :combined_license, presence: true,
+                               uniqueness: { scope: :original_license_id }
 
 end

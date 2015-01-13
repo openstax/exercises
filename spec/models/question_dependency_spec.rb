@@ -13,7 +13,16 @@ RSpec.describe QuestionDependency, :type => :model do
   it { is_expected.to validate_uniqueness_of(:dependent_question)
                         .scoped_to(:parent_question_id) }
 
-  xit 'requires both questions to belong to the same exercise' do
+  it 'requires both questions to belong to the same exercise' do
+    qd = FactoryGirl.build(:question_dependency,
+                           parent_question: FactoryGirl.build(:question),
+                           dependent_question: FactoryGirl.build(:question))
+    expect(qd).not_to be_valid
+    expect(qd.errors[:dependent_question]).to(
+      include('must belong to the same exercise as the parent question'))
+
+    qd.dependent_question.exercise = qd.parent_question.exercise
+    expect(qd).to be_valid
   end
 
 end

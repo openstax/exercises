@@ -12,5 +12,6 @@ class Stem < ActiveRecord::Base
   has_many :combo_choices, dependent: :destroy
 
   validates :question, presence: true
+  validates :content, presence: true
 
 end
