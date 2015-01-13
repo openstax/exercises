@@ -45,7 +45,8 @@ module Publishable
 
             delegate :uid, :number, :version, :published_at, :license,
                      :editors, :authors, :copyright_holders, :derivations,
-                     :is_published?, :has_collaborator?, :license=, :editors=,
+                     :is_yanked?, :is_published?, :is_embargoed?, :is_public?,
+                     :has_collaborator?, :license=, :editors=,
                      :authors=, :copyright_holders=, :derivations=,
                      to: :publication
 

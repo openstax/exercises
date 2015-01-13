@@ -74,15 +74,30 @@ RSpec.describe Publication, :type => :model do
                                    publication_4.reload, publication_3.reload]
   end
 
-  it 'knows if it is published and/or public or not' do
-    expect(publication.status).to eq 'unpublished'
+  it 'knows its own status' do
+    expect(publication.is_published?).to eq false
+    expect(publication.is_embargoed?).to eq false
+    expect(publication.is_yanked?).to eq false
+    expect(publication.is_public?).to eq false
+
     publication.published_at = Time.now
     publication.embargoed_until = Time.now + 1.year
-    expect(publication.status).to eq 'embargoed'
-    publication.embargoed_until = nil
-    expect(publication.status).to eq 'published'
+    expect(publication.is_published?).to eq true
+    expect(publication.is_embargoed?).to eq true
+    expect(publication.is_yanked?).to eq false
+    expect(publication.is_public?).to eq false
+
+    publication.embargoed_until = Time.now - 1.day
+    expect(publication.is_published?).to eq true
+    expect(publication.is_embargoed?).to eq false
+    expect(publication.is_yanked?).to eq false
+    expect(publication.is_public?).to eq true
+
     publication.yanked_at = Time.now
-    expect(publication.status).to eq 'yanked'
+    expect(publication.is_published?).to eq true
+    expect(publication.is_embargoed?).to eq false
+    expect(publication.is_yanked?).to eq true
+    expect(publication.is_public?).to eq false
   end
 
 end

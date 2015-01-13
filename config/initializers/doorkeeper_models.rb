@@ -11,15 +11,19 @@ Doorkeeper::Application.class_exec do
   scope :not_trusted, lambda { joins{trusted_application.outer}
                                .where(trusted_application: {id: nil}) }
 
+  def is_human?
+    false
+  end
+  
+  def is_application?
+    true
+  end
+
   def is_anonymous?
     false
   end
 
-  def is_human?
+  def is_administrator?
     false
-  end
-
-  def is_application?
-    true
   end
 end

@@ -30,11 +30,26 @@ class Publication < ActiveRecord::Base
     "#{number}@#{version}"
   end
 
-  def status
-    return 'yanked' unless yanked_at.nil?
-    return 'unpublished' if published_at.nil?
-    return 'published' if embargoed_until.nil? || embargoed_until < Time.now
-    'embargoed'
+  def is_yanked?
+    !yanked_at.nil?
+  end
+
+  def is_published?
+    !published_at.nil?
+  end
+
+  def is_embargoed?
+    !embargoed_until.nil? && embargoed_until >= Time.now
+  end
+
+  def is_public?
+    is_published? && !is_embargoed? && !is_yanked?
+  end
+
+  def has_collaborator?(user)
+    !authors.find_by(user: user).nil? || \
+    !copyright_holders.find_by(user: user).nil? || \
+    !editors.find_by(user: user).nil?
   end
 
   protected

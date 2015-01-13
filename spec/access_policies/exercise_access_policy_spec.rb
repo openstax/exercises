@@ -1,18 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe ExerciseAccessPolicy do
-  let!(:anon)        { AnonymousUser.instance }
-  let!(:user)        { FactoryGirl.create(:user) }
-  let!(:application) { FactoryGirl.create(:doorkeeper_application) }
-  let!(:exercise)    { FactoryGirl.build(:exercise) }
+  let!(:anon)     { AnonymousUser.instance }
+  let!(:user)     { FactoryGirl.create(:user) }
+  let!(:app)      { FactoryGirl.create(:doorkeeper_application) }
+  let!(:exercise) { FactoryGirl.build(:exercise) }
 
-  context 'index' do
+  context 'search' do
     it 'can be accessed by everyone' do
-      expect(ExerciseAccessPolicy.action_allowed?(:index, anon, Exercise)).to eq true
+      expect(ExerciseAccessPolicy.action_allowed?(:search, anon, Exercise))
+        .to eq true
 
-      expect(ExerciseAccessPolicy.action_allowed?(:index, user, Exercise)).to eq true
+      expect(ExerciseAccessPolicy.action_allowed?(:search, user, Exercise))
+        .to eq true
 
-      expect(ExerciseAccessPolicy.action_allowed?(:index, application, Exercise)).to eq true
+      expect(ExerciseAccessPolicy.action_allowed?(:search, app, Exercise))
+        .to eq true
     end
   end
 
@@ -25,7 +28,7 @@ RSpec.describe ExerciseAccessPolicy do
       it 'cannot be accessed by anonymous users, applications or human users without roles' do
         expect(ExerciseAccessPolicy.action_allowed?(:read, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, application, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:read, app, exercise)).to eq false
 
         expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq false
       end
@@ -60,7 +63,7 @@ RSpec.describe ExerciseAccessPolicy do
 
         expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq true
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, application, exercise)).to eq true
+        expect(ExerciseAccessPolicy.action_allowed?(:read, app, exercise)).to eq true
       end
     end
   end
@@ -70,7 +73,7 @@ RSpec.describe ExerciseAccessPolicy do
       it 'cannot be accessed by anonymous users or applications' do
         expect(ExerciseAccessPolicy.action_allowed?(:create, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:create, application, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:create, app, exercise)).to eq false
       end
 
       it 'can be accessed by humans users' do
@@ -89,7 +92,7 @@ RSpec.describe ExerciseAccessPolicy do
 
         expect(ExerciseAccessPolicy.action_allowed?(:create, user, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:create, application, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:create, app, exercise)).to eq false
       end
     end
   end
@@ -104,8 +107,8 @@ RSpec.describe ExerciseAccessPolicy do
         expect(ExerciseAccessPolicy.action_allowed?(:update, anon, exercise)).to eq false
         expect(ExerciseAccessPolicy.action_allowed?(:destroy, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, application, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, application, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:update, app, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:destroy, app, exercise)).to eq false
 
         expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq false
         expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq false
@@ -151,9 +154,27 @@ RSpec.describe ExerciseAccessPolicy do
         expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq false
         expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, application, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, application, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:update, app, exercise)).to eq false
+        expect(ExerciseAccessPolicy.action_allowed?(:destroy, app, exercise)).to eq false
       end
+    end
+  end
+
+  context 'other actions' do
+    it 'cannot be accessed' do
+      expect(OSU::AccessPolicy.action_allowed?(:other, anon, Exercise))
+        .to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, user, Exercise))
+        .to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, app, Exercise))
+        .to eq false
+
+      expect(OSU::AccessPolicy.action_allowed?(:other, anon, exercise))
+        .to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, user, exercise))
+        .to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, app, exercise))
+        .to eq false
     end
   end
 end

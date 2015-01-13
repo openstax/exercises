@@ -56,6 +56,10 @@ class User < ActiveRecord::Base
     false
   end
 
+  def is_administrator?
+    !administrator.nil?
+  end
+
   def is_deleted?
     !deleted_at.nil?
   end
