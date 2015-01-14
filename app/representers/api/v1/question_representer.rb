@@ -7,7 +7,7 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val, *| self.temp_id = val }
+             setter: lambda { |value, args| self.temp_id = value }
 
     property :stimulus,
              as: :stimulus_html,
@@ -37,10 +37,12 @@ module Api::V1
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |*| hints.collect{|h| h.content} },
-               setter: lambda { |val|
-                 hint = hints.find_or_initialize_by(content: val)
-                 hints << hint unless hint.persisted?
+               getter: lambda { |args| hints.collect{|h| h.content} },
+               setter: lambda { |values, args|
+                 values.each do |v|
+                   hint = hints.find_or_initialize_by(content: v)
+                   hints << hint unless hint.persisted?
+                 end
                },
                schema_info: {
                  required: true,

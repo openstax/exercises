@@ -10,8 +10,15 @@ FactoryGirl.define do
 
     after(:build) do |question, evaluator|
       evaluator.stems_count.times do
-        question.stems << build(:stem, question: question,
-                                stem_answers_count: evaluator.answers_count)
+        stem = build(:stem, question: question, stem_answers_count: 0)
+        question.stems << stem
+        evaluator.answers_count.times do
+          answer = build(:answer, question: question)
+          question.answers << answer
+          stem_answer = build(:stem_answer, stem: stem, answer: answer)
+          stem.stem_answers << stem_answer
+          answer.stem_answers << stem_answer
+        end
       end
     end
   end

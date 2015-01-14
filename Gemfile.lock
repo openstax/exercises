@@ -134,7 +134,7 @@ GEM
       sass (>= 3.3.0, < 3.5)
     compass-import-once (1.0.5)
       sass (>= 3.2, < 3.5)
-    compass-rails (2.0.3)
+    compass-rails (2.0.4)
       compass (~> 1.0.0)
       sass-rails (<= 5.0.1)
       sprockets (< 2.13)
@@ -204,7 +204,7 @@ GEM
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     keyword_search (1.5.0)
-    kgio (2.9.2)
+    kgio (2.9.3)
     lev (2.2.1)
       actionpack (>= 3.0)
       active_attr
@@ -222,7 +222,7 @@ GEM
     mime-types (2.4.3)
     mini_magick (4.0.2)
     mini_portile (0.6.2)
-    minitest (5.5.0)
+    minitest (5.5.1)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -246,14 +246,14 @@ GEM
       multi_json (~> 1.3)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    openstax_api (3.1.2)
-      doorkeeper (>= 0.5)
+    openstax_api (3.2.1)
+      doorkeeper (>= 0.5, < 2.0)
       exception_notification (>= 4.0)
       lev (>= 1.0.0)
-      openstax_utilities (>= 4.1.0)
+      openstax_utilities (>= 4.2.0)
       rails (>= 3.1)
       representable (>= 1.8)
-      roar (>= 0.12.1)
+      roar (>= 0.12.1, < 1.0)
       roar-rails (>= 0.1.2)
     openstax_utilities (4.2.0)
       keyword_search
@@ -269,7 +269,7 @@ GEM
     rack-pjax (0.8.0)
       nokogiri (~> 1.5)
       rack (~> 1.1)
-    rack-test (0.6.2)
+    rack-test (0.6.3)
       rack (>= 1.0)
     railroady (1.3.0)
     rails (4.2.0)
@@ -324,17 +324,17 @@ GEM
       ffi (>= 0.5.0)
     ref (1.0.5)
     remotipart (1.2.1)
-    representable (1.8.5)
+    representable (2.1.3)
       multi_json
       nokogiri
-      uber
+      uber (~> 0.0.7)
     responders (2.0.2)
       railties (>= 4.2.0.alpha, < 5)
     rest-client (1.7.2)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    roar (0.12.9)
-      representable (>= 1.6.0, < 2.0.0)
+    roar (0.12.7)
+      representable (>= 1.6.0)
     roar-rails (0.1.6)
       actionpack
       railties (>= 3.0.0)
@@ -463,7 +463,7 @@ DEPENDENCIES
   compass-rails
   coveralls
   deep_cloneable
-  doorkeeper (~> 1.4.1)
+  doorkeeper
   eco
   ejs
   exception_notification
@@ -479,7 +479,7 @@ DEPENDENCIES
   newrelic_rpm
   nifty-generators
   openstax_accounts!
-  openstax_api
+  openstax_api (~> 3.2.1)
   openstax_utilities
   pg
   quiet_assets
@@ -492,7 +492,6 @@ DEPENDENCIES
   remotipart
   representable
   responders
-  roar (~> 0.12.9)
   roar-rails
   rspec-rails
   sass-rails (~> 5.0)

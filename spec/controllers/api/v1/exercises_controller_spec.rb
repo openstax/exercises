@@ -29,11 +29,12 @@ module Api::V1
         10.times { FactoryGirl.create(:exercise) }
 
         ad = "%adipisci%"
-        Exercise.joins{parts.outer.questions.outer.answers.outer}
+        Exercise.joins{questions.outer.stems.outer}
+                .joins{questions.outer.answers.outer}
                 .where{(title.like ad) |\
-                       (background.like ad) |\
-                       (parts.background.like ad) |\
-                       (questions.stem.like ad) |\
+                       (stimulus.like ad) |\
+                       (questions.stimulus.like ad) |\
+                       (stems.content.like ad) |\
                        (answers.content.like ad)}.delete_all
 
         @exercise_1 = Exercise.new
@@ -128,17 +129,26 @@ module Api::V1
 
       it "creates the requested Exercise" do
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter.new(@exercise).to_json
+                          raw_post_data: Api::V1::ExerciseRepresenter.new(
+                                           @exercise
+                                         ).to_json
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
         new_exercise = Exercise.last
         expect(new_exercise.title).to eq @exercise.title
-        expect(new_exercise.background).to eq @exercise.background
-        expect(new_exercise.parts.first.background).to eq @exercise.parts.first.background
-        expect(new_exercise.questions.first.stem).to eq(
-          @exercise.parts.first.questions.first.stem)
-        expect(new_exercise.answers.first.content).to eq(
-          @exercise.parts.first.questions.first.answers.first.content)
+        expect(new_exercise.stimulus).to eq @exercise.stimulus
+
+        expect(new_exercise.questions.first.stimulus)
+          .to eq @exercise.questions.first.stimulus
+
+        expect(new_exercise.questions.first.stems.first.content).to eq(
+          @exercise.questions.first.stems.first.content)
+
+        db_answers = new_exercise.questions.first.answers
+        json_answers = @exercise.questions.first.answers
+        db_answers.each_with_index do |answer, i|
+          expect(answer.content).to eq json_answers[i].content
+        end
       end
 
     end

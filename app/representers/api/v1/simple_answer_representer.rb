@@ -30,12 +30,12 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             getter: lambda { |*| stem_answers.first.try(:correctness) },
-             setter: lambda { |val|
+             getter: lambda { |args| stem_answers.first.try(:correctness) },
+             setter: lambda { |value, args|
               stem_answers << StemAnswer.new(answer: self,
                                              stem: question.stems.first) \
                 unless stem_answers.exists?
-              stem_answers.first.correctness = val },
+              stem_answers.first.correctness = value },
              schema_info: {
                type: 'number'
              }

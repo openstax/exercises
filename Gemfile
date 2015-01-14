@@ -56,15 +56,14 @@ gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
 gem 'responders'
 
 # Access control for API's
-gem 'doorkeeper', '~> 1.4.1' # Update to doorkeeper 2.0 requires openstax_api update
+gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api'
+gem 'openstax_api', '~> 3.2.1'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'representable'
 gem 'roar-rails'
-gem 'roar', '~> 0.12.9' # Update to roar 1.0 requires openstax_api update
 
 # Lev framework
 gem 'lev'

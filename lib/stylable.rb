@@ -22,8 +22,8 @@ module Stylable
                    type: String,
                    writeable: true,
                    readable: true,
-                   getter: lambda { |*| stylings.collect{|s| s.style} },
-                   setter: lambda { |val|
+                   getter: lambda { |args| stylings.collect{|s| s.style} },
+                   setter: lambda { |val, args|
                      styling = stylings.find_or_initialize_by(style: val)
                      stylings << styling unless styling.persisted?
                    },

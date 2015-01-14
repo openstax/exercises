@@ -70,8 +70,8 @@ class SearchExercises
           sanitized_contents = to_string_array(content, append_wildcard: true,
                                                         prepend_wildcard: true)
           next @items = @items.none if sanitized_contents.empty?
-          @items = @items.includes(questions: {stems: :answers})
-                         .references(questions: {stems: :answers})
+          @items = @items.includes(questions: [:stems, :answers])
+                         .references(questions: [:stems, :answers])
                          .where{
                            (title.like_any sanitized_contents) |\
                            (stimulus.like_any sanitized_contents) |\

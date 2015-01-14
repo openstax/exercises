@@ -18,7 +18,7 @@ module Api::V1
     collection :questions,
                class: Question,
                decorator: lambda { |klass, *|
-                 klass.nil? || klass.stems.length != 1 ? \
+                 klass.nil? || klass.stems.length > 1 ? \
                    QuestionRepresenter : SimpleQuestionRepresenter
                },
                writeable: true,
