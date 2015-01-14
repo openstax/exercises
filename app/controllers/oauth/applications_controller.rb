@@ -9,12 +9,14 @@ module Oauth
     end
 
     def new
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, Doorkeeper::Application)
+      OSU::AccessPolicy.require_action_allowed!(:create, @user,
+                                                Doorkeeper::Application)
       super
     end
 
     def create
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, Doorkeeper::Application)
+      OSU::AccessPolicy.require_action_allowed!(:create, @user,
+                                                Doorkeeper::Application)
       @application = Doorkeeper::Application.new(application_params)
       @application.owner = OpenStax::Accounts::Group.new
       @application.owner.requestor = current_user.account
@@ -24,7 +26,7 @@ module Oauth
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
-        respond_with [:oauth, @application]
+        redirect_to oauth_application_url(@application)
       else
         render :new
       end
@@ -40,7 +42,13 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      super
+      if @application.update_attributes(application_params)
+        flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash,
+                                                 :applications, :update])
+        redirect_to oauth_application_url(@application)
+      else
+        render :edit
+      end
     end
 
     def destroy
@@ -61,7 +69,8 @@ module Oauth
 
     # Only allow a trusted parameter "white list" through.
     def application_params
-      params.require(:application).permit(:name, :redirect_uri, :email_subject_prefix)
+      params.require(:application).permit(:name, :redirect_uri,
+                                          :email_subject_prefix)
     end
   end
 end

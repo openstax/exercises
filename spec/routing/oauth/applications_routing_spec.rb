@@ -1,35 +1,42 @@
 require "rails_helper"
 
 module Oauth
-  RSpec.describe StaticPagesController, :type => :routing do
+  RSpec.describe ApplicationsController, :type => :routing do
     describe "routing" do
 
       it "routes to #index" do
-        expect(get("/static_pages")).to route_to("static_pages#index")
+        expect(get("/oauth/applications")).to(
+          route_to("oauth/applications#index"))
       end
 
       it "routes to #new" do
-        expect(get("/static_pages/new")).to route_to("static_pages#new")
+        expect(get("/oauth/applications/new")).to(
+          route_to("oauth/applications#new"))
       end
 
       it "routes to #show" do
-        expect(get("/static_pages/1")).to route_to("static_pages#show", :id => "1")
+        expect(get("/oauth/applications/1")).to(
+          route_to("oauth/applications#index", :id => 1))
       end
 
       it "routes to #edit" do
-        expect(get("/static_pages/1/edit")).to route_to("static_pages#edit", :id => "1")
+        expect(get("/oauth/applications/1/edit")).to(
+          route_to("oauth/applications#edit", :id => 1))
       end
 
       it "routes to #create" do
-        expect(post("/static_pages")).to route_to("static_pages#create")
+        expect(post("/oauth/applications")).to(
+          route_to("oauth/applications#create"))
       end
 
       it "routes to #update" do
-        expect(put("/static_pages/1")).to route_to("static_pages#update", :id => "1")
+        expect(patch("/oauth/applications/1")).to(
+          route_to("oauth/applications#update", :id => 1))
       end
 
       it "routes to #destroy" do
-        expect(delete("/static_pages/1")).to route_to("static_pages#destroy", :id => "1")
+        expect(delete("/oauth/applications/1")).to(
+          route_to("oauth/applications#destroy", :id => 1))
       end
 
     end

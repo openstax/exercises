@@ -2,180 +2,172 @@ require "rails_helper"
 
 module Oauth
   RSpec.describe ApplicationsController, type: :controller do
-    let!(:admin) { FactoryGirl.create :user, :admin }
-    let!(:user) { FactoryGirl.create :user }
 
-    let!(:user_user_group) {
-      ug = FactoryGirl.create :user_group
-      ug.add_user(user, true)
+    let!(:user_1) { FactoryGirl.create :user }
+    let!(:user_2) { FactoryGirl.create :user }
+    let!(:admin)  { FactoryGirl.create(:administrator).user }
+
+    let!(:user_group_1) {
+      ug = FactoryGirl.create :openstax_accounts_group
+      ug.add_member(user_1.account)
+      ug.add_member(user_2.account)
       ug
     }
     
-    let!(:admin_user_group) {
-      ug = FactoryGirl.create :user_group
-      ug.add_user(admin, true)
+    let!(:user_group_2) {
+      ug = FactoryGirl.create :openstax_accounts_group
+      ug.add_member(user_2.account)
       ug
     }
 
-    let!(:trusted_application_admin) { FactoryGirl.create :doorkeeper_application, :trusted, owner: admin_user_group }
-    let!(:untrusted_application_admin) { FactoryGirl.create :doorkeeper_application, owner: admin_user_group }
-    let!(:trusted_application_user) { FactoryGirl.create :doorkeeper_application, :trusted, owner: user_user_group }
-    let!(:untrusted_application_user) { FactoryGirl.create :doorkeeper_application, owner: user_user_group }
+    let!(:group_1_application_1) { FactoryGirl.create :doorkeeper_application,
+                                                      owner: user_group_1 }
+    let!(:group_1_application_2) { FactoryGirl.create :doorkeeper_application,
+                                                      owner: user_group_1 }
+    let!(:group_2_application_1) { FactoryGirl.create :doorkeeper_application,
+                                                      owner: user_group_2 }
+    let!(:group_2_application_2) { FactoryGirl.create :doorkeeper_application,
+                                                      owner: user_group_2 }
 
-    it "should let a user get the list of his group's applications" do
-      controller.sign_in user
-      get :index, :user_group_id => user_user_group.id
-      expect(response.code).to eq('200')
-      expect(assigns :applications).to include(untrusted_application_user)
-      expect(assigns :applications).to include(trusted_application_user)
-      expect(assigns :applications).not_to include(untrusted_application_admin)
-      expect(assigns :applications).not_to include(trusted_application_admin)
+    let!(:valid_session) { { "account_id" => user_1.account_id } }
+    let!(:admin_session) { { "account_id" => admin.account_id } }
+
+    context "GET index" do
+      it "assigns the user's applications as @applications" do
+        get :index, {}, valid_session
+        expect(response.code).to eq('200')
+        expect(assigns :applications).to include(group_1_application_1)
+        expect(assigns :applications).to include(group_1_application_2)
+        expect(assigns :applications).not_to include(group_2_application_1)
+        expect(assigns :applications).not_to include(group_2_application_2)
+      end
+
+      it "assigns all applications as @applications for admins" do
+        get :index, {}, admin_session
+        expect(response.code).to eq('200')
+        expect(assigns :applications).to include(group_1_application_1)
+        expect(assigns :applications).to include(group_1_application_2)
+        expect(assigns :applications).to include(group_2_application_1)
+        expect(assigns :applications).to include(group_2_application_2)
+      end
     end
 
-    it "should not let a user get the list of another group's applications" do
-      controller.sign_in user
-      expect{get :index, :user_group_id => admin_user_group.id}.to raise_error(SecurityTransgression)
-      expect(assigns :applications).to be_nil
+    context "GET show" do
+      it "assigns the requested application as @application" do
+        get :show, {:id => group_1_application_1.to_param}, valid_session
+        expect(assigns(:application)).to eq(group_1_application_1)
+      end
     end
 
-    it "should let a user get his group's application" do
-      controller.sign_in user
-      get :show, id: untrusted_application_user.id
-      expect(response.code).to eq('200')
-      expect(assigns(:application).name).to eq(untrusted_application_user.name)
-      expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
+    context "GET new" do
+      it "assigns a new application as @application" do
+        get :new, {}, admin_session
+        expect(assigns(:application)).to be_a_new(Doorkeeper::Application)
+      end
     end
 
-    it "should not let a user get another group's application" do
-      controller.sign_in user
-      expect{get :show, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
+    context "GET edit" do
+      it "assigns the requested application as @application" do
+        get :edit, {:id => group_1_application_1.to_param}, valid_session
+        expect(assigns(:application)).to eq(group_1_application_1)
+      end
     end
 
-    it "should let an admin get another group's application" do
-      controller.sign_in admin
-      get :show, id: untrusted_application_user.id
-      expect(response.code).to eq('200')
-      expect(assigns(:application).name).to eq(untrusted_application_user.name)
-      expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
+    context "POST create" do
+      context "with valid params" do
+        let!(:valid_attributes) { FactoryGirl.build(:doorkeeper_application)
+                                             .attributes }
+
+        it "creates a new Application" do
+          expect {
+            post :create, {:application => valid_attributes}, admin_session
+          }.to change(Doorkeeper::Application, :count).by(1)
+        end
+
+        it "assigns a newly created application as @application" do
+          post :create, {:application => valid_attributes}, admin_session
+          expect(assigns(:application)).to be_a(Doorkeeper::Application)
+          expect(assigns(:application)).to be_persisted
+        end
+
+        it "redirects to the created application" do
+          post :create, {:application => valid_attributes}, admin_session
+          expect(response).to redirect_to([:oauth,
+                                           Doorkeeper::Application.last])
+        end
+      end
+
+      context "with invalid params" do
+        it "assigns a newly created but unsaved application as @application" do
+          # Trigger the behavior that occurs when invalid params are submitted
+          post :create, {:application => { "redirect_uri" => "invalid" }},
+                        admin_session
+          expect(assigns(:application)).to be_a_new(Doorkeeper::Application)
+        end
+
+        it "re-renders the 'new' template" do
+          # Trigger the behavior that occurs when invalid params are submitted
+          post :create, {:application => { "redirect_uri" => "invalid" }},
+                        admin_session
+          expect(response).to render_template("new")
+        end
+      end
     end
 
-    it "should let a user get new for his group" do
-      controller.sign_in user
-      get :new, :user_group_id => user_user_group.id
-      expect(response.code).to eq('200')
+    context "PATCH update" do
+      context "with valid params" do
+        it "updates the requested application" do
+          expect_any_instance_of(Doorkeeper::Application)
+            .to receive(:update_attributes).with({ "name" => "Dummy" })
+          patch :update, {:id => group_1_application_1.to_param,
+                          :application => { "name" => "Dummy" }}, valid_session
+        end
+
+        it "assigns the requested application as @application" do
+          patch :update, {:id => group_1_application_1.to_param,
+                          :application => { "name" => "Dummy" }}, valid_session
+          expect(assigns(:application)).to eq(group_1_application_1)
+        end
+
+        it "redirects to the application" do
+          patch :update, {:id => group_1_application_1.to_param,
+                          :application => { "name" => "Dummy" }}, valid_session
+          expect(response).to redirect_to([:oauth, group_1_application_1])
+        end
+      end
+
+      context "with invalid params" do
+        it "assigns the application as @application" do
+          # Trigger the behavior that occurs when invalid params are submitted
+          patch :update, {:id => group_1_application_1.to_param,
+                          :application => { "redirect_uri" => "invalid" }},
+                         valid_session
+          expect(assigns(:application)).to eq(group_1_application_1)
+        end
+
+        it "re-renders the 'edit' template" do
+          # Trigger the behavior that occurs when invalid params are submitted
+          patch :update, {:id => group_1_application_1.to_param,
+                          :application => { "redirect_uri" => "invalid" }},
+                         valid_session
+          expect(response).to render_template("edit")
+        end
+      end
     end
 
-    it "should not let a user get new for another group" do
-      controller.sign_in user
-      expect{get :new, :user_group_id => admin_user_group.id}.to raise_error(SecurityTransgression)
-      expect(assigns(:application).id).to be_nil
+    context "DELETE destroy" do
+      it "destroys the requested application" do
+        expect {
+          delete :destroy, {:id => group_1_application_1.to_param},
+                           admin_session
+        }.to change(Doorkeeper::Application, :count).by(-1)
+      end
+
+      it "redirects to the applications list" do
+        delete :destroy, {:id => group_1_application_1.to_param}, admin_session
+        expect(response).to redirect_to(oauth_applications_url)
+      end
     end
 
-    it "should let an admin get new for another group" do
-      controller.sign_in admin
-      get :new, :user_group_id => user_user_group.id
-      expect(response.code).to eq('200')
-    end
-
-    it "should let a user create an untrusted application for his group" do
-      controller.sign_in user
-      post :create, :user_group_id => user_user_group.id,
-                    :application => {name: 'Some app',
-                                     redirect_uri: 'http://www.example.com',
-                                     trusted: true}
-      expect(response.code).to eq('302')
-      expect(assigns(:application).name).to eq('Some app')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.com')
-      expect(assigns(:application).trusted).to eq(false)
-    end
-
-  it "should not let a user create an application for another group" do
-    controller.sign_in user
-    expect{post :create, :user_group_id => admin_user_group.id,
-                :application => {
-                  name: 'Some app',
-                  redirect_uri: 'http://www.example.com',
-                  trusted: true}}.to raise_error(SecurityTransgression)
-    expect(assigns(:application).id).to be_nil
-  end
-
-    it "should let an admin create a trusted application for another group" do
-      controller.sign_in admin
-      post :create, :user_group_id => user_user_group.id,
-                    :application => {name: 'Some app',
-                                     redirect_uri: 'http://www.example.com',
-                                     trusted: true}
-      expect(response.code).to eq('302')
-      expect(assigns(:application).name).to eq('Some app')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.com')
-      expect(assigns(:application).trusted).to eq(true)
-    end
-
-    it "should let a user edit his own application" do
-      controller.sign_in user
-      get :edit, id: untrusted_application_user.id
-      expect(response.code).to eq('200')
-      expect(assigns(:application).name).to eq(untrusted_application_user.name)
-      expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
-    end
-
-    it "should not let a user edit someone else's application" do
-      controller.sign_in user
-      expect{get :edit, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
-    end
-
-    it "should let an admin edit someone else's application" do
-      controller.sign_in admin
-      get :edit, id: untrusted_application_user.id
-      expect(response.code).to eq('200')
-      expect(assigns(:application).name).to eq(untrusted_application_user.name)
-      expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
-    end
-
-    it "should let a user update his own application" do
-      controller.sign_in user
-      post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
-      expect(response.code).to eq('302')
-      expect(assigns(:application).name).to eq('Some other name')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.net')
-      expect(assigns(:application).trusted).to eq(false)
-    end
-
-    it "should not let a user update someone else's application" do
-      controller.sign_in user
-      expect{post :update, id: untrusted_application_admin.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}}.to raise_error(SecurityTransgression)
-    end
-
-    it "should let an admin update someone else's application" do
-      controller.sign_in admin
-      post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
-      expect(response.code).to eq('302')
-      expect(assigns(:application).name).to eq('Some other name')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.net')
-      expect(assigns(:application).trusted).to eq(true)
-    end
-
-    it "should let a user destroy his own application" do
-      controller.sign_in user
-      delete :destroy, id: untrusted_application_user.id
-      expect(response.code).to eq('302')
-      expect(assigns(:application).destroyed?).to eq(true)
-    end
-
-    it "should not let a user destroy someone else's application" do
-      controller.sign_in user
-      expect{delete :destroy, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
-    end
-
-    it "should let an admin destroy someone else's application" do
-      controller.sign_in admin
-      delete :destroy, id: untrusted_application_user.id
-      expect(response.code).to eq('302')
-      expect(assigns(:application).destroyed?).to eq(true)
-    end
   end
 end

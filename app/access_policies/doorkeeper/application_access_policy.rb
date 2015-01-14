@@ -3,10 +3,12 @@ module Doorkeeper
     # Contains all the rules for which requestors can do what with which Doorkeeper::Application objects.
     def self.action_allowed?(action, requestor, application)
       case action
-      when :read, :update, :destroy
-        application.owner.has_member?(requestor) || requestor.administrator
-      when :create
-        requestor.administrator
+      when :read, :update
+        requestor.is_human? && !requestor.is_anonymous? && \
+        application.owner.has_member?(requestor.account) || \
+        requestor.is_administrator?
+      when :create, :destroy
+        requestor.is_administrator?
       else
         false
       end

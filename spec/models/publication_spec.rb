@@ -70,8 +70,10 @@ RSpec.describe Publication, :type => :model do
     publication_4 = FactoryGirl.create :publication,
                                        number: publication.number + 1,
                                        version: publication.version + 1
-    expect(Publication.all).to eq [publication_2.reload, publication.reload,
-                                   publication_4.reload, publication_3.reload]
+    expect(Publication.all[-4..-1]).to(
+      eq [publication_2.reload, publication.reload,
+          publication_4.reload, publication_3.reload]
+    )
   end
 
   it 'knows its own status' do

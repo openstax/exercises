@@ -29,8 +29,9 @@ class User < ActiveRecord::Base
   has_many_through_groups :groups_as_member, :list_readers,
                           as: :reader, dependent: :destroy
 
-  has_many :applications, class_name: 'Doorkeeper::Application',
-           as: :owner, dependent: :destroy
+  has_many_through_groups :groups_as_member, :applications,
+                          class_name: 'Doorkeeper::Application',
+                          as: :owner, dependent: :destroy
 
   has_many :sortings, dependent: :destroy
 
