@@ -1,7 +1,7 @@
 # Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
 # License version 3 or later.  See the COPYRIGHT file for details.
 
-module AlertsHelper
+module AlertHelper
   def convert_flash_alert
     add_local_error_alert now: true, content: flash.now[:alert] if flash.now[:alert]
   end

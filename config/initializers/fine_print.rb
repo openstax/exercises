@@ -43,9 +43,3 @@ FinePrint.configure do |config|
     fine_print.new_contract_signature_path(:contract_id => contract_ids.first)) }
 
 end
-
-FinePrint::ApplicationController.class_exec do
-  helper ApplicationAccountBarHelper, ::ApplicationHelper, ApplicationTopNavHelper, AlertsHelper, OpenStax::Utilities::OsuHelper
-
-  layout "layouts/application_body_only"
-end

@@ -2,6 +2,10 @@
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 module ApplicationHelper
+
+  include AlertHelper
+  include LayoutHelper
+
   def user_is_admin?
     signed_in? && current_user.is_admin?
   end

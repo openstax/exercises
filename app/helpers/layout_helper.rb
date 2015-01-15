@@ -1,7 +1,7 @@
-# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2015 Rice University. Licensed under the Affero General Public 
 # License version 3 or later.  See the COPYRIGHT file for details.
 
-module ApplicationTopNavHelper
+module LayoutHelper
   ABOUT_TEXT           = "ABOUT"
   DASHBOARD_TEXT       = "DASHBOARD"
   COURSE_CATALOG_TEXT  = "COURSE CATALOG"
@@ -97,5 +97,15 @@ protected
 
   def top_nav_current_link_class
     "current "
+  end
+
+  def salutation(user)
+    return "Welcome, #{user.first_name || user.username}" if user
+  end
+
+  def account_bar_transparent
+    content_for :account_bar_class do
+      "transparent "
+    end
   end
 end
