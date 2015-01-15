@@ -1,6 +1,7 @@
 module Publishable
   module ActiveRecord
     module Base
+      ID_REGEX = /\A(\d+)(@(\d+))?\z/
       def self.included(base)
         base.extend(ClassMethods)
       end
@@ -8,12 +9,8 @@ module Publishable
       module ClassMethods
         def publishable(options = {})
           first_letter = name.first.downcase
-          regex = Regexp.new "\\A#{name.first.downcase}(\\d+)(v(\\d+)|d)?\\z"
 
           class_exec do
-
-            cattr_accessor :id_regex
-            self.id_regex = regex
 
             has_one :publication, as: :publishable, dependent: :destroy
 
@@ -23,8 +20,10 @@ module Publishable
             has_many :sources, through: :publication
             has_many :derivations, through: :publication
 
-            scope :published, lambda { joins(:publication).includes(:publication)
-                                         .where{publication.published_at != nil} }
+            scope :published, lambda {
+              joins(:publication).includes(:publication)
+                                 .where{publication.published_at != nil}
+            }
 
             scope :visible_for, lambda { |user|
               user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
@@ -40,8 +39,8 @@ module Publishable
                        (editors.user_id == user_id)}
             }
 
-            before_validation :build_publication, on: :create,
-                                                  unless: :publication
+            after_initialize :build_publication, unless: :publication
+            after_create :ensure_publication
 
             delegate :uid, :number, :version, :published_at, :license,
                      :editors, :authors, :copyright_holders, :derivations,
@@ -53,10 +52,18 @@ module Publishable
             def self.find(*args)
               return super if block_given? || args.size != 1
               id = args.first
-              return super unless id.is_a?(String) && id_regex =~ id
+              return super unless id.is_a?(String) && \
+              Publishable::ActiveRecord::Base::ID_REGEX =~ id
               Publication.find_by(publishable_type: name,
                                   number: $1,
-                                  version: $3).first.try(:publishable) || super
+                                  version: $3).try(:publishable) || super
+            end
+
+            protected
+
+            def ensure_publication
+              raise ::ActiveRecord::RecordInvalid, publication \
+                unless publication.persisted?
             end
 
           end

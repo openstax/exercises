@@ -1,6 +1,6 @@
 class Author < ActiveRecord::Base
 
-  sortable_belongs_to :publication
+  sortable_belongs_to :publication, inverse_of: :authors
 
   belongs_to :user
 

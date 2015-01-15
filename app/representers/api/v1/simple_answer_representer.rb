@@ -3,20 +3,6 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :id,
-             type: Integer,
-             writeable: true,
-             readable: true,
-             setter: lambda { |val| self.temp_id = val },
-             schema_info: {
-               required: true
-             }
-
-    property :question_id,
-             type: Integer,
-             writeable: false,
-             readable: true
-
     property :content,
              as: :content_html,
              type: String,
@@ -30,12 +16,12 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             getter: lambda { |args| stem_answers.first.try(:correctness) },
+             getter: lambda { |args| stem_answers.first.try(:content) },
              setter: lambda { |value, args|
               stem_answers << StemAnswer.new(answer: self,
                                              stem: question.stems.first) \
-                unless stem_answers.exists?
-              stem_answers.first.correctness = value },
+                if stem_answers.empty?
+              stem_answers.first.content = value },
              schema_info: {
                type: 'number'
              }

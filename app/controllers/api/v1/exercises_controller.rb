@@ -90,9 +90,16 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
     EOS
     def create
-      exercise = Exercise.new
-      exercise.build_publication
-      standard_create(exercise)
+      user = current_human_user
+      standard_create(Exercise.new) do |exercise|
+        exercise.publication.authors << Author.new(
+          publication: exercise.publication, user: user
+        ) unless exercise.publication.authors.any?{ |a| a.user = user }
+        exercise.publication.copyright_holders << CopyrightHolder.new(
+          publication: exercise.publication, user: user
+        ) unless exercise.publication.copyright_holders
+                                     .any?{ |a| a.user = user }
+      end
     end
 
     ########

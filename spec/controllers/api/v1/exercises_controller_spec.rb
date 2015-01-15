@@ -5,7 +5,8 @@ module Api::V1
 
     let!(:application) { FactoryGirl.create :doorkeeper_application }
     let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let!(:admin)       { FactoryGirl.create :user, :administrator,
+                                            :agreed_to_terms }
 
     let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application, 
@@ -20,7 +21,8 @@ module Api::V1
     before(:each) do
       @exercise = FactoryGirl.build(:exercise)
       @exercise.publication.editors << FactoryGirl.build(
-        :editor, user: user, publication: @exercise.publication)
+        :editor, user: user, publication: @exercise.publication
+      )
     end
 
     describe "GET index" do
@@ -127,13 +129,14 @@ module Api::V1
 
     describe "POST create" do
 
-      it "creates the requested Exercise" do
+      it "creates the requested Exercise and assigns the user as author and CR holder" do
         expect { api_post :create, user_token,
                           raw_post_data: Api::V1::ExerciseRepresenter.new(
                                            @exercise
                                          ).to_json
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
+
         new_exercise = Exercise.last
         expect(new_exercise.title).to eq @exercise.title
         expect(new_exercise.stimulus).to eq @exercise.stimulus
@@ -149,6 +152,9 @@ module Api::V1
         db_answers.each_with_index do |answer, i|
           expect(answer.content).to eq json_answers[i].content
         end
+
+        expect(new_exercise.authors.first.user).to eq user
+        expect(new_exercise.copyright_holders.first.user).to eq user
       end
 
     end
@@ -157,11 +163,18 @@ module Api::V1
 
       it "updates the requested Exercise" do
         @exercise.save!
+        @exercise.reload
+        old_attributes = @exercise.attributes
+
         api_put :update, user_token, parameters: { id: @exercise.uid },
                 raw_post_data: { title: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @exercise.reload
+        new_attributes = @exercise.attributes
+
         expect(@exercise.title).to eq "Ipsum lorem"
+        expect(old_attributes.except('title', 'updated_at'))
+          .to eq(new_attributes.except('title', 'updated_at'))
       end
 
     end

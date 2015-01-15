@@ -3,9 +3,10 @@ class Publication < ActiveRecord::Base
   belongs_to :publishable, polymorphic: true
   belongs_to :license
 
-  sortable_has_many :authors, dependent: :destroy
-  sortable_has_many :copyright_holders, dependent: :destroy
-  sortable_has_many :editors, dependent: :destroy
+  sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
+  sortable_has_many :copyright_holders, dependent: :destroy,
+                                        inverse_of: :publication
+  sortable_has_many :editors, dependent: :destroy, inverse_of: :publication
 
   sortable_has_many :sources, class_name: 'Derivation',
                               foreign_key: :derived_publication_id,

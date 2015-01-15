@@ -1,6 +1,6 @@
 class Editor < ActiveRecord::Base
 
-  sortable_belongs_to :publication
+  sortable_belongs_to :publication, inverse_of: :editors
 
   belongs_to :user
 

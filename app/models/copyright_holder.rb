@@ -1,6 +1,6 @@
 class CopyrightHolder < ActiveRecord::Base
 
-  sortable_belongs_to :publication
+  sortable_belongs_to :publication, inverse_of: :copyright_holders
 
   belongs_to :user
 

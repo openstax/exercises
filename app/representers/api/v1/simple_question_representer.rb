@@ -3,12 +3,6 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :id, 
-             type: Integer,
-             writeable: true,
-             readable: true,
-             setter: lambda { |value, args| self.temp_id = value }
-
     property :stimulus,
              as: :stimulus_html,
              type: String,
@@ -22,7 +16,7 @@ module Api::V1
              readable: true,
              getter: lambda { |args| stems.first.content },
              setter: lambda { |value, args|
-               stems << Stem.new(question: self) unless stems.exists?
+               stems << Stem.new(question: self) if stems.empty?
                stems.first.content = value },
              schema_info: {
                required: true
@@ -61,8 +55,8 @@ module Api::V1
                                          s.style } },
                setter: lambda { |values, args|
                  values.each do |value|
-                   styling = stems.first.stylings.find_or_initialize_by(
-                               style: value)
+                   styling = stems.first.stylings
+                                  .find_or_initialize_by(style: value)
                    styling.stylable = stems.first
                    stems.first.stylings << styling unless styling.persisted?
                  end
