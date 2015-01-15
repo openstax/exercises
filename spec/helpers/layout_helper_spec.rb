@@ -10,6 +10,6 @@ require "rails_helper"
 #     end
 #   end
 # end
-RSpec.describe ApplicationTopNavHelper do
+RSpec.describe LayoutHelper do
   pending "add some examples to (or delete) #{__FILE__}"
 end

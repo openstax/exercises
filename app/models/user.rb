@@ -5,8 +5,7 @@ class User < ActiveRecord::Base
   acts_as_voter
 
   belongs_to :account, class_name: "OpenStax::Accounts::Account",
-                       autosave: true,
-                       inverse_of: :user
+                       autosave: true
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
 

@@ -22,7 +22,7 @@ RSpec.describe User, :type => :model do
   it { is_expected.to have_many(:direct_list_editors).dependent(:destroy) }
   it { is_expected.to have_many(:direct_list_readers).dependent(:destroy) }
 
-  it { is_expected.to have_many(:applications).dependent(:destroy) }
+  it { is_expected.to have_many(:direct_applications).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:account) }
 

@@ -1,6 +1,8 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
+require 'user_mapper'
+
 require 'style'
 require 'solution_type'
 require 'language'

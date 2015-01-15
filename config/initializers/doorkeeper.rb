@@ -70,14 +70,3 @@ Doorkeeper.configure do
   #   end
   # end
 end
-
-Rails.application.config.to_prepare do
-  # Only Applications list
-  Doorkeeper::ApplicationsController.layout "application_body_only"
-
-  # Only Authorization endpoint
-  Doorkeeper::AuthorizationsController.layout "application_body_only"
-
-  # Only Authorized Applications
-  Doorkeeper::AuthorizedApplicationsController.layout "application_body_only"
-end
