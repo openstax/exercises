@@ -1,6 +1,8 @@
 Exercises::Application.routes.draw do
 
-  root 'static_pages#home'
+  root 'webview#home'
+
+  get '/dashboard', to: 'webview#index'
 
   scope module: 'static_pages' do
     get 'about'
@@ -11,6 +13,7 @@ Exercises::Application.routes.draw do
     get 'privacy'
     get 'publishing'
     get 'share'
+    get 'status'
     get 'terms'
   end
 
@@ -78,6 +81,7 @@ Exercises::Application.routes.draw do
     end
   end
 
-  get 'status', to: lambda { |env| [204, {}, ['']] }
+  match '/*other', via: [:get, :post, :put, :patch, :delete],
+                   to: 'webview#index'
 
 end
