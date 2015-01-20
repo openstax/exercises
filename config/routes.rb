@@ -2,7 +2,7 @@ Exercises::Application.routes.draw do
 
   root 'webview#home'
 
-  get '/dashboard', to: 'webview#index'
+  get '/exercises', to: 'webview#index'
 
   scope module: 'static_pages' do
     get 'about'
@@ -81,7 +81,7 @@ Exercises::Application.routes.draw do
     end
   end
 
-  match '/*other', via: [:get, :post, :put, :patch, :delete],
-                   to: 'webview#index'
+  #match '/*other', via: [:get, :post, :put, :patch, :delete],
+  #                 to: 'webview#index'
 
 end
