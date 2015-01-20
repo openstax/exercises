@@ -6,8 +6,8 @@ module Api::V1
 
       it "routes to #publish" do
         { 'exercises' => {:exercise_id => '1'},
-          'exercises/1/solutions' => {
-            :exercise_id => '1', :solution_id => '1'
+          'exercises/1/questions/1/solutions' => {
+            :exercise_id => '1', :question_id => '1', :solution_id => '1'
           }
         }.each do |path, params|
           expect(post("/api/#{path}/1/publish")).to(

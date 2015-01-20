@@ -45,11 +45,8 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = {
-          num_matching_users: @users_count,
-          page: 0,
-          per_page: 20,
-          order_by: 'username ASC',
-          users: []
+          total_count: @users_count,
+          items: []
         }.to_json
 
         expect(response.body).to eq(expected_response)
@@ -60,11 +57,8 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = {
-          num_matching_users: 1,
-          page: 0,
-          per_page: 20,
-          order_by: 'username ASC',
-          users: [
+          total_count: 1,
+          items: [
             {
               id: @john_doe.account.openstax_uid,
               username: @john_doe.username,
@@ -84,11 +78,8 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = {
-          num_matching_users: 2,
-          page: 0,
-          per_page: 20,
-          order_by: 'username ASC',
-          users: [
+          total_count: 2,
+          items: [
             {
               id: @jane_doe.account.openstax_uid,
               username: @jane_doe.username,
@@ -117,11 +108,8 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = {
-          num_matching_users: 2,
-          page: 0,
-          per_page: 20,
-          order_by: 'first_name DESC, last_name ASC',
-          users: [
+          total_count: 2,
+          items: [
             {
               id: @john_doe.account.openstax_uid,
               username: @john_doe.username,

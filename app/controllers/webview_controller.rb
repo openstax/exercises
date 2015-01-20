@@ -12,8 +12,8 @@ class WebviewController < ApplicationController
   end
 
   def index
+    @path = params[:path] || '/'
     @name = current_user.casual_name
-    @path = path
   end
 
   protected

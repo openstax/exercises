@@ -53,6 +53,10 @@ class Publication < ActiveRecord::Base
     !editors.find_by(user: user).nil?
   end
 
+  def publish
+    self.published_at = Time.now
+  end
+
   protected
 
   def assign_number_and_version

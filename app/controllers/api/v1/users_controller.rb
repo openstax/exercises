@@ -18,6 +18,8 @@ module Api::V1
     # index #
     #########
 
+    MAX_USERS = 20
+
     api :GET, '/users', 'Return a set of Users matching query terms'
     description <<-EOS
       Accepts a query string along with options and returns a JSON
@@ -79,14 +81,19 @@ module Api::V1
       `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
     EOS
     def index
-      #standard_search(OpenStax::Accounts::SearchAccounts,
-      #                params[:q], params.slice(:order_by),
-      #                OpenStax::Accounts::Api::V1::AccountSearchRepresenter)
-      OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
+      OSU::AccessPolicy.require_action_allowed!(
+        :search, current_api_user, User
+      )
       outputs = OpenStax::Accounts::SearchAccounts.call(
                   params[:q], params.slice(:order_by)).outputs
-      respond_with outputs,
-                   represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
+
+      outputs[:items] = outputs[:items].none \
+        if outputs[:total_count] > MAX_USERS
+
+      respond_with(
+        outputs,
+        represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
+      )
     end
 
     ########

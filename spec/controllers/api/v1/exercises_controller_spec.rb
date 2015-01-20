@@ -42,14 +42,12 @@ module Api::V1
         @exercise_1 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
           title: "Lorem ipsum",
-          background: "Dolor",
-          parts: [{
-            background: "Sit amet",
-            questions: [{
-              stem: "Consectetur adipiscing elit",
-              answers: [{
-                content: "Sed do eiusmod tempor"
-              }]
+          stimulus: "Dolor",
+          questions: [{
+            stimulus: "Sit amet",
+            stem_html: "Consectetur adipiscing elit",
+            answers: [{
+              content_html: "Sed do eiusmod tempor"
             }]
           }]
         }.to_json)
@@ -57,14 +55,12 @@ module Api::V1
         @exercise_2 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
           title: "Dolorem ipsum",
-          background: "Quia dolor",
-          parts: [{
-            background: "Sit amet",
-            questions: [{
-              stem: "Consectetur adipisci velit",
-              answers: [{
-                content: "Sed quia non numquam"
-              }]
+          stimulus: "Quia dolor",
+          questions: [{
+            stimulus: "Sit amet",
+            stem_html: "Consectetur adipisci velit",
+            answers: [{
+              content_html: "Sed quia non numquam"
             }]
           }]
         }.to_json)

@@ -29,21 +29,6 @@ module Api::V1
       end
     end
 
-    describe "GET new" do
-      it "assigns a new solution as @solution" do
-        get :new, {}, valid_session
-        expect(assigns(:solution)).to be_a_new(Solution)
-      end
-    end
-
-    describe "GET edit" do
-      it "assigns the requested solution as @solution" do
-        solution = Solution.create! valid_attributes
-        get :edit, {:id => solution.to_param}, valid_session
-        expect(assigns(:solution)).to eq(solution)
-      end
-    end
-
     describe "POST create" do
       describe "with valid params" do
         it "creates a new Solution" do

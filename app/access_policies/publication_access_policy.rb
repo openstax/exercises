@@ -4,9 +4,7 @@ class PublicationAccessPolicy
   def self.action_allowed?(action, requestor, publication)
     case action
     when :read, :publish
-      publication.editors.include?(requestor) || \
-        publication.authors.include?(requestor) || \
-        publication.copyright_holders.include?(requestor)
+      !publication.is_published? && publication.has_collaborator?(requestor)
     else
       false
     end

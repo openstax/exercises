@@ -2,6 +2,8 @@ Exercises::Application.routes.draw do
 
   root 'webview#home'
 
+  get '/dashboard', to: 'webview#index'
+
   scope module: 'static_pages' do
     get 'about'
     get 'contact'
@@ -23,9 +25,11 @@ Exercises::Application.routes.draw do
       # Not in V1
       #has_logic
 
-      resources :solutions do
-        publishable
-        #has_logic
+      resources :questions, only: [] do
+        resources :solutions do
+          publishable
+          #has_logic
+        end
       end
     end
 

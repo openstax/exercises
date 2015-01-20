@@ -102,4 +102,10 @@ RSpec.describe Publication, :type => :model do
     expect(publication.is_public?).to eq false
   end
 
+  it 'can set itself to published' do
+    expect(publication.is_published?).to eq false
+    publication.publish
+    expect(publication.is_published?).to eq true
+  end
+
 end
