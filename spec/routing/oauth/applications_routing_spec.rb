@@ -16,12 +16,12 @@ module Oauth
 
       it "routes to #show" do
         expect(get("/oauth/applications/1")).to(
-          route_to("oauth/applications#index", :id => 1))
+          route_to("oauth/applications#show", :id => "1"))
       end
 
       it "routes to #edit" do
         expect(get("/oauth/applications/1/edit")).to(
-          route_to("oauth/applications#edit", :id => 1))
+          route_to("oauth/applications#edit", :id => "1"))
       end
 
       it "routes to #create" do
@@ -30,13 +30,15 @@ module Oauth
       end
 
       it "routes to #update" do
-        expect(patch("/oauth/applications/1")).to(
-          route_to("oauth/applications#update", :id => 1))
+        [:put, :patch].each do |method|
+          expect(send(method, "/oauth/applications/1")).to(
+            route_to("oauth/applications#update", :id => "1"))
+        end
       end
 
       it "routes to #destroy" do
         expect(delete("/oauth/applications/1")).to(
-          route_to("oauth/applications#destroy", :id => 1))
+          route_to("oauth/applications#destroy", :id => "1"))
       end
 
     end

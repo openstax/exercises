@@ -8,12 +8,14 @@ RSpec.describe WebviewController, :type => :routing do
     end
 
     it 'routes to #index' do
-      expect(:get => '/dashboard').to route_to('webview#index')
+      expect(:get => '/exercises/1').to route_to('webview#index',
+                                                 path: 'exercises/1')
     end
 
     it 'catches all other routes' do
       [:get, :post, :put, :patch, :delete].each do |method|
-        expect(method => "/#{SecureRandom.hex}").to route_to('webview#index')
+        path = SecureRandom.hex
+        expect(method => "/#{path}").to route_to('webview#index', path: path)
       end
     end
 

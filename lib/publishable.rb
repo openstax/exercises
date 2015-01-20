@@ -76,8 +76,6 @@ module Publishable
     module Routing
       module Mapper
         def publishable
-          resource :publication, only: [:show]
-
           post 'publish', to: 'publications#publish'
         end
       end

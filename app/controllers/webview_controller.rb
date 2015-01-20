@@ -13,13 +13,14 @@ class WebviewController < ApplicationController
 
   def index
     @name = current_user.casual_name
-    @path = request.fullpath
+    @path = path
   end
 
   protected
 
   def resolve_layout
-    'home' == action_name ? 'application_body_only' : 'webview'
+    'application_body_only'
+    #'home' == action_name ? 'application_body_only' : 'webview'
   end
 
 end

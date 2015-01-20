@@ -5,31 +5,38 @@ module Api::V1
     describe "routing" do
 
       it "routes to #index" do
-        expect(get("/solutions")).to route_to("solutions#index")
-      end
-
-      it "routes to #new" do
-        expect(get("/solutions/new")).to route_to("solutions#new")
+        expect(get("/api/exercises/1/solutions")).to(
+          route_to("api/v1/solutions#index", :exercise_id => "1",
+                                             :format => "json"))
       end
 
       it "routes to #show" do
-        expect(get("/solutions/1")).to route_to("solutions#show", :id => "1")
-      end
-
-      it "routes to #edit" do
-        expect(get("/solutions/1/edit")).to route_to("solutions#edit", :id => "1")
+        expect(get("/api/exercises/1/solutions/1")).to(
+          route_to("api/v1/solutions#show", :id => "1",
+                                            :exercise_id => "1",
+                                            :format => "json"))
       end
 
       it "routes to #create" do
-        expect(post("/solutions")).to route_to("solutions#create")
+        expect(post("/api/exercises/1/solutions")).to(
+          route_to("api/v1/solutions#create", :exercise_id => "1",
+                                              :format => "json"))
       end
 
       it "routes to #update" do
-        expect(put("/solutions/1")).to route_to("solutions#update", :id => "1")
+        [:put, :patch].each do |method|
+          expect(send(method, "/api/exercises/1/solutions/1")).to(
+            route_to("api/v1/solutions#update", :id => "1",
+                                                :exercise_id => "1",
+                                                :format => "json"))
+        end
       end
 
       it "routes to #destroy" do
-        expect(delete("/solutions/1")).to route_to("solutions#destroy", :id => "1")
+        expect(delete("/api/exercises/1/solutions/1")).to(
+          route_to("api/v1/solutions#destroy", :id => "1",
+                                               :exercise_id => "1",
+                                               :format => "json"))
       end
 
     end

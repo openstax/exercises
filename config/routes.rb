@@ -2,8 +2,6 @@ Exercises::Application.routes.draw do
 
   root 'webview#home'
 
-  get '/exercises', to: 'webview#index'
-
   scope module: 'static_pages' do
     get 'about'
     get 'contact'
@@ -22,21 +20,23 @@ Exercises::Application.routes.draw do
   api :v1, :default => true do
     resources :exercises do
       publishable
-      has_logic
+      # Not in V1
+      #has_logic
 
       resources :solutions do
         publishable
-        has_logic
+        #has_logic
       end
     end
 
-    resources :logics, only: [] do
-      post 'seeds', on: :member
-    end
+    # Not in V1
+    #resources :logics, only: [] do
+    #  post 'seeds', on: :member
+    #end
 
-    resources :lists do
-      publishable
-    end
+    #resources :lists do
+    #  publishable
+    #end
 
     resources :users, only: [:index]
 
@@ -81,7 +81,6 @@ Exercises::Application.routes.draw do
     end
   end
 
-  #match '/*other', via: [:get, :post, :put, :patch, :delete],
-  #                 to: 'webview#index'
+  match '*path', to: 'webview#index', via: :all
 
 end
