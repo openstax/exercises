@@ -3,15 +3,10 @@ require "rails_helper"
 module Api::V1
   RSpec.describe DeputizationsController, type: :controller, api: true, version: :v1 do
 
-    # This should return the minimal set of attributes required to create a valid
-    # Deputization. As you add validations to Deputization, be sure to
-    # adjust the attributes here as well.
-    let(:valid_attributes) { { "number" => "1" } }
-
-    # This should return the minimal set of values that should be in the session
-    # in order to pass any filters (e.g. authentication) defined in
-    # DeputizationsController. Be sure to keep this updated too.
-    let(:valid_session) { {} }
+    before(:each) do
+      # To be implemented
+      skip
+    end
 
     describe "GET index" do
       it "assigns all deputizations as @deputizations" do
