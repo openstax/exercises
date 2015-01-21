@@ -3,44 +3,16 @@ require "rails_helper"
 module Api::V1
   RSpec.describe DeputizationsController, type: :controller, api: true, version: :v1 do
 
-    # This should return the minimal set of attributes required to create a valid
-    # Deputization. As you add validations to Deputization, be sure to
-    # adjust the attributes here as well.
-    let(:valid_attributes) { { "number" => "1" } }
-
-    # This should return the minimal set of values that should be in the session
-    # in order to pass any filters (e.g. authentication) defined in
-    # DeputizationsController. Be sure to keep this updated too.
-    let(:valid_session) { {} }
+    before(:each) do
+      # To be implemented
+      skip
+    end
 
     describe "GET index" do
       it "assigns all deputizations as @deputizations" do
         deputization = Deputization.create! valid_attributes
         get :index, {}, valid_session
         expect(assigns(:deputizations)).to eq([deputization])
-      end
-    end
-
-    describe "GET show" do
-      it "assigns the requested deputization as @deputization" do
-        deputization = Deputization.create! valid_attributes
-        get :show, {:id => deputization.to_param}, valid_session
-        expect(assigns(:deputization)).to eq(deputization)
-      end
-    end
-
-    describe "GET new" do
-      it "assigns a new deputization as @deputization" do
-        get :new, {}, valid_session
-        expect(assigns(:deputization)).to be_a_new(Deputization)
-      end
-    end
-
-    describe "GET edit" do
-      it "assigns the requested deputization as @deputization" do
-        deputization = Deputization.create! valid_attributes
-        get :edit, {:id => deputization.to_param}, valid_session
-        expect(assigns(:deputization)).to eq(deputization)
       end
     end
 
@@ -77,50 +49,6 @@ module Api::V1
           Deputization.any_instance.stub(:save).and_return(false)
           post :create, {:deputization => { "number" => "invalid value" }}, valid_session
           expect(response).to render_template("new")
-        end
-      end
-    end
-
-    describe "PUT update" do
-      describe "with valid params" do
-        it "updates the requested deputization" do
-          deputization = Deputization.create! valid_attributes
-          # Assuming there are no other deputizations in the database, this
-          # specifies that the Deputization created on the previous line
-          # receives the :update_attributes message with whatever params are
-          # submitted in the request.
-          expect(Deputization.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
-          put :update, {:id => deputization.to_param, :deputization => { "number" => "1" }}, valid_session
-        end
-
-        it "assigns the requested deputization as @deputization" do
-          deputization = Deputization.create! valid_attributes
-          put :update, {:id => deputization.to_param, :deputization => valid_attributes}, valid_session
-          expect(assigns(:deputization)).to eq(deputization)
-        end
-
-        it "redirects to the deputization" do
-          deputization = Deputization.create! valid_attributes
-          put :update, {:id => deputization.to_param, :deputization => valid_attributes}, valid_session
-          expect(response).to redirect_to(deputization)
-        end
-      end
-
-      describe "with invalid params" do
-        it "assigns the deputization as @deputization" do
-          deputization = Deputization.create! valid_attributes
-          # Trigger the behavior that occurs when invalid params are submitted
-          Deputization.any_instance.stub(:save).and_return(false)
-          put :update, {:id => deputization.to_param, :deputization => { "number" => "invalid value" }}, valid_session
-          expect(assigns(:deputization)).to eq(deputization)
-        end
-
-        it "re-renders the 'edit' template" do
-          deputization = Deputization.create! valid_attributes
-          # Trigger the behavior that occurs when invalid params are submitted
-          Deputization.any_instance.stub(:save).and_return(false)
-          put :update, {:id => deputization.to_param, :deputization => { "number" => "invalid value" }}, valid_session
-          expect(response).to render_template("edit")
         end
       end
     end

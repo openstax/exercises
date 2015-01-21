@@ -4,10 +4,9 @@
    sign_in_as ||= false
 %>
 
-<% accounts = @handler_result.outputs[:accounts]
+<% accounts = @handler_result.outputs[:items]
    return '' unless accounts
-   users = User.where(account_id: accounts.collect{|a| a.id})
-               .includes(:account).order(@handler_result.outputs[:order_bys]) %>
+   users = accounts.collect { |a| User.find_or_create_by(account: a) } %>
 
 <%= render partial: 'shared/users/search_pagination' %>
 

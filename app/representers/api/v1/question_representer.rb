@@ -7,19 +7,17 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val| self.temp_id = val }
+             setter: lambda { |value, args| self.temp_id = value }
 
-    property :stem,
+    property :stimulus,
+             as: :stimulus_html,
              type: String,
              writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
+             readable: true
 
-    collection :items,
-               class: Item,
-               decorator: ItemRepresenter,
+    collection :stems,
+               class: Stem,
+               decorator: StemRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
@@ -35,20 +33,20 @@ module Api::V1
                  required: true
                }
 
-    collection :combo_choices,
-               class: ComboChoice,
-               decorator: ComboChoiceRepresenter,
-               writeable: true,
-               readable: true
-
-    collection :stylings,
-               as: :styles,
-               class: Styling,
-               decorator: StylingRepresenter,
+    collection :hints,
+               type: String,
                writeable: true,
                readable: true,
+               getter: lambda { |args| hints.collect{|h| h.content} },
+               setter: lambda { |values, args|
+                 values.each do |v|
+                   hint = hints.find_or_initialize_by(content: v)
+                   hints << hint unless hint.persisted?
+                 end
+               },
                schema_info: {
-                 required: true
+                 required: true,
+                 description: 'Author-supplied hints for the question'
                }
 
     collection :parent_dependencies,

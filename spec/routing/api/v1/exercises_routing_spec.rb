@@ -5,31 +5,30 @@ module Api::V1
     describe "routing" do
 
       it "routes to #index" do
-        expect(get("/exercises")).to route_to("exercises#index")
-      end
-
-      it "routes to #new" do
-        expect(get("/exercises/new")).to route_to("exercises#new")
+        expect(get("/api/exercises")).to(
+          route_to("api/v1/exercises#index", :format => "json"))
       end
 
       it "routes to #show" do
-        expect(get("/exercises/1")).to route_to("exercises#show", :id => "1")
-      end
-
-      it "routes to #edit" do
-        expect(get("/exercises/1/edit")).to route_to("exercises#edit", :id => "1")
+        expect(get("/api/exercises/1")).to(
+          route_to("api/v1/exercises#show", :id => "1", :format => "json"))
       end
 
       it "routes to #create" do
-        expect(post("/exercises")).to route_to("exercises#create")
+        expect(post("/api/exercises")).to(
+          route_to("api/v1/exercises#create", :format => "json"))
       end
 
       it "routes to #update" do
-        expect(put("/exercises/1")).to route_to("exercises#update", :id => "1")
+        [:put, :patch].each do |method|
+          expect(send(method, "/api/exercises/1")).to(
+            route_to("api/v1/exercises#update", :id => "1", :format => "json"))
+        end
       end
 
       it "routes to #destroy" do
-        expect(delete("/exercises/1")).to route_to("exercises#destroy", :id => "1")
+        expect(delete("/api/exercises/1")).to(
+          route_to("api/v1/exercises#destroy", :id => "1", :format => "json"))
       end
 
     end

@@ -1,13 +1,14 @@
 class CreateEditors < ActiveRecord::Migration
   def change
     create_table :editors do |t|
+      t.sortable
       t.references :publication, null: false
       t.references :user, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
-    add_index :editors, [:publication_id, :user_id], unique: true
-    add_index :editors, :user_id
+    add_sortable_index :editors, scope: :publication_id
+    add_index :editors, [:user_id, :publication_id], unique: true
   end
 end

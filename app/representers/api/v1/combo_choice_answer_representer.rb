@@ -3,7 +3,7 @@ module Api::V1
 
     include Roar::Representer::JSON
 
-    property :answer_id, 
+    property :answer_id,
              type: Integer,
              writeable: true,
              readable: true,

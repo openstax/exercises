@@ -3,62 +3,63 @@
 
 source 'https://rubygems.org'
 
-# Rails framework
-gem 'rails', '4.2.0.beta1'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.2.0'
 
-# Bootstrap front-end framework
+# Bootstrap
 gem 'bootstrap-sass', '~> 3.2.0'
 
-# SCSS stylesheets
-gem 'sass-rails', '~> 5.0.0.beta1'
+# Use SCSS for stylesheets
+gem 'sass-rails', '~> 5.0'
 
 # Compass stylesheets
 gem 'compass-rails'
 
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
+
+# Use CoffeeScript for .coffee assets and views
+gem 'coffee-rails', '~> 4.1.0'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer', platforms: :ruby
+
+# Use jquery as the JavaScript library
+gem 'jquery-rails'
+
+# jquery UI library
+gem 'jquery-ui-rails'
+
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
+
 # Automatically add browser-specific CSS prefixes
 gem 'autoprefixer-rails'
 
-# JavaScript asset compressor
-gem 'uglifier', '>= 1.3.0'
-
-# CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
-
-# JavaScript asset compiler
-gem 'therubyracer', platforms: :ruby
-
-# jQuery library
-gem 'jquery-rails'
-
-# jQuery UI library
-gem 'jquery-ui-rails'
-
-# Automatically ajaxify links
-gem 'turbolinks'
-
 # Rails 5 HTML sanitizer
-gem 'rails-html-sanitizer', '~> 1.0'
+gem 'rails-html-sanitizer'
 
 # Converts links in Strings to HTML anchors
 gem 'rails_autolink'
 
 # Utilities for OpenStax websites
-gem 'openstax_utilities', '~> 4.1.0'
+gem 'openstax_utilities'
 
 # Cron job scheduling
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 3.1.1'
+gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
+                         ref: '9290c503fc8f435d5b92ebe3867593387abb107f'
 
 # Respond_with and respond_to methods
-gem 'responders', '~> 2.0'
+gem 'responders'
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 3.1.1'
+gem 'openstax_api', '~> 3.2.1'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'representable'
@@ -68,13 +69,14 @@ gem 'roar-rails'
 gem 'lev'
 
 # Ruby dsl for SQL queries
-gem 'squeel'
+gem 'squeel', git: 'https://github.com/danielrhodes/squeel.git',
+              ref: 'e7f016834eba7f31ed94cb59ed5d41ee80739dd2' # Rails 4.2 patch
 
 # Contract management
 gem 'fine_print'
 
 # Keyword search
-gem "keyword_search"
+gem 'keyword_search'
 
 # File uploads
 gem 'remotipart'
@@ -95,7 +97,10 @@ gem 'acts-as-taggable-on'
 # Object cloning
 gem 'deep_cloneable'
 
-# Object comments
+# Sortable objects
+gem 'sortability'
+
+# Comments on objects
 gem 'commontator'
 
 # Comment voting
@@ -107,6 +112,9 @@ gem 'newrelic_rpm'
 # YAML database backups
 gem 'yaml_db'
 
+# Admin console
+gem 'rails_admin'
+
 group :development, :test do
   # Thin webserver
   gem 'thin'
@@ -117,17 +125,26 @@ group :development, :test do
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
-  # Mute asset pipeline log messages
-  gem 'quiet_assets'
-end
-
-group :development do
-  # Access an IRB console on exceptions page and /console in development
-  gem 'web-console', '~> 2.0.0.beta2'
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
+  # Use RSpec for tests
+  gem 'rspec-rails'
+
+  # Mute asset pipeline log messages
+  gem 'quiet_assets'
+
+  # Fixture replacement
+  gem 'factory_girl_rails'
+
+  # Lorem Ipsum
+  gem 'faker'
+end
+
+group :development do
   # Automated security checks
   gem 'brakeman'
 
@@ -149,15 +166,6 @@ group :development do
 end
 
 group :test do
-  # Use RSpec for tests
-  gem 'rspec-rails'
-
-  # Fixture replacement
-  gem 'factory_girl_rails'
-
-  # Lorem Ipsum
-  gem 'faker'
-
   # Spec helpers
   gem 'shoulda-matchers', require: false
 

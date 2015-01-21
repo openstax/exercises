@@ -5,7 +5,8 @@ module Api::V1
 
     let!(:application) { FactoryGirl.create :doorkeeper_application }
     let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let!(:admin)       { FactoryGirl.create :user, :administrator,
+                                            :agreed_to_terms }
 
     let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application, 
@@ -20,7 +21,8 @@ module Api::V1
     before(:each) do
       @exercise = FactoryGirl.build(:exercise)
       @exercise.publication.editors << FactoryGirl.build(
-        :editor, user: user, publication: @exercise.publication)
+        :editor, user: user, publication: @exercise.publication
+      )
     end
 
     describe "GET index" do
@@ -29,24 +31,23 @@ module Api::V1
         10.times { FactoryGirl.create(:exercise) }
 
         ad = "%adipisci%"
-        Exercise.joins{parts.outer.questions.outer.answers.outer}
+        Exercise.joins{questions.outer.stems.outer}
+                .joins{questions.outer.answers.outer}
                 .where{(title.like ad) |\
-                       (background.like ad) |\
-                       (parts.background.like ad) |\
-                       (questions.stem.like ad) |\
+                       (stimulus.like ad) |\
+                       (questions.stimulus.like ad) |\
+                       (stems.content.like ad) |\
                        (answers.content.like ad)}.delete_all
 
         @exercise_1 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
           title: "Lorem ipsum",
-          background: "Dolor",
-          parts: [{
-            background: "Sit amet",
-            questions: [{
-              stem: "Consectetur adipiscing elit",
-              answers: [{
-                content: "Sed do eiusmod tempor"
-              }]
+          stimulus: "Dolor",
+          questions: [{
+            stimulus: "Sit amet",
+            stem_html: "Consectetur adipiscing elit",
+            answers: [{
+              content_html: "Sed do eiusmod tempor"
             }]
           }]
         }.to_json)
@@ -54,14 +55,12 @@ module Api::V1
         @exercise_2 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
           title: "Dolorem ipsum",
-          background: "Quia dolor",
-          parts: [{
-            background: "Sit amet",
-            questions: [{
-              stem: "Consectetur adipisci velit",
-              answers: [{
-                content: "Sed quia non numquam"
-              }]
+          stimulus: "Quia dolor",
+          questions: [{
+            stimulus: "Sit amet",
+            stem_html: "Consectetur adipisci velit",
+            answers: [{
+              content_html: "Sed quia non numquam"
             }]
           }]
         }.to_json)
@@ -126,19 +125,32 @@ module Api::V1
 
     describe "POST create" do
 
-      it "creates the requested Exercise" do
+      it "creates the requested Exercise and assigns the user as author and CR holder" do
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter.new(@exercise).to_json
+                          raw_post_data: Api::V1::ExerciseRepresenter.new(
+                                           @exercise
+                                         ).to_json
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
+
         new_exercise = Exercise.last
         expect(new_exercise.title).to eq @exercise.title
-        expect(new_exercise.background).to eq @exercise.background
-        expect(new_exercise.parts.first.background).to eq @exercise.parts.first.background
-        expect(new_exercise.questions.first.stem).to eq(
-          @exercise.parts.first.questions.first.stem)
-        expect(new_exercise.answers.first.content).to eq(
-          @exercise.parts.first.questions.first.answers.first.content)
+        expect(new_exercise.stimulus).to eq @exercise.stimulus
+
+        expect(new_exercise.questions.first.stimulus)
+          .to eq @exercise.questions.first.stimulus
+
+        expect(new_exercise.questions.first.stems.first.content).to eq(
+          @exercise.questions.first.stems.first.content)
+
+        db_answers = new_exercise.questions.first.answers
+        json_answers = @exercise.questions.first.answers
+        db_answers.each_with_index do |answer, i|
+          expect(answer.content).to eq json_answers[i].content
+        end
+
+        expect(new_exercise.authors.first.user).to eq user
+        expect(new_exercise.copyright_holders.first.user).to eq user
       end
 
     end
@@ -147,11 +159,18 @@ module Api::V1
 
       it "updates the requested Exercise" do
         @exercise.save!
+        @exercise.reload
+        old_attributes = @exercise.attributes
+
         api_put :update, user_token, parameters: { id: @exercise.uid },
                 raw_post_data: { title: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @exercise.reload
+        new_attributes = @exercise.attributes
+
         expect(@exercise.title).to eq "Ipsum lorem"
+        expect(old_attributes.except('title', 'updated_at'))
+          .to eq(new_attributes.except('title', 'updated_at'))
       end
 
     end

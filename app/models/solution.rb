@@ -1,14 +1,16 @@
 class Solution < ActiveRecord::Base
 
   acts_as_votable
-  parsable :summary, :details
+  parsable :content
   publishable
   has_attachments
   has_logic :javascript, :latex
-  sort_domain
+  stylable
 
-  belongs_to :question, inverse_of: :solutions
+  belongs_to :question
 
   validates :question, presence: true
+  validates :solution_type, presence: true, inclusion: { in: SolutionType.all }
+  validates :content, presence: true
 
 end

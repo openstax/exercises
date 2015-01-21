@@ -1,13 +1,14 @@
 class CreateAuthors < ActiveRecord::Migration
   def change
     create_table :authors do |t|
+      t.sortable
       t.references :publication, null: false
       t.references :user, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
-    add_index :authors, [:publication_id, :user_id], unique: true
-    add_index :authors, :user_id
+    add_sortable_index :authors, scope: :publication_id
+    add_index :authors, [:user_id, :publication_id], unique: true
   end
 end

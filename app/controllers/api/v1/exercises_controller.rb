@@ -63,7 +63,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{
-        SearchExercises.sortable_fields_map.keys.collect{|sf| "`"+sf+"`"}.join(', ')
+        SearchExercises::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')
       }.
       Sort directions can either be `ASC` for 
       an ascending sort, or `DESC` for a
@@ -76,9 +76,7 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(SearchExercises,
-                      Exercise.visible_for(current_api_user),
-                      ExerciseSearchRepresenter)
+      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter)
     end
 
     ##########
@@ -92,9 +90,16 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
     EOS
     def create
-      exercise = Exercise.new
-      exercise.build_publication
-      standard_create(exercise)
+      user = current_human_user
+      standard_create(Exercise.new) do |exercise|
+        exercise.publication.authors << Author.new(
+          publication: exercise.publication, user: user
+        ) unless exercise.publication.authors.any?{ |a| a.user = user }
+        exercise.publication.copyright_holders << CopyrightHolder.new(
+          publication: exercise.publication, user: user
+        ) unless exercise.publication.copyright_holders
+                                     .any?{ |a| a.user = user }
+      end
     end
 
     ########

@@ -3,13 +3,14 @@ class CreateSolutions < ActiveRecord::Migration
     create_table :solutions do |t|
       t.references :question, null: false
       t.string :title
-      t.text :summary
-      t.text :details, null: false
+      t.text :solution_type, null: false
+      t.text :content, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :solutions, :question_id
     add_index :solutions, :title
+    add_index :solutions, :solution_type
   end
 end

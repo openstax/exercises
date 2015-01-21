@@ -11,21 +11,15 @@ class CreatePublications < ActiveRecord::Migration
       t.boolean :embargo_children_only, null: false, default: false
       t.boolean :major_change, null: false, default: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :publications, [:publishable_id, :publishable_type], unique: true
-    add_index :publications, [:number, :publishable_type, :version], unique: true
+    add_index :publications, [:number, :publishable_type, :version],
+                             unique: true
     add_index :publications, :license_id
     add_index :publications, :published_at
     add_index :publications, :yanked_at
     add_index :publications, :embargoed_until
-    if supports_partial_index?
-      add_index :publications, :embargoed_until, where: 'embargo_children_only=0',
-                name: 'filtered_index_publications_on_embargoed_until'
-      add_index :publications, [:number, :publishable_type, :version],
-                where: 'major_change=0',
-                name: 'filtered_index_publications_on_number_and_p_type_and_version'
-    end
   end
 end

@@ -18,6 +18,8 @@ module Api::V1
     # index #
     #########
 
+    MAX_USERS = 20
+
     api :GET, '/users', 'Return a set of Users matching query terms'
     description <<-EOS
       Accepts a query string along with options and returns a JSON
@@ -67,7 +69,7 @@ module Api::V1
       A string that indicates how to sort the results of the query. The string
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
-      The fields can be one of #{OpenStax::Accounts::SearchAccounts::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+      The fields can be one of #{OpenStax::Accounts::SearchLocalAccounts::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')}.
       Sort directions can either be `ASC` for 
       an ascending sort, or `DESC` for a
       descending sort. If not provided, an ascending sort is assumed. Sort
@@ -79,14 +81,19 @@ module Api::V1
       `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
     EOS
     def index
-      #standard_search(OpenStax::Accounts::SearchAccounts,
-      #                params[:q], params.slice(:order_by),
-      #                OpenStax::Accounts::Api::V1::AccountSearchRepresenter)
-      OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
+      OSU::AccessPolicy.require_action_allowed!(
+        :search, current_api_user, User
+      )
       outputs = OpenStax::Accounts::SearchAccounts.call(
                   params[:q], params.slice(:order_by)).outputs
-      respond_with outputs,
-                   represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
+
+      outputs[:items] = outputs[:items].none \
+        if outputs[:total_count] > MAX_USERS
+
+      respond_with(
+        outputs,
+        represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
+      )
     end
 
     ########

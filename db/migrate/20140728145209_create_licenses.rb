@@ -7,11 +7,11 @@ class CreateLicenses < ActiveRecord::Migration
       t.text :publishing_contract, null: false
       t.text :copyright_notice, null: false
       t.boolean :requires_attribution, null: false, default: true
-      t.boolean :share_alike, null: false, default: false
-      t.boolean :no_derivatives, null: false, default: false
-      t.boolean :non_commercial, null: false, default: false
+      t.boolean :requires_share_alike, null: false, default: false
+      t.boolean :allows_derivatives, null: false, default: true
+      t.boolean :allows_commercial_use, null: false, default: true
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :licenses, :name, unique: true

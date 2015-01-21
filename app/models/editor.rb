@@ -1,14 +1,11 @@
 class Editor < ActiveRecord::Base
 
-  sortable
+  sortable_belongs_to :publication, inverse_of: :editors
 
-  belongs_to :publication, inverse_of: :editors
-  belongs_to :user, inverse_of: :editors
+  belongs_to :user
 
   validates :publication, presence: true
   validates :user, presence: true, uniqueness: { scope: :publication_id }
-
-  delegate_access_control_to :publication
 
   delegate :name, to: :user
 

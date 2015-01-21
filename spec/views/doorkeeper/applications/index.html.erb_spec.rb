@@ -9,7 +9,7 @@ module Doorkeeper
       ])
     end
 
-    it "renders a list of applications" do
+    xit "renders a list of applications" do
       render
     end
   end

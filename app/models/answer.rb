@@ -4,17 +4,13 @@ class Answer < ActiveRecord::Base
 
   parsable :content
 
-  belongs_to :question, inverse_of: :answers
-  has_one :part, through: :question
-  has_one :exercise, through: :part
+  belongs_to :question
 
-  belongs_to :item, inverse_of: :answers
+  has_many :stem_answers, dependent: :destroy
 
-  has_many :combo_choice_answers, dependent: :destroy, inverse_of: :answer
-  has_many :combo_choices, through: :combo_choice_answers
+  has_many :combo_choice_answers, dependent: :destroy
 
   validates :question, presence: true
-
-  delegate_access_control_to :question
+  validates :content, presence: true
 
 end

@@ -4,20 +4,20 @@ class User < ActiveRecord::Base
 
   acts_as_voter
 
-  sort_domain
-
-  belongs_to :account, class_name: "OpenStax::Accounts::Account", autosave: true
+  belongs_to :account, class_name: "OpenStax::Accounts::Account",
+                       autosave: true
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
 
-  has_one :administrator, dependent: :destroy, inverse_of: :user
+  has_one :administrator, dependent: :destroy
 
-  has_many :authors, dependent: :destroy, inverse_of: :user
-  has_many :copyright_holders, dependent: :destroy, inverse_of: :user
-  has_many :editors, dependent: :destroy, inverse_of: :user
+  has_many :authors, dependent: :destroy
+  has_many :copyright_holders, dependent: :destroy
+  has_many :editors, dependent: :destroy
 
   has_many :child_deputizations, class_name: 'Deputization',
-           foreign_key: :deputizer_id, dependent: :destroy, inverse_of: :deputizer
+           foreign_key: :deputizer_id, dependent: :destroy,
+           inverse_of: :deputizer
   has_many_through_groups :groups_as_member, :deputizations,
                           as: :deputy, dependent: :destroy
 
@@ -28,8 +28,11 @@ class User < ActiveRecord::Base
   has_many_through_groups :groups_as_member, :list_readers,
                           as: :reader, dependent: :destroy
 
-  has_many :applications, class_name: 'Doorkeeper::Application',
-           as: :owner, dependent: :destroy
+  has_many_through_groups :groups_as_member, :applications,
+                          class_name: 'Doorkeeper::Application',
+                          as: :owner, dependent: :destroy
+
+  has_many :sortings, dependent: :destroy
 
   validates :account, presence: true, uniqueness: true
 
@@ -51,6 +54,10 @@ class User < ActiveRecord::Base
 
   def is_anonymous?
     false
+  end
+
+  def is_administrator?
+    !administrator.nil?
   end
 
   def is_deleted?

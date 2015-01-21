@@ -4,7 +4,7 @@ class CreateComboChoiceAnswers < ActiveRecord::Migration
       t.references :combo_choice, null: false
       t.references :answer, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :combo_choice_answers, [:answer_id, :combo_choice_id], unique: true

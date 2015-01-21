@@ -1,16 +1,19 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
+require 'user_mapper'
+
 require 'style'
+require 'solution_type'
 require 'language'
 
-require 'parsable'
-require 'publishable'
-require 'sortable'
 require 'has_attachments'
 require 'has_logic'
+require 'parsable'
+require 'publishable'
+require 'stylable'
 
-require 'importers/quadbase_question'
+require 'importers/quadbase'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"

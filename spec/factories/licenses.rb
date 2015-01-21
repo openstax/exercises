@@ -6,16 +6,15 @@ FactoryGirl.define do
     publishing_contract { Faker::Lorem.paragraphs }
     copyright_notice { Faker::Lorem.sentence }
 
-    ignore do
-      skip_class_licenses false
+    transient do
+      licensed_classes ['Exercise', 'Solution', 'List']
     end
 
     after(:build) do |license, evaluator|
-      next if evaluator.skip_class_licenses
-      ['Exercise', 'Solution', 'Library', 'List'].each do |class_name|
-        license.class_licenses << FactoryGirl.build(:class_license,
-                                                    license: license,
-                                                    class_name: class_name)
+      evaluator.licensed_classes.each do |class_name|
+        license.class_licenses << build(:class_license,
+                                        license: license,
+                                        class_name: class_name)
       end
     end
   end

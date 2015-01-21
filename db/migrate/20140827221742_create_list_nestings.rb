@@ -4,7 +4,7 @@ class CreateListNestings < ActiveRecord::Migration
       t.references :parent_list, null: false
       t.references :child_list, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :list_nestings, :child_list_id, unique: true

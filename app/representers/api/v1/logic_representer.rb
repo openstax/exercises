@@ -27,20 +27,6 @@ module Api::V1
                required: true
              }
 
-    collection :logic_libraries,
-               as: :libraries,
-               class: LogicLibrary,
-               decorator: LogicLibraryRepresenter,
-               readable: true,
-               writeable: true,
-               parse_strategy: :sync,
-               schema_info: {
-                 required: true,
-                 description: "The code libraries used by this Logic," +
-                   "listed in the order the code should be read/included before" +
-                   "the code in this Logic is read/included"
-               }
-
     collection :logic_variables,
                class: LogicVariable,
                decorator: LogicVariableRepresenter,

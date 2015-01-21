@@ -1,7 +1,0 @@
-<%= library.required_library ? \
-      render(partial: 'admin/required_libraries/destroy',
-             locals: {required_library: library.required_library}) : \
-      link_to(admin_required_libraries_url(
-        required_library: {library_id: library.id}), method: :post) do
-        '<span class="glyphicon glyphicon-arrow-up"></span>'.html_safe
-      end %>

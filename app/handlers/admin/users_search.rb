@@ -4,13 +4,13 @@ module Admin
     lev_handler transaction: :no_transaction
 
     paramify :search do
-      attribute :terms, type: String
       attribute :type, type: String
+      attribute :query, type: String
       attribute :page, type: Integer
       attribute :per_page, type: Integer
     end
 
-    uses_routine OpenStax::Accounts::Dev::SearchAccounts,
+    uses_routine OpenStax::Accounts::SearchAccounts,
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 
@@ -21,8 +21,6 @@ module Admin
     end
 
     def handle
-      return if search_params.terms.nil?
-
       prefix = case search_params.type
       when 'Name'
         'name:'
@@ -31,10 +29,10 @@ module Admin
       else
         prefix = ''
       end
-      names = search_params.terms.split(/\s/)
+      names = (search_params.query || '').split(/\s/)
       query = names.collect{|name| "#{prefix}#{name}"}.join(' ').to_s
-      run(:search_users, query, page: search_params.page,
-                                per_page: search_params.per_page)
+
+      run(:search_users, search_params)
     end
 
   end

@@ -4,7 +4,7 @@ class CreateListReaders < ActiveRecord::Migration
       t.references :reader, polymorphic: true, null: false
       t.references :list, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :list_readers, [:reader_id, :reader_type, :list_id], unique: true

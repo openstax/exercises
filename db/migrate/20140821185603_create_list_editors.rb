@@ -4,7 +4,7 @@ class CreateListEditors < ActiveRecord::Migration
       t.references :editor, polymorphic: true, null: false
       t.references :list, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :list_editors, [:editor_id, :editor_type, :list_id], unique: true

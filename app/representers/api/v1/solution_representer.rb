@@ -9,18 +9,16 @@ module Api::V1
              writeable: true,
              readable: true
 
-    property :summary,
+    property :solution_type,
              type: String,
              writeable: true,
              readable: true
 
-    property :details,
+    property :content,
+             as: :content_html,
              type: String,
              writeable: true,
-             readable: true,
-             schema_info: {
-               required: true
-             }
+             readable: true
 
   end
 end

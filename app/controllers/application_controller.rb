@@ -8,8 +8,6 @@ class ApplicationController < ActionController::Base
 
   include Lev::HandleWith
 
-  layout 'application_body_only'
-
   interceptor :authenticate_user!
 
   before_filter :valid_user!

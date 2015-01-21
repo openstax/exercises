@@ -1,6 +1,8 @@
 Exercises::Application.routes.draw do
 
-  root 'static_pages#home'
+  root 'webview#home'
+
+  get '/dashboard', to: 'webview#index'
 
   scope module: 'static_pages' do
     get 'about'
@@ -11,6 +13,7 @@ Exercises::Application.routes.draw do
     get 'privacy'
     get 'publishing'
     get 'share'
+    get 'status'
     get 'terms'
   end
 
@@ -19,30 +22,31 @@ Exercises::Application.routes.draw do
   api :v1, :default => true do
     resources :exercises do
       publishable
-      has_logic
+      # Not in V1
+      #has_logic
 
-      resources :solutions do
-        publishable
-        has_logic
+      resources :questions, only: [] do
+        resources :solutions do
+          publishable
+          #has_logic
+        end
       end
     end
 
-    resources :logics, only: [] do
-      post 'seeds', on: :member
-    end
+    # Not in V1
+    #resources :logics, only: [] do
+    #  post 'seeds', on: :member
+    #end
 
-    resources :libraries do
-      publishable
-    end
-
-    resources :lists do
-      publishable
-    end
+    #resources :lists do
+    #  publishable
+    #end
 
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy] do
-      resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
+      resources :deputizations, only: [:index, :create, :destroy],
+                                path: 'deputies'
     end
   end
 
@@ -64,8 +68,6 @@ Exercises::Application.routes.draw do
 
     resources :licenses
 
-    resources :required_libraries, only: [:index, :create, :destroy]
-
     resources :trusted_applications, only: [:index, :create, :destroy]
 
     resources :users, only: [:index] do
@@ -83,6 +85,6 @@ Exercises::Application.routes.draw do
     end
   end
 
-  get 'status', to: lambda { |env| [204, {}, ['']] }
+  match '*path', to: 'webview#index', via: :all
 
 end

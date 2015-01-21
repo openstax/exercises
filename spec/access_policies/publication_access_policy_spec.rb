@@ -7,7 +7,7 @@ RSpec.describe PublicationAccessPolicy do
   let!(:application) { FactoryGirl.create(:doorkeeper_application) }
 
   context '' do
-    it '' do
+    xit '' do
     end
   end
 end

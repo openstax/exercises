@@ -5,10 +5,9 @@ class CreateLogics < ActiveRecord::Migration
       t.string :language, null: false
       t.text :code, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :logics, [:parent_id, :parent_type, :language], unique: true
-    add_index :logics, :language
   end
 end

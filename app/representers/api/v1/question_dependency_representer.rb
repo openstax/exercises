@@ -8,9 +8,10 @@ module Api::V1
              writeable: true,
              readable: true,
              setter: lambda { |val|
-               self.parent_question = dependent_question.part.questions.select{ |i|
-                 (i.id || i.temp_id) == val
-               }.first
+               self.parent_question = dependent_question.exercise.questions
+                                        .select{ |i|
+                                          (i.id || i.temp_id) == val
+                                        }.first
              }
 
     property :is_optional,

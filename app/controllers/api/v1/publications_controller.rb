@@ -1,6 +1,8 @@
 module Api::V1
   class PublicationsController < OpenStax::Api::V1::ApiController
 
+    before_filter :get_publishable
+
     resource_description do
       api_versions "v1"
       short_description 'Contains information about a publishable object.'
@@ -10,30 +12,30 @@ module Api::V1
       EOS
     end
 
-    ########
-    # show #
-    ########
-
-    api :GET, '/publications/:id', 'Gets the specified Publication'
-    description <<-EOS
-      Gets the Publication that matches the provided ID.
-      The Publication contains information about the
-      publication status of a publishable object.
-
-      #{json_schema(Api::V1::PublicationRepresenter, include: :writeable)}   
-    EOS
-    def show
-    end
-
     ###########
     # publish #
     ###########
 
-    api :PATCH, '/publications/:id/publish', 'Sets the specified Publication as published'
+    api :POST, '/object/:object_id/publish',
+               'Publishes the specified object'
     description <<-EOS
-      Sets the Publication that matches the provided ID as published.  
+      Publishes the specified object.  
     EOS
     def publish
+      OSU::AccessPolicy.require_action_allowed!(
+        :publish, current_api_user, @publishable.publication
+      )
+      @publishable.publication.publish
+      @publishable.publication.save
+      respond_with @publishable
+    end
+
+    protected
+
+    def get_publishable
+      @publishable = params[:solution_id].nil? ? \
+                       Exercise.find(params[:exercise_id]) : \
+                       Solution.find(params[:solution_id])
     end
 
   end

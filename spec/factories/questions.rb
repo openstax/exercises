@@ -1,20 +1,24 @@
 FactoryGirl.define do
   factory :question do
-    part
-    stem { Faker::Lorem.paragraph }
+    exercise
+    stimulus { Faker::Lorem.paragraph }
 
-    ignore do
-      items_count 0
-      answers_count { answers.empty? ? 4 : 0 }
+    transient do
+      stems_count { stems.empty? ? 1 : 0 }
+      answers_count { answers.empty? ? 3 : 0 }
     end
 
     after(:build) do |question, evaluator|
-      evaluator.items_count.times do
-        question.items << FactoryGirl.build(:item, question: question)
-      end
-
-      evaluator.answers_count.times do
-        question.answers << FactoryGirl.build(:answer, question: question)
+      evaluator.stems_count.times do
+        stem = build(:stem, question: question, stem_answers_count: 0)
+        question.stems << stem
+        evaluator.answers_count.times do
+          answer = build(:answer, question: question)
+          question.answers << answer
+          stem_answer = build(:stem_answer, stem: stem, answer: answer)
+          stem.stem_answers << stem_answer
+          answer.stem_answers << stem_answer
+        end
       end
     end
   end

@@ -1,5 +1,16 @@
 require "rails_helper"
 
-RSpec.describe List do
-  pending "add some examples to (or delete) #{__FILE__}"
+RSpec.describe List, :type => :model do
+
+  it { is_expected.to have_one(:parent_list_nesting) }
+  it { is_expected.to have_many(:child_list_nestings) }
+
+  it { is_expected.to have_many(:list_owners).dependent(:destroy) }
+  it { is_expected.to have_many(:list_editors).dependent(:destroy) }
+  it { is_expected.to have_many(:list_readers).dependent(:destroy) }
+
+  it { is_expected.to have_many(:list_exercises).dependent(:destroy) }
+
+  it { is_expected.to validate_presence_of(:name) }
+
 end
