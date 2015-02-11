@@ -64,6 +64,12 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
+  config.action_mailer.delivery_method = :ses
+  config.action_mailer.default_url_options = {
+                                              :protocol => 'https',
+                                              :host => Rails.application.secrets.mail_site_url
+                                             }
+
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
@@ -80,14 +86,11 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Production site URL for emails
-  config.action_mailer.default_url_options = { :host => 'exercises.openstax.org' }
-
   # Send email to developers when users encounter exceptions
-  config.middleware.use ExceptionNotifier,
+  config.middleware.use ExceptionNotification::Rack,
     :email => {
       :email_prefix => "[Exercises] ",
       :sender_address => %{"OpenStax Exercises" <noreply@openstax.org>},
-      :exception_recipients => %w{exercises-dev@openstax.org}
+      :exception_recipients => Rails.application.secrets.exception_recipients.split(/\s+/)
     }
 end
