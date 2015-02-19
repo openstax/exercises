@@ -49,8 +49,7 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
-                         ref: '9290c503fc8f435d5b92ebe3867593387abb107f'
+gem 'openstax_accounts', '~> 4.0.0'
 
 # Respond_with and respond_to methods
 gem 'responders'

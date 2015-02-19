@@ -22,5 +22,11 @@ module Api::V1
                type: 'number'
              }
 
+    property :feedback,
+             as: :feedback_html,
+             type: String,
+             writeable: true,
+             readable: true
+
   end
 end
