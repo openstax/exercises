@@ -77,6 +77,11 @@ GEM
     arel (6.0.0)
     autoprefixer-rails (4.0.2.2)
       execjs
+    aws-ses (0.6.0)
+      builder
+      mail (> 2.2.5)
+      mime-types
+      xml-simple
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.2.0.2)
@@ -439,6 +444,7 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
     whenever (0.9.4)
       chronic (>= 0.6.3)
+    xml-simple (1.1.4)
     yaml_db (0.3.0)
       rails (>= 3.0, < 4.3)
       rake (>= 0.8.7)
@@ -451,6 +457,7 @@ DEPENDENCIES
   acts_as_votable
   apipie-rails
   autoprefixer-rails
+  aws-ses (~> 0.6.0)
   bootstrap-sass (~> 3.2.0)
   brakeman
   byebug
