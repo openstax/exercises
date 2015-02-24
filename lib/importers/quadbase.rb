@@ -83,7 +83,7 @@ module Importers
         #  Call that API and link the local account to the remote one by ID
         # hash['openstax_uid'] = OpenStax::Accounts.configuration.enable_stubbing? ? -SecureRandom.hex.to_i(16) : \
         #  OpenStax::Accounts.find_or_create_account_by_email(email)
-        hash['openstax_uid'] = -SecureRandom.hex.to_i(16)
+        hash['openstax_uid'] = -SecureRandom.hex(4).to_i(16)/2
 
         # Create the local Account
         begin
@@ -224,10 +224,12 @@ module Importers
         # Skip duplicates (to avoid importing the individual
         #                  parts of multipart questions)
         stimulus = ParseContent.call(exercise.stimulus).outputs[:content]
-        stem = ParseContent.call(exercise.questions.first.stems.first.content).outputs[:content]
-        return false if Exercise.joins(:stems)
-                                .where(stimulus: stimulus)
-                                .where{stems.content == stem}.exists?
+        stem = ParseContent.call(exercise.questions.first.stems.first.content)
+                           .outputs[:content]
+        return false if Exercise.joins(:questions => :stems)
+                                .where(stimulus: stimulus,
+                                       questions: { stems: { content: stem } })
+                                .exists?
       end
       publication = import_metadata(hash['attribution'])
       publication.publishable = exercise
@@ -261,9 +263,11 @@ module Importers
     # Imports all Quadbase questions in the given ID range
     def self.remote_import_range(id_range)
       puts 'Importing...'
-      for id in id_range
-        puts "Question q#{id}"
-        remote_import_question(id)
+      Exercise.transaction do
+        for id in id_range
+          puts "Question q#{id}"
+          remote_import_question(id)
+        end
       end
       puts 'Done.'
     end
