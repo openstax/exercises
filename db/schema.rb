@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141118174146) do
+ActiveRecord::Schema.define(version: 20150225002247) do
 
   create_table "administrators", force: :cascade do |t|
     t.integer  "user_id",    null: false
@@ -170,6 +170,16 @@ ActiveRecord::Schema.define(version: 20141118174146) do
 
   add_index "editors", ["publication_id", "sort_position"], name: "index_editors_on_publication_id_and_sort_position", unique: true
   add_index "editors", ["user_id", "publication_id"], name: "index_editors_on_user_id_and_publication_id", unique: true
+
+  create_table "exercise_tags", force: :cascade do |t|
+    t.integer  "exercise_id", null: false
+    t.integer  "tag_id",      null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "exercise_tags", ["exercise_id", "tag_id"], name: "index_exercise_tags_on_exercise_id_and_tag_id", unique: true
+  add_index "exercise_tags", ["tag_id"], name: "index_exercise_tags_on_tag_id", unique: true
 
   create_table "exercises", force: :cascade do |t|
     t.string   "title"
@@ -523,22 +533,10 @@ ActiveRecord::Schema.define(version: 20141118174146) do
 
   add_index "stylings", ["stylable_id", "stylable_type", "style"], name: "index_stylings_on_stylable_id_and_stylable_type_and_style", unique: true
 
-  create_table "taggings", force: :cascade do |t|
-    t.integer  "tag_id"
-    t.integer  "taggable_id"
-    t.string   "taggable_type"
-    t.integer  "tagger_id"
-    t.string   "tagger_type"
-    t.string   "context",       limit: 128
-    t.datetime "created_at"
-  end
-
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
-  add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
-
   create_table "tags", force: :cascade do |t|
-    t.string  "name"
-    t.integer "taggings_count", default: 0
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true

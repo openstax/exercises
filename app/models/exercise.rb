@@ -8,7 +8,9 @@ class Exercise < ActiveRecord::Base
 
   has_many :questions, dependent: :destroy, autosave: true
 
-  has_many :list_exercises, :dependent => :destroy
+  has_many :list_exercises, dependent: :destroy
+
+  has_many :exercise_tags, dependent: :destroy
 
   protected
 
