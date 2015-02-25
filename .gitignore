@@ -16,7 +16,6 @@
 /tmp/**/*
 
 # Ignore files containing keys and passwords
-config/secrets.yml
 config/*settings.yml
 
 # Ignore compiled assets and uploaded files
