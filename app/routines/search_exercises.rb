@@ -17,25 +17,25 @@ class SearchExercises
 
   def exec(params = {})
     run(:search, relation: Exercise.includes(:publication)
-                                   .references(:publication),
+                                   .references(:publication)
+                                   .preload(exercise_tags: :tag),
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
       with.default_keyword :content
 
       with.keyword :id, :uid do |ids|
         ids.each do |id|
-          sanitized_ids = to_string_array(id).collect{|id| id.split('v')}
+          sanitized_ids = to_string_array(id).collect{|id| id.split('@')}
           next @items = @items.none if sanitized_ids.empty?
           sanitized_numbers = sanitized_ids.collect{|sid| sid.first}.compact
-                                           .collect{|snum| snum.gsub(/\Ae/, '')}
           sanitized_versions = sanitized_ids.collect{|sid| sid.second}.compact
           if sanitized_numbers.empty?
-            @items = @items.where{publication.version.like_any sanitized_versions}
+            @items = @items.where(publication: {version: sanitized_versions})
           elsif sanitized_versions.empty?
-            @items = @items.where{publication.number.like_any sanitized_numbers}
+            @items = @items.where(publication: {number: sanitized_numbers})
           else
-            @items = @items.where{(publication.number.like_any sanitized_numbers) &\
-                                  (publication.version.like_any sanitized_versions)}
+            @items = @items.where(publication: {number: sanitized_numbers,
+                                                version: sanitized_versions})
           end
         end
       end
@@ -44,7 +44,7 @@ class SearchExercises
         numbers.each do |number|
           sanitized_numbers = to_string_array(numbers)
           next @items = @items.none if sanitized_numbers.empty?
-          @items = @items.where{publication.number.like_any sanitized_numbers}
+          @items = @items.where(publication: {number: sanitized_versions})
         end
       end
 
@@ -52,7 +52,16 @@ class SearchExercises
         versions.each do |version|
           sanitized_versions = to_string_array(version)
           next @items = @items.none if sanitized_versions.empty?
-          @items = @items.where{publication.version.like_any sanitized_versions}
+          @items = @items.where(publication: {version: sanitized_versions})
+        end
+      end
+
+      with.keyword :tag do |tags|
+        tags.each do |tag|
+          sanitized_tags = to_string_array(tag).collect{|t| t.downcase}
+          next @items = @items.none if sanitized_tags.empty?
+          @items = @items.joins(exercise_tags: :tag)
+                         .where(exercise_tags: {tag: {name: sanitized_tags}})
         end
       end
 

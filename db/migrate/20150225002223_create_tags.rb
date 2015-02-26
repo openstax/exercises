@@ -5,7 +5,7 @@ class CreateTags < ActiveRecord::Migration
 
       t.timestamps null: false
 
-      t.index :name, unique: true#, case_sensitive: false
+      t.index :name, unique: true
     end
   end
 end

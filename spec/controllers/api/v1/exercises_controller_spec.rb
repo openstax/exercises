@@ -27,7 +27,7 @@ module Api::V1
 
     describe "GET index" do
 
-      before(:all) do
+      before(:each) do
         10.times { FactoryGirl.create(:exercise) }
 
         ad = "%adipisci%"
@@ -41,6 +41,7 @@ module Api::V1
 
         @exercise_1 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
+          tags: ['tag1', 'tag2'],
           title: "Lorem ipsum",
           stimulus: "Dolor",
           questions: [{
@@ -54,6 +55,7 @@ module Api::V1
         @exercise_1.save!
         @exercise_2 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
+          tags: ['tag2', 'tag3'],
           title: "Dolorem ipsum",
           stimulus: "Quia dolor",
           questions: [{
@@ -68,29 +70,58 @@ module Api::V1
         @exercises_count = Exercise.count
       end
 
-      it "returns a single matching Exercise" do
-        api_get :index, admin_token, parameters: {q: 'content:aDiPiScInG eLiT'}
-        expect(response).to have_http_status(:success)
+      context "single match" do
+        it "returns an Exercise matching the content" do
+          api_get :index, admin_token, parameters: {q: 'content:aDiPiScInG eLiT'}
+          expect(response).to have_http_status(:success)
 
-        expected_response = {
-          total_count: 1,
-          items: [Api::V1::ExerciseRepresenter.new(@exercise_1)]
-        }.to_json
+          expected_response = {
+            total_count: 1,
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_1)]
+          }.to_json
 
-        expect(response.body).to eq(expected_response)
+          expect(response.body).to eq(expected_response)
+        end
+
+        it "returns an Exercise matching the tags" do
+          api_get :index, admin_token, parameters: {q: 'tag:tAg1'}
+          expect(response).to have_http_status(:success)
+
+          expected_response = {
+            total_count: 1,
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_1)]
+          }.to_json
+
+          expect(response.body).to eq(expected_response)
+        end
       end
 
-      it "returns multiple matching Exercises" do
-        api_get :index, admin_token, parameters: {q: 'content:AdIpIsCi'}
-        expect(response).to have_http_status(:success)
+      context "multiple matches" do
+        it "returns Exercises matching the content" do
+          api_get :index, admin_token, parameters: {q: 'content:AdIpIsCi'}
+          expect(response).to have_http_status(:success)
 
-        expected_response = {
-          total_count: 2,
-          items: [Api::V1::ExerciseRepresenter.new(@exercise_1),
-                  Api::V1::ExerciseRepresenter.new(@exercise_2)]
-        }.to_json
+          expected_response = {
+            total_count: 2,
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_1),
+                    Api::V1::ExerciseRepresenter.new(@exercise_2)]
+          }.to_json
 
-        expect(response.body).to eq(expected_response)
+          expect(response.body).to eq(expected_response)
+        end
+
+        it "returns Exercises matching the tags" do
+          api_get :index, admin_token, parameters: {q: 'tag:TaG2'}
+          expect(response).to have_http_status(:success)
+
+          expected_response = {
+            total_count: 2,
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_1),
+                    Api::V1::ExerciseRepresenter.new(@exercise_2)]
+          }.to_json
+
+          expect(response.body).to eq(expected_response)
+        end
       end
 
       it "sorts by multiple fields in different directions" do

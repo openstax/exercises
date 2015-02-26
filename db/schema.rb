@@ -179,7 +179,7 @@ ActiveRecord::Schema.define(version: 20150225002247) do
   end
 
   add_index "exercise_tags", ["exercise_id", "tag_id"], name: "index_exercise_tags_on_exercise_id_and_tag_id", unique: true
-  add_index "exercise_tags", ["tag_id"], name: "index_exercise_tags_on_tag_id", unique: true
+  add_index "exercise_tags", ["tag_id"], name: "index_exercise_tags_on_tag_id"
 
   create_table "exercises", force: :cascade do |t|
     t.string   "title"

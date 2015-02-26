@@ -68,10 +68,6 @@ gem 'roar', '< 1.0'
 # Lev framework
 gem 'lev'
 
-# Case-insensitive PG indexes
-#gem 'schema_plus_pg_indexes'
-#gem 'schema_monkey_rails'
-
 # Ruby dsl for SQL queries
 gem 'squeel'
 

@@ -7,7 +7,7 @@ class CreateExerciseTags < ActiveRecord::Migration
       t.timestamps null: false
 
       t.index [:exercise_id, :tag_id], unique: true
-      t.index :tag_id, unique: true
+      t.index :tag_id
     end
 
     add_foreign_key :exercise_tags, :exercises, on_update: :cascade,
