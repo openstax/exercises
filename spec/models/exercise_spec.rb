@@ -5,6 +5,7 @@ RSpec.describe Exercise, :type => :model do
   it { is_expected.to have_many(:questions).dependent(:destroy)
                                            .autosave(true) }
   it { is_expected.to have_many(:list_exercises).dependent(:destroy) }
+  it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
   it 'can check for the presence of questions' do
     exercise = FactoryGirl.create :exercise

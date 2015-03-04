@@ -49,8 +49,7 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', git: 'https://github.com/Dantemss/accounts-rails.git',
-                         ref: '9290c503fc8f435d5b92ebe3867593387abb107f'
+gem 'openstax_accounts', '~> 4.0.0'
 
 # Respond_with and respond_to methods
 gem 'responders'
@@ -59,18 +58,18 @@ gem 'responders'
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 3.2.1'
+gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 gem 'representable'
 gem 'roar-rails'
+gem 'roar', '< 1.0'
 
 # Lev framework
 gem 'lev'
 
 # Ruby dsl for SQL queries
-gem 'squeel', git: 'https://github.com/danielrhodes/squeel.git',
-              ref: 'e7f016834eba7f31ed94cb59ed5d41ee80739dd2' # Rails 4.2 patch
+gem 'squeel'
 
 # Contract management
 gem 'fine_print'
@@ -90,9 +89,6 @@ gem 'ejs'
 
 # Embedded CoffeeScript templates
 gem 'eco'
-
-# Object tagging
-gem 'acts-as-taggable-on'
 
 # Object cloning
 gem 'deep_cloneable'

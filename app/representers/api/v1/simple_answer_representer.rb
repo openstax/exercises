@@ -21,9 +21,23 @@ module Api::V1
               stem_answers << StemAnswer.new(answer: self,
                                              stem: question.stems.first) \
                 if stem_answers.empty?
-              stem_answers.first.content = value },
+              stem_answers.first.content = value
+             },
              schema_info: {
                type: 'number'
+             }
+
+    property :feedback,
+             as: :feedback_html,
+             type: String,
+             writeable: true,
+             readable: true,
+             getter: lambda { |args| stem_answers.first.try(:feedback) },
+             setter: lambda { |value, args|
+              stem_answers << StemAnswer.new(answer: self,
+                                             stem: question.stems.first) \
+                if stem_answers.empty?
+              stem_answers.first.feedback = value
              }
 
   end

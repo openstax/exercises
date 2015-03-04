@@ -1,8 +1,9 @@
 module Api::V1
   class ExerciseRepresenter < PublicationRepresenter
 
-    has_logic
     has_attachments
+    has_logic
+    has_tags
 
     property :title,
              type: String,
