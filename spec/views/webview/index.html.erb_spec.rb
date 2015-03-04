@@ -8,7 +8,7 @@ RSpec.describe "webview/index", :type => :view do
     render
 
     expect(rendered).to include("<script type='text/javascript' defer>var path = '#{@path}', name = '#{@name}'")#;</script>")
-    expect(rendered).to include("<script type='text/javascript' src='//openstax.github.io/exercises-js/dist/exercises.js' defer></script>")
-    expect(rendered).to include("<link rel='stylesheet' href='//openstax.github.io/exercises-js/dist/exercises.css' />")
+    expect(rendered).to include("<script type='text/javascript' src='http://localhost:8001/dist/exercises.js' defer></script>")
+    expect(rendered).to include("<link rel='stylesheet' href='http://localhost:8001/dist/exercises.css' />")
   end
 end
