@@ -20,10 +20,12 @@ module Exercises
       end
 
       def record_failures
-        @failures = {}
-        yield
-        puts "Failures: #{@failures.keys}"
-        puts @failures.values.join("\n")
+        Exercise.transaction do
+          @failures = {}
+          yield
+          puts "Failures: #{@failures.keys}"
+          puts @failures.values.join("\n")
+        end
       end
 
       def import_row(row,index)
@@ -35,33 +37,31 @@ module Exercises
       end
 
       def perform_row_import(row,index)
-        puts '*'*80
-        p row
 
         book = row[0]
         chapter = row[1]
-        section = row[2]
-        los = split(row[3])
+
+        los = split(row[2])
         lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
-        exercise_id = row[4]
+        exercise_id = row[3]
         exercise_id_tag = [book, chapter, exercise_id].join('-')
-        type_tags = split(row[5])
-        location_tag = row[6]
-        dok_tag = row[7]
-        time_tag = row[8]
+        type_tags = split(row[4])
+        location_tag = row[5]
+        dok_tag = row[6]
+        time_tag = row[7]
         display_type_tags = split(row[8])
 
         tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
                 dok_tag, time_tag, display_type_tags].flatten
         list_name = 'test'
-        question_stem_content = parse(row[10])
+        question_stem_content = parse(row[9])
 
         styles = [Style::MULTIPLE_CHOICE]
         styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
+        explanation = parse(row[10])
         correct_answer_index = row[11].downcase.strip.each_byte.first - 97
-        explanation = parse(row[12])
 
-        answers = row[13..-1].each_slice(2)
+        answers = row[12..-1].each_slice(2)
 
         e = Exercise.new
         e.tags = tags

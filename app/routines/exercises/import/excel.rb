@@ -30,13 +30,10 @@ module Exercises
         puts "Setting #{@copyright_holder.full_name} as Copyright Holder"
 
         ext = File.extname(filename)
-        Exercise.transaction do
-          if ext == '.xlsx'
-            import_from_xlsx(filename)
-          elsif ext == '.xls'
-            import_from_xls(filename)
-          end
-          raise "BANG!"
+        if ext == '.xlsx'
+          import_from_xlsx(filename)
+        elsif ext == '.xls'
+          import_from_xls(filename)
         end
       end
 
