@@ -57,8 +57,9 @@ module Exercises
             next if index == 0 && skip_first_row
             values = []
             0.upto(row.size-1).each do |index|
-              values << row[index].value
+              values << row[index].try(:value)
             end
+            next if values.compact.blank?
             import_row(values, index)
           end
         end
