@@ -15,9 +15,10 @@ module Exercises
       DEFAULT_CH_ID = 2
 
       # Converts the word text into Markdown 
-      def convert(text)
-        return nil if text.nil?
-        text.strip
+      def parse(text)
+        return nil if text.blank?
+        # TODO: Math
+        ParseContent.call(Kramdown::Document.new(text.strip).to_html).outputs.content
       end
 
       def split(text, on: ',')
@@ -37,8 +38,8 @@ module Exercises
         author = User.find_by(id: author_id)
         ch = User.find_by(id: ch_id)
 
-        puts "Setting #{author.full_name} as Author"
-        puts "Setting #{ch.full_name} as Copyright Holder"
+        puts "Setting #{author.full_name} as Author" unless author.nil?
+        puts "Setting #{ch.full_name} as Copyright Holder" unless ch.nil?
 
         content = File.read(filename)
         encoding = CharlockHolmes::EncodingDetector.detect(content)[:encoding]
@@ -51,24 +52,24 @@ module Exercises
           i += 1
           next if i == 1 && skip_first_row
 
-          book = convert(row[0])
-          chapter = convert(row[1])
-          section = convert(row[2])
-          los = split(convert(row[3]))
+          book = row[0]
+          chapter = row[1]
+          section = row[2]
+          los = split(row[3])
           lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
-          exercise_id = convert(row[4])
+          exercise_id = row[4]
           exercise_id_tag = [book, chapter, exercise_id].join('-')
-          type_tags = split(convert(row[5]))
-          location_tag = convert(row[6])
-          dok_tag = convert(row[7])
-          time_tag = convert(row[8])
-          display_type_tags = split(convert(row[9]))
+          type_tags = split(row[5])
+          location_tag = row[6]
+          dok_tag = row[7]
+          time_tag = row[8]
+          display_type_tags = split(row[9])
 
           tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
                   dok_tag, time_tag, display_type_tags].flatten
           list_name = 'test'
-          content = convert(row[10])
-          explanation = convert(row[11])
+          content = parse(row[10])
+          explanation = parse(row[11])
 
           styles = [Style::MULTIPLE_CHOICE]
           styles << Style::FREE_RESPONSE \
@@ -95,44 +96,56 @@ module Exercises
             s.stylings << styling
           end
 
-          au = Author.new
-          au.publication = e.publication
-          au.user = author
-          e.publication.authors << au
+          unless author.nil?
+            au = Author.new
+            au.publication = e.publication
+            au.user = author
+            e.publication.authors << au
+          end
 
-          c = CopyrightHolder.new
-          c.publication = e.publication
-          c.user = ch
-          e.publication.copyright_holders << c
+          unless ch.nil?
+            c = CopyrightHolder.new
+            c.publication = e.publication
+            c.user = ch
+            e.publication.copyright_holders << c
+          end
 
-          answers.each_with_index do |a, f, j|
+          answers.each_with_index do |af, j|
+            a = parse(af.first)
+            f = parse(af.second)
             next if a.blank?
             an = Answer.new
             an.question = q
-            an.content = a
+            an.content = parse(a)
 
             sa = StemAnswer.new
             sa.stem = s
             sa.answer = an
             sa.correctness = j == correct_answer_index ? 1 : 0
-            sa.feedback = f
+            sa.feedback = parse(f)
             s.stem_answers << sa
           end
 
-          s = Solution.new(solution_type: SolutionType::DETAILED)
-          s.question = q
-          s.content = explanation
-          q.solutions << s
+          unless explanation.blank?
+            sol = Solution.new(solution_type: SolutionType::DETAILED)
+            sol.question = q
+            sol.content = explanation
+            q.solutions << sol
 
-          sau = Author.new
-          sau.publication = s.publication
-          sau.user = author
-          s.publication.authors << sau
+            unless author.nil?
+              sau = Author.new
+              sau.publication = sol.publication
+              sau.user = author
+              sol.publication.authors << sau
+            end
 
-          sc = CopyrightHolder.new
-          sc.publication = s.publication
-          sc.user = ch
-          s.publication.copyright_holders << sc
+            unless ch.nil?
+              sc = CopyrightHolder.new
+              sc.publication = sol.publication
+              sc.user = ch
+              sol.publication.copyright_holders << sc
+            end
+          end
 
           e.save!
 
@@ -141,7 +154,7 @@ module Exercises
             puts "Creating new list: #{list_name}."
             list = List.create(name: list_name)
 
-            [author, ch].uniq.each do |u|
+            [author, ch].compact.uniq.each do |u|
               lo = ListOwner.new
               lo.owner = u
               lo.list = list
