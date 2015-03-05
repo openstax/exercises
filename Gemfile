@@ -84,6 +84,12 @@ gem 'carrierwave'
 # Image editing
 gem 'mini_magick'
 
+# Markdown parsing
+gem 'kramdown'
+
+# Detect import encoding
+gem 'charlock_holmes'
+
 # Embedded JavaScript templates
 gem 'ejs'
 
