@@ -5,6 +5,7 @@ module Exercises
 
       DEFAULT_AUTHOR_ID = 1
       DEFAULT_CH_ID = 2
+      MATH_REGEX = /\$+[^\$]*\$+/m
 
       attr_reader :skip_first_row, :author, :copyright_holder
 
@@ -12,11 +13,27 @@ module Exercises
         text.split(on).collect{|t| t.strip}
       end
 
+      def self.math_tag(math)
+        inner_math = math[1..-2]
+        tag = 'span'
+        if MATH_REGEX =~ inner_math
+          inner_math = inner_math[1..-2]
+          tag = 'div'
+        end
+
+        "<#{tag} data-math=\"#{inner_math.gsub('"', '&quot;')}\">Math</#{tag}>"
+      end
+
       # Converts the word text into Markdown
       def parse(text)
         return nil if text.blank?
-        # TODO: Math
-        ParseContent.call(Kramdown::Document.new(text.to_s.strip).to_html).outputs.content
+
+        maths = text.scan(MATH_REGEX)
+        maths.each do |math|
+          text = text.gsub(math, math_tag(math))
+        end
+
+        Kramdown::Document.new(text.to_s.strip).to_html
       end
 
       def record_failures
