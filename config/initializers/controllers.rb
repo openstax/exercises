@@ -51,3 +51,5 @@ ActionController::Base.class_exec do
     head error
   end
 end
+
+FinePrint::ApplicationController.send :layout, "application_body_only"

@@ -15,7 +15,7 @@ require 'parsable'
 require 'publishable'
 require 'stylable'
 
-require 'importers/quadbase'
+#require 'importers/quadbase'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"
