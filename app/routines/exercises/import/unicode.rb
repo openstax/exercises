@@ -20,6 +20,10 @@ module Exercises
         text.strip
       end
 
+      def split(text, on: ',')
+        text.split(on).collect{|t| t.strip}
+      end
+
       # Imports Exercises from a unicode spreadsheet
       def exec(filename: 'exercises.txt',
                author_id: DEFAULT_AUTHOR_ID,
@@ -47,25 +51,31 @@ module Exercises
           i += 1
           next if i == 1 && skip_first_row
 
-          book_tag = convert(row[0])
-          chapter_tag = convert(row[1])
-          lo_tags = convert(row[3]).split(',')
+          book = convert(row[0])
+          chapter = convert(row[1])
+          section = convert(row[2])
+          los = split(convert(row[3]))
+          lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
           exercise_id = convert(row[4])
-          type_tags = convert(row[3]).split(',')
-          location_tags = (row[4] || '').downcase.gsub('.', ',').split(',')
-                                                .collect { |r| convert(r) }
+          exercise_id_tag = [book, chapter, exercise_id].join('-')
+          type_tags = split(convert(row[5]))
+          location_tag = convert(row[6])
+          dok_tag = convert(row[7])
+          time_tag = convert(row[8])
+          display_type_tags = split(convert(row[9]))
 
-          lo_tag
+          tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
+                  dok_tag, time_tag, display_type_tags].flatten
+          list_name = 'test'
+          content = convert(row[10])
+          explanation = convert(row[11])
 
-          tags = [book, chapter_tag, content_tags, type_tag].flatten
-          list_name = convert(row[5])
-          content = convert(row[6])
-          explanation = convert(row[7])
-          formats = []
-          formats << Style::FREE_RESPONSE if row[8].downcase.strip == 'yes'
-          formats << Style::MULTIPLE_CHOICE
-          correct_answer_index = row[9].downcase.strip.each_byte.first - 97
-          answers = row[10..-1].collect{|a| convert(a)}
+          styles = [Style::MULTIPLE_CHOICE]
+          styles << Style::FREE_RESPONSE \
+            if display_type_tags.include?('display-free-response')
+
+          correct_answer_index = row[12].downcase.strip.each_byte.first - 97
+          answers = row[13..-1].each_slice(2)
 
           e = Exercise.new
           e.tags = tags
@@ -78,6 +88,13 @@ module Exercises
           s.content = content
           q.stems << s
 
+          styles.each do |style|
+            styling = Styling.new
+            styling.stylable = s
+            styling.style = style
+            s.stylings << styling
+          end
+
           au = Author.new
           au.publication = e.publication
           au.user = author
@@ -88,7 +105,7 @@ module Exercises
           c.user = ch
           e.publication.copyright_holders << c
 
-          answers.each_with_index do |a, j|
+          answers.each_with_index do |a, f, j|
             next if a.blank?
             an = Answer.new
             an.question = q
@@ -98,6 +115,7 @@ module Exercises
             sa.stem = s
             sa.answer = an
             sa.correctness = j == correct_answer_index ? 1 : 0
+            sa.feedback = f
             s.stem_answers << sa
           end
 
@@ -120,7 +138,7 @@ module Exercises
 
           list = List.find_by(name: list_name)
           if list.nil?
-            puts "Creating new list #{list_name}"
+            puts "Creating new list: #{list_name}."
             list = List.create(name: list_name)
 
             [author, ch].uniq.each do |u|
