@@ -15,24 +15,24 @@ module Exercises
       QUADBASE_MATH_REGEX = /\$+[^\$]*\$+/m
 
       # Returns the license to be applied to quadbase questions
-      def self.default_license
+      def default_license
         @@default_license ||= License.find_by(name: 'cc_by_4_0')
       end
 
       # Gets the contents of the given URL
-      def self.http_get(url)
+      def http_get(url)
         Net::HTTP.get(URI.parse(url))
       end
 
       # Writes a string to a file, erasing the contents and creating it if needed
-      def self.write_to_file(filename, content)
+      def write_to_file(filename, content)
         open(filename, 'wb') do |file|
           file.write(content)
         end
       end
 
       # Gets a file from a url and saves it locally
-      def self.download_attachment(url, filename)
+      def download_attachment(url, filename)
         Dir.mkdir EXERCISES_ATTACHMENTS_PATH \
           unless File.exists? EXERCISES_ATTACHMENTS_PATH
         destination = "#{EXERCISES_ATTACHMENTS_PATH}/#{filename}"
@@ -41,7 +41,7 @@ module Exercises
       end
 
       # Converts Quadbase's dollar sign math to a math tag
-      def self.math_tag(math)
+      def math_tag(math)
         inner_math = math[1..-2]
         tag = 'span'
         if QUADBASE_MATH_REGEX =~ inner_math
@@ -53,7 +53,7 @@ module Exercises
       end
 
       # Converts Quadbase HTML to Exercises HTML
-      def self.convert_html(html)
+      def convert_html(html)
         attachments = html.to_s.scan(QUADBASE_ATTACHMENTS_REGEX)
         attachments.each do |url, filename|
           html = html.gsub(url, download_attachment(url, filename))
@@ -67,7 +67,7 @@ module Exercises
 
       # Imports a collaborator (requires username, email attributes in the hash)
       # Returns the collaborator
-      def self.import_collaborator(hash, klass)
+      def import_collaborator(hash, klass)
         username = hash['username']
         return if username.nil?
 
@@ -104,7 +104,7 @@ module Exercises
 
       # Imports collaborators, licenses, etc
       # Returns a Publication
-      def self.import_metadata(hash)
+      def import_metadata(hash)
         publication = Publication.new
         publication.license = default_license
 
@@ -122,7 +122,7 @@ module Exercises
 
       # Imports the introduction for a Quadbase question
       # Returns an Exercise
-      def self.import_introduction(hash)
+      def import_introduction(hash)
         exercise = Exercise.new
         exercise.stimulus = convert_html(hash['html']) unless hash.nil?
         exercise
@@ -130,7 +130,7 @@ module Exercises
 
       # Imports a Quadbase question without the introduction
       # Returns the Question
-      def self.import_without_introduction(hash)
+      def import_without_introduction(hash)
         question = Question.new
         stem = Stem.new(question: question,
                         content: convert_html(hash['content']['html']))
@@ -161,7 +161,7 @@ module Exercises
 
       # Imports a simple question
       # Returns an Exercise
-      def self.import_simple(hash)
+      def import_simple(hash)
         exercise = import_introduction(hash['introduction'])
         question = import_without_introduction(hash)
         question.exercise = exercise
@@ -171,7 +171,7 @@ module Exercises
 
       # Imports a multipart question
       # Returns an Exercise
-      def self.import_multipart(hash)
+      def import_multipart(hash)
         exercise = import_introduction(hash['introduction'])
         id_map = {}
         dependency_map = {}
@@ -214,7 +214,7 @@ module Exercises
 
       # Imports and saves a Quadbase question as an Exercise
       # Returns true if the Exercise was saved or false otherwise
-      def self.import_question(hash)
+      def import_question(hash)
         if hash['multipart_question']
           hash = hash['multipart_question']
           exercise = import_multipart(hash)
@@ -240,7 +240,7 @@ module Exercises
       end
 
       # Imports Quadbase questions from the given file
-      def self.import_file(filename)
+      def import_file(filename)
         json = File.open(filename, 'r') { |file| file.read }
         hash = JSON.parse(json)
         questions = hash['questions']
@@ -250,7 +250,7 @@ module Exercises
 
       # Imports a Quadbase question by question ID
       # Returns true if the Exercise was saved or false otherwise
-      def self.remote_import_question(id)
+      def remote_import_question(id)
         id = id.to_s
         id[0] = '' if id[0] == 'q'
 
@@ -262,7 +262,7 @@ module Exercises
       end
 
       # Imports all Quadbase questions in the given ID range
-      def self.remote_import_range(id_range)
+      def remote_import_range(id_range)
         puts 'Importing...'
         Exercise.transaction do
           for id in id_range

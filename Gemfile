@@ -1,4 +1,4 @@
-# Copyright 2011-2014 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2014 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 source 'https://rubygems.org'
@@ -89,6 +89,11 @@ gem 'kramdown'
 
 # Detect import encoding
 gem 'charlock_holmes'
+
+# Read Excel xls spreadsheet files
+gem 'spreadsheet'
+# Read Excel xlsx spreadsheet files
+gem 'rubyXL'
 
 # Embedded JavaScript templates
 gem 'ejs'
