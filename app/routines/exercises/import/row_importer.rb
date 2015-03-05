@@ -13,7 +13,7 @@ module Exercises
         text.split(on).collect{|t| t.strip}
       end
 
-      def self.math_tag(math)
+      def math_tag(math)
         inner_math = math[1..-2]
         tag = 'span'
         if MATH_REGEX =~ inner_math
@@ -27,6 +27,7 @@ module Exercises
       # Converts the word text into Markdown
       def parse(text)
         return nil if text.blank?
+        text = text.to_s
 
         maths = text.scan(MATH_REGEX)
         maths.each do |math|
