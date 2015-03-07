@@ -16,12 +16,12 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             getter: lambda { |args| stem_answers.first.try(:content) },
+             getter: lambda { |args| stem_answers.first.try(:correctness) },
              setter: lambda { |value, args|
               stem_answers << StemAnswer.new(answer: self,
                                              stem: question.stems.first) \
                 if stem_answers.empty?
-              stem_answers.first.content = value
+              stem_answers.first.correctness = value
              },
              schema_info: {
                type: 'number'
