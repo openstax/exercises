@@ -3,6 +3,11 @@ module Api::V1
 
     include Roar::Representer::JSON
 
+    property :id,
+             type: Integer,
+             writeable: false,
+             readable: true
+
     property :content,
              as: :content_html,
              type: String,
