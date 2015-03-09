@@ -34,7 +34,11 @@ module Exercises
           text = text.gsub(math, math_tag(math))
         end
 
-        Kramdown::Document.new(text.to_s.strip).to_html
+        kd = Kramdown::Document.new(text.to_s.strip)
+        # If only one <p> tag, remove it and just return the nodes below
+        kd.root.children = kd.root.children.first.children \
+          if kd.root.children.length == 1 && kd.root.children.first.type == :p
+        kd.to_html
       end
 
       def record_failures
