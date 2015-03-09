@@ -1,3 +1,3 @@
 <script type='text/javascript' defer>var path = '<%= @path %>', name = '<%= @name %>', exercisesEndpoint = '<%= api_exercises_url %>';</script>
-<script type='text/javascript' src='//openstax.github.io/exercises-js/dist/exercises.js' defer></script>
-<link rel='stylesheet' href='//openstax.github.io/exercises-js/dist/exercises.css' />
+<script type='text/javascript' src='<%= Rails.application.secrets[:openstax_exercises_js_url]%>' defer></script>
+<link rel='stylesheet' href='<%= Rails.application.secrets[:openstax_exercises_css_url]%>' />
