@@ -20,11 +20,12 @@ module Exercises
           inner_math = inner_math[1..-2]
           tag = 'div'
         end
+        escaped_math = inner_math.gsub('"', '&quot;')
 
-        "<#{tag} data-math=\"#{inner_math.gsub('"', '&quot;')}\">Math</#{tag}>"
+        "<#{tag} data-math=\"#{escaped_math}\">#{escaped_math}</#{tag}>"
       end
 
-      # Converts the word text into Markdown
+      # Parses the text using Markdown
       def parse(text)
         return nil if text.blank?
         text = text.to_s
