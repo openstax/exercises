@@ -1,11 +1,11 @@
 # Copyright 2011-2014 Rice University. Licensed under the Affero General Public 
 # License version 3 or later.  See the COPYRIGHT file for details.
-
+sudo: false
 language: ruby
 rvm:
   - 2.1.3
 cache: bundler
-bundler_args: --without production
+bundler_args: --without production --retry=6
 addons:
   postgresql: "9.3"
 before_script:
@@ -16,4 +16,3 @@ script:
 branches:
   only:
     - master
-
