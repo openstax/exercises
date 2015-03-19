@@ -16,7 +16,8 @@ FinePrint.configure do |config|
   # The default does not allow anyone to manage contracts.
   # Note: Proc must account for nil users, if current_user_proc returns nil.
   # Default: lambda { |user| false || raise(ActionController::RoutingError, 'Not Found') }
-  config.can_manage_proc = lambda { |user| user.administrator || \
+  config.can_manage_proc = lambda { |user| !user.is_anonymous? && \
+                                           user.administrator || \
                                       raise(ActionController::RoutingError, 'Not Found') }
 
   # Proc called with a user as argument and a controller as self.
