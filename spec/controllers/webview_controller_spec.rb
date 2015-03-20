@@ -24,8 +24,7 @@ RSpec.describe WebviewController, :type => :controller do
   describe 'GET index' do
     it 'requires a user' do
       get :index
-      expect(response).to redirect_to(controller.send(:with_interceptor) {
-                            url_for(openstax_accounts.login_path) })
+      expect(response).to redirect_to(controller.openstax_accounts.login_path)
     end
 
     it 'requires agreement to contracts' do

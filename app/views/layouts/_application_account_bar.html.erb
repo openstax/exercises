@@ -9,7 +9,7 @@
     <% if signed_in? %>
 
       <span class="<%= account_bar_classes %> welcome-message" data-test-user-welcome><%= salutation current_user %></span>
-      <%= link_to "My Account", '/user', :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
+      <%= link_to "My Account", openstax_accounts.profile_path, :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
       <%= vertical_bar(:id => "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
       <%= link_to "Sign out", openstax_accounts.logout_path, :class => "#{account_bar_classes}", :'data-test-link-sign-out' => "", :method => :delete %>
     <% else %>

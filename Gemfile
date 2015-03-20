@@ -49,7 +49,7 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 4.0.0'
+gem 'openstax_accounts'
 
 # Respond_with and respond_to methods
 gem 'responders'
