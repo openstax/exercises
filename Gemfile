@@ -49,17 +49,15 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', path: '../accounts-rails'
+gem 'openstax_accounts', '~> 5.0.0'
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', path: '../openstax_api'
+gem 'openstax_api', '~> 5.1.0'
 gem 'apipie-rails'
 gem 'maruku'
-gem 'roar-rails'
-gem 'responders'
 
 # Lev framework
 gem 'lev'
