@@ -76,7 +76,7 @@ module Publishable
     module Routing
       module Mapper
         def publishable
-          post 'publish', to: 'publications#publish'
+          put 'publish', to: 'publications#publish'
         end
       end
     end

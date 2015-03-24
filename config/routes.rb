@@ -26,7 +26,7 @@ Exercises::Application.routes.draw do
       #has_logic
 
       resources :questions, only: [] do
-        resources :solutions do
+        resources :solutions, shallow: true do
           publishable
           #has_logic
         end
@@ -44,10 +44,10 @@ Exercises::Application.routes.draw do
 
     resources :users, only: [:index]
 
-    resource :user, only: [:show, :update, :destroy] do
-      resources :deputizations, only: [:index, :create, :destroy],
-                                path: 'deputies'
-    end
+    resource :user, only: [:show, :update, :destroy]
+
+    resources :deputizations, only: [:index, :create, :destroy],
+                              path: 'deputies'
   end
 
   mount OpenStax::Accounts::Engine, at: "/accounts"

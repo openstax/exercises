@@ -1,7 +1,7 @@
 module Api::V1
   class ListNestingRepresenter < Roar::Decorator
 
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     property :list_id,
              type: Integer,

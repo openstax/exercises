@@ -1,7 +1,7 @@
 module Api::V1
   class ComboChoiceRepresenter < Roar::Decorator
 
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     collection :combo_choice_answers,
                class: ComboChoiceAnswer,

@@ -1,7 +1,9 @@
 require "rails_helper"
 
 module Api::V1
-  describe UsersController, :type => :controller, :api => true, :version => :v1 do
+  describe UsersController, :type => :controller,
+                            :api => true,
+                            :version => :v1 do
 
     let!(:application)     { FactoryGirl.create :doorkeeper_application }
     let!(:user)          { FactoryGirl.create :user, :agreed_to_terms }
@@ -173,7 +175,9 @@ module Api::V1
     describe "PATCH update" do
 
       it "updates the current User's profile" do
-        api_put :update, user_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}
+        api_patch :update, user_token, raw_post_data: {
+          first_name: "Jerry", last_name: "Mouse"
+        }
         expect(response).to have_http_status(:success)
         user.reload
         expect(user.first_name).to eq 'Jerry'
@@ -181,7 +185,9 @@ module Api::V1
       end
 
       it "ignores id parameters" do
-        api_put :update, user_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, parameters: {id: admin.id, user_id: admin.id}
+        api_patch :update, user_token, raw_post_data: {
+          first_name: "Jerry", last_name: "Mouse"
+        }, parameters: {id: admin.id, user_id: admin.id}
         expect(response).to have_http_status(:success)
         user.reload
         admin.reload
