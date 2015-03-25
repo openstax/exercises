@@ -152,7 +152,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
     ffi (1.9.8)
-    fine_print (2.3.1)
+    fine_print (3.0.0)
       action_interceptor (>= 1.0)
       jquery-rails
       rails (>= 3.1)
