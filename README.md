@@ -72,7 +72,6 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 $ bundle --without production
 $ rake db:migrate
 $ rake db:seed
-$ rails g secrets
 $ rails s
 ```
 
