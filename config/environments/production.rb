@@ -66,9 +66,8 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :ses
   config.action_mailer.default_url_options = {
-                                              :protocol => 'https',
-                                              :host => Rails.application.secrets.mail_site_url
-                                             }
+    protocol: 'https', host: Rails.application.secrets.mail_site_url
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -82,7 +81,7 @@ Rails.application.configure do
 
   # Lograge configuration (one-line logs in production)
   config.lograge.enabled = true
-  config.log_tags = [ :remote_ip ]
+  config.log_tags = [:remote_ip]
   config.lograge.custom_options = lambda do |event|
     params = event.payload[:params].reject do |k|
       ['controller', 'action', 'format'].include? k
@@ -96,10 +95,13 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Send email to developers when users encounter exceptions
-  config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :email_prefix => "[Exercises] ",
-      :sender_address => %{"OpenStax Exercises" <noreply@openstax.org>},
-      :exception_recipients => Rails.application.secrets.exception_recipients.split(/\s+/)
+  config.middleware.use(
+    ExceptionNotification::Rack,
+    email: {
+      email_prefix: "[Exercises] ",
+      sender_address: %{"OpenStax Exercises" <noreply@openstax.org>},
+      exception_recipients: Rails.application.secrets.exception_recipients
+                                                     .split(/\s+/)
     }
+  )
 end
