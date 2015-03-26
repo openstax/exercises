@@ -16,7 +16,7 @@ module Api::V1
     # publish #
     ###########
 
-    api :POST, '/object/:object_id/publish',
+    api :PUT, '/object/:object_id/publish',
                'Publishes the specified object'
     description <<-EOS
       Publishes the specified object.  
@@ -27,7 +27,7 @@ module Api::V1
       )
       @publishable.publication.publish
       @publishable.publication.save
-      respond_with @publishable
+      respond_with @publishable, responder: ResponderWithPutContent
     end
 
     protected

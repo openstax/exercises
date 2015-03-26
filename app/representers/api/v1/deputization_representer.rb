@@ -1,7 +1,7 @@
 module Api::V1
   class DeputizationRepresenter < Roar::Decorator
 
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     property :deputy_type,
              type: String,

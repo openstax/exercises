@@ -1,7 +1,7 @@
 module Api::V1
   class StemRepresenter < Roar::Decorator
 
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     stylable
 

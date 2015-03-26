@@ -1,7 +1,9 @@
 require "rails_helper"
 
 module Api::V1
-  describe ExercisesController, :type => :controller, :api => true, :version => :v1 do
+  describe ExercisesController, :type => :controller,
+                                :api => true,
+                                :version => :v1 do
 
     let!(:application) { FactoryGirl.create :doorkeeper_application }
     let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
@@ -193,8 +195,8 @@ module Api::V1
         @exercise.reload
         old_attributes = @exercise.attributes
 
-        api_put :update, user_token, parameters: { id: @exercise.uid },
-                raw_post_data: { title: "Ipsum lorem" }
+        api_patch :update, user_token, parameters: { id: @exercise.uid },
+                  raw_post_data: { title: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @exercise.reload
         new_attributes = @exercise.attributes

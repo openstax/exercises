@@ -1,7 +1,7 @@
 module Api::V1
   class StemAnswerRepresenter < Roar::Decorator
 
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     property :answer_id,
              type: Integer,

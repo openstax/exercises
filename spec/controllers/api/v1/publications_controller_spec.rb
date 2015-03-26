@@ -24,12 +24,12 @@ module Api::V1
                          resource_owner_id: solution_author.user_id
     }
 
-    context "POST publish" do
+    context "PUT publish" do
       context "when given an exercise_id only" do
         it "publishes the requested exercise" do
           expect(exercise.reload.is_published?).to eq false
 
-          api_post :publish, exercise_author_token,
+          api_put :publish, exercise_author_token,
                              parameters: { exercise_id: exercise.id.to_s }
 
           expected_response = Api::V1::ExerciseRepresenter.new(exercise.reload)
@@ -44,7 +44,7 @@ module Api::V1
         it "publishes the requested solution" do
           expect(solution.reload.is_published?).to eq false
 
-          api_post :publish, solution_author_token, parameters: {
+          api_put :publish, solution_author_token, parameters: {
             exercise_id: solution.question.exercise_id.to_s,
             question_id: solution.question_id,
             solution_id: solution.id.to_s

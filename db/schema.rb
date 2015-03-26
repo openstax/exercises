@@ -375,6 +375,7 @@ ActiveRecord::Schema.define(version: 20150225002247) do
     t.string   "uid",                          null: false
     t.string   "secret",                       null: false
     t.text     "redirect_uri",                 null: false
+    t.string   "scopes",       default: "",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "owner_id"

@@ -92,8 +92,9 @@ module Oauth
 
         it "redirects to the created application" do
           post :create, {:application => valid_attributes}, admin_session
-          expect(response).to redirect_to([:oauth,
-                                           Doorkeeper::Application.last])
+          expect(response).to redirect_to(
+            oauth_application_url(Doorkeeper::Application.last)
+          )
         end
       end
 
@@ -132,7 +133,9 @@ module Oauth
         it "redirects to the application" do
           patch :update, {:id => group_1_application_1.to_param,
                           :application => { "name" => "Dummy" }}, valid_session
-          expect(response).to redirect_to([:oauth, group_1_application_1])
+          expect(response).to redirect_to(
+            oauth_application_url(group_1_application_1)
+          )
         end
       end
 

@@ -1,7 +1,7 @@
 module Api::V1
   class LogicVariableRepresenter < Roar::Decorator
 
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     collection :logic_variable_values,
                as: :values,

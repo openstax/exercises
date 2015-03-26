@@ -49,21 +49,15 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts'
-
-# Respond_with and respond_to methods
-gem 'responders'
+gem 'openstax_accounts', '~> 5.0.1'
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api'
+gem 'openstax_api', '~> 5.1.0'
 gem 'apipie-rails'
 gem 'maruku'
-gem 'representable'
-gem 'roar-rails'
-gem 'roar', '< 1.0'
 
 # Lev framework
 gem 'lev'
