@@ -89,7 +89,7 @@ module Exercises
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
                                   .where(exercise_tags: {tag: {name: exercise_id_tag}})
-                                  .order(publication: {number: :desc}).first
+                                  .order{publication.number.desc}.first
 
         e = Exercise.new
         e.tags = tags
@@ -187,7 +187,9 @@ module Exercises
         list.list_exercises << le
         le.save!
 
-        puts "Created #{index} exercise(s)."
+        puts "Created #{index} exercise(s) - Current uid: #{e.uid} - New #{
+                'version of existing ' unless latest_exercise.nil?
+              }exercise"
       end
 
 

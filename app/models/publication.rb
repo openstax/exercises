@@ -4,8 +4,7 @@ class Publication < ActiveRecord::Base
   belongs_to :license
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
-  sortable_has_many :copyright_holders, dependent: :destroy,
-                                        inverse_of: :publication
+  sortable_has_many :copyright_holders, dependent: :destroy, inverse_of: :publication
   sortable_has_many :editors, dependent: :destroy, inverse_of: :publication
 
   sortable_has_many :sources, class_name: 'Derivation',
@@ -19,8 +18,7 @@ class Publication < ActiveRecord::Base
   validates :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :number, presence: true
-  validates :version, presence: true,
-                      uniqueness: { scope: [:publishable_type, :number] }
+  validates :version, presence: true, uniqueness: { scope: [:publishable_type, :number] }
   validate  :valid_license
 
   before_validation :assign_number_and_version, on: :create
@@ -48,9 +46,9 @@ class Publication < ActiveRecord::Base
   end
 
   def has_collaborator?(user)
-    !authors.find_by(user: user).nil? || \
-    !copyright_holders.find_by(user: user).nil? || \
-    !editors.find_by(user: user).nil?
+    authors.any?{|a| a.user == user} || \
+    copyright_holders.any?{|ch| ch.user == user} || \
+    editors.any?{|e| e.user == user}
   end
 
   def publish
@@ -61,8 +59,7 @@ class Publication < ActiveRecord::Base
 
   def assign_number_and_version
     if number
-      self.version = (Publication.where(publishable_type: publishable_type,
-                                        number: number)
+      self.version = (Publication.where(publishable_type: publishable_type, number: number)
                                  .maximum(:version) || 0) + 1
     else
       self.number = (Publication.where(publishable_type: publishable_type)

@@ -2,14 +2,13 @@ module Publishable
   module ActiveRecord
     module Base
       ID_REGEX = /\A(\d+)(@(\d+))?\z/
+
       def self.included(base)
         base.extend(ClassMethods)
       end
       
       module ClassMethods
         def publishable(options = {})
-          first_letter = name.first.downcase
-
           class_exec do
 
             has_one :publication, as: :publishable, dependent: :destroy
@@ -21,8 +20,7 @@ module Publishable
             has_many :derivations, through: :publication
 
             scope :published, lambda {
-              joins(:publication).includes(:publication)
-                                 .where{publication.published_at != nil}
+              joins(:publication).includes(:publication).where{publication.published_at != nil}
             }
 
             scope :visible_for, lambda { |user|
@@ -54,16 +52,14 @@ module Publishable
               id = args.first
               return super unless id.is_a?(String) && \
               Publishable::ActiveRecord::Base::ID_REGEX =~ id
-              Publication.find_by(publishable_type: name,
-                                  number: $1,
-                                  version: $3).try(:publishable) || super
+              Publication.find_by(publishable_type: name, number: $1, version: $3)
+                         .try(:publishable) || super
             end
 
             protected
 
             def ensure_publication
-              raise ::ActiveRecord::RecordInvalid, publication \
-                unless publication.persisted?
+              raise ::ActiveRecord::RecordInvalid, publication unless publication.persisted?
             end
 
           end
@@ -85,4 +81,5 @@ end
 
 ActiveRecord::Base.send :include, Publishable::ActiveRecord::Base
 ActionDispatch::Routing::Mapper.send(
-  :include, Publishable::ActionDispatch::Routing::Mapper)
+  :include, Publishable::ActionDispatch::Routing::Mapper
+)
