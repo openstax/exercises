@@ -16,6 +16,7 @@ class SearchExercises
   protected
 
   def exec(params = {})
+    params[:ob] ||= [{number: :asc}, {version: :desc}]
     run(:search, relation: Exercise.includes(:publication)
                                    .references(:publication)
                                    .preload(exercise_tags: :tag),

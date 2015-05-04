@@ -79,15 +79,24 @@ module Exercises
         list_name = 'test'
         question_stem_content = parse(row[9])
 
-        styles = [Style::MULTIPLE_CHOICE]
+        styles = []
+        styles << Style::MULTIPLE_CHOICE if display_type_tags.include?('display-simple-mc')
         styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
         explanation = parse(row[10])
         correct_answer_index = row[11].downcase.strip.each_byte.first - 97
 
         answers = row[12..-1].each_slice(2)
 
+        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
+                                  .where(exercise_tags: {tag: {name: exercise_id_tag}})
+                                  .order(publication: {number: :desc}).first
+
         e = Exercise.new
         e.tags = tags
+        unless latest_exercise.nil?
+          e.publication.number = latest_exercise.publication.number
+          e.publication.version = latest_exercise.publication.version + 1
+        end
 
         q = Question.new
         q.exercise = e
