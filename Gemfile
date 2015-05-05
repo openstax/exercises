@@ -116,12 +116,12 @@ gem 'yaml_db'
 # Admin console
 gem 'rails_admin'
 
+# PostgreSQL database
+gem 'pg'
+
 group :development, :test do
   # Thin webserver
   gem 'thin'
-
-  # SQLite3 database
-  gem 'sqlite3'
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -180,9 +180,6 @@ group :production do
 
   # Unicorn worker killer
   gem 'unicorn-worker-killer'
-
-  # PostgreSQL production database
-  gem 'pg'
 
   # AWS SES
   gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
