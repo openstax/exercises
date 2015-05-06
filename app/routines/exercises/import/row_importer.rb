@@ -54,7 +54,7 @@ module Exercises
       def import_row(row,index)
         begin
           perform_row_import(row,index)
-        rescue ActiveRecord::RecordInvalid=>e
+        rescue ActiveRecord::RecordInvalid => e
           @failures[index] = e.to_s
         end
       end
@@ -66,26 +66,27 @@ module Exercises
 
         los = split(row[2])
         lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
-        exercise_id = row[3]
-        exercise_id_tag = [book, chapter, exercise_id].join('-')
+        exercise_id_tag = row[3]
         type_tags = split(row[4])
         location_tag = row[5]
         dok_tag = row[6]
         time_tag = row[7]
         display_type_tags = split(row[8])
+        blooms_tag = row[9]
 
         tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
                 dok_tag, time_tag, display_type_tags].flatten
-        list_name = 'test'
-        question_stem_content = parse(row[9])
 
-        styles = []
-        styles << Style::MULTIPLE_CHOICE if display_type_tags.include?('display-simple-mc')
+        list_name = row[10]
+
+        question_stem_content = parse(row[11])
+
+        styles = [Style::MULTIPLE_CHOICE]
         styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
-        explanation = parse(row[10])
-        correct_answer_index = row[11].downcase.strip.each_byte.first - 97
+        explanation = parse(row[12])
+        correct_answer_index = row[13].downcase.strip.each_byte.first - 97
 
-        answers = row[12..-1].each_slice(2)
+        answers = row[14..-1].each_slice(2)
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
                                   .where(exercise_tags: {tag: {name: exercise_id_tag}})
