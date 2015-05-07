@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 module Exercises::Import
   RSpec.describe RowImporter do
     pending "add some examples to (or delete) #{__FILE__}"

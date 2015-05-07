@@ -45,9 +45,11 @@ module Exercises
       def record_failures
         Exercise.transaction do
           @failures = {}
+
           yield
-          puts "Failures: #{@failures.keys}"
-          puts @failures.values.join("\n")
+
+          Rails.logger.info @failures.empty? ? 'Success!' : "Failures: #{@failures.keys}"
+          Rails.logger.info @failures.values.join("\n")
         end
       end
 
@@ -75,7 +77,7 @@ module Exercises
         blooms_tag = row[9]
 
         tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
-                dok_tag, time_tag, display_type_tags].flatten
+                dok_tag, time_tag, display_type_tags, blooms_tag].flatten
 
         list_name = row[10]
 
@@ -165,11 +167,8 @@ module Exercises
           end
         end
 
-        e.save!
-
         list = List.find_by(name: list_name)
         if list.nil?
-          puts "Creating new list: #{list_name}."
           list = List.create(name: list_name)
 
           [author, copyright_holder].compact.uniq.each do |u|
@@ -180,17 +179,19 @@ module Exercises
           end
 
           list.save!
+          Rails.logger.info "Created new list: #{list_name}."
         end
 
         le = ListExercise.new
         le.exercise = e
         le.list = list
         list.list_exercises << le
-        le.save!
+        e.list_exercises << le
+        e.save!
 
-        puts "Created #{index} exercise(s) - Current uid: #{e.uid} - New #{
-                'version of existing ' unless latest_exercise.nil?
-              }exercise"
+        Rails.logger.info "Created #{index} exercise(s) - Current uid: #{e.uid} - New #{
+                            'version of existing ' unless latest_exercise.nil?
+                          }exercise"
       end
 
 

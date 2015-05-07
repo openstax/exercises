@@ -10,15 +10,16 @@
 namespace :exercises do
   namespace :import do
 
-    desc "import a unicode CSV"
-    task :unicode, [:filename, :author_id, :ch_id, :skip_first_row,
-                    :col_sep, :row_sep] => :environment do |t, args|
-      Exercises::Import::Unicode.call(args)
-    end
-
-    desc "import a Excel file"
+    desc "import an Excel file"
     task :excel, [:filename, :author_id, :ch_id, :skip_first_row] => :environment do |t, args|
-      Exercises::Import::Excel.call(args)
+      # Output import logging info to the console
+      original_logger = Rails.logger
+      Rails.logger = ActiveSupport::Logger.new(STDOUT)
+
+      Exercises::Import::Excel.call(args.to_h)
+
+      # Restore original logger
+      Rails.logger = original_logger
     end
 
   end
