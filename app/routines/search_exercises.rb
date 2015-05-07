@@ -16,9 +16,22 @@ class SearchExercises
   protected
 
   def exec(params = {})
-    run(:search, relation: Exercise.includes(:publication)
-                                   .references(:publication)
-                                   .preload(exercise_tags: :tag),
+    params[:ob] ||= [{number: :asc}, {version: :desc}]
+    run(:search, relation: Exercise.joins(:publication)
+                                   .preload(
+                                     :attachments,
+                                     :logic,
+                                     publication: [:derivations,
+                                                   authors: :user,
+                                                   copyright_holders: :user,
+                                                   editors: :user],
+                                     questions: [
+                                       :hints,
+                                       answers: :stem_answers,
+                                       stems: [:stylings, :combo_choices]
+                                     ],
+                                     exercise_tags: :tag
+                                   ),
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
       with.default_keyword :content
@@ -79,14 +92,14 @@ class SearchExercises
           sanitized_contents = to_string_array(content, append_wildcard: true,
                                                         prepend_wildcard: true)
           next @items = @items.none if sanitized_contents.empty?
-          @items = @items.includes(questions: [:stems, :answers])
-                         .references(questions: [:stems, :answers])
+          @items = @items.joins{[questions.outer.stems.outer, questions.outer.answers.outer]}
                          .where{
                            (title.like_any sanitized_contents) |\
                            (stimulus.like_any sanitized_contents) |\
                            (questions.stimulus.like_any sanitized_contents) |\
-                           (stems.content.like_any sanitized_contents) |\
-                           (answers.content.like_any sanitized_contents) }
+                           (questions.stems.content.like_any sanitized_contents) |\
+                           (questions.answers.content.like_any sanitized_contents)
+                         }
         end
       end
 
@@ -95,7 +108,7 @@ class SearchExercises
           sanitized_solutions = to_string_array(solution, append_wildcard: true,
                                                           prepend_wildcard: true)
           next @items = @items.none if sanitized_solutions.empty?
-          @items = @items.includes(:solutions).joins(:solutions)
+          @items = @items.joins(:solutions)
                          .where{(solutions.summary.like_any sanitized_solutions) |\
                                 (solutions.details.like_any sanitized_solutions)}
         end
@@ -105,12 +118,13 @@ class SearchExercises
         names.each do |name|
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
-          @items = @items.includes(authors: {user: :account})
-                         .joins(authors: {user: :account})
-                         .where{(authors.user.account.username.like_any sn) |\
-                                (authors.user.account.first_name.like_any sn) |\
-                                (authors.user.account.last_name.like_any sn) |\
-                                (authors.user.account.full_name.like_any sn)}
+          @items = @items.joins(publication: {authors: {user: :account}})
+                         .where{
+                           (publication.authors.user.account.username.like_any sn) |\
+                           (publication.authors.user.account.first_name.like_any sn) |\
+                           (publication.authors.user.account.last_name.like_any sn) |\
+                           (publication.authors.user.account.full_name.like_any sn)
+                         }
         end
       end
 
@@ -118,12 +132,13 @@ class SearchExercises
         names.each do |name|
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
-          @items = @items.includes(copyright_holders: {user: :account})
-                         .joins(copyright_holders: {user: :account})
-                         .where{(copyright_holders.user.account.username.like_any sn) |\
-                                (copyright_holders.user.account.first_name.like_any sn) |\
-                                (copyright_holders.user.account.last_name.like_any sn) |\
-                                (copyright_holders.user.account.full_name.like_any sn)}
+          @items = @items.joins(publication: {copyright_holders: {user: :account}})
+                         .where{
+                           (publication.copyright_holders.user.account.username.like_any sn) |\
+                           (publication.copyright_holders.user.account.first_name.like_any sn) |\
+                           (publication.copyright_holders.user.account.last_name.like_any sn) |\
+                           (publication.copyright_holders.user.account.full_name.like_any sn)
+                         }
         end
       end
 
@@ -131,12 +146,13 @@ class SearchExercises
         names.each do |name|
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
-          @items = @items.includes(editors: {user: :account})
-                         .joins(editors: {user: :account})
-                         .where{(editors.user.account.username.like_any sn) |\
-                                (editors.user.account.first_name.like_any sn) |\
-                                (editors.user.account.last_name.like_any sn) |\
-                                (editors.user.account.full_name.like_any sn)}
+          @items = @items.joins(publication: {editors: {user: :account}})
+                         .where{
+                           (publication.editors.user.account.username.like_any sn) |\
+                           (publication.editors.user.account.first_name.like_any sn) |\
+                           (publication.editors.user.account.last_name.like_any sn) |\
+                           (publication.editors.user.account.full_name.like_any sn)
+                         }
         end
       end
 
@@ -144,24 +160,23 @@ class SearchExercises
         names.each do |name|
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
-          @items = @items.includes(authors: {user: :account},
-                                   copyright_holders: {user: :account},
-                                   editors: {user: :account})
-                         .references(authors: {user: :account},
-                                     copyright_holders: {user: :account},
-                                     editors: {user: :account})
-                         .where{(authors.user.account.username.like_any sn) |\
-                                (authors.user.account.first_name.like_any sn) |\
-                                (authors.user.account.last_name.like_any sn) |\
-                                (authors.user.account.full_name.like_any sn) |\
-                                (copyright_holders.user.account.username.like_any sn) |\
-                                (copyright_holders.user.account.first_name.like_any sn) |\
-                                (copyright_holders.user.account.last_name.like_any sn) |\
-                                (copyright_holders.user.account.full_name.like_any sn) |\
-                                (editors.user.account.username.like_any sn) |\
-                                (editors.user.account.first_name.like_any sn) |\
-                                (editors.user.account.last_name.like_any sn) |\
-                                (editors.user.account.full_name.like_any sn)}
+          @items = @items.joins{publication.outer.authors.outer.user.outer.account.outer}
+                         .joins{publication.outer.copyright_holders.outer.user.outer.account.outer}
+                         .joins{publication.outer.editors.outer.user.outer.account.outer}
+                         .where{
+                           (publication.authors.user.account.username.like_any sn) |\
+                           (publication.authors.user.account.first_name.like_any sn) |\
+                           (publication.authors.user.account.last_name.like_any sn) |\
+                           (publication.authors.user.account.full_name.like_any sn) |\
+                           (publication.copyright_holders.user.account.username.like_any sn) |\
+                           (publication.copyright_holders.user.account.first_name.like_any sn) |\
+                           (publication.copyright_holders.user.account.last_name.like_any sn) |\
+                           (publication.copyright_holders.user.account.full_name.like_any sn) |\
+                           (publication.editors.user.account.username.like_any sn) |\
+                           (publication.editors.user.account.first_name.like_any sn) |\
+                           (publication.editors.user.account.last_name.like_any sn) |\
+                           (publication.editors.user.account.full_name.like_any sn)
+                         }
         end
       end
     end

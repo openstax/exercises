@@ -20,14 +20,14 @@ module Exercises
                ch_id: DEFAULT_CH_ID,
                skip_first_row: true)
 
-        puts "Reading from #{filename}."
+        Rails.logger.info "Reading from #{filename}."
 
         @author = User.find_by(id: author_id)
         @copyright_holder = User.find_by(id: ch_id)
         @skip_first_row = skip_first_row
 
-        puts "Setting #{@author.full_name} as Author"
-        puts "Setting #{@copyright_holder.full_name} as Copyright Holder"
+        Rails.logger.info "Setting #{@author.full_name} as Author"
+        Rails.logger.info "Setting #{@copyright_holder.full_name} as Copyright Holder"
 
         ext = File.extname(filename)
         if ext == '.xlsx'

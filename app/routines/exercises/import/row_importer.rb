@@ -45,16 +45,18 @@ module Exercises
       def record_failures
         Exercise.transaction do
           @failures = {}
+
           yield
-          puts "Failures: #{@failures.keys}"
-          puts @failures.values.join("\n")
+
+          Rails.logger.info @failures.empty? ? 'Success!' : "Failures: #{@failures.keys}"
+          Rails.logger.info @failures.values.join("\n")
         end
       end
 
       def import_row(row,index)
         begin
           perform_row_import(row,index)
-        rescue ActiveRecord::RecordInvalid=>e
+        rescue ActiveRecord::RecordInvalid => e
           @failures[index] = e.to_s
         end
       end
@@ -66,28 +68,38 @@ module Exercises
 
         los = split(row[2])
         lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
-        exercise_id = row[3]
-        exercise_id_tag = [book, chapter, exercise_id].join('-')
+        exercise_id_tag = row[3]
         type_tags = split(row[4])
         location_tag = row[5]
         dok_tag = row[6]
         time_tag = row[7]
         display_type_tags = split(row[8])
+        blooms_tag = row[9]
 
         tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
-                dok_tag, time_tag, display_type_tags].flatten
-        list_name = 'test'
-        question_stem_content = parse(row[9])
+                dok_tag, time_tag, display_type_tags, blooms_tag].flatten
+
+        list_name = row[10]
+
+        question_stem_content = parse(row[11])
 
         styles = [Style::MULTIPLE_CHOICE]
         styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
-        explanation = parse(row[10])
-        correct_answer_index = row[11].downcase.strip.each_byte.first - 97
+        explanation = parse(row[12])
+        correct_answer_index = row[13].downcase.strip.each_byte.first - 97
 
-        answers = row[12..-1].each_slice(2)
+        answers = row[14..-1].each_slice(2)
+
+        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
+                                  .where(exercise_tags: {tag: {name: exercise_id_tag}})
+                                  .order{publication.number.desc}.first
 
         e = Exercise.new
         e.tags = tags
+        unless latest_exercise.nil?
+          e.publication.number = latest_exercise.publication.number
+          e.publication.version = latest_exercise.publication.version + 1
+        end
 
         q = Question.new
         q.exercise = e
@@ -155,11 +167,8 @@ module Exercises
           end
         end
 
-        e.save!
-
         list = List.find_by(name: list_name)
         if list.nil?
-          puts "Creating new list: #{list_name}."
           list = List.create(name: list_name)
 
           [author, copyright_holder].compact.uniq.each do |u|
@@ -170,15 +179,19 @@ module Exercises
           end
 
           list.save!
+          Rails.logger.info "Created new list: #{list_name}."
         end
 
         le = ListExercise.new
         le.exercise = e
         le.list = list
         list.list_exercises << le
-        le.save!
+        e.list_exercises << le
+        e.save!
 
-        puts "Created #{index} exercise(s)."
+        Rails.logger.info "Created #{index} exercise(s) - Current uid: #{e.uid} - New #{
+                            'version of existing ' unless latest_exercise.nil?
+                          }exercise"
       end
 
 
