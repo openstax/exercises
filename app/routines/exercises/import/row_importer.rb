@@ -179,7 +179,7 @@ module Exercises
           end
 
           list.save!
-          Rails.logger.info "Created new list: #{list_name}."
+          Rails.logger.info "Created new list: #{list_name}"
         end
 
         le = ListExercise.new
