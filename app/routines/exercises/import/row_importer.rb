@@ -16,13 +16,15 @@ module Exercises
       def math_tag(math)
         inner_math = math[1..-2]
         tag = 'span'
+        separator = ''
         if MATH_REGEX =~ inner_math
           inner_math = inner_math[1..-2]
           tag = 'div'
+          separator = "\n"
         end
         escaped_math = inner_math.gsub('"', '&quot;')
 
-        "<#{tag} data-math=\"#{escaped_math}\">#{escaped_math}</#{tag}>"
+        "#{separator}<#{tag} data-math=\"#{escaped_math}\">#{escaped_math}</#{tag}>#{separator}"
       end
 
       # Parses the text using Markdown
