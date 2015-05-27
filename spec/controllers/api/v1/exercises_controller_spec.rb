@@ -1,14 +1,11 @@
 require "rails_helper"
 
 module Api::V1
-  describe ExercisesController, :type => :controller,
-                                :api => true,
-                                :version => :v1 do
+  describe ExercisesController, type: :controller, api: true, version: :v1 do
 
     let!(:application) { FactoryGirl.create :doorkeeper_application }
     let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)       { FactoryGirl.create :user, :administrator,
-                                            :agreed_to_terms }
+    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
     let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application, 
@@ -128,7 +125,7 @@ module Api::V1
 
       it "sorts by multiple fields in different directions" do
         api_get :index, admin_token, parameters: {q: 'content:aDiPiScI',
-                                                 order_by: "number DESC, version ASC"}
+                                                  order_by: "number DESC, version ASC"}
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -146,11 +143,12 @@ module Api::V1
 
       it "returns the requested Exercise" do
         @exercise.save!
+        @exercise.reload
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json
-        
+
         expect(response.body).to eq(expected_response)
       end
 
@@ -178,9 +176,9 @@ module Api::V1
 
         db_answers = new_exercise.questions.first.answers
         json_answers = @exercise.questions.first.answers
-        db_answers.each_with_index do |answer, i|
-          expect(answer.content).to eq json_answers[i].content
-        end
+        expect(Set.new db_answers.collect { |answer| answer.content }).to(
+          eq(Set.new json_answers.collect { |answer| answer.content })
+        )
 
         expect(new_exercise.authors.first.user).to eq user
         expect(new_exercise.copyright_holders.first.user).to eq user
