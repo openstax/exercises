@@ -2,26 +2,70 @@ require "rails_helper"
 
 RSpec.describe Attachment, :type => :model do
 
+  subject(:attachment) { FactoryGirl.create :attachment }
+  let!(:asset_path)    { attachment.asset.path }
+
+  after(:each) { attachment.destroy }
+
   it { is_expected.to belong_to(:parent) }
 
   it { is_expected.to validate_presence_of(:parent) }
-  it { is_expected.to validate_presence_of(:asset) }
 
   it 'requires a unique asset for each parent' do
-    attachment_1 = FactoryGirl.create :attachment
-    attachment_2 = FactoryGirl.build :attachment, parent: attachment_1.parent,
-                                                  asset: attachment_1.asset
+    attachment_2 = FactoryGirl.build :attachment, parent: attachment.parent, asset: nil
     expect(attachment_2).not_to be_valid
-    expect(attachment_2.errors[:asset]).to include('has already been taken')
+    expect(attachment_2.errors[:asset]).to include("can't be blank")
+
+    attachment_2.asset = attachment.asset
+    expect(attachment_2).not_to be_valid
+    expect(attachment_2.errors[:asset]).to(
+      include('has already been associated with this resource')
+    )
 
     attachment_2.parent = FactoryGirl.build :exercise
     expect(attachment_2).to be_valid
 
-    attachment_2.parent = attachment_1.parent
+    attachment_2.parent = attachment.parent
     expect(attachment_2).not_to be_valid
 
-    attachment_2.asset = SecureRandom.hex
+    attachment_2.asset = File.open('spec/fixtures/rails.png')
     expect(attachment_2).to be_valid
+  end
+
+  context 'asset removal' do
+    context 'on update' do
+      it 'does not remove the asset when there are other references left' do
+        attachment_2 = FactoryGirl.create :attachment, asset: attachment.asset
+        attachment_2.asset = File.open('spec/fixtures/rails.png')
+        attachment_2.save!
+
+        expect(File.exist?(asset_path)).to eq true
+
+        attachment_2.destroy
+      end
+
+      it 'removes the asset when there are no references left' do
+        attachment.asset = File.open('spec/fixtures/rails.png')
+        attachment.save!
+
+        expect(File.exist?(asset_path)).to eq false
+      end
+    end
+
+    context 'on destroy' do
+      it 'does not remove the asset when there are other references left' do
+        attachment_2 = FactoryGirl.create :attachment, asset: attachment.asset
+        attachment_2.destroy
+
+        expect(File.exist?(asset_path)).to eq true
+      end
+
+      it 'removes the asset when there are no references left' do
+        attachment.destroy
+
+        expect(File.exist?(asset_path)).to eq false
+      end
+    end
   end
 
 end

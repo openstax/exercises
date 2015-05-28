@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20150225002247) do
     t.datetime "updated_at",  null: false
   end
 
+  add_index "attachments", ["asset"], name: "index_attachments_on_asset", using: :btree
   add_index "attachments", ["parent_id", "parent_type", "asset"], name: "index_attachments_on_parent_id_and_parent_type_and_asset", unique: true, using: :btree
 
   create_table "authors", force: :cascade do |t|

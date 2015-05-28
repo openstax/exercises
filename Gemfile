@@ -172,6 +172,9 @@ group :test do
 
   # Coveralls integration
   gem 'coveralls', require: false
+
+  # Test after-commit hooks
+  gem 'test_after_commit'
 end
 
 group :production do
