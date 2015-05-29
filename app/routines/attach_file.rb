@@ -17,6 +17,9 @@ class AttachFile
       Rails.logger.info "Reused attachment: #{attachment.asset.filename}"
     end
 
-    outputs[:url] = attachment.asset.url
+    outputs[:url]       = attachment.asset.url
+    return unless attachment.asset.is_image?(attachment.asset)
+    outputs[:embed_url] = attachment.asset.embed.url
+    outputs[:thumb_url] = attachment.asset.thumb.url
   end
 end
