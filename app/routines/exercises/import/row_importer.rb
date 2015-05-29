@@ -1,6 +1,5 @@
 module Exercises
   module Import
-
     class RowImporter
 
       DEFAULT_AUTHOR_ID = 1
@@ -188,17 +187,16 @@ module Exercises
         le = ListExercise.new
         le.exercise = ex
         le.list = list
-        list.list_exercises << le
         ex.list_exercises << le
         ex.save!
+        list.list_exercises << le
 
-        Rails.logger.info "Created #{index} exercise(s) - Current uid: #{ex.uid} - New #{
+        Rails.logger.info "Imported #{index} exercise(s) - Current uid: #{ex.uid} - New #{
                             'version of existing ' unless latest_exercise.nil?
                           }exercise"
       end
 
 
     end
-
   end
 end

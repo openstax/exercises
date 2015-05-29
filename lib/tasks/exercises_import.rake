@@ -12,14 +12,31 @@ namespace :exercises do
 
     desc "import an Excel file"
     task :excel, [:filename, :author_id, :ch_id, :skip_first_row] => :environment do |t, args|
-      # Output import logging info to the console
+      # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
-      Rails.logger = ActiveSupport::Logger.new(STDOUT)
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
-      Exercises::Import::Excel.call(args.to_h)
+        Exercises::Import::Excel.call(args.to_h)
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
+      end
+    end
 
-      # Restore original logger
-      Rails.logger = original_logger
+    desc "import a zip file"
+    task :zip, [:zip_filename, :excel_filename,
+                :author_id, :ch_id, :skip_first_row] => :environment do |t, args|
+      # Output import logging info to the console (except in the test environment)
+      original_logger = Rails.logger
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
+
+        Exercises::Import::Zip.call(args.to_h)
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
+      end
     end
 
   end

@@ -1,4 +1,4 @@
-# Imports a XLXS file from Excel
+# Imports an Excel file
 # Arguments are, in order:
 # filename, author's user id, copyright holder's user id, skip_first_row
 
@@ -14,7 +14,7 @@ module Exercises
 
       lev_routine
 
-      # Imports Exercises from a unicode spreadsheet
+      # Imports Exercises from a spreadsheet
       def exec(filename: 'exercises.xlsx',
                author_id: DEFAULT_AUTHOR_ID,
                ch_id: DEFAULT_CH_ID,
