@@ -1,3 +1,5 @@
+require 'addressable/uri'
+
 CarrierWave.configure do |config|
   if Rails.env.production?
     require 'fog/aws'
@@ -14,6 +16,7 @@ CarrierWave.configure do |config|
     }
     config.fog_directory  = secrets['bucket_name']
     config.fog_attributes = { 'Cache-Control' => 'max-age=31536000' }
+    config.asset_host = secrets['asset_host']
   else
     config.storage = :file
   end
