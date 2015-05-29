@@ -18,7 +18,7 @@ class AttachFile
     end
 
     outputs[:url]       = attachment.asset.url
-    return unless attachment.asset.is_image?(attachment.asset)
+    return unless attachment.asset.is_image?(attachment.asset.file)
     outputs[:embed_url] = attachment.asset.embed.url
     outputs[:thumb_url] = attachment.asset.thumb.url
   end
