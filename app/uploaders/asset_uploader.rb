@@ -1,6 +1,6 @@
 class AssetUploader < CarrierWave::Uploader::Base
-  ALLOWED_EXTENSIONS = %w(jpg jpeg gif png pdf)
-  IMAGE_EXTENSIONS = %w(jpg jpeg gif png)
+  ALLOWED_EXTENSIONS = %w(jpg jpeg gif png svg pdf)
+  IMAGE_EXTENSIONS = %w(jpg jpeg gif png svg)
 
   include CarrierWave::MiniMagick
 
