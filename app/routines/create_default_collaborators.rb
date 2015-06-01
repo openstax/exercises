@@ -10,7 +10,7 @@ class CreateDefaultCollaborators
 
   def exec
     author = find_or_create_user(username: 'openstax', name: 'OpenStax')
-    ch = find_or_create_user(username: 'rice_university', name: 'Rice University')
+    ch = find_or_create_user(username: 'riceuniversity', name: 'Rice University')
 
     outputs[:author] = author
     outputs[:copyright_holder] = ch

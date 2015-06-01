@@ -11,7 +11,7 @@ RSpec.describe CreateDefaultCollaborators do
     expect(result.outputs.author.username).to eq 'openstax'
     expect(result.outputs.author.full_name).to eq 'OpenStax'
 
-    expect(result.outputs.copyright_holder.username).to eq 'rice_university'
+    expect(result.outputs.copyright_holder.username).to eq 'riceuniversity'
     expect(result.outputs.copyright_holder.full_name).to eq 'Rice University'
   end
 end
