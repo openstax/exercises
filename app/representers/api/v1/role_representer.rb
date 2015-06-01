@@ -5,8 +5,17 @@ module Api::V1
 
     property :user_id,
              type: Integer,
-             writeable: true,
              readable: true,
+             writeable: true,
+             schema_info: {
+               required: true
+             }
+
+    property :name,
+             type: String,
+             readable: true,
+             writeable: false,
+             getter: ->(*) { user.full_name },
              schema_info: {
                required: true
              }

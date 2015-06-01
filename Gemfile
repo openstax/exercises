@@ -52,7 +52,7 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 5.0.1'
+gem 'openstax_accounts', '~> 5.1.2'
 
 # Access control for API's
 gem 'doorkeeper'

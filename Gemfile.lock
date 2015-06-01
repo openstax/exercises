@@ -280,7 +280,7 @@ GEM
     jquery-ui-rails (5.0.3)
       railties (>= 3.2.16)
     json (1.8.2)
-    jwt (1.4.1)
+    jwt (1.5.0)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -330,12 +330,10 @@ GEM
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
-    omniauth-oauth2 (1.2.0)
-      faraday (>= 0.8, < 0.10)
-      multi_json (~> 1.3)
+    omniauth-oauth2 (1.3.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    openstax_accounts (5.0.1)
+    openstax_accounts (5.1.2)
       action_interceptor (>= 1.0)
       keyword_search (>= 1.0.0)
       lev (>= 2.2.1)
@@ -603,7 +601,7 @@ DEPENDENCIES
   mini_magick
   newrelic_rpm
   nifty-generators
-  openstax_accounts (~> 5.0.1)
+  openstax_accounts (~> 5.1.2)
   openstax_api (~> 5.4.2)
   openstax_utilities
   pg
