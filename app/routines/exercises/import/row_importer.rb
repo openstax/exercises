@@ -83,6 +83,12 @@ module Exercises
                 dok_tag, time_tag, display_type_tags, blooms_tag].flatten
         ex.tags = tags
 
+        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
+                                  .where(exercise_tags: {tag: {name: exercise_id_tag}})
+                                  .order{publication.number.desc}.first
+
+        ex.save!
+
         list_name = row[10]
 
         question_stem_content = parse(row[11], ex)
@@ -93,10 +99,6 @@ module Exercises
         correct_answer_index = row[13].downcase.strip.each_byte.first - 97
 
         answers = row[14..-1].each_slice(2)
-
-        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
-                                  .where(exercise_tags: {tag: {name: exercise_id_tag}})
-                                  .order{publication.number.desc}.first
 
         unless latest_exercise.nil?
           ex.publication.number = latest_exercise.publication.number
