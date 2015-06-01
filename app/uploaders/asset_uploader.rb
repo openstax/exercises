@@ -21,7 +21,6 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def content_hash
-    cache_stored_file! unless cached?
     Digest::SHA2.new.update(read).to_s
   end
 
