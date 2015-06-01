@@ -189,10 +189,10 @@ group :production do
   gem 'unicorn-worker-killer'
 
   # AWS SES
-  gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
+  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 
-  # Fog AWS
-  gem 'fog-aws'
+  # Fog
+  gem 'fog'
 
   # Notify developers of Exceptions in production
   gem 'exception_notification'
