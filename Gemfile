@@ -39,6 +39,9 @@ gem 'autoprefixer-rails'
 # Rails 5 HTML sanitizer
 gem 'rails-html-sanitizer'
 
+# URI replacement
+gem 'addressable'
+
 # Converts links in Strings to HTML anchors
 gem 'rails_autolink'
 
@@ -86,6 +89,7 @@ gem 'charlock_holmes'
 
 # Read Excel xls spreadsheet files
 gem 'spreadsheet'
+
 # Read Excel xlsx spreadsheet files
 gem 'rubyXL'
 
@@ -172,6 +176,9 @@ group :test do
 
   # Coveralls integration
   gem 'coveralls', require: false
+
+  # Test after-commit hooks
+  gem 'test_after_commit'
 end
 
 group :production do
@@ -183,6 +190,9 @@ group :production do
 
   # AWS SES
   gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
+
+  # Fog AWS
+  gem 'fog-aws'
 
   # Notify developers of Exceptions in production
   gem 'exception_notification'

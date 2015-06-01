@@ -1,25 +1,52 @@
 class AssetUploader < CarrierWave::Uploader::Base
+  ALLOWED_EXTENSIONS = %w(jpg jpeg gif png svg pdf)
+  IMAGE_EXTENSIONS = %w(jpg jpeg gif png svg)
+
   include CarrierWave::MiniMagick
 
-  storage :file
-
-  version :medium, :if => :is_image? do
-    process :resize_to_fit => [350, 1000]
+  version :embed, if: :is_image? do
+    process :resize_to_limit => [720, 1080]
   end
 
-  version :thumb, :if => :is_image? do
-    process :resize_to_fill => [100, 100]
+  version :thumb, if: :is_image? do
+    process :resize_to_fit => [100, 100]
+  end
+
+  def is_image?(ff = file)
+    IMAGE_EXTENSIONS.include? ff.extension
   end
 
   def extension_white_list
-    %w(jpg jpeg gif png pdf)
+    ALLOWED_EXTENSIONS
+  end
+
+  # http://altoros.github.io/2013/carrierwave-switching-storage/
+  def local_storage?
+    _storage == CarrierWave::Storage::File
+  end
+
+  def content
+    local_storage? ? File.read(path) : open(url).read
+  end
+
+  def content_hash
+    Digest::SHA2.new.update(content).to_s
+  end
+
+  def cache_dir
+    'attachments/tmp'
   end
 
   def store_dir
-    "uploads/#{model.attachable_type.to_s.underscore}/attachments/#{model.number}"
+    'attachments'
   end
 
-  def is_image?(imgfile = file)
-    imgfile.extension != 'pdf'
+  def filename
+    return if original_filename.blank?
+
+    # Reuse hashed filename for other versions of the same file
+    return model.read_attribute(mounted_as) unless version_name.blank?
+
+    "#{content_hash}.#{file.extension}"
   end
 end

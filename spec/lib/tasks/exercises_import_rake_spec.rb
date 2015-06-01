@@ -15,9 +15,28 @@ describe 'exercises import' do
       Rake.application.invoke_task "exercises:import:excel[#{fixture_path},42,10]"
     end
 
-    it 'passes arguments to Exercises::Import::Unicode' do
+    it 'passes arguments to Exercises::Import::Excel' do
       expect(Exercises::Import::Excel).to(
         receive(:call).with(filename: fixture_path, author_id: '42', ch_id: '10')
+      )
+      run_rake_task
+    end
+  end
+
+  context 'zip' do
+    let(:fixture_path) { '../spec/fixtures/sample_exercises.zip' }
+
+    let :run_rake_task do
+      Rake::Task["exercises:import:zip"].reenable
+      Rake.application.invoke_task "exercises:import:zip[#{fixture_path},exercises.xlsx,42,10]"
+    end
+
+    it 'passes arguments to Exercises::Import::Zip' do
+      expect(Exercises::Import::Zip).to(
+        receive(:call).with(zip_filename: fixture_path,
+                            excel_filename: 'exercises.xlsx',
+                            author_id: '42',
+                            ch_id: '10')
       )
       run_rake_task
     end

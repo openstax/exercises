@@ -20,5 +20,7 @@ module Exercises
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     ActiveSupport.escape_html_entities_in_json = false
+
+    config.active_record.raise_in_transactional_callbacks = true
   end
 end
