@@ -20,21 +20,13 @@ class AssetUploader < CarrierWave::Uploader::Base
     ALLOWED_EXTENSIONS
   end
 
-  # http://altoros.github.io/2013/carrierwave-switching-storage/
-  def local_storage?
-    _storage == CarrierWave::Storage::File
-  end
-
-  def content
-    local_storage? ? File.read(path) : open(url).read
-  end
-
   def content_hash
-    Digest::SHA2.new.update(content).to_s
+    cache_stored_file! unless cached?
+    Digest::SHA2.new.update(read).to_s
   end
 
   def cache_dir
-    'attachments/tmp'
+    Rails.root.join 'tmp/attachments'
   end
 
   def store_dir
