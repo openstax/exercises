@@ -13,6 +13,7 @@ CarrierWave.configure do |config|
 
     config.fog_credentials = fog_credentials.merge(
       provider: 'AWS',
+      region:   secrets['region'],
       endpoint: secrets['endpoint_server']
     )
     config.fog_directory  = secrets['bucket_name']
