@@ -13,14 +13,14 @@ class Attachment < ActiveRecord::Base
   protected
 
   def remove_asset!
-    super unless Attachment.where(asset: asset.file.try(:filename)).exists?
+    super unless Attachment.where(asset: read_attribute(:asset)).exists?
   end
 
   def unique_asset
     return if asset.nil? || parent.nil?
     return unless Attachment.where{(id != my{id}) & \
                                    (parent == my{parent}) & \
-                                   (asset == my{asset.filename})}.exists?
+                                   (asset == my{asset.identifier})}.exists?
     errors.add(:asset, 'has already been associated with this resource')
     false
   end
