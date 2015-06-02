@@ -4,12 +4,30 @@ class AssetUploader < CarrierWave::Uploader::Base
 
   include CarrierWave::MiniMagick
 
-  version :embed, if: :is_image? do
+  process convert: 'png'
+  process :compress
+
+  version :large, if: :is_image? do
     process :resize_to_limit => [720, 1080]
   end
 
-  version :thumb, if: :is_image? do
-    process :resize_to_fit => [100, 100]
+  version :medium, if: :is_image?, from_version: :large do
+    process :resize_to_limit => [360, 540]
+  end
+
+  version :small, if: :is_image?, from_version: :medium do
+    process :resize_to_limit => [180, 270]
+  end
+
+  def compress
+    manipulate! do |img|
+      img.combine_options do |c|
+        c.strip
+        c.blur '0x0.02'
+      end
+
+      img
+    end
   end
 
   def is_image?(ff = file)
@@ -41,6 +59,6 @@ class AssetUploader < CarrierWave::Uploader::Base
     # Don't try to hash uncached files
     return super unless cached?
 
-    "#{content_hash}.#{file.extension}"
+    "#{content_hash}.png"
   end
 end
