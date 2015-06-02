@@ -22,7 +22,7 @@ class CreateDefaultCollaborators
   def find_or_create_account(username:, name:)
     account = OpenStax::Accounts::Account.find_by(username: username) || \
                 run(:create_temp_account, username: username).outputs.account
-    account.update_attribute(:full_name, name)
+    account.update_column(:full_name, name)
     account
   end
 

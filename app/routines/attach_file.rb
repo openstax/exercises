@@ -11,6 +11,7 @@ class AttachFile
     existing_attachment = attachable.attachments.where(asset: filename).first
     if existing_attachment.nil?
       attachable.attachments << attachment
+      attachment.save!
       Rails.logger.info "New attachment: #{attachment.asset.filename}"
     else
       attachment = existing_attachment
