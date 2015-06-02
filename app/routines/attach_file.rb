@@ -11,11 +11,11 @@ class AttachFile
     existing_attachment = attachable.attachments.where(asset: filename).first
     if existing_attachment.nil?
       attachable.attachments << attachment
-      attachment.save!
-      Rails.logger.info "New attachment: #{attachment.asset.filename}"
+      attachment.save! unless attachment.persisted?
+      Rails.logger.info "New attachment: #{attachment.asset.url}"
     else
       attachment = existing_attachment
-      Rails.logger.info "Reused attachment: #{attachment.asset.filename}"
+      Rails.logger.info "Reused attachment: #{attachment.asset.url}"
     end
 
     outputs[:url]       = attachment.asset.url

@@ -4,6 +4,8 @@ class Attachment < ActiveRecord::Base
 
   belongs_to :parent, polymorphic: true
 
+  before_update { raise ActiveRecord::ReadOnlyRecord } # Prevent updates
+
   validates :asset, presence: true
   validates :parent, presence: true
   validate :unique_asset
@@ -12,10 +14,6 @@ class Attachment < ActiveRecord::Base
 
   def remove_asset!
     super unless Attachment.where(asset: asset.file.try(:filename)).exists?
-  end
-
-  def remove_previously_stored_asset
-    super unless Attachment.where(asset: asset_was.file.try(:filename)).exists?
   end
 
   def unique_asset

@@ -38,6 +38,9 @@ class AssetUploader < CarrierWave::Uploader::Base
     # Reuse hashed filename for other versions of the same file
     return model.read_attribute(mounted_as) unless version_name.blank?
 
+    # Don't try to hash uncached files
+    return super unless cached?
+
     "#{content_hash}.#{file.extension}"
   end
 end

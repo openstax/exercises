@@ -32,39 +32,23 @@ RSpec.describe Attachment, :type => :model do
     expect(attachment_2).to be_valid
   end
 
-  context 'asset removal' do
-    context 'on update' do
-      it 'does not remove the asset when there are other references left' do
-        attachment_2 = FactoryGirl.create :attachment, asset: attachment.asset
-        attachment_2.asset = File.open('spec/fixtures/rails.png')
-        attachment_2.save!
+  it 'raises ActiveRecord::ReadOnlyRecord on update' do
+    attachment.asset = File.open('spec/fixtures/rails.png')
+    expect{ attachment.save! }.to raise_error(ActiveRecord::ReadOnlyRecord)
+  end
 
-        expect(File.exist?(asset_path)).to eq true
+  context 'on destroy' do
+    it 'does not remove the asset when there are other references left' do
+      attachment_2 = FactoryGirl.create :attachment, asset: attachment.asset
+      attachment_2.destroy
 
-        attachment_2.destroy
-      end
-
-      it 'removes the asset when there are no references left' do
-        attachment.asset = File.open('spec/fixtures/rails.png')
-        attachment.save!
-
-        expect(File.exist?(asset_path)).to eq false
-      end
+      expect(File.exist?(asset_path)).to eq true
     end
 
-    context 'on destroy' do
-      it 'does not remove the asset when there are other references left' do
-        attachment_2 = FactoryGirl.create :attachment, asset: attachment.asset
-        attachment_2.destroy
+    it 'removes the asset when there are no references left' do
+      attachment.destroy
 
-        expect(File.exist?(asset_path)).to eq true
-      end
-
-      it 'removes the asset when there are no references left' do
-        attachment.destroy
-
-        expect(File.exist?(asset_path)).to eq false
-      end
+      expect(File.exist?(asset_path)).to eq false
     end
   end
 
