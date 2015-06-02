@@ -3,7 +3,7 @@ require 'rake'
 
 describe 'exercises import' do
   before :all do
-    Rake.application.rake_require "tasks/exercises_import"
+    Rake.application.rake_require "tasks/exercises/import"
     Rake::Task.define_task(:environment)
   end
 

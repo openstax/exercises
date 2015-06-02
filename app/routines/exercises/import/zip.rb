@@ -1,8 +1,5 @@
 # Imports a zip file
-# The zip file should an Excel spreadsheet and, optionally, image files
-# Arguments are, in order:
-# zip_filename, excel_filename (in the zip file),
-# author's user id, copyright holder's user id, skip_first_row
+# The zip file should contain an Excel spreadsheet and, optionally, image files
 
 module Exercises
   module Import

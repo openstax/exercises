@@ -1,15 +1,12 @@
-# Imports unicode tab-delimited txt file saved from Excel
-# Arguments are, in order:
-# filename, author's user id, copyright holder's user id,
-# skip_first_row, column separator and row separator
-# Example: rake exercises:import:unicode[exercises.txt,1,2]
-#          will import exercises from exercises.txt and
-#          assign the user with ID 1 as the author and
-#          solution author, and the user with ID 2 as the CR holder
-
 namespace :exercises do
   namespace :import do
-
+    # Imports exercises from a spreadsheet
+    # Arguments are, in order:
+    # filename, author's user id, copyright holder's user id, skip_first_row
+    # Example: rake exercises:import:excel[exercises.xlsx,1,2]
+    #          will import exercises from exercises.xlsx and
+    #          assign the user with ID 1 as the author and
+    #          solution author, and the user with ID 2 as the CR holder
     desc "import an Excel file"
     task :excel, [:filename, :author_id, :ch_id, :skip_first_row] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
@@ -24,6 +21,13 @@ namespace :exercises do
       end
     end
 
+    # Imports exercises from a zip file
+    # Arguments are, in order:
+    # zip_filename, excel_filename, author's user id, copyright holder's user id, skip_first_row
+    # Example: rake exercises:import:zip[exercises.zip,exercises.xlsx,1,2]
+    #          will import exercises from exercises.xlsx (within exercises.zip) and
+    #          assign the user with ID 1 as the author and
+    #          solution author, and the user with ID 2 as the CR holder
     desc "import a zip file"
     task :zip, [:zip_filename, :excel_filename,
                 :author_id, :ch_id, :skip_first_row] => :environment do |t, args|
