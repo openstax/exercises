@@ -87,6 +87,11 @@ module Exercises
                                   .where(exercise_tags: {tag: {name: exercise_id_tag}})
                                   .order{publication.number.desc}.first
 
+        unless latest_exercise.nil?
+          ex.publication.number = latest_exercise.publication.number
+          ex.publication.version = latest_exercise.publication.version + 1
+        end
+
         ex.save!
 
         list_name = row[10]
@@ -99,11 +104,6 @@ module Exercises
         correct_answer_index = row[13].downcase.strip.each_byte.first - 97
 
         answers = row[14..-1].each_slice(2)
-
-        unless latest_exercise.nil?
-          ex.publication.number = latest_exercise.publication.number
-          ex.publication.version = latest_exercise.publication.version + 1
-        end
 
         qq = Question.new
         qq.exercise = ex
