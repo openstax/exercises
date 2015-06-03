@@ -1,6 +1,4 @@
 # Imports an Excel file
-# Arguments are, in order:
-# filename, author's user id, copyright holder's user id, skip_first_row
 
 # Reads xls format
 require 'spreadsheet'

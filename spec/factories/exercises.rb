@@ -20,7 +20,7 @@ FactoryGirl.define do
 
     trait :published do
       after(:build) do |exercise|
-        exercise.publication.published_at = Time.now
+        exercise.publication.publish
       end
     end
   end
