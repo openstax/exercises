@@ -21,6 +21,16 @@ module Exercises::Import
         expect(exercise.list_exercises.first.list.name).to eq 'HS-Physics Chapter 04'
 
         expect(exercise.tags).to include 'blooms-none'
+        expect(exercise.tags).to include 'k12phys'
+        expect(exercise.tags).to include 'k12phys-ch04'
+        expect(exercise.tags).to satisfy do |tags|
+          tag_names = tags.collect { |tag| tag.name }
+          (tag_names & ['k12phys-ch04-s01',
+                        'k12phys-ch04-s02',
+                        'k12phys-ch04-s03',
+                        'k12phys-ch04-s04']).length == 1
+        end
+
 
         expect(exercise.stimulus).to be_blank
         expect(exercise.questions.length).to eq 1
