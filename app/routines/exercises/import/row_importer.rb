@@ -70,6 +70,8 @@ module Exercises
         chapter = row[1]
 
         los = split(row[2])
+        section_tags = los.collect{|lo| [book, chapter, lo.split('-').first].join('-')}
+        grouping_tags =  [book, book + '-' + chapter] + section_tags
         lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
         exercise_id_tag = row[3]
         type_tags = split(row[4])
@@ -80,7 +82,8 @@ module Exercises
         blooms_tag = row[9]
 
         tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
-                dok_tag, time_tag, display_type_tags, blooms_tag].flatten
+                dok_tag, time_tag, display_type_tags, blooms_tag,
+                grouping_tags].flatten.uniq
         ex.tags = tags
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
