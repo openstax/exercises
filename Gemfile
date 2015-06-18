@@ -58,7 +58,8 @@ gem 'openstax_accounts', '~> 5.1.2'
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 5.4.2'
+gem 'openstax_api', git: 'https://github.com/Dantemss/openstax_api',
+                    ref: 'dc70bdadb70983ccd6ce58579f01a16b8eac056a'
 gem 'apipie-rails'
 gem 'maruku'
 
