@@ -4,7 +4,6 @@ module Exercises
 
       DEFAULT_AUTHOR_ID = 1
       DEFAULT_CH_ID = 2
-      MATH_REGEX = /\$+[^\$]*\$+/m
 
       attr_reader :skip_first_row, :author, :copyright_holder
 
@@ -12,30 +11,11 @@ module Exercises
         text.split(on).collect{|t| t.strip}
       end
 
-      def math_tag(math)
-        inner_math = math[1..-2]
-        tag = 'span'
-        separator = ''
-        if MATH_REGEX =~ inner_math
-          inner_math = inner_math[1..-2]
-          tag = 'div'
-          separator = "\n"
-        end
-        escaped_math = inner_math.gsub('"', '&quot;')
-
-        "#{separator}<#{tag} data-math=\"#{escaped_math}\">#{escaped_math}</#{tag}>#{separator}"
-      end
-
       # Parses the text using Markdown
       # Attachments are associated with the given Exercise object
       def parse(text, exercise)
         return nil if text.blank?
         text = text.to_s
-
-        maths = text.scan(MATH_REGEX)
-        maths.each do |math|
-          text = text.gsub(math, math_tag(math))
-        end
 
         kd = Kramdown::Document.new(text.to_s.strip, attachable: exercise)
         # If only one <p> tag, remove it and just return the nodes below
