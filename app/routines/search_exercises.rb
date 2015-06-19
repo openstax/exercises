@@ -21,6 +21,7 @@ class SearchExercises
                                    .preload(
                                      :attachments,
                                      :logic,
+                                     :tags,
                                      publication: [:derivations,
                                                    authors: :user,
                                                    copyright_holders: :user,
@@ -29,8 +30,7 @@ class SearchExercises
                                        :hints,
                                        answers: :stem_answers,
                                        stems: [:stylings, :combo_choices]
-                                     ],
-                                     exercise_tags: :tag
+                                     ]
                                    ),
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
@@ -73,8 +73,8 @@ class SearchExercises
         tags.each do |tag|
           sanitized_tags = to_string_array(tag).collect{|t| t.downcase}
           next @items = @items.none if sanitized_tags.empty?
-          @items = @items.joins(exercise_tags: :tag)
-                         .where(exercise_tags: {tag: {name: sanitized_tags}})
+          @items = @items.joins(:tags)
+                         .where(tags: {name: sanitized_tags})
         end
       end
 

@@ -37,7 +37,7 @@ module Publishable
                        (editors.user_id == user_id)}
             }
 
-            after_initialize :build_publication, unless: :publication
+            after_initialize :build_publication, unless: [:persisted?, :publication]
             after_create :ensure_publication
 
             delegate :uid, :number, :version, :published_at, :license,
