@@ -3,7 +3,6 @@ require 'rails_helper'
 module Exercises::Import
   RSpec.describe Zip do
     let(:fixture_path) { 'spec/fixtures/sample_exercises.zip' }
-    let(:excel_path)   { 'exercises.xlsx' }
 
     let!(:author) { FactoryGirl.create :user }
     let!(:ch)     { FactoryGirl.create :user }
@@ -11,8 +10,7 @@ module Exercises::Import
     it 'imports the sample zip file' do
       attachment_count = Attachment.count
       expect {
-        Exercises::Import::Zip.call(zip_filename: fixture_path, excel_filename: excel_path,
-                                    author_id: author.id, ch_id: ch.id)
+        Exercises::Import::Zip.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
       }.to change{ Exercise.count }.by(215)
       expect(Attachment.count).to eq (attachment_count + 15)
 

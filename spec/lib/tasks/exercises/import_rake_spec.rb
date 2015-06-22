@@ -28,13 +28,12 @@ describe 'exercises import' do
 
     let :run_rake_task do
       Rake::Task["exercises:import:zip"].reenable
-      Rake.application.invoke_task "exercises:import:zip[#{fixture_path},exercises.xlsx,42,10]"
+      Rake.application.invoke_task "exercises:import:zip[#{fixture_path},42,10]"
     end
 
     it 'passes arguments to Exercises::Import::Zip' do
       expect(Exercises::Import::Zip).to(
-        receive(:call).with(zip_filename: fixture_path,
-                            excel_filename: 'exercises.xlsx',
+        receive(:call).with(filename: fixture_path,
                             author_id: '42',
                             ch_id: '10')
       )

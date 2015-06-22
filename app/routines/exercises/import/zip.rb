@@ -12,13 +12,12 @@ module Exercises
                    translations: { outputs: { type: :verbatim } }
 
       # Imports Exercises from a zip file
-      def exec(zip_filename: 'exercises.zip',
-               excel_filename: 'exercises.xlsx',
+      def exec(filename: 'exercises.zip',
                author_id: Exercises::Import::Excel::DEFAULT_AUTHOR_ID,
                ch_id: Exercises::Import::Excel::DEFAULT_CH_ID,
                skip_first_row: true)
         # Create a temp directory and extract the zip file into it
-        zip_path = File.expand_path(zip_filename)
+        zip_path = File.expand_path(filename)
         Dir.mktmpdir do |dir|
           Dir.chdir(dir) do
             ::Zip::File.open(zip_path) do |zip_file|
@@ -27,9 +26,10 @@ module Exercises
               end
             end
 
-            # Import the spreadsheet from the temp directory
+            # Import the first spreadsheet found in the temp directory
+            xlsx_filename = Dir.glob('*.xlsx').first
             run(:import_spreadsheet,
-                filename: excel_filename,
+                filename: xlsx_filename,
                 author_id: author_id,
                 ch_id: ch_id,
                 skip_first_row: skip_first_row)
