@@ -3,10 +3,11 @@ module Api::V1
 
     include Roar::JSON
 
-    property :asset, 
+    property :asset,
              type: String,
              readable: true,
              writeable: false,
+             getter: ->(*) { asset.as_json[:asset] },
              schema_info: {
                required: true
              }
