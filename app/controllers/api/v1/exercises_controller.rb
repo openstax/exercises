@@ -76,7 +76,7 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter)
+      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter, user: current_api_user)
     end
 
     ##########
