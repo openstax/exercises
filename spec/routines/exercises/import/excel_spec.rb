@@ -53,5 +53,15 @@ module Exercises::Import
         end
       end
     end
+
+    it 'skips exercises with no changes' do
+      expect {
+        Exercises::Import::Excel.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
+      }.to change{ Exercise.count }.by(128)
+
+      expect {
+        Exercises::Import::Excel.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
+      }.not_to change{ Exercise.count }
+    end
   end
 end
