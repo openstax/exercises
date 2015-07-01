@@ -19,22 +19,35 @@ module Publishable
             has_many :sources, through: :publication
             has_many :derivations, through: :publication
 
-            scope :published, lambda {
-              joins(:publication).includes(:publication).where{publication.published_at != nil}
+            scope :published, -> {
+              joins(:publication).where{publication.published_at != nil}
             }
 
-            scope :visible_for, lambda { |user|
+            scope :visible_for, ->(user) {
               user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
               next published if !user.is_a?(User) || user.is_anonymous?
-              next joins(:publication).includes(:publication) if user.administrator
+              next self if user.administrator
               user_id = user.id
-              joins(:publication)
-                .includes(publication: [:authors, :copyright_holders, :editors])
-                .references(publication: [:authors, :copyright_holders, :editors])
-                .where{(publication.published_at != nil) | \
-                       (authors.user_id == user_id) | \
-                       (copyright_holders.user_id == user_id) | \
-                       (editors.user_id == user_id)}
+              joins(publication: [:authors, :copyright_holders, :editors])
+                .where{ (publication.published_at != nil) | \
+                        (authors.user_id == user_id) | \
+                        (copyright_holders.user_id == user_id) | \
+                        (editors.user_id == user_id) }
+            }
+
+            # http://stackoverflow.com/a/7745635
+            scope :latest, -> {
+              class_name = name
+
+              joins(:publication).joins{
+                Publication.unscoped
+                  .as(:same_number)
+                  .on{ (same_number.publishable_type == my{class_name}) & \
+                       (same_number.number == ~publication.number) & \
+                       (same_number.version > ~publication.version) & \
+                       (same_number.published_at != nil) }
+                  .outer
+              }.where{same_number.id == nil}
             }
 
             after_initialize :build_publication, unless: [:persisted?, :publication]

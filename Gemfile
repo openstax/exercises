@@ -52,13 +52,13 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 5.1.2'
+gem 'openstax_accounts', '~> 5.2.0'
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 5.4.6'
+gem 'openstax_api', '~> 5.5.0'
 gem 'apipie-rails'
 gem 'maruku'
 

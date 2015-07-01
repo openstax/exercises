@@ -15,25 +15,11 @@ class SearchExercises
 
   protected
 
-  def exec(params = {})
+  def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
 
     latest_only = true
-    run(:search, relation: Exercise.joins(:publication)
-                                   .preload(
-                                     :attachments,
-                                     :logic,
-                                     :tags,
-                                     publication: [:derivations,
-                                                   authors: :user,
-                                                   copyright_holders: :user,
-                                                   editors: :user],
-                                     questions: [
-                                       :hints,
-                                       answers: :stem_answers,
-                                       stems: [:stylings, :combo_choices]
-                                     ]
-                                   ),
+    run(:search, relation: Exercise.visible_for(options[:user]).preloaded,
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
       with.default_keyword :content
@@ -188,15 +174,7 @@ class SearchExercises
     end
 
     return unless latest_only
-    items = outputs[:items].limit(nil).offset(nil).reorder(nil)
-    outputs[:items] = outputs[:items].joins{
-      Publication.unscoped
-                 .as(:same_number)
-                 .on{ (same_number.number == ~publication.number) & \
-                      (same_number.version > ~publication.version) }
-                 .outer
-    }.where{same_number.id == nil}
-    outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil)
-                                           .select('count(*)').first.count
+    outputs[:items] = outputs[:items].latest
+    outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil).count
   end
 end

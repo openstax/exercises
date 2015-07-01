@@ -52,6 +52,7 @@ module Api::V1
           }]
         }.to_json)
         @exercise_1.save!
+
         @exercise_2 = Exercise.new
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
           tags: ['tag2', 'tag3'],
@@ -66,6 +67,7 @@ module Api::V1
           }]
         }.to_json)
         @exercise_2.save!
+
         @exercises_count = Exercise.count
       end
 
@@ -121,20 +123,20 @@ module Api::V1
 
           expect(response.body).to eq(expected_response)
         end
-      end
 
-      it "sorts by multiple fields in different directions" do
-        api_get :index, admin_token, parameters: {q: 'content:aDiPiScI',
-                                                  order_by: "number DESC, version ASC"}
-        expect(response).to have_http_status(:success)
+        it "sorts by multiple fields in different directions" do
+          api_get :index, admin_token, parameters: {q: 'content:aDiPiScI',
+                                                    order_by: "number DESC, version ASC"}
+          expect(response).to have_http_status(:success)
 
-        expected_response = {
-          total_count: 2,
-          items: [Api::V1::ExerciseRepresenter.new(@exercise_2),
-                  Api::V1::ExerciseRepresenter.new(@exercise_1)]
-        }.to_json
+          expected_response = {
+            total_count: 2,
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_2),
+                    Api::V1::ExerciseRepresenter.new(@exercise_1)]
+          }.to_json
 
-        expect(response.body).to eq(expected_response)
+          expect(response.body).to eq(expected_response)
+        end
       end
 
     end
