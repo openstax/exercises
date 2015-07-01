@@ -17,6 +17,8 @@ class SearchExercises
 
   def exec(params = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
+
+    latest_only = true
     run(:search, relation: Exercise.joins(:publication)
                                    .preload(
                                      :attachments,
@@ -37,6 +39,8 @@ class SearchExercises
       with.default_keyword :content
 
       with.keyword :id, :uid do |ids|
+        latest_only = false
+
         ids.each do |id|
           sanitized_ids = to_string_array(id).collect{|id| id.split('@')}
           next @items = @items.none if sanitized_ids.empty?
@@ -62,6 +66,8 @@ class SearchExercises
       end
 
       with.keyword :version do |versions|
+        latest_only = false
+
         versions.each do |version|
           sanitized_versions = to_string_array(version)
           next @items = @items.none if sanitized_versions.empty?
@@ -180,5 +186,17 @@ class SearchExercises
         end
       end
     end
+
+    return unless latest_only
+    items = outputs[:items].limit(nil).offset(nil).reorder(nil)
+    outputs[:items] = outputs[:items].joins{
+      Publication.unscoped
+                 .as(:same_number)
+                 .on{ (same_number.number == ~publication.number) & \
+                      (same_number.version > ~publication.version) }
+                 .outer
+    }.where{same_number.id == nil}
+    outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil)
+                                           .select('count(*)').first.count
   end
 end
