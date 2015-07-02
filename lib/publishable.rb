@@ -1,8 +1,6 @@
 module Publishable
   module ActiveRecord
     module Base
-      ID_REGEX = /\A(\d+)(@(\d+))?\z/
-
       def self.included(base)
         base.extend(ClassMethods)
       end
@@ -35,6 +33,14 @@ module Publishable
                         (editors.user_id == user_id) }
             }
 
+            scope :with_uid, ->(uid) {
+              number, version = uid.to_s.split('@')
+              publication_conditions = { number: number }
+              publication_conditions[:version] = version unless version.nil?
+              joins(:publication).where(publication: publication_conditions)
+                                 .order{[publication.number.asc, publication.version.desc]}
+            }
+
             # http://stackoverflow.com/a/7745635
             scope :latest, -> {
               class_name = name
@@ -59,15 +65,6 @@ module Publishable
                      :has_collaborator?, :license=, :editors=,
                      :authors=, :copyright_holders=, :derivations=,
                      to: :publication
-
-            def self.find(*args)
-              return super if block_given? || args.size != 1
-              id = args.first
-              return super unless id.is_a?(String) && \
-              Publishable::ActiveRecord::Base::ID_REGEX =~ id
-              Publication.find_by(publishable_type: name, number: $1, version: $3)
-                         .try(:publishable) || super
-            end
 
             protected
 
