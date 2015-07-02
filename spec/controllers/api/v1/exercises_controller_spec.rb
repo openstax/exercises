@@ -143,13 +143,33 @@ module Api::V1
 
     describe "GET show" do
 
-      it "returns the requested Exercise" do
+      before(:each) do
         @exercise.save!
         @exercise.reload
+
+        @exercise_2 = FactoryGirl.build(:exercise)
+        @exercise_2.publication.editors << FactoryGirl.build(
+          :editor, user: user, publication: @exercise_2.publication
+        )
+        @exercise_2.publication.number = @exercise.publication.number
+        @exercise_2.publication.version = @exercise.publication.version + 1
+        @exercise_2.save!
+      end
+
+      it "returns the Exercise requested by uid" do
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json
+
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the latest visible Exercise if no version is specified" do
+        api_get :show, user_token, parameters: { id: @exercise.number }
+        expect(response).to have_http_status(:success)
+
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload).to_json
 
         expect(response.body).to eq(expected_response)
       end
