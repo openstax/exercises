@@ -18,6 +18,8 @@ class SearchExercises
   def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
 
+    # By default, only return the latest exercises.
+    # If either versions or uids are specified, this "latest" condition is disabled.
     latest_only = true
     run(:search, relation: Exercise.visible_for(options[:user]).preloaded,
                  sortable_fields: SORTABLE_FIELDS,
