@@ -15,6 +15,8 @@ require 'parsable'
 require 'publishable'
 require 'stylable'
 
+require 'active_record/calculations_patch'
+
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"
 

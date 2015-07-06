@@ -15,28 +15,20 @@ class SearchExercises
 
   protected
 
-  def exec(params = {})
+  def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
-    run(:search, relation: Exercise.joins(:publication)
-                                   .preload(
-                                     :attachments,
-                                     :logic,
-                                     :tags,
-                                     publication: [:derivations,
-                                                   authors: :user,
-                                                   copyright_holders: :user,
-                                                   editors: :user],
-                                     questions: [
-                                       :hints,
-                                       answers: :stem_answers,
-                                       stems: [:stylings, :combo_choices]
-                                     ]
-                                   ),
+
+    # By default, only return the latest exercises.
+    # If either versions or uids are specified, this "latest" condition is disabled.
+    latest_only = true
+    run(:search, relation: Exercise.visible_for(options[:user]).preloaded,
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
       with.default_keyword :content
 
       with.keyword :id, :uid do |ids|
+        latest_only = false
+
         ids.each do |id|
           sanitized_ids = to_string_array(id).collect{|id| id.split('@')}
           next @items = @items.none if sanitized_ids.empty?
@@ -62,6 +54,8 @@ class SearchExercises
       end
 
       with.keyword :version do |versions|
+        latest_only = false
+
         versions.each do |version|
           sanitized_versions = to_string_array(version)
           next @items = @items.none if sanitized_versions.empty?
@@ -180,5 +174,9 @@ class SearchExercises
         end
       end
     end
+
+    return unless latest_only
+    outputs[:items] = outputs[:items].latest
+    outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil).count
   end
 end

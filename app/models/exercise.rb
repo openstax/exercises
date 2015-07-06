@@ -11,6 +11,21 @@ class Exercise < ActiveRecord::Base
 
   has_many :list_exercises, dependent: :destroy
 
+  scope :preloaded, -> {
+    preload(:attachments,
+            :logic,
+            :tags,
+            publication: [:derivations,
+                          authors: :user,
+                          copyright_holders: :user,
+                          editors: :user],
+            questions: [
+              :hints,
+              answers: :stem_answers,
+              stems: [:stylings, :combo_choices]
+            ])
+  }
+
   protected
 
   def has_questions
