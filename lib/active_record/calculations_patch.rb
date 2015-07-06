@@ -1,6 +1,7 @@
 # Due to weird interactions between Squeel and ActiveRecord,
 # we need this patch to be able to use .count in the exercises search
 # Otherwise, the grep method call will throw an exception and the count will fail
+# https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/calculations.rb
 ActiveRecord::Calculations.class_exec do
   private
 
