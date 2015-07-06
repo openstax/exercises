@@ -1,9 +1,10 @@
+# Due to weird interactions between Squeel and ActiveRecord,
+# we need this patch to be able to use .count in the exercises search
+# Otherwise, the grep method call will throw an exception and the count will fail
 ActiveRecord::Calculations.class_exec do
   private
 
   def perform_calculation(operation, column_name, options = {})
-    # TODO: Remove options argument as soon we remove support to
-    # activerecord-deprecated_finders.
     operation = operation.to_s.downcase
 
     # If #count is used with #distinct / #uniq it is considered distinct. (eg. relation.distinct.count)
