@@ -48,22 +48,21 @@ module Exercises
 
         book = row[0]
         chapter = row[1]
+        section = row[2]
+        grouping_tags =  [book, [book, chapter].join('-'), [book, chapter, section].join('-')]
 
-        los = split(row[2])
-        section_tags = los.collect{|lo| [book, chapter, lo.split('-').first].join('-')}
-        grouping_tags =  [book, book + '-' + chapter] + section_tags
+        los = split(row[3])
         lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
-        exercise_id_tag = row[3]
-        type_tags = split(row[4])
-        location_tag = row[5]
-        dok_tag = row[6]
-        time_tag = row[7]
-        display_type_tags = split(row[8])
-        blooms_tag = row[9]
+        exercise_id_tag = row[4]
+        type_tags = split(row[5])
+        location_tag = row[6]
+        dok_tag = row[7]
+        time_tag = row[8]
+        display_type_tags = split(row[9])
+        blooms_tag = row[10]
 
-        tags = [lo_tags, exercise_id_tag, type_tags, location_tag,
-                dok_tag, time_tag, display_type_tags, blooms_tag,
-                grouping_tags].flatten.uniq
+        tags = [grouping_tags, lo_tags, exercise_id_tag, type_tags, location_tag,
+                dok_tag, time_tag, display_type_tags, blooms_tag].flatten.uniq
         ex.tags = tags
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
@@ -77,16 +76,16 @@ module Exercises
 
         ex.save!
 
-        list_name = row[10]
+        list_name = row[11]
 
-        question_stem_content = parse(row[11], ex)
+        question_stem_content = parse(row[12], ex)
 
         styles = [Style::MULTIPLE_CHOICE]
         styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
-        explanation = parse(row[12], ex)
-        correct_answer_index = row[13].downcase.strip.each_byte.first - 97
+        explanation = parse(row[13], ex)
+        correct_answer_index = row[14].downcase.strip.each_byte.first - 97
 
-        answers = row[14..-1].each_slice(2)
+        answers = row[15..-1].each_slice(2)
 
         qq = Question.new
         qq.exercise = ex
