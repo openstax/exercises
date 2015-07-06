@@ -4,6 +4,30 @@ module Exercises
 
       DEFAULT_AUTHOR_ID = 1
       DEFAULT_CH_ID = 2
+      EQUALITY_ASSOCIATIONS = [
+        :attachments,
+        :logic,
+        :tags,
+        {
+          publication: [
+            :derivations, {
+              authors: :user,
+              copyright_holders: :user,
+              editors: :user
+            }
+          ],
+          questions: [
+            :hints, {
+              answers: :stem_answers,
+              stems: [
+                :stylings, :combo_choices
+              ]
+            }
+          ]
+        }
+      ]
+      EQUALITY_EXCLUDED_FIELDS = ['id', 'created_at', 'updated_at', 'version',
+                                  'published_at', 'yanked_at', 'embargoed_until']
 
       attr_reader :skip_first_row, :author, :copyright_holder
 
@@ -35,15 +59,15 @@ module Exercises
         end
       end
 
-      def import_row(row,index)
+      def import_row(row, index)
         begin
-          perform_row_import(row,index)
+          perform_row_import(row, index)
         rescue ActiveRecord::RecordInvalid => e
           @failures[index] = e.to_s
         end
       end
 
-      def perform_row_import(row,index)
+      def perform_row_import(row, index)
         ex = Exercise.new
 
         book = row[0]
@@ -67,7 +91,7 @@ module Exercises
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
                                   .where(exercise_tags: {tag: {name: exercise_id_tag}})
-                                  .order{publication.number.desc}.first
+                                  .order{[publication.number.desc, publication.version.desc]}.first
 
         unless latest_exercise.nil?
           ex.publication.number = latest_exercise.publication.number
@@ -175,9 +199,30 @@ module Exercises
         ex.save!
         list.list_exercises << le
 
-        Rails.logger.info "Imported #{index} exercise(s) - Current uid: #{ex.uid} - New #{
-                            'version of existing ' unless latest_exercise.nil?
-                          }exercise"
+        skipped = false
+        unless latest_exercise.nil?
+          old_attributes = latest_exercise.association_attributes(
+            EQUALITY_ASSOCIATIONS, except: EQUALITY_EXCLUDED_FIELDS,
+                                   exclude_foreign_keys: true,
+                                   transform_arrays_into_sets: true
+          )
+          new_attributes = ex.association_attributes(
+            EQUALITY_ASSOCIATIONS, except: EQUALITY_EXCLUDED_FIELDS,
+                                   exclude_foreign_keys: true,
+                                   transform_arrays_into_sets: true
+          )
+
+          if old_attributes == new_attributes
+            ex.destroy
+            skipped = true
+          end
+        end
+
+        row = "Imported row ##{index + 1}"
+        uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"
+        changes = skipped ? "Exercise skipped (no changes)" : \
+                            "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
+        Rails.logger.info "#{row} - #{uid} - #{changes}"
       end
 
 
