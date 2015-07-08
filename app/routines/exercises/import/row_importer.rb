@@ -54,16 +54,20 @@ module Exercises
 
           yield
 
-          Rails.logger.info @failures.empty? ? 'Success!' : "Failures: #{@failures.keys}"
-          Rails.logger.info @failures.values.join("\n")
+          @failures.empty? ? \
+            Rails.logger.info('Success!') : Rails.logger.error("Failed rows: #{@failures.keys}")
+          @failures.each do |key, value|
+            Rails.logger.error "Row #{key}: #{value}"
+          end
         end
       end
 
       def import_row(row, index)
         begin
           perform_row_import(row, index)
-        rescue ActiveRecord::RecordInvalid => e
-          @failures[index] = e.to_s
+        rescue StandardError => se
+          Rails.logger.error "Failed to import row ##{index}!"
+          @failures[index] = se.to_s
         end
       end
 
