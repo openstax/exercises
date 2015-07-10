@@ -192,7 +192,7 @@ group :production do
   gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 
   # Fog
-  gem 'fog'
+  gem 'fog', require: 'fog/aws'
 
   # Notify developers of Exceptions in production
   gem 'exception_notification'
