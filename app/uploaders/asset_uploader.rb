@@ -4,8 +4,8 @@ class AssetUploader < CarrierWave::Uploader::Base
 
   include CarrierWave::MiniMagick
 
-  process convert: 'png'
-  process :compress
+  process convert: 'png', if: :is_image?
+  process :compress, if: :is_image?
 
   version :large, if: :is_image? do
     process :resize_to_limit => [720, 1080]
