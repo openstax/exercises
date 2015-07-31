@@ -45,6 +45,8 @@ module Api::V1
       * `number` &ndash; Matches the exercise number exactly.
       * `version` &ndash; Matches the exercise version exactly.
       * `id` &ndash; Matches the exercise ID exactly.
+      * `published_before` &ndash; Matches exercises published before the given date.
+                                   Enclose date in quotes to avoid parsing errors.
 
       You can also add search terms without prefixes, separated by spaces.
       These terms will be searched for in all of the prefix categories.
@@ -56,7 +58,7 @@ module Api::V1
 
       `content:DTFT` &ndash; returns exercises containing the DTFT word.
 
-      `number:1 version:2` &ndash; returns e1v2.
+      `number:1 version:2` &ndash; returns exercise 1@2.
     EOS
     param :order_by, String, desc: <<-EOS
       A string that indicates how to sort the results of the query. The string

@@ -142,6 +142,51 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [new_exercise_2]
     end
+
+    it 'changes the definition of "latest" if published_before is specified' do
+      new_exercise = Exercise.new
+      Api::V1::ExerciseRepresenter.new(new_exercise).from_json({
+        tags: ['tag2', 'tag3'],
+        title: "Lorem ipsum",
+        stimulus: "Dolor",
+        questions: [{
+          stimulus: "Sit amet",
+          stem_html: "Consectetur adipiscing elit",
+          answers: [{
+            content_html: "Sed do eiusmod tempor"
+          }]
+        }]
+      }.to_json)
+      new_exercise.publication.number = @exercise_1.publication.number
+      new_exercise.publication.version = @exercise_1.publication.version + 1
+      new_exercise.save!
+
+      result = SearchExercises.call(q: 'tag:tAg1')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+
+      new_exercise.publication.publish
+      new_exercise.publication.save!
+
+      result = SearchExercises.call(q: 'tag:tAg1')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 0
+      expect(outputs.items).to eq []
+
+      result = SearchExercises.call(
+        q: "tag:tAg1 published_before:\"#{new_exercise.published_at.as_json}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
   end
 
   context "multiple matches" do

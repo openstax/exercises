@@ -25,6 +25,8 @@ class Publication < ActiveRecord::Base
 
   default_scope { order{[number.asc, version.desc]} }
 
+  scope :published, -> { where{published_at != nil} }
+
   def uid
     "#{number}@#{version}"
   end
