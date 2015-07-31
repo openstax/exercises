@@ -45,8 +45,8 @@ module Api::V1
       * `number` &ndash; Matches the exercise number exactly.
       * `version` &ndash; Matches the exercise version exactly.
       * `id` &ndash; Matches the exercise ID exactly.
-      * `created_before` &ndash; Matches exercises created before the given date.
-                                 Enclose date in quotes to avoid parsing errors.
+      * `published_before` &ndash; Matches exercises published before the given date.
+                                   Enclose date in quotes to avoid parsing errors.
 
       You can also add search terms without prefixes, separated by spaces.
       These terms will be searched for in all of the prefix categories.

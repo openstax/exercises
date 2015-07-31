@@ -143,7 +143,7 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [new_exercise_2]
     end
 
-    it 'changes the definition of "latest" if created_before is specified' do
+    it 'changes the definition of "latest" if published_before is specified' do
       new_exercise = Exercise.new
       Api::V1::ExerciseRepresenter.new(new_exercise).from_json({
         tags: ['tag2', 'tag3'],
@@ -179,7 +179,7 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq []
 
       result = SearchExercises.call(
-        q: "tag:tAg1 created_before:\"#{new_exercise.created_at.as_json}\""
+        q: "tag:tAg1 published_before:\"#{new_exercise.published_at.as_json}\""
       )
       expect(result.errors).to be_empty
 

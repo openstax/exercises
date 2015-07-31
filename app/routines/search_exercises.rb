@@ -10,7 +10,9 @@ class SearchExercises
     'number' => Publication.arel_table[:number],
     'version' => Publication.arel_table[:version],
     'title' => :title,
-    'created_at' => :created_at
+    'created_at' => :created_at,
+    'updated_at' => :updated_at,
+    'published_at' => Publication.arel_table[:published_at]
   }
 
   protected
@@ -189,16 +191,17 @@ class SearchExercises
         end
       end
 
-      with.keyword :created_before do |created_befores|
-        min_created_before = created_befores.flatten.collect do |str|
+      with.keyword :published_before do |published_befores|
+        min_published_before = published_befores.flatten.collect do |str|
           DateTime.parse(str) rescue nil
         end.compact.min
-        next @items = @items.none if min_created_before.nil?
+        next @items = @items.none if min_published_before.nil?
 
-        @items = @items.where{created_at < min_created_before}
+        @items = @items.where{publication.published_at < min_published_before}
 
-        # Latest now refers to results that happened before min_created_before
-        latest_scope = latest_scope.where{created_at < min_created_before} unless latest_scope.nil?
+        # Latest now refers to results that happened before min_published_before
+        latest_scope = latest_scope.where{publication.published_at < min_published_before} \
+          unless latest_scope.nil?
       end
     end
 
