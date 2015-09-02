@@ -1,6 +1,6 @@
 class SearchExercises
 
-  lev_routine
+  lev_routine express_output: :items
 
   uses_routine OSU::SearchAndOrganizeRelation,
                as: :search,
@@ -22,15 +22,16 @@ class SearchExercises
     relation = Exercise.visible_for(options[:user])
 
     # By default, only return the latest exercises visible to the user.
-    # If either versions or uids are specified, this "latest" condition is disabled.
+    # If either versions, uids or a publication date are specified,
+    # this "latest" condition is disabled.
     latest_scope = relation
 
     run(:search, relation: relation.preloaded,
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
-      with.default_keyword :content
 
-      with.keyword :id, :uid do |ids|
+      # Block to be used for searches by id or uid
+      id_search_block = lambda do |ids|
         ids.each do |id|
           sanitized_ids = to_string_array(id).collect{|id| id.split('@')}
           next @items = @items.none if sanitized_ids.empty?
@@ -42,14 +43,38 @@ class SearchExercises
           elsif sanitized_versions.empty?
             @items = @items.where(publication: {number: sanitized_numbers})
           else
-            @items = @items.where(publication: {number: sanitized_numbers,
-                                                version: sanitized_versions})
-          end
+            # Combine the id's one at a time using Squeel
+            @items = @items.where do
+              only_numbers = sanitized_ids.select{ |sid| sid.second.blank? }.collect(&:first)
+              only_versions = sanitized_ids.select{ |sid| sid.first.blank? }.collect(&:second)
+              full_ids = sanitized_ids.reject{ |sid| sid.first.blank? || sid.second.blank? }
 
-          # Since we are returning specific uids, disable "latest"
-          latest_scope = nil
+              cumulative_query = publication.number.in(only_numbers) | \
+                                 publication.version.in(only_versions)
+
+              full_ids.each do |full_id|
+                sanitized_number = full_id.first
+                sanitized_version = full_id.second
+                query = (publication.number == sanitized_number) & \
+                        (publication.version == sanitized_version)
+                cumulative_query = cumulative_query | ((publication.number == sanitized_number) & \
+                                                       (publication.version == sanitized_version))
+              end
+
+              cumulative_query
+            end
+          end
         end
+
+        # Since we are returning specific uids, disable "latest"
+        latest_scope = nil
       end
+
+      with.default_keyword :content
+
+      with.keyword :id, &id_search_block
+
+      with.keyword :uid, &id_search_block
 
       with.keyword :number do |numbers|
         numbers.each do |number|
@@ -66,10 +91,10 @@ class SearchExercises
           next @items = @items.none if sanitized_versions.empty?
 
           @items = @items.where(publication: {version: sanitized_versions})
-
-          # Since we are returning specific versions, disable "latest"
-          latest_scope = nil
         end
+
+        # Since we are returning specific versions, disable "latest"
+        latest_scope = nil
       end
 
       with.keyword :tag do |tags|
@@ -197,12 +222,13 @@ class SearchExercises
         end.compact.min
         next @items = @items.none if min_published_before.nil?
 
-        @items = @items.where{publication.published_at < min_published_before}
+        @items = @items.where{ publication.published_at < min_published_before }
 
         # Latest now refers to results that happened before min_published_before
-        latest_scope = latest_scope.where{publication.published_at < min_published_before} \
+        latest_scope = latest_scope.where{ publication.published_at < min_published_before } \
           unless latest_scope.nil?
       end
+
     end
 
     return if latest_scope.nil?
