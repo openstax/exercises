@@ -181,6 +181,7 @@ RSpec.describe SearchExercises, type: :routine do
       result = SearchExercises.call(
         q: "tag:tAg1 published_before:\"#{new_exercise.published_at.as_json}\""
       )
+
       expect(result.errors).to be_empty
 
       outputs = result.outputs
