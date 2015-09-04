@@ -33,11 +33,20 @@ module Api::V1
                  required: true
                }
 
+    collection :solutions,
+               class: Solution,
+               decorator: SolutionRepresenter,
+               writeable: true,
+               readable: true,
+               schema_info: {
+                 required: true
+               }
+
     collection :hints,
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |args| hints.collect{|h| h.content} },
+               getter: lambda { |args| hints.collect{ |h| h.content } },
                setter: lambda { |values, args|
                  values.each do |v|
                    hint = hints.find_or_initialize_by(content: v)
