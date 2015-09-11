@@ -37,6 +37,15 @@ module Api::V1
                  required: true
                }
 
+    collection :solutions,
+               class: Solution,
+               decorator: SolutionRepresenter,
+               writeable: true,
+               readable: true,
+               schema_info: {
+                 required: true
+               }
+
     collection :hints,
                type: String,
                writeable: true,
@@ -57,8 +66,7 @@ module Api::V1
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |args| stems.first.stylings.collect{ |s|
-                                         s.style } },
+               getter: lambda { |args| stems.first.stylings.collect{ |s| s.style } },
                setter: lambda { |values, args|
                  values.each do |value|
                    styling = stems.first.stylings

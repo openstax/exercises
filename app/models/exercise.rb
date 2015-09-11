@@ -21,6 +21,7 @@ class Exercise < ActiveRecord::Base
                           editors: :user],
             questions: [
               :hints,
+              :solutions,
               answers: :stem_answers,
               stems: [:stylings, :combo_choices]
             ])
