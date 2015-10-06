@@ -123,7 +123,7 @@ gem 'rails_admin'
 # PostgreSQL database
 gem 'pg'
 
-gem 'openstax_rescue_from', '~> 1.1.1'
+gem 'openstax_rescue_from', '~> 1.2.0'
 
 group :development, :test do
   # Thin webserver
