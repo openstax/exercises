@@ -18,7 +18,3 @@ OpenStax::RescueFrom.configure do |config|
   config.sender_address = secrets.exception['sender']
   config.exception_recipients = secrets.exception['recipients']
 end
-
-OpenStax::Api::V1::ApiController.class_eval do
-  use_openstax_exception_rescue
-end
