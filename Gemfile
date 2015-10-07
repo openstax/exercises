@@ -123,6 +123,8 @@ gem 'rails_admin'
 # PostgreSQL database
 gem 'pg'
 
+gem 'openstax_rescue_from', '~> 1.3.0'
+
 group :development, :test do
   # Thin webserver
   gem 'thin'
@@ -193,9 +195,6 @@ group :production do
 
   # Fog
   gem 'fog', require: 'fog/aws'
-
-  # Notify developers of Exceptions in production
-  gem 'exception_notification'
 
   # Lograge for consistent logging
   gem 'lograge'

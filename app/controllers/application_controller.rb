@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-
   respond_to :html, :js
 
   # Prevent CSRF attacks by raising an exception.
