@@ -31,8 +31,8 @@ module Exercises
 
       attr_reader :skip_first_row, :author, :copyright_holder
 
-      def split(text, on: ',')
-        text.split(on).collect{|t| t.strip}
+      def split(text, on: /,|\r?\n/)
+        text.split(on).map(&:strip)
       end
 
       # Parses the text using Markdown
@@ -74,27 +74,30 @@ module Exercises
       def perform_row_import(row, index)
         ex = Exercise.new
 
-        book = row[0]
+        books = split(row[0])
+        book_tags = books.map{ |book| "book:#{book}" }
+
         chapter = row[1]
         section = row[2]
-        grouping_tags =  [book, [book, chapter].join('-'), [book, chapter, section].join('-')]
 
-        los = split(row[3])
-        lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
-        exercise_id_tag = row[4]
-        type_tags = split(row[5])
-        location_tag = row[6]
-        dok_tag = row[7]
-        time_tag = row[8]
-        display_type_tags = split(row[9])
-        blooms_tag = row[10]
+        lo_tags = split(row[3]).map{ |lo| "lo:#{books.first}-#{chapter}-#{section}-#{lo}" }
 
-        tags = [grouping_tags, lo_tags, exercise_id_tag, type_tags, location_tag,
-                dok_tag, time_tag, display_type_tags, blooms_tag].flatten.uniq
-        ex.tags = tags
+        id_tag = "id:#{books.first}-#{row[4]}"
+
+        cnxmod_tag = "cnxmod:#{row[5]}"
+
+        type_tags = split(row[6]).map{ |type| "ost-type:#{type}" }
+        dok_tag = "dok:#{row[7]}"
+        blooms_tag = "blooms:#{row[8]}"
+        time_tag = "time:#{row[10]}"
+        display_tag = "display:#{row[11]}"
+        requires_choices_tag = "requires-choices:#{row[12]}"
+
+        ex.tags = book_tags + lo_tags + type_tags + \
+                  [id_tag, dok_tag, blooms_tag, time_tag, display_tag, requires_choices_tag]
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
-                                  .where(exercise_tags: {tag: {name: exercise_id_tag}})
+                                  .where(exercise_tags: {tag: {name: id_tag}})
                                   .order{[publication.number.desc, publication.version.desc]}.first
 
         unless latest_exercise.nil?
@@ -104,16 +107,16 @@ module Exercises
 
         ex.save!
 
-        list_name = row[11]
+        list_name = row[13]
 
-        question_stem_content = parse(row[12], ex)
+        question_stem_content = parse(row[14], ex)
 
         styles = [Style::MULTIPLE_CHOICE]
         styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
-        explanation = parse(row[13], ex)
-        correct_answer_index = row[14].downcase.strip.each_byte.first - 97
+        explanation = parse(row[15], ex)
+        correct_answer_index = row[16].downcase.strip.each_byte.first - 97
 
-        answers = row[15..-1].each_slice(2)
+        answers = row[17..-1].each_slice(2)
 
         qq = Question.new
         qq.exercise = ex
