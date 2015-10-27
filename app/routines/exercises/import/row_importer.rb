@@ -32,7 +32,7 @@ module Exercises
       attr_reader :skip_first_row, :author, :copyright_holder
 
       def split(text, on: /,|\r?\n/)
-        text.split(on).map(&:strip)
+        text.to_s.split(on).map(&:strip)
       end
 
       # Parses the text using Markdown
@@ -63,12 +63,12 @@ module Exercises
       end
 
       def import_row(row, index)
-        begin
+        #begin
           perform_row_import(row, index)
-        rescue StandardError => se
-          Rails.logger.error "Failed to import row ##{index}!"
-          @failures[index] = se.to_s
-        end
+        #rescue StandardError => se
+        #  Rails.logger.error "Failed to import row ##{index}!"
+        #  @failures[index] = se.to_s
+        #end
       end
 
       def perform_row_import(row, index)
@@ -112,7 +112,7 @@ module Exercises
         question_stem_content = parse(row[14], ex)
 
         styles = [Style::MULTIPLE_CHOICE]
-        styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
+        styles << Style::FREE_RESPONSE unless display_tag.include?('display:true-false')
         explanation = parse(row[15], ex)
         correct_answer_index = row[16].downcase.strip.each_byte.first - 97
 
