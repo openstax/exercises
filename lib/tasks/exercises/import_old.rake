@@ -22,7 +22,7 @@ namespace :exercises do
         end
       end
 
-      # Imports exercises from a zip file
+      # Imports exercises from a zip file (old format)
       # Arguments are, in order:
       # filename, author's user id, copyright holder's user id, skip_first_row
       # Example: rake exercises:import:zip[exercises.zip,1,2]
