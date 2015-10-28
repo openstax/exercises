@@ -63,12 +63,12 @@ module Exercises
       end
 
       def import_row(row, index)
-        #begin
+        begin
           perform_row_import(row, index)
-        #rescue StandardError => se
-        #  Rails.logger.error "Failed to import row ##{index}!"
-        #  @failures[index] = se.to_s
-        #end
+        rescue StandardError => se
+          Rails.logger.error "Failed to import row ##{index}!"
+          @failures[index] = se.to_s
+        end
       end
 
       def perform_row_import(row, index)

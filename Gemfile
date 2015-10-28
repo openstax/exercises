@@ -87,11 +87,8 @@ gem 'kramdown'
 # Detect import encoding
 gem 'charlock_holmes'
 
-# Read Excel xls spreadsheet files
-gem 'spreadsheet'
-
 # Read Excel xlsx spreadsheet files
-gem 'rubyXL'
+gem 'roo'
 
 # Embedded JavaScript templates
 gem 'ejs'

@@ -1,10 +1,7 @@
 # Imports an Excel file
 
-# Reads xls format
-require 'spreadsheet'
-
 # Reads xlxs
-require 'rubyXL'
+require 'roo'
 
 module Exercises
   module Import
@@ -27,35 +24,20 @@ module Exercises
         Rails.logger.info "Setting #{@author.full_name} as Author"
         Rails.logger.info "Setting #{@copyright_holder.full_name} as Copyright Holder"
 
-        ext = File.extname(filename)
-        if ext == '.xlsx'
-          import_from_xlsx(filename)
-        elsif ext == '.xls'
-          import_from_xls(filename)
-        end
+        import(filename)
       end
 
-      def import_from_xls(filename)
-        book = Spreadsheet.open(filename)
-        sheet = book.worksheet(0)
+      def import(filename)
+        book = Roo::Excelx.new(filename)
         record_failures do
-          sheet.each_with_index do |row, index|
-            next if index == 0 && skip_first_row
-            import_row(row,index)
-          end
-        end
-      end
-
-
-      def import_from_xlsx(filename)
-        book = RubyXL::Parser.parse(filename)
-        sheet = book.worksheets[0]
-        record_failures do
-          sheet.each_with_index do |row, index|
-            next if index == 0 && skip_first_row
+          book.each_row_streaming(offset: skip_first_row ? 1 : 0, pad_cells: true)
+              .each_with_index do |row, index|
             values = []
             0.upto(row.size-1).each do |index|
-              values << row[index].try(:value)
+              # Hack until Roo's new version with proper typecasting is released
+              val = row[index].try(:value)
+              typecast_val = Integer(val) rescue val
+              values << typecast_val
             end
             next if values.compact.blank?
             import_row(values, index)
