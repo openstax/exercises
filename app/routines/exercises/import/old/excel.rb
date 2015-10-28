@@ -32,12 +32,10 @@ module Exercises
         record_failures do
           book.each_row_streaming(offset: skip_first_row ? 1 : 0, pad_cells: true)
               .each_with_index do |row, index|
-            values = []
-            0.upto(row.size-1).each do |index|
+            values = 0.upto(row.size-1).collect do |index|
               # Hack until Roo's new version with proper typecasting is released
               val = row[index].try(:value)
-              typecast_val = Integer(val) rescue val
-              values << typecast_val
+              Integer(val) rescue val
             end
             next if values.compact.blank?
             import_row(values, index)
