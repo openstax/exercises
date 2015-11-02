@@ -80,9 +80,9 @@ module Exercises
         chapter = row[1]
         section = row[2]
 
-        lo_tags = split(row[3]).map{ |lo| "lo:#{books.first}-#{chapter}-#{section}-#{lo}" }
+        lo_tags = split(row[3]).map{ |lo| "lo:#{books.first}:#{chapter}-#{section}-#{lo}" }
 
-        id_tag = "id:#{books.first}-#{row[4]}"
+        id_tag = "id:#{books.first}:#{row[4]}"
 
         cnxmod_tag = "cnxmod:#{row[5]}"
 

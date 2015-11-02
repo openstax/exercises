@@ -25,18 +25,18 @@ module Exercises::Import
         expect(exercise.tags).not_to be_blank
         expect(exercise.tags).to satisfy do |tags|
           tag_names = tags.collect { |tag| tag.name }
-          (tag_names & ['lo:k12phys-3-1-1',
-                        'lo:k12phys-3-1-2',
-                        'lo:k12phys-3-2-1',
-                        'lo:k12phys-3-2-2',
-                        'lo:k12phys-4-1-1',
-                        'lo:k12phys-4-1-2',
-                        'lo:k12phys-4-2-1',
-                        'lo:k12phys-4-2-2',
-                        'lo:k12phys-4-3-1',
-                        'lo:k12phys-4-3-2',
-                        'lo:k12phys-4-4-1',
-                        'lo:k12phys-4-4-2']).length == 1
+          (tag_names & ['lo:k12phys:3-1-1',
+                        'lo:k12phys:3-1-2',
+                        'lo:k12phys:3-2-1',
+                        'lo:k12phys:3-2-2',
+                        'lo:k12phys:4-1-1',
+                        'lo:k12phys:4-1-2',
+                        'lo:k12phys:4-2-1',
+                        'lo:k12phys:4-2-2',
+                        'lo:k12phys:4-3-1',
+                        'lo:k12phys:4-3-2',
+                        'lo:k12phys:4-4-1',
+                        'lo:k12phys:4-4-2']).length == 1
         end
 
 

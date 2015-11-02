@@ -123,6 +123,9 @@ gem 'pg'
 gem 'openstax_rescue_from', '~> 1.5.0'
 
 group :development, :test do
+  # Run specs in parallel
+  gem "parallel_tests"
+
   # Thin webserver
   gem 'thin'
 

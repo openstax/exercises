@@ -3,18 +3,22 @@
 sudo: false
 language: ruby
 rvm:
-  - 2.1.3
+  - 2.2.3
 cache: bundler
 bundler_args: --without production --retry=6
 addons:
   postgresql: "9.3"
-before_script:
-  - gem install pg
-  - psql -c "CREATE USER ox_exercises WITH CREATEDB PASSWORD 'ox_exercises'" -U postgres
-  - bundle exec rake db:create
-  - bundle exec rake db:schema:load
 script:
-  - bundle exec rake --trace
+  - bundle exec parallel_rspec ./spec
 branches:
   only:
     - master
+before_script:
+  - export OXE_DB_USER=postgres
+  - export OXE_DB_PASS=
+  - export OXE_TEST_DB=travis_ci_test
+  - export PARALLEL_TEST_PROCESSORS=2
+  - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
