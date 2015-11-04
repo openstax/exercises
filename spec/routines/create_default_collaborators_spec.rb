@@ -1,7 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe CreateDefaultCollaborators do
+RSpec.describe CreateDefaultCollaborators, type: :routine do
   it 'creates the OpenStax and Rice University users' do
+    User.destroy_all
+    OpenStax::Accounts::Account.destroy_all
+
     result = nil
     expect{
       result = CreateDefaultCollaborators.call
