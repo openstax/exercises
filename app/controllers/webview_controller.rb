@@ -20,7 +20,7 @@ class WebviewController < ApplicationController
 
   def resolve_layout
     'application_body_only'
-    #'home' == action_name ? 'application_body_only' : 'webview'
+    'home' == action_name ? 'application_body_only' : 'webview'
   end
 
 end
