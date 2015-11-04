@@ -5,7 +5,7 @@ require 'roo'
 
 module Exercises
   module Import
-    class Excel < RowImporter
+    class Old::Excel < Old::RowImporter
 
       lev_routine
 

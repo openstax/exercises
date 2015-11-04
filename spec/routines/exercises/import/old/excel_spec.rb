@@ -1,45 +1,36 @@
 require 'rails_helper'
 
-module Exercises
-  RSpec.describe Import::Zip do
-    let(:fixture_path) { 'spec/fixtures/sample_exercises.zip' }
+module Exercises::Import
+  RSpec.describe Old::Excel do
+    let(:fixture_path) { 'spec/fixtures/old/sample_exercises.xlsx' }
 
     let!(:author) { FactoryGirl.create :user }
     let!(:ch)     { FactoryGirl.create :user }
 
-    it 'imports the sample zip file' do
-      attachment_count = Attachment.count
+    it 'imports the sample spreadsheet' do
       expect {
         described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
-      }.to change{ Exercise.count }.by(215)
-      expect(Attachment.count).to eq (attachment_count + 15)
+      }.to change{ Exercise.count }.by(128)
 
-      imported_exercises = Exercise.order(created_at: :desc).limit(215).to_a
+      imported_exercises = Exercise.order(created_at: :desc).limit(128).to_a
 
       imported_exercises.each do |exercise|
         expect(exercise.authors.first.user).to eq author
         expect(exercise.copyright_holders.first.user).to eq ch
 
-        expect(['HS-Physics Chapter 03', 'HS-Physics Chapter 04']).to include(
-          exercise.list_exercises.first.list.name
-        )
+        expect(exercise.list_exercises.first.list.name).to eq 'HS-Physics Chapter 04'
 
-        expect(exercise.tags).not_to be_blank
+        expect(exercise.tags).to include 'blooms-none'
+        expect(exercise.tags).to include 'k12phys'
+        expect(exercise.tags).to include 'k12phys-ch04'
         expect(exercise.tags).to satisfy do |tags|
           tag_names = tags.collect { |tag| tag.name }
-          (tag_names & ['lo:k12phys:3-1-1',
-                        'lo:k12phys:3-1-2',
-                        'lo:k12phys:3-2-1',
-                        'lo:k12phys:3-2-2',
-                        'lo:k12phys:4-1-1',
-                        'lo:k12phys:4-1-2',
-                        'lo:k12phys:4-2-1',
-                        'lo:k12phys:4-2-2',
-                        'lo:k12phys:4-3-1',
-                        'lo:k12phys:4-3-2',
-                        'lo:k12phys:4-4-1',
-                        'lo:k12phys:4-4-2']).length == 1
+          (tag_names & ['k12phys-ch04-s01',
+                        'k12phys-ch04-s02',
+                        'k12phys-ch04-s03',
+                        'k12phys-ch04-s04']).length == 1
         end
+
 
         expect(exercise.stimulus).to be_blank
         expect(exercise.questions.length).to eq 1
@@ -61,6 +52,16 @@ module Exercises
           expect(answer.content).not_to be_blank
         end
       end
+    end
+
+    it 'skips exercises with no changes' do
+      expect {
+        described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
+      }.to change{ Exercise.count }.by(128)
+
+      expect {
+        described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
+      }.not_to change{ Exercise.count }
     end
   end
 end

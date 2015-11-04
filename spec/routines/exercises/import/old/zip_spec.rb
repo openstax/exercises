@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-module Exercises
-  RSpec.describe Import::Zip do
-    let(:fixture_path) { 'spec/fixtures/sample_exercises.zip' }
+module Exercises::Import
+  RSpec.describe Old::Zip do
+    let(:fixture_path) { 'spec/fixtures/old/sample_exercises.zip' }
 
     let!(:author) { FactoryGirl.create :user }
     let!(:ch)     { FactoryGirl.create :user }
@@ -14,32 +14,15 @@ module Exercises
       }.to change{ Exercise.count }.by(215)
       expect(Attachment.count).to eq (attachment_count + 15)
 
-      imported_exercises = Exercise.order(created_at: :desc).limit(215).to_a
+      imported_exercises = Exercise.order(created_at: :desc).limit(200).to_a
 
       imported_exercises.each do |exercise|
         expect(exercise.authors.first.user).to eq author
         expect(exercise.copyright_holders.first.user).to eq ch
 
-        expect(['HS-Physics Chapter 03', 'HS-Physics Chapter 04']).to include(
-          exercise.list_exercises.first.list.name
-        )
+        expect(exercise.list_exercises.first.list.name).not_to be_blank
 
         expect(exercise.tags).not_to be_blank
-        expect(exercise.tags).to satisfy do |tags|
-          tag_names = tags.collect { |tag| tag.name }
-          (tag_names & ['lo:k12phys:3-1-1',
-                        'lo:k12phys:3-1-2',
-                        'lo:k12phys:3-2-1',
-                        'lo:k12phys:3-2-2',
-                        'lo:k12phys:4-1-1',
-                        'lo:k12phys:4-1-2',
-                        'lo:k12phys:4-2-1',
-                        'lo:k12phys:4-2-2',
-                        'lo:k12phys:4-3-1',
-                        'lo:k12phys:4-3-2',
-                        'lo:k12phys:4-4-1',
-                        'lo:k12phys:4-4-2']).length == 1
-        end
 
         expect(exercise.stimulus).to be_blank
         expect(exercise.questions.length).to eq 1

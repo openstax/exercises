@@ -87,11 +87,8 @@ gem 'kramdown'
 # Detect import encoding
 gem 'charlock_holmes'
 
-# Read Excel xls spreadsheet files
-gem 'spreadsheet'
-
 # Read Excel xlsx spreadsheet files
-gem 'rubyXL'
+gem 'roo'
 
 # Embedded JavaScript templates
 gem 'ejs'
@@ -126,6 +123,9 @@ gem 'pg'
 gem 'openstax_rescue_from', '~> 1.5.0'
 
 group :development, :test do
+  # Run specs in parallel
+  gem "parallel_tests"
+
   # Thin webserver
   gem 'thin'
 

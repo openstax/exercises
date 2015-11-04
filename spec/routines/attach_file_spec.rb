@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AttachFile do
+RSpec.describe AttachFile, type: :routine do
   let!(:attachable) { FactoryGirl.create :exercise }
 
   it 'attaches the file in the given path to the given attachable object' do
