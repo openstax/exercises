@@ -1,4 +1,4 @@
-<!-- Copyright 2011-2014 Rice University. Licensed under the Affero General Public 
+<!-- Copyright 2011-2015 Rice University. Licensed under the Affero General Public
      License version 3 or later.  See the COPYRIGHT file for details. -->
 
 OpenStax Exercises
@@ -8,7 +8,7 @@ OpenStax Exercises
 [![Code Climate](https://codeclimate.com/github/openstax/exercises.png)](https://codeclimate.com/github/openstax/exercises)
 [![Coverage Status](https://img.shields.io/coveralls/openstax/exercises.svg)](https://coveralls.io/r/openstax/exercises)
 
-OpenStax Exercises is an open homework and test question bank, where questions are written 
+OpenStax Exercises is an open homework and test question bank, where questions are written
 by the community and access is free. Successor to Quadbase.
 
 Check it out at ~~http://quadbase.org~~.
@@ -18,7 +18,7 @@ Requirements
 
 To run Exercises, you must have the following dependencies installed:
 
-* Ruby 2.1.3
+* Ruby 2.2.3
 
 License
 -------
@@ -33,7 +33,7 @@ Contributions to Exercises are definitely welcome.
 Note that like a bunch of other organizations (Apache, Sun, etc), we require contributors
 to sign and submit a Contributor Agreement. The Rice University Contributor Agreement
 (RCA) gives Rice and you, the contributor, joint copyright interests in the code or
-other contribution. The contributor retains copyrights while also granting those 
+other contribution. The contributor retains copyrights while also granting those
 rights to Rice as the project sponsor.
 
 The RCA can be submitted for acceptance by emailing a scanned, completed, signed copy
@@ -65,7 +65,7 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 ### Install everything yourself
 
 1. Install a ruby version manager on your machine, such as rbenv or rvm
-2. Install ruby 2.1.3
+2. Install ruby 2.2.3
 3. Run the following shell commands from the OpenStax Exercises folder:
 
 ```sh
