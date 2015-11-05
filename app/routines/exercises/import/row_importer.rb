@@ -94,7 +94,8 @@ module Exercises
         requires_choices_tag = "requires-choices:#{row[12]}"
 
         ex.tags = book_tags + lo_tags + type_tags + \
-                  [id_tag, dok_tag, blooms_tag, time_tag, display_tag, requires_choices_tag]
+                  [id_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag,
+                   display_tag, requires_choices_tag]
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
                                   .where(exercise_tags: {tag: {name: id_tag}})
