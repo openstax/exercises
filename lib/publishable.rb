@@ -4,7 +4,7 @@ module Publishable
       def self.included(base)
         base.extend(ClassMethods)
       end
-      
+
       module ClassMethods
         def publishable(options = {})
           class_exec do
@@ -37,10 +37,17 @@ module Publishable
 
             scope :with_uid, ->(uid) {
               number, version = uid.to_s.split('@')
-              publication_conditions = { number: number }
-              publication_conditions[:version] = version unless version.nil?
-              joins(:publication).where(publication: publication_conditions)
-                                 .order{[publication.number.asc, publication.version.desc]}
+              relation = joins(:publication)
+              pub_conditions = { number: number }
+              if version.nil?
+                relation = relation.where{ publication.published_at != nil }
+              elsif version == 'draft' || version == 'd'
+                pub_conditions[:published_at] = nil
+              else
+                pub_conditions[:version] = version
+              end
+              relation.where(publication: pub_conditions)
+                      .order{[publication.number.asc, publication.version.desc]}
             }
 
             # http://stackoverflow.com/a/7745635

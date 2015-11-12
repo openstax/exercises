@@ -16,10 +16,10 @@ module Api::V1
     # publish #
     ###########
 
-    api :PUT, '/object/:object_id/publish',
+    api :PUT, '/object/:object_uid/publish',
                'Publishes the specified object'
     description <<-EOS
-      Publishes the specified object.  
+      Publishes the specified object.
     EOS
     def publish
       OSU::AccessPolicy.require_action_allowed!(
@@ -32,10 +32,20 @@ module Api::V1
 
     protected
 
+    def get_exercise
+      Exercise.visible_for(current_api_user).with_uid(params[:exercise_id]).first || \
+        raise(ActiveRecord::RecordNotFound,
+              "Couldn't find Exercise with 'uid'=#{params[:id]}")
+    end
+
+    def get_solution
+      Solution.visible_for(current_api_user).with_uid(params[:solution_id]).first || \
+        raise(ActiveRecord::RecordNotFound,
+              "Couldn't find Solution with 'uid'=#{params[:id]}")
+    end
+
     def get_publishable
-      @publishable = params[:solution_id].nil? ? \
-                       Exercise.find(params[:exercise_id]) : \
-                       Solution.find(params[:solution_id])
+      @publishable = params[:solution_id].nil? ? get_exercise : get_solution
     end
 
   end

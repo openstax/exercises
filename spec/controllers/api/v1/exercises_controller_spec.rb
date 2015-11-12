@@ -8,13 +8,13 @@ module Api::V1
     let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
     let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
-                                                  application: application, 
+                                                  application: application,
                                                   resource_owner_id: user.id }
     let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
-                                                  application: application, 
+                                                  application: application,
                                                   resource_owner_id: admin.id }
-    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token, 
-                                                  application: application, 
+    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application,
                                                   resource_owner_id: nil }
 
     before(:each) do
@@ -165,8 +165,17 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest visible Exercise if no version is specified" do
+      it "returns the latest published Exercise if no version is specified" do
         api_get :show, user_token, parameters: { id: @exercise.number }
+        expect(response).to have_http_status(:success)
+
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json
+
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the latest draft Exercise if \"draft\" is given as the version" do
+        api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload).to_json
