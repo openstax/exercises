@@ -130,6 +130,11 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def update
+      if @exercise.is_published?
+        version = params[:id].split('@').last
+        @exercise = @exercise.new_version if version == 'draft' || version == 'd'
+      end
+
       standard_update(@exercise)
     end
 
