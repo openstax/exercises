@@ -1,7 +1,8 @@
 module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_exercise, only: [:show, :update, :destroy]
+    before_filter :get_exercise_or_create_draft, only: [:show, :update]
+    before_filter :get_exercise, only: [:destroy]
 
     resource_description do
       api_versions "v1"
@@ -130,11 +131,6 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def update
-      if @exercise.is_published?
-        version = params[:id].split('@').last
-        @exercise = @exercise.new_version if version == 'draft' || version == 'd'
-      end
-
       standard_update(@exercise)
     end
 
@@ -154,8 +150,22 @@ module Api::V1
 
     def get_exercise
       @exercise = Exercise.visible_for(current_api_user).with_uid(params[:id]).first || \
-        raise(ActiveRecord::RecordNotFound,
-              "Couldn't find Exercise with 'uid'=#{params[:id]}")
+        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
+    end
+
+    def get_exercise_or_create_draft
+      @exercise = Exercise.visible_for(current_api_user).with_uid(params[:id]).first
+      return unless @exercise.nil?
+
+      @number, @version = params[:id].split('@')
+      draft_requested = @version == 'draft' || @version == 'd'
+      raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}") \
+        unless draft_requested
+
+      published_exercise = Exercise.visible_for(current_api_user).with_uid(@number).first || \
+        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
+      @exercise = published_exercise.new_version
+      @exercise.save!
     end
 
   end

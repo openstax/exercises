@@ -35,13 +35,13 @@ module Api::V1
     def get_exercise
       Exercise.visible_for(current_api_user).with_uid(params[:exercise_id]).first || \
         raise(ActiveRecord::RecordNotFound,
-              "Couldn't find Exercise with 'uid'=#{params[:id]}")
+              "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
     end
 
     def get_solution
       Solution.visible_for(current_api_user).with_uid(params[:solution_id]).first || \
         raise(ActiveRecord::RecordNotFound,
-              "Couldn't find Solution with 'uid'=#{params[:id]}")
+              "Couldn't find Solution with 'uid'=#{params[:solution_id]}")
     end
 
     def get_publishable

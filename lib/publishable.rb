@@ -41,7 +41,9 @@ module Publishable
               pub_conditions = { number: number }
               if version.nil?
                 relation = relation.where{ publication.published_at != nil }
-              elsif version != 'draft' && version != 'd'
+              elsif version == 'draft' || version == 'd'
+                pub_conditions[:published_at] = nil
+              else
                 pub_conditions[:version] = version
               end
               relation.where(publication: pub_conditions)
