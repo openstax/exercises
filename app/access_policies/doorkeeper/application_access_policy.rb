@@ -1,6 +1,6 @@
 module Doorkeeper
   class ApplicationAccessPolicy
-    # Contains all the rules for which requestors can do what with which Doorkeeper::Application objects.
+    # Contains all the rules for which requestors can do what with which Doorkeeper::Applications
     def self.action_allowed?(action, requestor, application)
       case action
       when :read, :update
