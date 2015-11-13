@@ -8,13 +8,13 @@ module Api::V1
     let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
     let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
-                                                  application: application, 
+                                                  application: application,
                                                   resource_owner_id: user.id }
     let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
-                                                  application: application, 
+                                                  application: application,
                                                   resource_owner_id: admin.id }
-    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token, 
-                                                  application: application, 
+    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application,
                                                   resource_owner_id: nil }
 
     before(:each) do
@@ -144,15 +144,11 @@ module Api::V1
     describe "GET show" do
 
       before(:each) do
+        @exercise.publication.publish
         @exercise.save!
         @exercise.reload
 
-        @exercise_2 = FactoryGirl.build(:exercise)
-        @exercise_2.publication.editors << FactoryGirl.build(
-          :editor, user: user, publication: @exercise_2.publication
-        )
-        @exercise_2.publication.number = @exercise.publication.number
-        @exercise_2.publication.version = @exercise.publication.version + 1
+        @exercise_2 = @exercise.new_version
         @exercise_2.save!
       end
 
@@ -165,12 +161,41 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest visible Exercise if no version is specified" do
+      it "returns the latest published Exercise if no version is specified" do
         api_get :show, user_token, parameters: { id: @exercise.number }
+        expect(response).to have_http_status(:success)
+
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json
+
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the latest draft Exercise if \"@draft\" is requested" do
+        api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload).to_json
 
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "creates a new draft version if no draft and \"@draft\" is requested" do
+        @exercise_2.destroy
+
+        expect{ api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" } }.to(
+          change{ Exercise.count }.by(1)
+        )
+        expect(response).to have_http_status(:success)
+
+        new_exercise = Exercise.order(:created_at).last
+        expect(new_exercise.id).not_to eq @exercise.id
+        expect(new_exercise.number).to eq @exercise.number
+        expect(new_exercise.version).to eq @exercise.version + 1
+
+        expect(new_exercise.attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
+          .to eq(@exercise.attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
+
+        expected_response = Api::V1::ExerciseRepresenter.new(new_exercise).to_json
         expect(response.body).to eq(expected_response)
       end
 
@@ -210,27 +235,88 @@ module Api::V1
 
     describe "PATCH update" do
 
-      it "updates the requested Exercise" do
+      before(:each) do
         @exercise.save!
         @exercise.reload
-        old_attributes = @exercise.attributes
+        @old_attributes = @exercise.attributes
+      end
 
+      it "updates the requested Exercise" do
         api_patch :update, user_token, parameters: { id: @exercise.uid },
-                  raw_post_data: { title: "Ipsum lorem" }
+                                       raw_post_data: { title: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @exercise.reload
         new_attributes = @exercise.attributes
 
         expect(@exercise.title).to eq "Ipsum lorem"
-        expect(old_attributes.except('title', 'updated_at'))
-          .to eq(new_attributes.except('title', 'updated_at'))
+        expect(new_attributes.except('title', 'updated_at'))
+          .to eq(@old_attributes.except('title', 'updated_at'))
+      end
+
+      it "fails if the exercise is published and \"@draft\" was not requested" do
+        @exercise.publication.publish.save!
+
+        expect{ api_patch :update, user_token, parameters: { id: @exercise.uid },
+                                               raw_post_data: { title: "Ipsum lorem" } }.to(
+          raise_error(SecurityTransgression)
+        )
+        @exercise.reload
+
+        expect(@exercise.attributes).to eq @old_attributes
+      end
+
+      it "updates the latest draft Exercise if \"@draft\" is requested" do
+        @exercise.publication.publish.save!
+        exercise_2 = @exercise.new_version
+        exercise_2.save!
+        exercise_2.reload
+
+        api_patch :update, user_token, parameters: { id: "#{@exercise.number}@draft" },
+                                       raw_post_data: { title: "Ipsum lorem" }
+        expect(response).to have_http_status(:success)
+        @exercise.reload
+
+        expect(@exercise.attributes).to eq @old_attributes
+
+        uid = JSON.parse(response.body)['uid']
+        new_exercise = Exercise.with_uid(uid).first
+        new_attributes = new_exercise.attributes
+
+        expect(new_exercise.title).to eq "Ipsum lorem"
+        expect(new_attributes.except('title', 'updated_at'))
+          .to eq(exercise_2.attributes.except('title', 'updated_at'))
+      end
+
+      it "creates a new draft version if no draft and \"@draft\" is requested" do
+        @exercise.publication.publish.save!
+
+        expect{
+          api_patch :update, user_token, parameters: { id: "#{@exercise.number}@draft" },
+                                         raw_post_data: { title: "Ipsum lorem" } }.to(
+          change{ Exercise.count }.by(1)
+        )
+        expect(response).to have_http_status(:success)
+        @exercise.reload
+
+        expect(@exercise.attributes).to eq @old_attributes
+
+        uid = JSON.parse(response.body)['uid']
+        new_exercise = Exercise.with_uid(uid).first
+        new_attributes = new_exercise.attributes
+
+        expect(new_exercise.id).not_to eq @exercise.id
+        expect(new_exercise.number).to eq @exercise.number
+        expect(new_exercise.version).to eq @exercise.version + 1
+        expect(new_exercise.title).to eq "Ipsum lorem"
+        expect(new_attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
+          .to eq(@old_attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
       end
 
     end
 
     describe "DELETE destroy" do
 
-      it "deletes the requested Exercise" do
+      it "deletes the requested draft Exercise" do
         @exercise.save!
         expect{ api_delete :destroy, user_token,
                            parameters: { id: @exercise.uid }

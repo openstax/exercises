@@ -1,24 +1,22 @@
 require "rails_helper"
 
 module Api::V1
-  describe UsersController, :type => :controller,
-                            :api => true,
-                            :version => :v1 do
+  describe UsersController, type: :controller, api: true, version: :v1 do
 
     let!(:application)     { FactoryGirl.create :doorkeeper_application }
     let!(:user)          { FactoryGirl.create :user, :agreed_to_terms }
     let!(:admin)      { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
     let!(:user_token)    { FactoryGirl.create :doorkeeper_access_token,
-                                              application: application, 
+                                              application: application,
                                               resource_owner_id: user.id }
 
     let!(:admin_token)    { FactoryGirl.create :doorkeeper_access_token,
-                                               application: application, 
+                                               application: application,
                                                resource_owner_id: admin.id }
 
-    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token, 
-                                                  application: application, 
+    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application,
                                                   resource_owner_id: nil }
 
     describe "GET index" do
@@ -150,14 +148,14 @@ module Api::V1
           full_name: user.full_name,
           title: user.title
         }.to_json
-        
+
         expect(response.body).to eq(expected_response)
       end
 
       it "ignores id parameters" do
         api_get :show, user_token, parameters: {id: admin.id, user_id: admin.id}
         expect(response).to have_http_status(:success)
-        
+
         expected_response = {
           id: user.id,
           username: user.username,
@@ -166,7 +164,7 @@ module Api::V1
           full_name: user.full_name,
           title: user.title
         }.to_json
-        
+
         expect(response.body).to eq(expected_response)
       end
 

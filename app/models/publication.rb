@@ -55,6 +55,7 @@ class Publication < ActiveRecord::Base
 
   def publish
     self.published_at = Time.now
+    self
   end
 
   protected

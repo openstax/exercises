@@ -1,5 +1,35 @@
 class Exercise < ActiveRecord::Base
 
+  # deep_clone does not iterate through hashes, so each hash must have only 1 key
+  NEW_VERSION_DUPED_ASSOCIATIONS = [
+    :attachments,
+    :logic,
+    :tags,
+    {
+      publication: [
+        :derivations,
+        :authors,
+        :copyright_holders,
+        :editors
+      ]
+    },
+    {
+      questions: [
+        :hints,
+        :answers,
+        {
+          stems: [
+            :stylings,
+            :combo_choices,
+            {
+              stem_answers: :answer
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
   acts_as_votable
   parsable :stimulus
   publishable
@@ -26,6 +56,16 @@ class Exercise < ActiveRecord::Base
               stems: [:stylings, :combo_choices]
             ])
   }
+
+  def new_version
+    nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
+    nv.publication.version = version + 1
+    nv.publication.published_at = nil
+    nv.publication.yanked_at = nil
+    nv.publication.embargoed_until = nil
+    nv.publication.major_change = false
+    nv
+  end
 
   protected
 

@@ -1,7 +1,8 @@
 module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_exercise, only: [:show, :update, :destroy]
+    before_filter :get_exercise_or_create_draft, only: [:show, :update]
+    before_filter :get_exercise, only: [:destroy]
 
     resource_description do
       api_versions "v1"
@@ -21,7 +22,7 @@ module Api::V1
       of the matching Exercises. Only Exercises visible to the caller will be
       returned. The schema for the returned JSON result is shown below.
 
-      #{json_schema(Api::V1::ExerciseSearchRepresenter, include: :readable)}            
+      #{json_schema(Api::V1::ExerciseSearchRepresenter, include: :readable)}
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/exercises',
@@ -44,7 +45,7 @@ module Api::V1
                          (uses wildcard matching)
       * `number` &ndash; Matches the exercise number exactly.
       * `version` &ndash; Matches the exercise version exactly.
-      * `id` &ndash; Matches the exercise ID exactly.
+      * `id` &ndash; Matches the exercise ID or UID exactly.
       * `published_before` &ndash; Matches exercises published before the given date.
                                    Enclose date in quotes to avoid parsing errors.
 
@@ -67,7 +68,7 @@ module Api::V1
       The fields can be one of #{
         SearchExercises::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')
       }.
-      Sort directions can either be `ASC` for 
+      Sort directions can either be `ASC` for
       an ascending sort, or `DESC` for a
       descending sort. If not provided, an ascending sort is assumed. Sort
       directions should be separated from the fields by a space.
@@ -78,7 +79,8 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter, user: current_api_user)
+      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter,
+                      user: current_api_user)
     end
 
     ##########
@@ -89,7 +91,7 @@ module Api::V1
     description <<-EOS
       Creates an Exercise with the given attributes.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
+      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def create
       user = current_human_user
@@ -108,11 +110,11 @@ module Api::V1
     # show #
     ########
 
-    api :GET, '/exercises/:id', 'Gets the specified Exercise'
+    api :GET, '/exercises/:uid', 'Gets the specified Exercise'
     description <<-EOS
-      Gets the Exercise that matches the provided ID.
+      Gets the Exercise that matches the provided UID.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}        
+      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}
     EOS
     def show
       standard_read(@exercise)
@@ -122,11 +124,11 @@ module Api::V1
     # update #
     ##########
 
-    api :PUT, '/exercises/:id', 'Updates the specified Exercise'
+    api :PUT, '/exercises/:uid', 'Updates the specified Exercise'
     description <<-EOS
-      Updates the Exercise that matches the provided ID with the given attributes.
+      Updates the Exercise that matches the provided UID with the given attributes.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}        
+      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def update
       standard_update(@exercise)
@@ -136,9 +138,9 @@ module Api::V1
     # destroy #
     ###########
 
-    api :DELETE, '/exercises/:id', 'Deletes the specified Exercise'
+    api :DELETE, '/exercises/:uid', 'Deletes the specified Exercise'
     description <<-EOS
-      Deletes the Exercise that matches the provided ID.
+      Deletes the Exercise that matches the provided UID.
     EOS
     def destroy
       standard_destroy(@exercise)
@@ -150,6 +152,21 @@ module Api::V1
       @exercise = Exercise.visible_for(current_api_user).with_uid(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
     end
-    
+
+    def get_exercise_or_create_draft
+      @exercise = Exercise.visible_for(current_api_user).with_uid(params[:id]).first
+      return unless @exercise.nil?
+
+      @number, @version = params[:id].split('@')
+      draft_requested = @version == 'draft' || @version == 'd'
+      raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}") \
+        unless draft_requested
+
+      published_exercise = Exercise.visible_for(current_api_user).with_uid(@number).first || \
+        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
+      @exercise = published_exercise.new_version
+      @exercise.save!
+    end
+
   end
 end
