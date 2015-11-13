@@ -269,6 +269,7 @@ module Api::V1
         @exercise.publication.publish.save!
         exercise_2 = @exercise.new_version
         exercise_2.save!
+        exercise_2.reload
 
         api_patch :update, user_token, parameters: { id: "#{@exercise.number}@draft" },
                                        raw_post_data: { title: "Ipsum lorem" }

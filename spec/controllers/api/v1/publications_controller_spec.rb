@@ -30,7 +30,7 @@ module Api::V1
           expect(exercise.reload.is_published?).to eq false
 
           api_put :publish, exercise_author_token,
-                             parameters: { exercise_id: exercise.id.to_s }
+                             parameters: { exercise_id: exercise.uid.to_s }
 
           expected_response = Api::V1::ExerciseRepresenter.new(exercise.reload).to_json
           expect(response).to have_http_status(:success)
@@ -40,13 +40,13 @@ module Api::V1
       end
 
       context "when given a solution_id" do
-        it "publishes the requested solution" do
+        it "publishes the requested solution (ignores other parameters)" do
           expect(solution.reload.is_published?).to eq false
 
           api_put :publish, solution_author_token, parameters: {
-            exercise_id: solution.question.exercise_id.to_s,
-            question_id: solution.question_id,
-            solution_id: solution.id.to_s
+            exercise_id: solution.question.exercise.uid.to_s,
+            question_id: solution.question.id,
+            solution_id: solution.uid.to_s
           }
 
           expected_response = Api::V1::SolutionRepresenter.new(solution.reload).to_json
