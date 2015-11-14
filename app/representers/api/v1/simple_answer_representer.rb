@@ -21,6 +21,7 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
+             if: lambda { |args| question.exercise.can_view_solutions?(args[:user]) },
              getter: lambda { |args| stem_answers.first.try(:correctness) },
              setter: lambda { |value, args|
               stem_answers << StemAnswer.new(answer: self,
@@ -37,6 +38,7 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
+             if: lambda { |args| question.exercise.can_view_solutions?(args[:user]) },
              getter: lambda { |args| stem_answers.first.try(:feedback) },
              setter: lambda { |value, args|
               stem_answers << StemAnswer.new(answer: self,

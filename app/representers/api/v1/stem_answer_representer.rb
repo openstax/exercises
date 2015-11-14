@@ -18,6 +18,7 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
+             if: lambda { |args| stem.question.exercise.can_view_solutions?(args[:user]) },
              schema_info: {
                type: 'number'
              }
@@ -26,7 +27,8 @@ module Api::V1
              as: :feedback_html,
              type: String,
              writeable: true,
-             readable: true
+             readable: true,
+             if: lambda { |args| stem.question.exercise.can_view_solutions?(args[:user]) }
 
   end
 end

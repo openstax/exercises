@@ -22,6 +22,7 @@ module Api::V1
                  klass.nil? || klass.stems.length > 1 ? \
                    QuestionRepresenter : SimpleQuestionRepresenter
                },
+               instance: lambda { |*| Question.new(exercise: self) },
                writeable: true,
                readable: true,
                schema_info: {

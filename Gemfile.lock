@@ -17,6 +17,22 @@ GIT
       roar (>= 1.0)
       squeel (>= 0.5.0)
 
+GIT
+  remote: git://github.com/openstax/openstax_api.git
+  revision: c7ec7932fd88be7def560a4d88991ef602822821
+  ref: c7ec7932fd88be7def560a4d88991ef602822821
+  specs:
+    openstax_api (6.0.2)
+      doorkeeper (>= 2.0)
+      exception_notification (>= 4.0)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
+      rails (>= 3.1)
+      representable (>= 2.0)
+      responders
+      roar (>= 1.0)
+      roar-rails (>= 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -352,16 +368,6 @@ GEM
     omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    openstax_api (5.5.3)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1)
-      representable (>= 2.0)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
     openstax_rescue_from (1.5.0)
       exception_notification (>= 4.1, < 5.0)
       rails (>= 3.1, < 5.0)
@@ -610,7 +616,7 @@ DEPENDENCIES
   newrelic_rpm
   nifty-generators
   openstax_accounts!
-  openstax_api (~> 5.5.3)
+  openstax_api!
   openstax_rescue_from (~> 1.5.0)
   openstax_utilities
   parallel_tests

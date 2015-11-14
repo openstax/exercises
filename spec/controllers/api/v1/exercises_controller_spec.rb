@@ -156,8 +156,7 @@ module Api::V1
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
 
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json
-
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json(user: user)
         expect(response.body).to eq(expected_response)
       end
 
@@ -165,8 +164,7 @@ module Api::V1
         api_get :show, user_token, parameters: { id: @exercise.number }
         expect(response).to have_http_status(:success)
 
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json
-
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json(user: user)
         expect(response.body).to eq(expected_response)
       end
 
@@ -174,8 +172,8 @@ module Api::V1
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
 
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload).to_json
-
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload)
+                                                        .to_json(user: user)
         expect(response.body).to eq(expected_response)
       end
 
@@ -195,8 +193,54 @@ module Api::V1
         expect(new_exercise.attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
           .to eq(@exercise.attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
 
-        expected_response = Api::V1::ExerciseRepresenter.new(new_exercise).to_json
+        expected_response = Api::V1::ExerciseRepresenter.new(new_exercise).to_json(user: user)
         expect(response.body).to eq(expected_response)
+      end
+
+      context 'with solutions' do
+        before(:each) do
+          question = @exercise.questions.first
+          question.solutions << FactoryGirl.create(:solution, :published, question: question)
+        end
+
+        it "shows solutions for published exercises if the requestor is an app" do
+          api_get :show, application_token, parameters: { id: @exercise.uid }
+          expect(response).to have_http_status(:success)
+
+          response_hash = JSON.parse(response.body)
+          expect(response_hash['questions'].first['solutions']).not_to be_empty
+          response_hash['questions'].first['answers'].each do |answer|
+            expect(answer['correctness']).to be_present
+            expect(answer['feedback_html']).to be_present
+          end
+        end
+
+        it "shows solutions for published exercises if the requestor is allowed to edit it" do
+          api_get :show, user_token, parameters: { id: @exercise.uid }
+          expect(response).to have_http_status(:success)
+
+          response_hash = JSON.parse(response.body)
+          expect(response_hash['questions'].first['solutions']).not_to be_empty
+          response_hash['questions'].first['answers'].each do |answer|
+            expect(answer['correctness']).to be_present
+            expect(answer['feedback_html']).to be_present
+          end
+        end
+
+        it "hides solutions for published exercises if the requestor is not allowed to edit it" do
+          @exercise.publication.editors.destroy_all
+
+          api_get :show, user_token, parameters: { id: @exercise.uid }
+          expect(response).to have_http_status(:success)
+
+          response_hash = JSON.parse(response.body)
+          expect(response_hash['questions'].first['solutions']).to be_nil
+          response_hash['questions'].first['answers'].each do |answer|
+            expect(answer['correctness']).to be_nil
+            expect(answer['feedback_html']).to be_nil
+          end
+        end
+
       end
 
     end
