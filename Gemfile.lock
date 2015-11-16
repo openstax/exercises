@@ -453,11 +453,17 @@ GEM
     roo (2.1.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
+    rspec (3.2.0)
+      rspec-core (~> 3.2.0)
+      rspec-expectations (~> 3.2.0)
+      rspec-mocks (~> 3.2.0)
     rspec-core (3.2.2)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
+    rspec-instafail (0.4.0)
+      rspec
     rspec-mocks (3.2.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
@@ -619,6 +625,7 @@ DEPENDENCIES
   remotipart
   representable (~> 2.2.3)
   roo
+  rspec-instafail
   rspec-rails
   sass-rails (~> 5.0)
   shoulda-matchers

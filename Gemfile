@@ -127,6 +127,9 @@ group :development, :test do
   # Run specs in parallel
   gem "parallel_tests"
 
+  # Show failing specs instantly
+  gem "rspec-instafail"
+
   # Thin webserver
   gem 'thin'
 

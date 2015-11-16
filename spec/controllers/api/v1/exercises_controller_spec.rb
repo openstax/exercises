@@ -190,11 +190,8 @@ module Api::V1
         expect(new_exercise.number).to eq @exercise.number
         expect(new_exercise.version).to eq @exercise.version + 1
 
-        expect(new_exercise.attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
-          .to eq(@exercise.attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
-
-        expected_response = Api::V1::ExerciseRepresenter.new(new_exercise).to_json(user: user)
-        expect(response.body).to eq(expected_response)
+        expect(new_exercise.attributes.except('id', 'uid', 'created_at', 'updated_at'))
+          .to eq(@exercise.attributes.except('id', 'uid', 'created_at', 'updated_at'))
       end
 
       context 'with solutions' do

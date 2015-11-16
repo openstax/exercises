@@ -24,8 +24,7 @@ module Api::V1
              if: lambda { |args| question.exercise.can_view_solutions?(args[:user]) },
              getter: lambda { |args| stem_answers.first.try(:correctness) },
              setter: lambda { |value, args|
-              stem_answers << StemAnswer.new(answer: self,
-                                             stem: question.stems.first) \
+              stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                 if stem_answers.empty?
               stem_answers.first.correctness = value
              },
@@ -41,8 +40,7 @@ module Api::V1
              if: lambda { |args| question.exercise.can_view_solutions?(args[:user]) },
              getter: lambda { |args| stem_answers.first.try(:feedback) },
              setter: lambda { |value, args|
-              stem_answers << StemAnswer.new(answer: self,
-                                             stem: question.stems.first) \
+              stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                 if stem_answers.empty?
               stem_answers.first.feedback = value
              }

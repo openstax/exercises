@@ -12,8 +12,6 @@ module Api::V1
     let!(:question) {
       dbl = instance_spy(Question)
       allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:exercise).and_return(exercise)
-      allow(dbl).to receive(:stems).and_return([stem])
       allow(dbl).to receive(:answers).and_return([])
       allow(dbl).to receive(:solutions).and_return([])
       allow(dbl).to receive(:hints).and_return([])
@@ -24,12 +22,18 @@ module Api::V1
     let!(:stem) {
       dbl = instance_spy(Stem)
       allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:question).and_return(question)
       allow(dbl).to receive(:stylings).and_return([])
       allow(dbl).to receive(:stem_answers).and_return([])
       allow(dbl).to receive(:combo_choices).and_return([])
       dbl
     }
+
+    before(:each) do
+      allow(exercise).to receive(:questions).and_return([question])
+      allow(question).to receive(:exercise).and_return(exercise)
+      allow(question).to receive(:stems).and_return([stem])
+      allow(stem).to receive(:question).and_return(question)
+    end
 
     # This is lazily-evaluated on purpose
     let(:representation) {
@@ -76,7 +80,17 @@ module Api::V1
 
     context 'answers' do
       it 'can be read' do
-        answers = [Answer.new(content: 'Yes'), Answer.new(content: 'No')]
+        answer_1 = instance_spy(Answer)
+        allow(answer_1).to receive(:as_json).and_return(answer_1)
+        allow(answer_1).to receive(:question).and_return(question)
+        allow(answer_1).to receive(:stem_answers).and_return([])
+        allow(answer_1).to receive(:content).and_return('Yes')
+        answer_2 = instance_spy(Answer)
+        allow(answer_2).to receive(:as_json).and_return(answer_2)
+        allow(answer_2).to receive(:question).and_return(question)
+        allow(answer_2).to receive(:stem_answers).and_return([])
+        allow(answer_2).to receive(:content).and_return('No')
+        answers = [answer_1, answer_2]
         answer_representations = answers.collect{ |answer| AnswerRepresenter.new(answer).to_hash }
         allow(question).to receive(:answers).and_return(answers)
         expect(representation).to include('answers' => answer_representations)
