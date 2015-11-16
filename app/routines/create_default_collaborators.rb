@@ -2,9 +2,9 @@ class CreateDefaultCollaborators
 
   lev_routine
 
-  uses_routine OpenStax::Accounts::CreateTempAccount,
+  uses_routine OpenStax::Accounts::FindOrCreateAccount,
                translations: { outputs: { type: :verbatim } },
-               as: :create_temp_account
+               as: :find_or_create_account
 
   protected
 
@@ -21,7 +21,7 @@ class CreateDefaultCollaborators
 
   def find_or_create_account(username:, name:)
     account = OpenStax::Accounts::Account.find_by(username: username) || \
-                run(:create_temp_account, username: username).outputs.account
+                run(:find_or_create_account, username: username).outputs.account
     account.update_column(:full_name, name)
     account
   end

@@ -13,7 +13,7 @@ module Oauth
       ug.add_member(user_2.account)
       ug
     }
-    
+
     let!(:user_group_2) {
       ug = FactoryGirl.create :openstax_accounts_group
       ug.add_member(user_2.account)
@@ -54,7 +54,7 @@ module Oauth
 
     context "GET show" do
       it "assigns the requested application as @application" do
-        get :show, {:id => group_1_application_1.to_param}, valid_session
+        get :show, {id: group_1_application_1.to_param}, valid_session
         expect(assigns(:application)).to eq(group_1_application_1)
       end
     end
@@ -68,30 +68,29 @@ module Oauth
 
     context "GET edit" do
       it "assigns the requested application as @application" do
-        get :edit, {:id => group_1_application_1.to_param}, valid_session
+        get :edit, {id: group_1_application_1.to_param}, valid_session
         expect(assigns(:application)).to eq(group_1_application_1)
       end
     end
 
     context "POST create" do
       context "with valid params" do
-        let!(:valid_attributes) { FactoryGirl.build(:doorkeeper_application)
-                                             .attributes }
+        let!(:valid_attributes) { FactoryGirl.build(:doorkeeper_application).attributes }
 
         it "creates a new Application" do
           expect {
-            post :create, {:application => valid_attributes}, admin_session
+            post :create, {doorkeeper_application: valid_attributes}, admin_session
           }.to change(Doorkeeper::Application, :count).by(1)
         end
 
         it "assigns a newly created application as @application" do
-          post :create, {:application => valid_attributes}, admin_session
+          post :create, {doorkeeper_application: valid_attributes}, admin_session
           expect(assigns(:application)).to be_a(Doorkeeper::Application)
           expect(assigns(:application)).to be_persisted
         end
 
         it "redirects to the created application" do
-          post :create, {:application => valid_attributes}, admin_session
+          post :create, {doorkeeper_application: valid_attributes}, admin_session
           expect(response).to redirect_to(
             oauth_application_url(Doorkeeper::Application.last)
           )
@@ -101,15 +100,13 @@ module Oauth
       context "with invalid params" do
         it "assigns a newly created but unsaved application as @application" do
           # Trigger the behavior that occurs when invalid params are submitted
-          post :create, {:application => { "redirect_uri" => "invalid" }},
-                        admin_session
+          post :create, {doorkeeper_application: { "redirect_uri" => "invalid" }}, admin_session
           expect(assigns(:application)).to be_a_new(Doorkeeper::Application)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
-          post :create, {:application => { "redirect_uri" => "invalid" }},
-                        admin_session
+          post :create, {doorkeeper_application: { "redirect_uri" => "invalid" }}, admin_session
           expect(response).to render_template("new")
         end
       end
@@ -120,19 +117,19 @@ module Oauth
         it "updates the requested application" do
           expect_any_instance_of(Doorkeeper::Application)
             .to receive(:update_attributes).with({ "name" => "Dummy" })
-          patch :update, {:id => group_1_application_1.to_param,
-                          :application => { "name" => "Dummy" }}, valid_session
+          patch :update, {id: group_1_application_1.to_param,
+                          doorkeeper_application: { "name" => "Dummy" }}, valid_session
         end
 
         it "assigns the requested application as @application" do
-          patch :update, {:id => group_1_application_1.to_param,
-                          :application => { "name" => "Dummy" }}, valid_session
+          patch :update, {id: group_1_application_1.to_param,
+                          doorkeeper_application: { "name" => "Dummy" }}, valid_session
           expect(assigns(:application)).to eq(group_1_application_1)
         end
 
         it "redirects to the application" do
-          patch :update, {:id => group_1_application_1.to_param,
-                          :application => { "name" => "Dummy" }}, valid_session
+          patch :update, {id: group_1_application_1.to_param,
+                          doorkeeper_application: { "name" => "Dummy" }}, valid_session
           expect(response).to redirect_to(
             oauth_application_url(group_1_application_1)
           )
@@ -142,17 +139,15 @@ module Oauth
       context "with invalid params" do
         it "assigns the application as @application" do
           # Trigger the behavior that occurs when invalid params are submitted
-          patch :update, {:id => group_1_application_1.to_param,
-                          :application => { "redirect_uri" => "invalid" }},
-                         valid_session
+          patch :update, {id: group_1_application_1.to_param,
+                          doorkeeper_application: { "redirect_uri" => "invalid" }}, valid_session
           expect(assigns(:application)).to eq(group_1_application_1)
         end
 
         it "re-renders the 'edit' template" do
           # Trigger the behavior that occurs when invalid params are submitted
-          patch :update, {:id => group_1_application_1.to_param,
-                          :application => { "redirect_uri" => "invalid" }},
-                         valid_session
+          patch :update, {id: group_1_application_1.to_param,
+                          doorkeeper_application: { "redirect_uri" => "invalid" }}, valid_session
           expect(response).to render_template("edit")
         end
       end
@@ -161,13 +156,12 @@ module Oauth
     context "DELETE destroy" do
       it "destroys the requested application" do
         expect {
-          delete :destroy, {:id => group_1_application_1.to_param},
-                           admin_session
+          delete :destroy, {id: group_1_application_1.to_param}, admin_session
         }.to change(Doorkeeper::Application, :count).by(-1)
       end
 
       it "redirects to the applications list" do
-        delete :destroy, {:id => group_1_application_1.to_param}, admin_session
+        delete :destroy, {id: group_1_application_1.to_param}, admin_session
         expect(response).to redirect_to(oauth_applications_url)
       end
     end

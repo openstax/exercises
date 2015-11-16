@@ -3,23 +3,31 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe SimpleQuestionRepresenter, type: :representer do
 
-    let!(:stem) {
-      dbl = instance_spy(Stem)
+    let!(:exercise) {
+      dbl = instance_spy(Exercise)
       allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:stylings).and_return([])
-      allow(dbl).to receive(:stem_answers).and_return([])
-      allow(dbl).to receive(:combo_choices).and_return([])
       dbl
     }
 
     let!(:question) {
       dbl = instance_spy(Question)
       allow(dbl).to receive(:as_json).and_return(dbl)
+      allow(dbl).to receive(:exercise).and_return(exercise)
       allow(dbl).to receive(:stems).and_return([stem])
       allow(dbl).to receive(:answers).and_return([])
       allow(dbl).to receive(:solutions).and_return([])
       allow(dbl).to receive(:hints).and_return([])
       allow(dbl).to receive(:parent_dependencies).and_return([])
+      dbl
+    }
+
+    let!(:stem) {
+      dbl = instance_spy(Stem)
+      allow(dbl).to receive(:as_json).and_return(dbl)
+      allow(dbl).to receive(:question).and_return(question)
+      allow(dbl).to receive(:stylings).and_return([])
+      allow(dbl).to receive(:stem_answers).and_return([])
+      allow(dbl).to receive(:combo_choices).and_return([])
       dbl
     }
 
