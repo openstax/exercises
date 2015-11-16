@@ -52,15 +52,13 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', github: 'Dantemss/accounts-rails',
-                         ref: '9e9e3068a51db351a3e98e14cd6daa671888e4bf'
+gem 'openstax_accounts', '~> 6.1.5'
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', github: 'openstax/openstax_api',
-                    ref: 'c7ec7932fd88be7def560a4d88991ef602822821'
+gem 'openstax_api', '~> 6.1.0'
 gem 'apipie-rails'
 gem 'maruku'
 
