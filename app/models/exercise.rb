@@ -67,6 +67,14 @@ class Exercise < ActiveRecord::Base
     nv
   end
 
+  def can_view_solutions?(user)
+    return false if user.nil? # Not given
+    user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+    return true if user.nil? # Application user
+    return false if user.is_anonymous? # Anonymous user
+    has_collaborator?(user) # Regular user
+  end
+
   protected
 
   def has_questions

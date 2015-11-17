@@ -1,0 +1,70 @@
+# The rake tasks in this module are used to manage trusted OpenStax
+# oauth applications.  Currently, Exercises, Tutor, Exchange and
+# Biglearn oauth applications are managed by these tasks.
+
+namespace :openstax do
+  namespace :applications do
+    DEFAULT_APP_NAMES = ['OpenStax Tutor']
+
+    # This task creates applications based on the given parameters.
+    # This task creates an user with the username `ose_app_admin` with
+    # the given password if one is not found already. It also creates
+    # a group `ose_app_admin_group` and assigns the newly created user
+    # to that group.  Once the user and the group are setup, it
+    # creates each of the applications declared above.
+    desc "Create the default OpenStax Applications (currently only Tutor) in OpenStax Exercises"
+    task :create, [:admin_password] => :environment do |t, args|
+      ActiveRecord::Base.transaction do
+        # Get the admin password
+        password = args[:admin_password]
+        # Create application owner if needed
+
+        app_owner_group = OpenStax::Accounts::Group.find_by(name: 'ose_app_admin_group')
+
+        if app_owner_group.nil?
+          admin_account = OpenStax::Accounts::Account.find_by(username: 'ose_app_admin')
+
+          if admin_account.nil?
+            admin_account = OpenStax::Accounts::FindOrCreateAccount.call(
+              username: 'ose_app_admin', password: password
+            ).outputs.account
+            admin_user = User.create!(account: admin_account)
+            admin_user.create_administrator!
+          end
+
+          app_owner_group = OpenStax::Accounts::CreateGroup[name: 'ose_app_admin_group',
+                                                            owner: admin_account]
+        end
+
+        DEFAULT_APP_NAMES.each do |app_name|
+          # Create the Tutor app if it doesn't exist
+          Doorkeeper::Application.find_or_create_by(name: app_name) do |application|
+            application.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+            application.owner = app_owner_group
+            application.trusted = true
+          end
+
+          puts "Created #{app_name}"
+        end
+      end
+    end
+
+    # This task gets information about all the authorized oauth
+    # applications. For each application found, it returns the
+    # application id and secret as a JSON object list.
+    task info: :environment do
+      apps = Doorkeeper::Application.where(name: DEFAULT_APP_NAMES)
+
+      apps_hash = apps.map do |app|
+        {
+          name: app.name,
+          client_id: app.uid,
+          secret: app.secret,
+          redirect_uri: app.redirect_uri
+        }
+      end
+
+      puts JSON.generate(apps_hash)
+    end
+  end
+end

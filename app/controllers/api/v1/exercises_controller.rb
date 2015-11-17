@@ -79,8 +79,7 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter,
-                      user: current_api_user)
+      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter, user: current_api_user)
     end
 
     ##########
@@ -95,7 +94,7 @@ module Api::V1
     EOS
     def create
       user = current_human_user
-      standard_create(Exercise.new) do |exercise|
+      standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user
         ) unless exercise.publication.authors.any?{ |a| a.user = user }
@@ -117,7 +116,7 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}
     EOS
     def show
-      standard_read(@exercise)
+      standard_read(@exercise, nil, false, user: current_api_user)
     end
 
     ##########
@@ -131,7 +130,7 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def update
-      standard_update(@exercise)
+      standard_update(@exercise, nil, user: current_api_user)
     end
 
     ###########

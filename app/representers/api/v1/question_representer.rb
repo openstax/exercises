@@ -3,7 +3,7 @@ module Api::V1
 
     include Roar::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              writeable: true,
              readable: true,
@@ -38,6 +38,7 @@ module Api::V1
                decorator: SolutionRepresenter,
                writeable: true,
                readable: true,
+               if: lambda { |args| exercise.can_view_solutions?(args[:user]) },
                schema_info: {
                  required: true
                }

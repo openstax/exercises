@@ -3,14 +3,14 @@ require "rails_helper"
 module Api::V1
   RSpec.describe PublicationsController, type: :controller, api: true, version: :v1 do
 
-    let!(:exercise) { FactoryGirl.create :exercise }
+    let!(:exercise)        { FactoryGirl.create :exercise }
 
-    let!(:solution) { FactoryGirl.create :solution }
+    let!(:solution)        { FactoryGirl.create :solution }
 
-    let!(:exercise_author)   { FactoryGirl.create :author }
-    let!(:exercise) { exercise_author.publication.publishable }
+    let!(:exercise_author) { FactoryGirl.create :author }
+    let!(:exercise)        { exercise_author.publication.publishable }
 
-    let!(:solution) { FactoryGirl.create :solution }
+    let!(:solution)        { FactoryGirl.create :solution }
     let!(:solution_author) {
       FactoryGirl.create :author, publication: solution.publication
     }
@@ -30,9 +30,10 @@ module Api::V1
           expect(exercise.reload.is_published?).to eq false
 
           api_put :publish, exercise_author_token,
-                             parameters: { exercise_id: exercise.uid.to_s }
+                            parameters: { exercise_id: exercise.uid.to_s }
 
-          expected_response = Api::V1::ExerciseRepresenter.new(exercise.reload).to_json
+          expected_response = Api::V1::ExerciseRepresenter.new(exercise.reload)
+                                                          .to_json(user: exercise_author.user)
           expect(response).to have_http_status(:success)
           expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
           expect(exercise.is_published?).to eq true

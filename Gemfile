@@ -52,13 +52,14 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 5.2.0'
+gem 'openstax_accounts', '~> 6.1.5'
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 5.5.3'
+gem 'representable', '~> 2.2.3'
+gem 'openstax_api', '~> 6.1.0'
 gem 'apipie-rails'
 gem 'maruku'
 
@@ -125,6 +126,9 @@ gem 'openstax_rescue_from', '~> 1.5.0'
 group :development, :test do
   # Run specs in parallel
   gem "parallel_tests"
+
+  # Show failing specs instantly
+  gem "rspec-instafail"
 
   # Thin webserver
   gem 'thin'
