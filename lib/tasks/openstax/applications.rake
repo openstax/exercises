@@ -50,21 +50,22 @@ namespace :openstax do
     end
 
     # This task gets information about all the authorized oauth
-    # applications. For each application found, it returns the
+    # applications.  For each application found, it returns the
     # application id and secret as a JSON object list.
-    task info: :environment do
+    desc "Save information about known client applications"
+    task :save_json, [:filename] => :environment do |t, args|
+      filename = args[:filename] || 'client_apps.json'
+
       apps = Doorkeeper::Application.where(name: DEFAULT_APP_NAMES)
 
-      apps_hash = apps.map do |app|
-        {
-          name: app.name,
-          client_id: app.uid,
-          secret: app.secret,
-          redirect_uri: app.redirect_uri
-        }
+      apps = apps.map do |app|
+        { name: app.name, client_id: app.uid, secret: app.secret, redirect_uri: app.redirect_uri }
       end
 
-      puts JSON.generate(apps_hash)
+      File.open(filename, 'w') do |f|
+        f.write(JSON.pretty_generate(apps))
+        puts "Generated the client application json file @ #{File.expand_path(f.path)}"
+      end
     end
   end
 end
