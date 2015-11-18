@@ -6,13 +6,17 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    next current_user unless current_user.is_anonymous?
     authenticate_user!
+    current_user
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
+
+  # We allow all users of Exercises to manage applications
+  # We subclassed Doorkeeper::ApplicationsController to provide better
+  # control over access to the Doorkeeper::Application pages
   admin_authenticator do
-    raise SecurityTransgression if current_user.is_anonymous?
+    authenticate_user!
     current_user
   end
 

@@ -55,7 +55,7 @@ gem 'whenever'
 gem 'omniauth-oauth2', '~> 1.3.1'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 6.1.6'
+gem 'openstax_accounts', '~> 6.1.7'
 
 # Access control for API's
 gem 'doorkeeper'
