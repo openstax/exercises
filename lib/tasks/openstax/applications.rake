@@ -37,14 +37,14 @@ namespace :openstax do
         end
 
         DEFAULT_APP_NAMES.each do |app_name|
-          # Create the Tutor app if it doesn't exist
+          # Create the app if it doesn't exist
           Doorkeeper::Application.find_or_create_by(name: app_name) do |application|
             application.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
             application.owner = app_owner_group
-            application.trusted = true
-          end
+            application.trusted_application = TrustedApplication.new(application: application)
 
-          puts "Created #{app_name}"
+            puts "Created trusted application #{app_name}."
+          end
         end
       end
     end
