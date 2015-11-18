@@ -4,7 +4,7 @@ module Oauth
     before_filter :set_application, only: [:show, :edit, :update, :destroy]
 
     def index
-      @applications = @user.administrator ? Doorkeeper::Application.all : @user.applications
+      @applications = @user.is_administrator? ? Doorkeeper::Application.all : @user.applications
     end
 
     def new
