@@ -1,8 +1,8 @@
 module Admin
   class BaseController < ApplicationController
 
-    skip_before_filter :authenticate_user! unless Rails.env.production?
-    before_filter :authenticate_admin! if Rails.env.production?
+    skip_before_filter :authenticate_user! if Rails.env.development?
+    before_filter :authenticate_admin! unless Rails.env.development?
 
     fine_print_skip :general_terms_of_use, :privacy_policy
 
