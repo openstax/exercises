@@ -63,15 +63,23 @@ module Exercises
       end
 
       def import_row(row, index)
+        row_number = index + 1 + (skip_first_row ? 1 : 0)
         begin
-          perform_row_import(row, index)
+          perform_row_import(row, row_number)
         rescue StandardError => se
-          Rails.logger.error "Failed to import row ##{index}!"
-          @failures[index] = se.to_s
+          Rails.logger.error "Failed to import row ##{row_number} - #{se.message}"
+          @failures[row_number] = se.to_s
         end
       end
 
-      def perform_row_import(row, index)
+      def perform_row_import(row, row_number)
+        id = row[4]
+
+        @id_map ||= {}
+        existing_row = @id_map[id]
+        raise "Duplicate ID: Rows #{existing_row} and #{row_number}" unless existing_row.nil?
+        @id_map[id] = row_number
+
         ex = Exercise.new
 
         books = split(row[0])
@@ -226,7 +234,7 @@ module Exercises
           end
         end
 
-        row = "Imported row ##{index + 1}"
+        row = "Imported row ##{row_number}"
         uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"
         changes = skipped ? "Exercise skipped (no changes)" : \
                             "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
