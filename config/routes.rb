@@ -19,7 +19,7 @@ Exercises::Application.routes.draw do
 
   apipie
 
-  api :v1, :default => true do
+  api :v1, default: true do
     resources :exercises do
       publishable
       # Not in V1
@@ -46,8 +46,7 @@ Exercises::Application.routes.draw do
 
     resource :user, only: [:show, :update, :destroy]
 
-    resources :deputizations, only: [:index, :create, :destroy],
-                              path: 'deputies'
+    resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
   end
 
   mount OpenStax::Accounts::Engine, at: "/accounts"
@@ -56,7 +55,7 @@ Exercises::Application.routes.draw do
   use_doorkeeper do
     controllers :applications => 'oauth/applications'
   end
-  
+
   namespace 'admin' do
     get '/', to: 'console#index'
 
