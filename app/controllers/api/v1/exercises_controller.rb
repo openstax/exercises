@@ -159,7 +159,7 @@ module Api::V1
 
         # If a draft has been requested, lock the latest published exercise first
         # so we don't create 2 drafts
-        published_exercise = Exercise.visible_for(current_api_user).with_uid(@number).lock.first \
+        published_exercise = Exercise.published.with_uid(@number).lock.first \
           if draft_requested
 
         # Attempt to find existing exercise
@@ -170,6 +170,11 @@ module Api::V1
         # no published_exercise so we can't create a draft
         raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}") \
           if published_exercise.nil?
+
+        # Check for permission to create the draft
+        OSU::AccessPolicy.require_action_allowed!(
+          :new_version, current_api_user, published_exercise
+        )
 
         # Draft requested and published exercise found
         @exercise = published_exercise.new_version

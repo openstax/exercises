@@ -57,7 +57,7 @@ RSpec.describe ExerciseAccessPolicy do
     context 'published' do
       it 'can be accessed by everyone' do
         exercise.publication.published_at = Time.now
-        exercise.save!
+        exercise.publication.save!
 
         expect(ExerciseAccessPolicy.action_allowed?(:read, anon, exercise)).to eq true
 
@@ -146,7 +146,7 @@ RSpec.describe ExerciseAccessPolicy do
         FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
 
         exercise.publication.published_at = Time.now
-        exercise.save!
+        exercise.publication.save!
 
         expect(ExerciseAccessPolicy.action_allowed?(:update, anon, exercise)).to eq false
         expect(ExerciseAccessPolicy.action_allowed?(:destroy, anon, exercise)).to eq false
@@ -156,6 +156,56 @@ RSpec.describe ExerciseAccessPolicy do
 
         expect(ExerciseAccessPolicy.action_allowed?(:update, app, exercise)).to eq false
         expect(ExerciseAccessPolicy.action_allowed?(:destroy, app, exercise)).to eq false
+      end
+    end
+  end
+
+  context 'new_version' do
+    before(:each) do
+      exercise.save!
+    end
+
+    context 'published' do
+      before(:each) do
+        exercise.publication.published_at = Time.now
+        exercise.publication.save!
+      end
+
+      it 'cannot be accessed by anonymous users, applications or human users without roles' do
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, anon, exercise)).to eq false
+
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, app, exercise)).to eq false
+
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq false
+      end
+
+      it 'can be accessed by humans editors, authors and copyright holders' do
+        editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq true
+        editor.destroy
+        exercise.reload
+
+        author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq true
+        author.destroy
+        exercise.reload
+
+        cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq true
+        cr.destroy
+        exercise.reload
+
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq false
+      end
+    end
+
+    context 'not published' do
+      it 'cannot be accessed by anyone' do
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, anon, exercise)).to eq false
+
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq false
+
+        expect(ExerciseAccessPolicy.action_allowed?(:new_version, app, exercise)).to eq false
       end
     end
   end
