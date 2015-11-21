@@ -61,8 +61,6 @@ Exercises::Application.routes.draw do
 
     resources :administrators, only: [:index, :create, :destroy]
 
-    resource :cron, only: [:update]
-
     resources :exceptions, only: [:show]
 
     resources :licenses
