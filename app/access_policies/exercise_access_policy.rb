@@ -13,6 +13,9 @@ class ExerciseAccessPolicy
     when :update, :destroy
       !exercise.is_published? && exercise.has_collaborator?(requestor) || \
       requestor.is_administrator?
+    when :new_version
+      exercise.is_published? && \
+      (exercise.has_collaborator?(requestor) || requestor.is_administrator?)
     else
       false
     end

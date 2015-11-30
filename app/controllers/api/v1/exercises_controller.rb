@@ -153,18 +153,33 @@ module Api::V1
     end
 
     def get_exercise_or_create_draft
-      @exercise = Exercise.visible_for(current_api_user).with_uid(params[:id]).first
-      return unless @exercise.nil?
+      Exercise.transaction do
+        @number, @version = params[:id].split('@')
+        draft_requested = @version == 'draft' || @version == 'd'
 
-      @number, @version = params[:id].split('@')
-      draft_requested = @version == 'draft' || @version == 'd'
-      raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}") \
-        unless draft_requested
+        # If a draft has been requested, lock the latest published exercise first
+        # so we don't create 2 drafts
+        published_exercise = Exercise.published.with_uid(@number).lock.first \
+          if draft_requested
 
-      published_exercise = Exercise.visible_for(current_api_user).with_uid(@number).first || \
-        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
-      @exercise = published_exercise.new_version
-      @exercise.save!
+        # Attempt to find existing exercise
+        @exercise = Exercise.visible_for(current_api_user).with_uid(params[:id]).first
+        return unless @exercise.nil?
+
+        # Exercise not found and either draft not requested or
+        # no published_exercise so we can't create a draft
+        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}") \
+          if published_exercise.nil?
+
+        # Check for permission to create the draft
+        OSU::AccessPolicy.require_action_allowed!(
+          :new_version, current_api_user, published_exercise
+        )
+
+        # Draft requested and published exercise found
+        @exercise = published_exercise.new_version
+        @exercise.save!
+      end
     end
 
   end
