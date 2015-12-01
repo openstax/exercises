@@ -29,6 +29,9 @@ module Api::V1
                decorator: AnswerRepresenter,
                writeable: true,
                readable: true,
+               getter: ->(*) {
+                  answers.sort_by{ |answer| answer.id }
+               },
                schema_info: {
                  required: true
                }
