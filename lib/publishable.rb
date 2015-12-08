@@ -53,11 +53,11 @@ module Publishable
             # http://stackoverflow.com/a/7745635
             scope :latest, ->(publishable_scope = nil,
                               publication_scope = Publication.unscoped.published) {
+              publishable_class = self
               joins(:publication).joins{
-                pub_rel = publication_scope.where(publishable_type: my{name})
-                pub_rel = pub_rel.where(
-                  publishable_id: publishable_scope.limit(nil).reorder(nil).pluck(:id)
-                ) unless publishable_scope.nil?
+                pub_rel = publication_scope.joins{publishable(publishable_class)}
+                pub_rel = pub_rel.merge(publishable_scope.limit(nil).reorder(nil)) \
+                  unless publishable_scope.nil?
 
                 pub_rel.as(:newer_publication)
                        .on{ (newer_publication.number == ~publication.number) & \
