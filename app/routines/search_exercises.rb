@@ -19,7 +19,7 @@ class SearchExercises
 
   def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
-    relation = Exercise.visible_for(options[:user])
+    relation = Exercise.visible_for(options[:user]).joins(:publication)
 
     # By default, only return the latest exercises visible to the user.
     # If either versions, uids or a publication date are specified,
@@ -196,9 +196,9 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins{publication.outer.authors.outer.user.outer.account.outer}
-                         .joins{publication.outer.copyright_holders.outer.user.outer.account.outer}
-                         .joins{publication.outer.editors.outer.user.outer.account.outer}
+          @items = @items.joins{publication.authors.outer.user.outer.account.outer}
+                         .joins{publication.copyright_holders.outer.user.outer.account.outer}
+                         .joins{publication.editors.outer.user.outer.account.outer}
                          .where{
                            (publication.authors.user.account.username.like_any sn) |\
                            (publication.authors.user.account.first_name.like_any sn) |\
