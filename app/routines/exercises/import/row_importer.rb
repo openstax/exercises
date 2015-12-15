@@ -121,7 +121,7 @@ module Exercises
         question_stem_content = parse(row[14], ex)
 
         styles = [Style::MULTIPLE_CHOICE]
-        styles << Style::FREE_RESPONSE unless display_tag.include?('display:true-false')
+        styles << Style::FREE_RESPONSE unless requires_choices_tag.include?('requires-choices:y')
         explanation = parse(row[15], ex)
         correct_answer_index = row[16].downcase.strip.each_byte.first - 97
 
