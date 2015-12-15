@@ -33,6 +33,7 @@ module Api::V1
                instance: lambda { |*| Answer.new(question: self) },
                writeable: true,
                readable: true,
+               getter: ->(*) { answers.sort_by(&:id) },
                schema_info: {
                  required: true
                }
