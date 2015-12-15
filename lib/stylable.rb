@@ -4,7 +4,7 @@ module Stylable
       def self.included(base)
         base.extend(ClassMethods)
       end
-      
+
       module ClassMethods
         def stylable
           class_exec do
@@ -17,7 +17,7 @@ module Stylable
 
   module Roar
     module Decorator
-      def stylable(method = :stylings)
+      def stylable
         collection :formats,
                    type: String,
                    writeable: true,
