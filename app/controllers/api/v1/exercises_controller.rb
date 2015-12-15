@@ -100,8 +100,7 @@ module Api::V1
         ) unless exercise.publication.authors.any?{ |a| a.user = user }
         exercise.publication.copyright_holders << CopyrightHolder.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.copyright_holders
-                                     .any?{ |a| a.user = user }
+        ) unless exercise.publication.copyright_holders.any?{ |a| a.user = user }
       end
     end
 

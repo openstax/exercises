@@ -53,17 +53,22 @@ module Publishable
             # http://stackoverflow.com/a/7745635
             scope :latest, ->(publishable_scope = nil,
                               publication_scope = Publication.unscoped.published) {
-              publishable_class = self
+              publishable_class_name = name
+              publishable_scope ||= all
               joins(:publication).joins{
-                pub_rel = publication_scope.joins{publishable(publishable_class)}
-                pub_rel = pub_rel.merge(publishable_scope.limit(nil).reorder(nil)) \
-                  unless publishable_scope.nil?
-
-                pub_rel.as(:newer_publication)
-                       .on{ (newer_publication.number == ~publication.number) & \
-                            (newer_publication.version > ~publication.version) }
-                       .outer
-              }.where{newer_publication.id == nil}
+                publication_scope
+                  .reorder(nil).limit(nil).offset(nil)
+                  .joins{
+                    publishable_scope
+                      .reorder(nil).limit(nil).offset(nil)
+                      .as(:newer_publishable)
+                      .on{ newer_publishable.id == ~publishable_id }
+                  }.as(:newer_publication)
+                   .on{ (newer_publication.publishable_type == publishable_class_name) &\
+                        (newer_publication.number == ~publication.number) & \
+                        (newer_publication.version > ~publication.version) }
+                   .outer
+              }.where{ newer_publication.id == nil }
             }
 
             after_initialize :build_publication, unless: [:persisted?, :publication]
