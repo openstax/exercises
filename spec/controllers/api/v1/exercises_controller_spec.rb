@@ -27,7 +27,7 @@ module Api::V1
     describe "GET index" do
 
       before(:each) do
-        10.times { FactoryGirl.create(:exercise) }
+        10.times { FactoryGirl.create(:exercise, :published) }
 
         ad = "%adipisci%"
         Exercise.joins{questions.outer.stems.outer}
@@ -38,7 +38,7 @@ module Api::V1
                        (stems.content.like ad) |\
                        (answers.content.like ad)}.delete_all
 
-        @exercise_1 = Exercise.new
+        @exercise_1 = FactoryGirl.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
           tags: ['tag1', 'tag2'],
           title: "Lorem ipsum",
@@ -53,7 +53,7 @@ module Api::V1
         }.to_json)
         @exercise_1.save!
 
-        @exercise_2 = Exercise.new
+        @exercise_2 = FactoryGirl.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
           tags: ['tag2', 'tag3'],
           title: "Dolorem ipsum",
@@ -68,12 +68,54 @@ module Api::V1
         }.to_json)
         @exercise_2.save!
 
-        @exercises_count = Exercise.count
+        @exercise_draft = FactoryGirl.build(:exercise)
+        Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
+          tags: ['all', 'the', 'tags'],
+          title: "DRAFT",
+          stimulus: "This is a draft",
+          questions: [{
+            stimulus: "with no collaborators",
+            stem_html: "and should not appear",
+            answers: [{
+              content_html: "in most searches"
+            }]
+          }]
+        }.to_json)
+        @exercise_draft.save!
+      end
+
+      context "no matches" do
+        it "does not return drafts that the user is not allowed to see" do
+          api_get :index, user_token, parameters: {q: 'content:draft'}
+          expect(response).to have_http_status(:success)
+
+          expected_response = {
+            total_count: 0,
+            items: []
+          }.to_json
+
+          expect(response.body).to eq(expected_response)
+        end
       end
 
       context "single match" do
+        it "returns drafts that the user is allowed to see" do
+          @exercise_draft.publication.authors << Author.new(user: user)
+          @exercise_draft.reload
+          user.reload
+          api_get :index, user_token, parameters: {q: 'content:draft'}
+          expect(response).to have_http_status(:success)
+
+          expected_response = {
+            total_count: 1,
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_draft).to_hash(user: user)]
+          }.to_json
+
+          expect(response.body).to eq(expected_response)
+        end
+
         it "returns an Exercise matching the content" do
-          api_get :index, admin_token, parameters: {q: 'content:aDiPiScInG eLiT'}
+          api_get :index, user_token, parameters: {q: 'content:aDiPiScInG eLiT'}
           expect(response).to have_http_status(:success)
 
           expected_response = {
@@ -85,7 +127,7 @@ module Api::V1
         end
 
         it "returns an Exercise matching the tags" do
-          api_get :index, admin_token, parameters: {q: 'tag:tAg1'}
+          api_get :index, user_token, parameters: {q: 'tag:tAg1'}
           expect(response).to have_http_status(:success)
 
           expected_response = {
@@ -99,7 +141,7 @@ module Api::V1
 
       context "multiple matches" do
         it "returns Exercises matching the content" do
-          api_get :index, admin_token, parameters: {q: 'content:AdIpIsCi'}
+          api_get :index, user_token, parameters: {q: 'content:AdIpIsCi'}
           expect(response).to have_http_status(:success)
 
           expected_response = {
@@ -112,7 +154,7 @@ module Api::V1
         end
 
         it "returns Exercises matching the tags" do
-          api_get :index, admin_token, parameters: {q: 'tag:TaG2'}
+          api_get :index, user_token, parameters: {q: 'tag:TaG2'}
           expect(response).to have_http_status(:success)
 
           expected_response = {
@@ -125,8 +167,8 @@ module Api::V1
         end
 
         it "sorts by multiple fields in different directions" do
-          api_get :index, admin_token, parameters: {q: 'content:aDiPiScI',
-                                                    order_by: "number DESC, version ASC"}
+          api_get :index, user_token, parameters: {q: 'content:aDiPiScI',
+                                                   order_by: "number DESC, version ASC"}
           expect(response).to have_http_status(:success)
 
           expected_response = {
