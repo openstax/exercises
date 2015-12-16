@@ -74,17 +74,18 @@ module Api::V1
         allow(answer_1).to receive(:id).and_return(2)
         allow(answer_1).to receive(:as_json).and_return(answer_1)
         allow(answer_1).to receive(:question).and_return(question)
-        allow(answer_1).to receive(:content).and_return('Yes')
+        allow(answer_1).to receive(:content).and_return('No')
         answer_2 = instance_spy(Answer)
         allow(answer_2).to receive(:id).and_return(1)
         allow(answer_2).to receive(:as_json).and_return(answer_2)
         allow(answer_2).to receive(:question).and_return(question)
-        allow(answer_2).to receive(:content).and_return('No')
+        allow(answer_2).to receive(:content).and_return('Yes')
         answers = [answer_1, answer_2]
-        answer_representations = answers.collect{ |answer| AnswerRepresenter.new(answer).to_hash }
-        reverse_answer_representations = answer_representations.reverse()
+        answer_representations = answers.reverse.collect do |answer|
+          AnswerRepresenter.new(answer).to_hash
+        end
         allow(question).to receive(:answers).and_return(answers)
-        expect(representation).to include('answers' => reverse_answer_representations)
+        expect(representation).to include('answers' => answer_representations)
       end
 
       xit 'can be written' do
