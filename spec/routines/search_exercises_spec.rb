@@ -73,6 +73,16 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [@exercise_1]
     end
 
+    it "returns an Exercise matching the publication number" do
+      number = @exercise_2.publication.number
+      result = SearchExercises.call(q: "number:#{number}")
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_2]
+    end
+
     it "does not return old versions of published Exercises matching the tags" do
       new_exercise = Exercise.new
       Api::V1::ExerciseRepresenter.new(new_exercise).from_json({
