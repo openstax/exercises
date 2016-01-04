@@ -81,7 +81,7 @@ class SearchExercises
           sanitized_numbers = to_string_array(numbers)
           next @items = @items.none if sanitized_numbers.empty?
 
-          @items = @items.where(publication: {number: sanitized_versions})
+          @items = @items.where(publication: {number: sanitized_numbers})
         end
       end
 
