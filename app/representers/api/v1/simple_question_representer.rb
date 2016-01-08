@@ -19,7 +19,7 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
-             getter: lambda { |args| stems.first.content },
+             getter: lambda { |args| stems.first.try(:content) || '' },
              setter: lambda { |value, args|
                stems << Stem.new(question: self) if stems.empty?
                stems.first.content = value },
