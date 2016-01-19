@@ -27,7 +27,7 @@ module Api::V1
       )
       @publishable.publication.publish
       @publishable.publication.save
-      respond_with @publishable, responder: ResponderWithPutContent, user: current_api_user
+      respond_with @publishable.reload, responder: ResponderWithPutContent, user: current_api_user
     end
 
     protected
