@@ -8,6 +8,14 @@ module Api::V1
              writeable: false,
              readable: true
 
+    property :answer_order_matters,
+             as: :is_answer_order_important,
+             writeable: true,
+             readable: true,
+             schema_info: {
+               type: 'boolean'
+             }
+
     property :stimulus,
              as: :stimulus_html,
              type: String,
@@ -33,7 +41,6 @@ module Api::V1
                instance: lambda { |*| Answer.new(question: self) },
                writeable: true,
                readable: true,
-               getter: ->(*) { answers.sort_by(&:id) },
                schema_info: {
                  required: true
                }

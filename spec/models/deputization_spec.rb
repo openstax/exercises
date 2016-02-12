@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Deputization, :type => :model do
+RSpec.describe Deputization, type: :model do
 
   it { is_expected.to belong_to(:deputy) }
   it { is_expected.to belong_to(:deputizer) }

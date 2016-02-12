@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe QuestionDependency, :type => :model do
+RSpec.describe QuestionDependency, type: :model do
 
   subject { FactoryGirl.create(:question_dependency) }
 

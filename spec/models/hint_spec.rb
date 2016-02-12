@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Hint, :type => :model do
+RSpec.describe Hint, type: :model do
 
   it { is_expected.to belong_to(:question) }
 

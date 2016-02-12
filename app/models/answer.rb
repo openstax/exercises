@@ -4,7 +4,7 @@ class Answer < ActiveRecord::Base
 
   parsable :content
 
-  belongs_to :question
+  sortable_belongs_to :question, inverse_of: :answers
 
   has_many :stem_answers, dependent: :destroy
 

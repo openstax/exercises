@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ListNesting, :type => :model do
+RSpec.describe ListNesting, type: :model do
 
   subject { FactoryGirl.create(:list_nesting) }
 

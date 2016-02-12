@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExerciseTag, :type => :model do
+RSpec.describe ExerciseTag, type: :model do
   subject { FactoryGirl.create :exercise_tag }
 
   it { is_expected.to belong_to(:exercise) }

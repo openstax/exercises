@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Publication, :type => :model do
+RSpec.describe Publication, type: :model do
 
   subject { FactoryGirl.create :publication }
 

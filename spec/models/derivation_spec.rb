@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Derivation, :type => :model do
+RSpec.describe Derivation, type: :model do
 
   subject { FactoryGirl.create :derivation }
 
