@@ -13,7 +13,8 @@ RSpec.describe StemAnswer, type: :model do
 
   it { is_expected.to validate_uniqueness_of(:answer).scoped_to(:stem_id) }
 
-  it { is_expected.to validate_numericality_of(:correctness) }
+  it { is_expected.to validate_numericality_of(:correctness).is_greater_than_or_equal_to(0.0)
+                                                            .is_less_than_or_equal_to(1.0) }
 
   it 'requires that the stem and answer belong to the same question' do
     sa = FactoryGirl.build(:stem_answer, stem: FactoryGirl.build(:stem),

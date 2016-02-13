@@ -8,14 +8,11 @@ RSpec.describe ExerciseAccessPolicy do
 
   context 'search' do
     it 'can be accessed by everyone' do
-      expect(ExerciseAccessPolicy.action_allowed?(:search, anon, Exercise))
-        .to eq true
+      expect(ExerciseAccessPolicy.action_allowed?(:search, anon, Exercise)).to eq true
 
-      expect(ExerciseAccessPolicy.action_allowed?(:search, user, Exercise))
-        .to eq true
+      expect(ExerciseAccessPolicy.action_allowed?(:search, user, Exercise)).to eq true
 
-      expect(ExerciseAccessPolicy.action_allowed?(:search, app, Exercise))
-        .to eq true
+      expect(ExerciseAccessPolicy.action_allowed?(:search, app, Exercise)).to eq true
     end
   end
 

@@ -39,7 +39,7 @@ RSpec.describe Publication, type: :model do
     publication.license = FactoryGirl.build :license, licensed_classes: []
     expect(publication).not_to be_valid
     expect(publication.errors[:license]).to(
-      include('is not valid for Exercise'))
+      include('is invalid for Exercise'))
 
     publication.license = nil
     expect(publication).to be_valid
@@ -106,6 +106,19 @@ RSpec.describe Publication, type: :model do
     expect(publication.is_published?).to eq false
     publication.publish
     expect(publication.is_published?).to eq true
+  end
+
+  it 'validates the publishable before publication' do
+    publication.save!
+    expect(publication.reload.publishable).to receive(:publication_validation) do
+      publication.publishable.errors.add(:base, 'is invalid')
+      false
+    end
+    expect(publication.publish.save).to eq false
+    expect(publication.errors.first).to eq [:exercise, 'is invalid']
+
+    expect(publication.reload.publishable).to receive(:publication_validation)
+    expect(publication.publish.save).to eq true
   end
 
 end

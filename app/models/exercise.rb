@@ -83,6 +83,19 @@ class Exercise < ActiveRecord::Base
     has_collaborator?(user) # Regular user
   end
 
+  def publication_validation
+    # Check that all stems have either no answers (free response) or at least one correct answer
+    questions.each do |question|
+      question.stems.each do |stem|
+        next if stem.stem_answers.empty? || stem.stem_answers.any?{ |sa| sa.is_correct? }
+        errors.add(:base, 'has a question with only incorrect answers')
+        return false
+      end
+    end
+
+    true
+  end
+
   protected
 
   def has_questions

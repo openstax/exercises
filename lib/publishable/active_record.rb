@@ -76,6 +76,9 @@ module Publishable
                    :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
+          def publication_validation
+          end
+
           protected
 
           def ensure_publication

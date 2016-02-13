@@ -19,7 +19,7 @@ class Publication < ActiveRecord::Base
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :number, presence: true
   validates :version, presence: true, uniqueness: { scope: [:publishable_type, :number] }
-  validate  :valid_license
+  validate  :valid_license, :valid_publishable
 
   before_validation :assign_number_and_version, on: :create
 
@@ -73,7 +73,17 @@ class Publication < ActiveRecord::Base
 
   def valid_license
     return if license.nil? || license.valid_for?(publishable_type)
-    errors.add(:license, "is not valid for #{publishable_type}")
+    errors.add(:license, "is invalid for #{publishable_type}")
+    false
+  end
+
+  def valid_publishable
+    return if publishable.nil?
+    publishable.publication_validation
+    return if publishable.errors.empty?
+    publishable.errors.full_messages.each do |message|
+      errors.add(publishable_type.underscore.to_sym, message)
+    end
     false
   end
 
