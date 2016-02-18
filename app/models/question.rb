@@ -7,10 +7,12 @@ class Question < ActiveRecord::Base
   belongs_to :exercise
 
   has_many :stems, dependent: :destroy
-  has_many :answers, dependent: :destroy
+
+  sortable_has_many :answers, dependent: :destroy, inverse_of: :question
+
   has_many :solutions, dependent: :destroy
 
-  sortable_has_many :hints, dependent: :destroy
+  sortable_has_many :hints, dependent: :destroy, inverse_of: :question
 
   has_many :parent_dependencies, class_name: 'QuestionDependency',
            foreign_key: :dependent_question_id, dependent: :destroy,

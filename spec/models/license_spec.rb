@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe License, :type => :model do
+RSpec.describe License, type: :model do
 
   subject { FactoryGirl.create(:license) }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CopyrightHolder, :type => :model do
+RSpec.describe CopyrightHolder, type: :model do
 
   subject { FactoryGirl.create(:copyright_holder) }
 

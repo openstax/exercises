@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ComboChoiceAnswer, :type => :model do
+RSpec.describe ComboChoiceAnswer, type: :model do
 
   subject { FactoryGirl.create(:combo_choice_answer) }
 

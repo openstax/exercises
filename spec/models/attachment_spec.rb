@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Attachment, :type => :model do
+RSpec.describe Attachment, type: :model do
 
   subject(:attachment) { FactoryGirl.create :attachment }
   let!(:asset_path)    { attachment.asset.path }

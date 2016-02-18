@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Styling, :type => :model do
+RSpec.describe Styling, type: :model do
 
   it { is_expected.to belong_to(:stylable) }
 

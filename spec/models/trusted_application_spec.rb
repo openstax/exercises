@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TrustedApplication, :type => :model do
+RSpec.describe TrustedApplication, type: :model do
 
   subject { FactoryGirl.create(:trusted_application) }
 

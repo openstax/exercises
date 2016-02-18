@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe LogicVariable, :type => :model do
+RSpec.describe LogicVariable, type: :model do
 
   INVALID_VARIABLES = ["'hello'", '"hello"', 'hel lo', '$hello$', '<hello>',
                        'hello?', 'http://hello', '/hel/lo', 'hel; lo']

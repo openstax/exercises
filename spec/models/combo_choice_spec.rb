@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ComboChoice, :type => :model do
+RSpec.describe ComboChoice, type: :model do
 
   it { is_expected.to belong_to(:stem) }
 

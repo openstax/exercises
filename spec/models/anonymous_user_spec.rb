@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AnonymousUser, :type => :model do
+RSpec.describe AnonymousUser, type: :model do
 
   it 'is a singleton' do
     expect(AnonymousUser).to respond_to(:instance)

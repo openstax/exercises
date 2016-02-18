@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StemAnswer, :type => :model do
+RSpec.describe StemAnswer, type: :model do
 
   subject { FactoryGirl.create(:stem_answer) }
 

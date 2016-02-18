@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Administrator, :type => :model do
+RSpec.describe Administrator, type: :model do
 
   subject { FactoryGirl.create(:administrator) }
 
