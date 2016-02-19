@@ -21,6 +21,8 @@ Exercises::Application.routes.draw do
 
   api :v1, default: true do
     resources :exercises do
+      post :save_image, on: :member
+
       publishable
       # Not in V1
       #has_logic

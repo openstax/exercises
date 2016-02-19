@@ -2,7 +2,7 @@ module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
     before_filter :get_exercise_or_create_draft, only: [:show, :update]
-    before_filter :get_exercise, only: [:destroy]
+    before_filter :get_exercise, only: [:save_image, :destroy]
 
     resource_description do
       api_versions "v1"
@@ -131,6 +131,29 @@ module Api::V1
     def update
       standard_update(@exercise, nil, user: current_api_user)
     end
+
+
+
+    ##################################################################
+    ## post save_image                                              ##
+    ##################################################################
+
+    api :POST, '/exercises/:uid/save_image', 'Save an image onto an exercise'
+    description <<-EOS
+      Saves an image asset as an attachment on an Exercise.
+
+      Unlike other API calls, this is accomplished via a multi-part form upload
+      with a file part, not as a traditional POST of JSON data
+
+      Requires a single form parameter named "image"
+
+      #{json_schema(Api::V1::AttachmentRepresenter, include: :readable)}
+    EOS
+    def save_image
+      attachment = AttachFile.call(@exercise, params[:image].tempfile).outputs[:attachment]
+      respond_with attachment, represent_with: Api::V1::AttachmentRepresenter, location: nil
+    end
+
 
     ###########
     # destroy #
