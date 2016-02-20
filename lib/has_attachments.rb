@@ -4,7 +4,7 @@ module HasAttachments
       def self.included(base)
         base.extend(ClassMethods)
       end
-      
+
       module ClassMethods
         def has_attachments
           class_exec do
@@ -17,13 +17,15 @@ module HasAttachments
 
   module Roar
     module Decorator
-      def has_attachments
+      def has_attachments(options={})
         collection :attachments,
-                   class: Attachment,
-                   decorator: Api::V1::AttachmentRepresenter,
-                   writeable: true,
-                   readable: true,
-                   parse_strategy: :sync
+                   options.merge(
+                     class: Attachment,
+                     decorator: Api::V1::AttachmentRepresenter,
+                     writeable: true,
+                     readable: true,
+                     parse_strategy: :sync
+                   )
       end
     end
   end

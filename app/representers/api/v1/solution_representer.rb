@@ -20,5 +20,10 @@ module Api::V1
              writeable: true,
              readable: true
 
+    property :is_by_collaborator,
+             type: 'boolean',
+             readable: true,
+             writeable: false
+
   end
 end
