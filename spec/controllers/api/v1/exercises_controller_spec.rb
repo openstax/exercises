@@ -397,27 +397,6 @@ module Api::V1
 
     end
 
-    describe "POST save_image" do
-        before(:each) { @exercise.save! }
-
-        it 'attaches a file to an exercise' do
-            image = ActionDispatch::Http::UploadedFile.new({
-              :filename => 'test_photo_1.jpg',
-              :type => 'image/jpeg',
-              :tempfile => File.new("#{Rails.root}/spec/fixtures/rails.png")
-            })
-            expect {
-                api_post :save_image, user_token, parameters: {
-                           id: "#{@exercise.number}@draft", image: image
-                         }
-            }.to(
-                change{ @exercise.attachments.count }.by(1)
-            )
-            expect(response).to have_http_status(:success)
-        end
-
-    end
-
     describe "DELETE destroy" do
 
       it "deletes the requested draft Exercise" do
