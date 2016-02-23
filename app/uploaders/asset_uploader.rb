@@ -32,9 +32,6 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def is_image?(ff = file)
-    if ff == true
-      debugger
-    end
     mime_type(ff).start_with? 'image/'
   end
 
@@ -46,7 +43,9 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def mime_type(file)
-    FileMagic.new(FileMagic::MAGIC_MIME_TYPE).file(file.path)
+    File.open(file.path) do |fh|
+      return MimeMagic.by_magic(fh).type
+    end
   end
 
   def content_hash
