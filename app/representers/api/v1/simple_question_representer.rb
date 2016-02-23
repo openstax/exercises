@@ -45,9 +45,19 @@ module Api::V1
                  required: true
                }
 
-    collection :solutions,
-               class: Solution,
-               decorator: SolutionRepresenter,
+    collection :collaborator_solutions,
+               class: CollaboratorSolution,
+               decorator: CollaboratorSolutionRepresenter,
+               writeable: true,
+               readable: true,
+               if: lambda { |args| exercise.can_view_solutions?(args[:user]) },
+               schema_info: {
+                 required: true
+               }
+
+    collection :community_solutions,
+               class: CommunitySolution,
+               decorator: CommunitySolutionRepresenter,
                writeable: true,
                readable: true,
                if: lambda { |args| exercise.can_view_solutions?(args[:user]) },

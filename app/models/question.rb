@@ -10,7 +10,8 @@ class Question < ActiveRecord::Base
 
   sortable_has_many :answers, dependent: :destroy, inverse_of: :question
 
-  has_many :solutions, dependent: :destroy
+  has_many :collaborator_solutions, dependent: :destroy
+  has_many :community_solutions, dependent: :destroy
 
   sortable_has_many :hints, dependent: :destroy, inverse_of: :question
 

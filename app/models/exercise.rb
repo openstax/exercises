@@ -51,7 +51,8 @@ class Exercise < ActiveRecord::Base
                           editors: :user],
             questions: [
               :hints,
-              :solutions,
+              :collaborator_solutions,
+              :community_solutions,
               answers: :stem_answers,
               stems: [:stylings, :combo_choices]
             ])

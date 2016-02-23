@@ -39,7 +39,7 @@ module Api::V1
     end
 
     def get_solution
-      Solution.visible_for(current_api_user).with_uid(params[:solution_id]).first || \
+      CommunitySolution.visible_for(current_api_user).with_uid(params[:solution_id]).first || \
         raise(ActiveRecord::RecordNotFound,
               "Couldn't find Solution with 'uid'=#{params[:solution_id]}")
     end

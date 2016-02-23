@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe SolutionsController, type: :controller, api: true, version: :v1 do
+  RSpec.describe CommunitySolutionsController, type: :controller, api: true, version: :v1 do
 
     before(:each) do
       # To be implemented

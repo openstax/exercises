@@ -5,12 +5,11 @@ module Api::V1
 
     let!(:exercise)        { FactoryGirl.create :exercise }
 
-    let!(:solution)        { FactoryGirl.create :solution }
+    let!(:solution)        { FactoryGirl.create :community_solution }
 
     let!(:exercise_author) { FactoryGirl.create :author }
     let!(:exercise)        { exercise_author.publication.publishable }
 
-    let!(:solution)        { FactoryGirl.create :solution }
     let!(:solution_author) {
       FactoryGirl.create :author, publication: solution.publication
     }
@@ -50,7 +49,7 @@ module Api::V1
             solution_id: solution.uid.to_s
           }
 
-          expected_response = Api::V1::SolutionRepresenter.new(solution.reload).to_json
+          expected_response = Api::V1::CommunitySolutionRepresenter.new(solution.reload).to_json
           expect(response).to have_http_status(:success)
           expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
           expect(solution.is_published?).to eq true

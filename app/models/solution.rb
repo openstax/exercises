@@ -2,7 +2,6 @@ class Solution < ActiveRecord::Base
 
   acts_as_votable
   parsable :content
-  publishable
   has_attachments
   has_logic :javascript, :latex
   stylable

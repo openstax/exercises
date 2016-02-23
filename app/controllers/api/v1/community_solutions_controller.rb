@@ -1,5 +1,5 @@
 module Api::V1
-  class SolutionsController < OpenStax::Api::V1::ApiController
+  class CommunitySolutionsController < OpenStax::Api::V1::ApiController
 
     before_filter :get_solution, only: [:show, :update, :destroy]
 
@@ -10,24 +10,6 @@ module Api::V1
         Solutions teach students how to solve Exercises.
         They contain more than just the correct answer.
       EOS
-    end
-
-    #########
-    # index #
-    #########
-
-    api :GET, '/exercises/:exercise_id/solutions', 'Lists the visible Solutions for the given exercise'
-    description <<-EOS
-      Shows the list of visible Solutions for the given exercise.
-
-      Visible solutions include solutions written by
-      the user, as well as published solutions.
-
-      #{json_schema(Api::V1::SolutionSearchRepresenter, include: :readable)}
-    EOS
-    def index
-      standard_index(Solution.visible_for(current_human_user),
-                     represent_with: Api::V1::SolutionSearchRepresenter)
     end
 
     ########

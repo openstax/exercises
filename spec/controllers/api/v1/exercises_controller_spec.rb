@@ -40,6 +40,7 @@ module Api::V1
 
         @exercise_1 = FactoryGirl.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
+          user: nil,
           tags: ['tag1', 'tag2'],
           title: "Lorem ipsum",
           stimulus: "Dolor",
@@ -239,7 +240,7 @@ module Api::V1
       context 'with solutions' do
         before(:each) do
           question = @exercise.questions.first
-          question.solutions << FactoryGirl.create(:solution, :published, question: question)
+          question.collaborator_solutions << FactoryGirl.create(:collaborator_solution, question: question)
         end
 
         it "shows solutions for published exercises if the requestor is an app" do
@@ -247,7 +248,7 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['solutions']).not_to be_empty
+          expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
           response_hash['questions'].first['answers'].each do |answer|
             expect(answer['correctness']).to be_present
             expect(answer['feedback_html']).to be_present
@@ -259,7 +260,7 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['solutions']).not_to be_empty
+          expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
           response_hash['questions'].first['answers'].each do |answer|
             expect(answer['correctness']).to be_present
             expect(answer['feedback_html']).to be_present
@@ -273,7 +274,7 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['solutions']).to be_nil
+          expect(response_hash['questions'].first['collaborator_solutions']).to be_nil
           response_hash['questions'].first['answers'].each do |answer|
             expect(answer['correctness']).to be_nil
             expect(answer['feedback_html']).to be_nil

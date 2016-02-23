@@ -26,7 +26,7 @@ Exercises::Application.routes.draw do
       #has_logic
 
       resources :questions, only: [] do
-        resources :solutions, shallow: true do
+        resources :community_solutions, shallow: true, except: [:index] do
           publishable
           #has_logic
         end

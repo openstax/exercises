@@ -1,0 +1,2 @@
+class CollaboratorSolution < Solution
+end

@@ -14,7 +14,8 @@ module Api::V1
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:stems).and_return([])
       allow(dbl).to receive(:answers).and_return([])
-      allow(dbl).to receive(:solutions).and_return([])
+      allow(dbl).to receive(:collaborator_solutions).and_return([])
+      allow(dbl).to receive(:community_solutions).and_return([])
       allow(dbl).to receive(:hints).and_return([])
       allow(dbl).to receive(:parent_dependencies).and_return([])
       dbl
@@ -133,10 +134,10 @@ module Api::V1
 
     context 'solutions' do
       it 'can be read' do
-        solutions = [Solution.new(content: 'Of course.')]
-        solution_representations = solutions.collect{ |sol| SolutionRepresenter.new(sol).to_hash }
-        allow(question).to receive(:solutions).and_return(solutions)
-        expect(representation).to include('solutions' => solution_representations)
+        solutions = [CollaboratorSolution.new(content: 'Of course.')]
+        solution_representations = solutions.collect{ |sol| CollaboratorSolutionRepresenter.new(sol).to_hash }
+        allow(question).to receive(:collaborator_solutions).and_return(solutions)
+        expect(representation).to include('collaborator_solutions' => solution_representations)
       end
 
       xit 'can be written' do

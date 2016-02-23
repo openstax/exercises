@@ -3,13 +3,13 @@ require 'rails_helper'
 module Publishables::Publish
   RSpec.describe All do
     let!(:published_exercise) { FactoryGirl.create :exercise, :published }
-    let!(:published_solution) { FactoryGirl.create :solution, :published }
+    let!(:published_solution) { FactoryGirl.create :community_solution, :published }
 
     let!(:exercise_1)         { FactoryGirl.create :exercise }
     let!(:exercise_2)         { FactoryGirl.create :exercise }
 
-    let!(:solution_1)         { FactoryGirl.create :solution }
-    let!(:solution_2)         { FactoryGirl.create :solution }
+    let!(:solution_1)         { FactoryGirl.create :community_solution }
+    let!(:solution_2)         { FactoryGirl.create :community_solution }
 
     it 'publishes all unpublished publishables' do
       exercise_published_at = published_exercise.published_at
