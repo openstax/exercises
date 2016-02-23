@@ -43,9 +43,7 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def mime_type(file)
-    File.open(file.path) do |fh|
-      return MimeMagic.by_magic(fh).type
-    end
+    MimeMagic.by_magic(file.to_file).type
   end
 
   def content_hash
