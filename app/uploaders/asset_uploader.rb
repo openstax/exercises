@@ -43,9 +43,18 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def mime_type(file)
-    # When ran locally file is a CarrierWave::SantizedFile,
-    # remotely it's a CarrierWave::Storage::Fog::File
-    MimeMagic.by_magic(file.respond_to?(:to_file) ? file.to_file : file).type
+    mm_file = case file
+    when File
+      file
+    when CarrierWave::SanitizedFile
+      file.to_file
+    when CarrierWave::Storage::Fog::File
+      file.read
+    end
+
+    return 'application/octet-stream' if mm_file.closed?
+
+    MimeMagic.by_magic(mm_file).type
   end
 
   def content_hash
