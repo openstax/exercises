@@ -32,29 +32,29 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def is_image?(ff = file)
-    mime_type(ff).start_with? 'image/'
+    mime_type(ff).try(:start_with?, 'image/')
   end
 
   def check_whitelist_pattern!(file)
     mime = mime_type(file)
-    unless ALLOWED_EXTENSIONS.find{ |ext| mime.include?(ext) }
-      raise CarrierWave::IntegrityError, "#{mime} is an invalid asset type"
-    end
+
+    raise(CarrierWave::IntegrityError, "Unknown asset type") if mime.nil?
+
+    raise(CarrierWave::IntegrityError, "#{mime} is an invalid asset type") \
+      unless ALLOWED_EXTENSIONS.find{ |ext| mime.include?(ext) }
   end
 
   def mime_type(file)
     mm_file = case file
-    when File
-      file
     when CarrierWave::SanitizedFile
       file.to_file
     when CarrierWave::Storage::Fog::File
-      file.read
+      CarrierWave::Storage::Fog.new(self).retrieve!(File.basename(file.path))
+    else
+      open(file)
     end
 
-    return 'application/octet-stream' if mm_file.closed?
-
-    MimeMagic.by_magic(mm_file).type
+    MimeMagic.by_magic(mm_file).try(:type)
   end
 
   def content_hash

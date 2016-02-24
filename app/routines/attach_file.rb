@@ -21,7 +21,7 @@ class AttachFile
 
       outputs[:attachment] = attachment
       outputs[:url] = attachment.asset.url
-      return unless attachment.asset.is_image?(attachment.asset.file)
+      return unless attachment.asset.is_image?
 
       outputs[:large_url] = attachment.asset.large.url
       outputs[:medium_url] = attachment.asset.medium.url
