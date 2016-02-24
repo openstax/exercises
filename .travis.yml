@@ -8,8 +8,6 @@ cache: bundler
 bundler_args: --without production --retry=6
 addons:
   postgresql: "9.3"
-  apt_packages:
-    libmagic-dev
 script:
   - bundle exec parallel_rspec ./spec
 branches:
