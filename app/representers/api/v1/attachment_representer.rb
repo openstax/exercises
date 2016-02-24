@@ -3,6 +3,11 @@ module Api::V1
 
     include Roar::JSON
 
+    property :id,
+             type: String,
+             writeable: false,
+             readable: true
+
     property :asset,
              type: String,
              readable: true,

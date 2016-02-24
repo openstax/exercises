@@ -12,4 +12,22 @@ RSpec.describe AttachFile, type: :routine do
 
     expect(attachable.attachments.last.asset.url).to eq result.outputs.url
   end
+
+  it 'sets the attachment and url for different sizes as outputs' do
+    output = AttachFile.call(attachable, 'spec/fixtures/os_exercises_logo.png').outputs
+    attachment = attachable.reload.attachments.last
+    expect(output.as_json).to match(
+                                'attachment' => a_hash_including(
+                                  "id"=>attachment.id,
+                                  "parent_id"=>attachment.parent.id,
+                                  "parent_type"=>"Exercise"
+                                ),
+                                'large_url'  => a_string_starting_with("/attachments/large_"),
+                                'medium_url' => a_string_starting_with("/attachments/medium_"),
+                                'small_url'  => a_string_starting_with("/attachments/small_"),
+                                'url'        => a_string_starting_with("/attachments/")
+                              )
+
+  end
+
 end

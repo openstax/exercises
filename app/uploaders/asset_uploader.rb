@@ -1,8 +1,9 @@
 class AssetUploader < CarrierWave::Uploader::Base
   ALLOWED_EXTENSIONS = %w(jpg jpeg gif png svg pdf)
-  IMAGE_EXTENSIONS = %w(jpg jpeg gif png svg)
 
   include CarrierWave::MiniMagick
+
+  before :cache, :check_whitelist_pattern!
 
   process convert: 'png', if: :is_image?
   process :compress, if: :is_image?
@@ -31,11 +32,29 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def is_image?(ff = file)
-    IMAGE_EXTENSIONS.include? ff.extension
+    mime_type(ff).try(:start_with?, 'image/')
   end
 
-  def extension_white_list
-    ALLOWED_EXTENSIONS
+  def check_whitelist_pattern!(file)
+    mime = mime_type(file)
+
+    raise(CarrierWave::IntegrityError, "Unknown asset type") if mime.nil?
+
+    raise(CarrierWave::IntegrityError, "#{mime} is an invalid asset type") \
+      unless ALLOWED_EXTENSIONS.find{ |ext| mime.include?(ext) }
+  end
+
+  def mime_type(file)
+    mm_file = case file
+    when CarrierWave::SanitizedFile
+      file.to_file
+    when CarrierWave::Storage::Fog::File
+      CarrierWave::Storage::Fog.new(self).retrieve!(File.basename(file.path))
+    else
+      open(file)
+    end
+
+    MimeMagic.by_magic(mm_file).try(:type)
   end
 
   def content_hash
