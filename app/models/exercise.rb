@@ -17,6 +17,7 @@ class Exercise < ActiveRecord::Base
       questions: [
         :hints,
         :answers,
+        :collaborator_solutions,
         {
           stems: [
             :stylings,

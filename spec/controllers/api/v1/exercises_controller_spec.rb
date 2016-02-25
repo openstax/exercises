@@ -315,6 +315,22 @@ module Api::V1
         expect(new_exercise.copyright_holders.first.user).to eq user
       end
 
+      it "creates the exercise with a collaborator solution" do
+        exercise = FactoryGirl.build(:exercise, collaborator_solutions_count: 1)
+        exercise.publication.editors << FactoryGirl.build(
+          :editor, user: user, publication: @exercise.publication
+        )
+debugger
+        expect { api_post :create, user_token,
+                          raw_post_data: Api::V1::ExerciseRepresenter.new(exercise).to_json(user: user)
+        }.to change(Exercise, :count).by(1)
+        expect(response).to have_http_status(:success)
+debugger
+        new_exercise = Exercise.last
+
+        expect(new_exercise.questions.first.collaborator_solutions).not_to be_empty
+      end
+
     end
 
     describe "PATCH update" do

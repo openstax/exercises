@@ -54,7 +54,7 @@ module Api::V1
     collection :community_solutions,
                class: CommunitySolution,
                decorator: CommunitySolutionRepresenter,
-               writeable: true,
+               writeable: false,
                readable: true,
                if: lambda { |args| exercise.can_view_solutions?(args[:user]) },
                schema_info: {
