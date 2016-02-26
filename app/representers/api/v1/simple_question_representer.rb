@@ -48,6 +48,7 @@ module Api::V1
     collection :collaborator_solutions,
                class: CollaboratorSolution,
                decorator: CollaboratorSolutionRepresenter,
+               instance: lambda { |*| CollaboratorSolution.new(question: self) },
                writeable: true,
                readable: true,
                if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
