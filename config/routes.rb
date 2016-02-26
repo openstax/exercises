@@ -53,7 +53,7 @@ Exercises::Application.routes.draw do
   mount FinePrint::Engine => "/fine_print"
 
   use_doorkeeper do
-    controllers :applications => 'oauth/applications'
+    controllers applications: 'oauth/applications'
   end
 
   namespace 'admin' do

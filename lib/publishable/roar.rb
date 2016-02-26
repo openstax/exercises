@@ -53,7 +53,7 @@ module Publishable
         collection :derivations,
                    as: :derived_from,
                    class: Publication,
-                   decorator: Api::V1::PublicationRepresenter,
+                   decorator: self,
                    writeable: true,
                    readable: true
 

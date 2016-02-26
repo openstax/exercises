@@ -1,5 +1,9 @@
 module Api::V1
-  class ListRepresenter < PublicationRepresenter
+  class ListRepresenter < Roar::Decorator
+
+    include Roar::JSON
+
+    publishable
 
     property :parent_list_uid,
              type: Integer,

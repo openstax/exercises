@@ -1,7 +1,7 @@
 module Api::V1
   class CommunitySolutionsController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_solution, only: [:show, :update, :destroy]
+    before_filter :get_community_solution, only: [:show, :update, :destroy]
 
     resource_description do
       api_versions "v1"
@@ -16,35 +16,36 @@ module Api::V1
     # show #
     ########
 
-    api :GET, '/solutions/:uid', 'Gets the specified Solution'
+    api :GET, '/community_solutions/:uid', 'Gets the specified CommunitySolution'
     description <<-EOS
-      Shows the specified Solution, including high-level explanation and detailed explanation.
+      Shows the specified CommunitySolution.
 
-      The user must have permission to view the solution.
+      The user must have permission to view it.
 
-      #{json_schema(Api::V1::SolutionRepresenter, include: :readable)}
+      #{json_schema(Api::V1::CommunitySolutionRepresenter, include: :readable)}
     EOS
     def show
-      standard_read(@solution)
+      standard_read(@community_solution)
     end
 
     ##########
     # create #
     ##########
 
-    api :POST, '/exercises/:exercise_uid/solutions',
-               'Creates a new Solution for the given exercise'
+    api :POST, '/exercises/:exercise_uid/community_solutions',
+               'Creates a new CommunitySolution for the given exercise'
     description <<-EOS
-      Creates a new Solution for the given exercise.
-      The user is set as the author and copyright holder.
+      Creates a new CommunitySolution for the given exercise.
 
-      #{json_schema(Api::V1::SolutionRepresenter, include: :writeable)}
+      The user is set as its author and copyright holder.
+
+      #{json_schema(Api::V1::CommunitySolutionRepresenter, include: :writeable)}
     EOS
     def create
-      standard_create(Solution) do |solution|
-        c = solution.add_collaborator(current_human_user)
-        c.is_author = true
-        c.is_copyright_holder = true
+      standard_create(CommunitySolution) do |community_solution|
+        collaborator = community_solution.add_collaborator(current_human_user)
+        collaborator.is_author = true
+        collaborator.is_copyright_holder = true
       end
     end
 
@@ -52,38 +53,39 @@ module Api::V1
     # update #
     ##########
 
-    api :PUT, '/solutions/:uid', 'Updates the properties of a Solution'
+    api :PUT, '/community_solutions/:uid', 'Updates the properties of a CommunitySolution'
     description <<-EOS
-      Updates the properties of the specified Solution.
+      Updates the properties of the specified CommunitySolution.
 
-      The user must have permission to edit the solution.
+      The user must have permission to edit it.
 
-      #{json_schema(Api::V1::SolutionRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::CommunitySolutionRepresenter, include: :writeable)}
     EOS
     def update
-      standard_update(@solution)
+      standard_update(@community_solution)
     end
 
     ###########
     # destroy #
     ###########
 
-    api :DELETE, '/solutions/:uid', 'Deletes the specified Solution'
+    api :DELETE, '/community_solutions/:uid', 'Deletes the specified CommunitySolution'
     description <<-EOS
-      Deletes the specified Solution.
+      Deletes the specified CommunitySolution.
 
-      The user must have permission to edit the solution.
+      The user must have permission to edit it.
     EOS
     def destroy
-      standard_destroy(@solution)
+      standard_destroy(@community_solution)
     end
 
     protected
 
-    def get_solution
-      @exercise = Solution.visible_for(current_api_user).with_uid(params[:id]).first || \
+    def get_community_solution
+      @community_solution = CommunitySolution.visible_for(current_api_user)
+                                             .with_uid(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound,
-              "Couldn't find Solution with 'uid'=#{params[:id]}")
+              "Couldn't find CommunitySolution with 'uid'=#{params[:id]}")
     end
 
   end
