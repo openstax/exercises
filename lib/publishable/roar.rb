@@ -2,6 +2,7 @@ module Publishable
   module Roar
     module Decorator
       def publishable
+
         property :uid,
                  type: String,
                  writeable: false,

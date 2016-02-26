@@ -40,7 +40,6 @@ module Api::V1
 
         @exercise_1 = FactoryGirl.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
-          user: nil,
           tags: ['tag1', 'tag2'],
           title: "Lorem ipsum",
           stimulus: "Dolor",
@@ -320,12 +319,12 @@ module Api::V1
         exercise.publication.editors << FactoryGirl.build(
           :editor, user: user, publication: @exercise.publication
         )
-debugger
+
         expect { api_post :create, user_token,
                           raw_post_data: Api::V1::ExerciseRepresenter.new(exercise).to_json(user: user)
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
-debugger
+
         new_exercise = Exercise.last
 
         expect(new_exercise.questions.first.collaborator_solutions).not_to be_empty

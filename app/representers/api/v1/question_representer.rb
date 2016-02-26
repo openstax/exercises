@@ -46,20 +46,14 @@ module Api::V1
                decorator: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) },
-               schema_info: {
-                 required: true
-               }
+               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
 
     collection :community_solutions,
                class: CommunitySolution,
                decorator: CommunitySolutionRepresenter,
                writeable: false,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) },
-               schema_info: {
-                 required: true
-               }
+               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
 
     collection :hints,
                type: String,

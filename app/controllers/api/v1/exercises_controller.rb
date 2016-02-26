@@ -93,7 +93,7 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def create
-      user = current_human_user; debugger
+      user = current_human_user
       standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user

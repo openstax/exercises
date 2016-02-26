@@ -1,15 +1,9 @@
 module HasLogic
   module ActiveRecord
     module Base
-      def self.included(base)
-        base.extend(ClassMethods)
-      end
-      
-      module ClassMethods
-        def has_logic(*languages)
-          class_exec do
-            has_one :logic, as: :parent, dependent: :destroy
-          end
+      def has_logic(*languages)
+        class_exec do
+          has_one :logic, as: :parent, dependent: :destroy
         end
       end
     end
@@ -40,7 +34,6 @@ module HasLogic
   end
 end
 
-ActiveRecord::Base.send :include, HasLogic::ActiveRecord::Base
-ActionDispatch::Routing::Mapper.send :include,
-                                     HasLogic::ActionDispatch::Routing::Mapper
+ActiveRecord::Base.extend HasLogic::ActiveRecord::Base
+ActionDispatch::Routing::Mapper.send :include, HasLogic::ActionDispatch::Routing::Mapper
 Roar::Decorator.extend HasLogic::Roar::Decorator

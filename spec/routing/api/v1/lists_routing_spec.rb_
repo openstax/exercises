@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  RSpec.describe ListsController, :type => :routing, api: true, version: :v1 do
+  RSpec.describe ListsController, type: :routing, api: true, version: :v1 do
     describe "routing" do
 
       it "routes to #index" do

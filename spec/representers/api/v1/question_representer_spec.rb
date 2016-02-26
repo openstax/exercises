@@ -132,15 +132,58 @@ module Api::V1
       end
     end
 
-    context 'solutions' do
+    context 'collaborator_solutions' do
       it 'can be read' do
         solutions = [CollaboratorSolution.new(content: 'Of course.')]
-        solution_representations = solutions.collect{ |sol| CollaboratorSolutionRepresenter.new(sol).to_hash }
+        solution_representations = solutions.collect do |sol|
+          CollaboratorSolutionRepresenter.new(sol).to_hash
+        end
         allow(question).to receive(:collaborator_solutions).and_return(solutions)
         expect(representation).to include('collaborator_solutions' => solution_representations)
       end
 
-      xit 'can be written' do
+      it 'can be written' do
+        described_class.new(question).from_json(
+          {
+            'collaborator_solutions' => [
+              {
+                'title' => 'Test',
+                'solution_type' => 'example',
+                'content_html' => 'This is a test.'
+              }
+            ]
+          }
+        )
+
+        expect(question).to have_received(:collaborator_solutions=)
+                              .with([a_kind_of(CollaboratorSolution)])
+      end
+    end
+
+    context 'community_solutions' do
+      it 'can be read' do
+        solutions = [CommunitySolution.new(content: 'Of course.')]
+        solution_representations = solutions.collect do |sol|
+          CommunitySolutionRepresenter.new(sol).to_hash
+        end
+        allow(question).to receive(:community_solutions).and_return(solutions)
+        expect(representation).to include('community_solutions' => solution_representations)
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
+        described_class.new(question).from_json(
+          {
+            'community_solutions' => [
+              {
+                'title' => 'Test',
+                'solution_type' => 'example',
+                'content_html' => 'This is a test.'
+              }
+            ]
+          }
+        )
+
+        expect(question).not_to have_received(:community_solutions=)
       end
     end
 

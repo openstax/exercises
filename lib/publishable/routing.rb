@@ -10,6 +10,4 @@ module Publishable
   end
 end
 
-ActionDispatch::Routing::Mapper.send(
-  :include, Publishable::ActionDispatch::Routing::Mapper
-)
+ActionDispatch::Routing::Mapper.send :include, Publishable::ActionDispatch::Routing::Mapper

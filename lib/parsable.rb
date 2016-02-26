@@ -1,22 +1,15 @@
 module Parsable
   module ActiveRecord
     module Base
-      def self.included(base)
-        base.extend(ClassMethods)
-      end
-      
-      module ClassMethods
-        def parsable(*attributes)
-          attributes.each do |attribute|
-            filter_name = "parse_#{attribute.to_s}"
+      def parsable(*attributes)
+        attributes.each do |attribute|
+          filter_name = "parse_#{attribute.to_s}"
 
-            class_exec do
-              before_validation filter_name
+          class_exec do
+            before_validation filter_name
 
-              define_method(filter_name) do
-                send("#{attribute}=",
-                     ParseContent.call(send(attribute)).outputs[:content])
-              end
+            define_method(filter_name) do
+              send("#{attribute}=", ParseContent.call(send(attribute)).outputs[:content])
             end
           end
         end
@@ -25,4 +18,4 @@ module Parsable
   end
 end
 
-ActiveRecord::Base.send :include, Parsable::ActiveRecord::Base
+ActiveRecord::Base.extend Parsable::ActiveRecord::Base
