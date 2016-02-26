@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160212211016) do
+ActiveRecord::Schema.define(version: 20160226222403) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,19 @@ ActiveRecord::Schema.define(version: 20160212211016) do
 
   add_index "class_licenses", ["class_name", "sort_position"], name: "index_class_licenses_on_class_name_and_sort_position", unique: true, using: :btree
   add_index "class_licenses", ["license_id", "class_name"], name: "index_class_licenses_on_license_id_and_class_name", unique: true, using: :btree
+
+  create_table "collaborator_solutions", force: :cascade do |t|
+    t.integer  "question_id",   null: false
+    t.string   "title"
+    t.text     "solution_type", null: false
+    t.text     "content",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "collaborator_solutions", ["question_id"], name: "index_collaborator_solutions_on_question_id", using: :btree
+  add_index "collaborator_solutions", ["solution_type"], name: "index_collaborator_solutions_on_solution_type", using: :btree
+  add_index "collaborator_solutions", ["title"], name: "index_collaborator_solutions_on_title", using: :btree
 
   create_table "combo_choice_answers", force: :cascade do |t|
     t.integer  "combo_choice_id", null: false
@@ -129,6 +142,19 @@ ActiveRecord::Schema.define(version: 20160212211016) do
   end
 
   add_index "commontator_threads", ["commontable_id", "commontable_type"], name: "index_commontator_threads_on_c_id_and_c_type", unique: true, using: :btree
+
+  create_table "community_solutions", force: :cascade do |t|
+    t.integer  "question_id",   null: false
+    t.string   "title"
+    t.text     "solution_type", null: false
+    t.text     "content",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "community_solutions", ["question_id"], name: "index_community_solutions_on_question_id", using: :btree
+  add_index "community_solutions", ["solution_type"], name: "index_community_solutions_on_solution_type", using: :btree
+  add_index "community_solutions", ["title"], name: "index_community_solutions_on_title", using: :btree
 
   create_table "copyright_holders", force: :cascade do |t|
     t.integer  "sort_position",  null: false
@@ -495,19 +521,6 @@ ActiveRecord::Schema.define(version: 20160212211016) do
   end
 
   add_index "questions", ["exercise_id"], name: "index_questions_on_exercise_id", using: :btree
-
-  create_table "solutions", force: :cascade do |t|
-    t.integer  "question_id",   null: false
-    t.string   "title"
-    t.text     "solution_type", null: false
-    t.text     "content",       null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  add_index "solutions", ["question_id"], name: "index_solutions_on_question_id", using: :btree
-  add_index "solutions", ["solution_type"], name: "index_solutions_on_solution_type", using: :btree
-  add_index "solutions", ["title"], name: "index_solutions_on_title", using: :btree
 
   create_table "stem_answers", force: :cascade do |t|
     t.integer  "stem_id",                                           null: false
