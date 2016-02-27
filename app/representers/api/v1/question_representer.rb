@@ -35,6 +35,7 @@ module Api::V1
     collection :answers,
                class: Answer,
                decorator: AnswerRepresenter,
+               instance: lambda { |*| Answer.new(question: self) },
                writeable: true,
                readable: true,
                schema_info: {

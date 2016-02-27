@@ -161,11 +161,15 @@ module Api::V1
                 'content_html' => 'This is a test.'
               }
             ]
-          }
+          }.to_json
         )
 
         expect(question).to have_received(:collaborator_solutions=)
-                              .with([a_kind_of(CollaboratorSolution)])
+                              .with([a_kind_of(CollaboratorSolution)]) do |collaborator_solutions|
+          expect(collaborator_solutions.first.title).to eq 'Test'
+          expect(collaborator_solutions.first.solution_type).to eq 'example'
+          expect(collaborator_solutions.first.content).to eq 'This is a test.'
+        end
       end
     end
 
@@ -189,7 +193,7 @@ module Api::V1
                 'content_html' => 'This is a test.'
               }
             ]
-          }
+          }.to_json
         )
 
         expect(question).not_to have_received(:community_solutions=)

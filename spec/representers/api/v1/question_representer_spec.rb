@@ -119,16 +119,18 @@ module Api::V1
       end
 
       it 'can be written' do
-        described_class.new(question).from_json({'answers' => [
-          { 'content_html' => 'Yes' }, { 'content_html' => 'No' }, { 'content_html' => 'Maybe so' }
-        ]}.to_json)
+        # instance_spy doesn't work here because the Answers being created expect a real Question
+        real_q = FactoryGirl.build :question
 
-        expect(question).to have_received(:answers=)
-                              .with(3.times.map{ a_kind_of(Answer) }) do |answers|
+        expect(real_q).to receive(:answers=).with(3.times.map{ a_kind_of(Answer) }) do |answers|
           expect(answers.first.content).to eq 'Yes'
           expect(answers.second.content).to eq 'No'
           expect(answers.third.content).to eq 'Maybe so'
         end
+
+        described_class.new(real_q).from_json({'answers' => [
+          { 'content_html' => 'Yes' }, { 'content_html' => 'No' }, { 'content_html' => 'Maybe so' }
+        ]}.to_json)
       end
     end
 
@@ -152,11 +154,15 @@ module Api::V1
                 'content_html' => 'This is a test.'
               }
             ]
-          }
+          }.to_json
         )
 
         expect(question).to have_received(:collaborator_solutions=)
-                              .with([a_kind_of(CollaboratorSolution)])
+                              .with([a_kind_of(CollaboratorSolution)]) do |collaborator_solutions|
+          expect(collaborator_solutions.first.title).to eq 'Test'
+          expect(collaborator_solutions.first.solution_type).to eq 'example'
+          expect(collaborator_solutions.first.content).to eq 'This is a test.'
+        end
       end
     end
 
@@ -180,7 +186,7 @@ module Api::V1
                 'content_html' => 'This is a test.'
               }
             ]
-          }
+          }.to_json
         )
 
         expect(question).not_to have_received(:community_solutions=)
