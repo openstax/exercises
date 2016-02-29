@@ -13,8 +13,7 @@ FactoryGirl.define do
     after(:build) do |publication|
       publication.publishable ||= build :exercise, publication: publication
       class_name = publication.publishable.class.name
-      publication.license ||= \
-        ClassLicense.find_or_create_by(class_name: class_name).license
+      publication.license ||= ClassLicense.find_or_create_by(class_name: class_name).license
       publication.number ||= (Publication.where(
         publishable_type: publication.publishable_type
       ).maximum(:number) || 0) + 1

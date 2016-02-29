@@ -17,4 +17,16 @@ RSpec.describe Exercise, type: :model do
     expect(exercise.errors[:questions]).to include("can't be blank")
   end
 
+  it 'ensures that no questions have all incorrect answers before publication' do
+    exercise = FactoryGirl.create :exercise
+    exercise.publication_validation
+    expect(exercise.errors).to be_empty
+
+    exercise.questions.first.stems.first.stem_answers.each do |stem_answer|
+      stem_answer.update_attribute :correctness, 0.0
+    end
+    exercise.publication_validation
+    expect(exercise.errors[:base]).to include('has a question with only incorrect answers')
+  end
+
 end

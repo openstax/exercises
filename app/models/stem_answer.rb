@@ -5,9 +5,14 @@ class StemAnswer < ActiveRecord::Base
 
   validates :stem, presence: true
   validates :answer, presence: true, uniqueness: { scope: :stem_id }
-  validates :correctness, presence: true, numericality: true
+  validates :correctness, presence: true, numericality: { greater_than_or_equal_to: 0.0,
+                                                          less_than_or_equal_to: 1.0 }
 
   validate :same_question
+
+  def is_correct?
+    correctness == 1.0
+  end
 
   protected
 

@@ -37,6 +37,26 @@ module Api::V1
           expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
           expect(exercise.is_published?).to eq true
         end
+
+        it "does not publish exercises with a question with a stem with all incorrect answers" do
+          expect(exercise.reload.is_published?).to eq false
+
+          exercise.questions.first.stems.first.stem_answers.each do |stem_answer|
+            stem_answer.update_attribute :correctness, 0.0
+          end
+
+          api_put :publish, exercise_author_token,
+                            parameters: { exercise_id: exercise.uid.to_s }
+
+          expected_response = {
+            errors: [{ code: 'exercise_has_a_question_with_only_incorrect_answers',
+                       message: 'Exercise has a question with only incorrect answers' }],
+            status: 422
+          }.to_json
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
+          expect(exercise.is_published?).to eq false
+        end
       end
 
       context "when given a community_solution_id" do

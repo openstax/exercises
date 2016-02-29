@@ -25,9 +25,13 @@ module Api::V1
       OSU::AccessPolicy.require_action_allowed!(
         :publish, current_api_user, @publishable.publication
       )
-      @publishable.publication.publish
-      @publishable.publication.save
-      respond_with @publishable.reload, responder: ResponderWithPutContent, user: current_api_user
+
+      if @publishable.publication.publish.save
+        respond_with @publishable.reload, responder: ResponderWithPutContent,
+                                          user: current_api_user
+      else
+        render_api_errors @publishable.publication.errors
+      end
     end
 
     protected
