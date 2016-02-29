@@ -161,24 +161,10 @@ module Exercises
         end
 
         if explanation.present?
-          sol = Solution.new(solution_type: SolutionType::DETAILED)
+          sol = CollaboratorSolution.new(solution_type: SolutionType::DETAILED)
           sol.question = qq
           sol.content = explanation
-          qq.solutions << sol
-
-          if author.present?
-            sau = Author.new
-            sau.publication = sol.publication
-            sau.user = author
-            sol.publication.authors << sau
-          end
-
-          if copyright_holder.present?
-            sc = CopyrightHolder.new
-            sc.publication = sol.publication
-            sc.user = copyright_holder
-            sol.publication.copyright_holders << sc
-          end
+          qq.collaborator_solutions << sol
         end
 
         list = List.find_by(name: list_name)

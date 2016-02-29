@@ -239,7 +239,7 @@ module Api::V1
       context 'with solutions' do
         before(:each) do
           question = @exercise.questions.first
-          question.solutions << FactoryGirl.create(:solution, :published, question: question)
+          question.collaborator_solutions << FactoryGirl.create(:collaborator_solution, question: question)
         end
 
         it "shows solutions for published exercises if the requestor is an app" do
@@ -247,7 +247,7 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['solutions']).not_to be_empty
+          expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
           response_hash['questions'].first['answers'].each do |answer|
             expect(answer['correctness']).to be_present
             expect(answer['feedback_html']).to be_present
@@ -259,7 +259,7 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['solutions']).not_to be_empty
+          expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
           response_hash['questions'].first['answers'].each do |answer|
             expect(answer['correctness']).to be_present
             expect(answer['feedback_html']).to be_present
@@ -273,7 +273,7 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['solutions']).to be_nil
+          expect(response_hash['questions'].first['collaborator_solutions']).to be_nil
           response_hash['questions'].first['answers'].each do |answer|
             expect(answer['correctness']).to be_nil
             expect(answer['feedback_html']).to be_nil
@@ -312,6 +312,22 @@ module Api::V1
 
         expect(new_exercise.authors.first.user).to eq user
         expect(new_exercise.copyright_holders.first.user).to eq user
+      end
+
+      it "creates the exercise with a collaborator solution" do
+        exercise = FactoryGirl.build(:exercise, collaborator_solutions_count: 1)
+        exercise.publication.editors << FactoryGirl.build(
+          :editor, user: user, publication: @exercise.publication
+        )
+
+        expect { api_post :create, user_token,
+                          raw_post_data: Api::V1::ExerciseRepresenter.new(exercise).to_json(user: user)
+        }.to change(Exercise, :count).by(1)
+        expect(response).to have_http_status(:success)
+
+        new_exercise = Exercise.last
+
+        expect(new_exercise.questions.first.collaborator_solutions).not_to be_empty
       end
 
     end

@@ -1,27 +1,21 @@
 module HasTags
   module ActiveRecord
     module Base
-      def self.included(base)
-        base.extend(ClassMethods)
-      end
-      
-      module ClassMethods
-        def has_tags(association_name = nil, options = {})
-          association_name ||= "#{name.tableize.singularize}_tags"
-          inverse_association_name = options[:inverse_of] || name.tableize.singularize
-          tagging_class = association_name.to_s.classify.constantize
+      def has_tags(association_name = nil, options = {})
+        association_name ||= "#{name.tableize.singularize}_tags"
+        inverse_association_name = options[:inverse_of] || name.tableize.singularize
+        tagging_class = association_name.to_s.classify.constantize
 
-          class_exec do
-            has_many association_name.to_sym, { dependent: :destroy, autosave: true }.merge(options)
-            has_many :tags, through: association_name.to_sym do
-              def <<(tag)
-                super(Tag.get(tag))
-              end
+        class_exec do
+          has_many association_name.to_sym, { dependent: :destroy, autosave: true }.merge(options)
+          has_many :tags, through: association_name.to_sym do
+            def <<(tag)
+              super(Tag.get(tag))
             end
+          end
 
-            def tags=(tags)
-              super(Tag.get(tags))
-            end
+          def tags=(tags)
+            super(Tag.get(tags))
           end
         end
       end
@@ -44,5 +38,5 @@ module HasTags
   end
 end
 
-ActiveRecord::Base.send :include, HasTags::ActiveRecord::Base
+ActiveRecord::Base.extend HasTags::ActiveRecord::Base
 Roar::Decorator.extend HasTags::Roar::Decorator

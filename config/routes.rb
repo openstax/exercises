@@ -28,7 +28,7 @@ Exercises::Application.routes.draw do
       #has_logic
 
       resources :questions, only: [] do
-        resources :solutions, shallow: true do
+        resources :community_solutions, shallow: true, except: [:index] do
           publishable
           #has_logic
         end
@@ -55,7 +55,7 @@ Exercises::Application.routes.draw do
   mount FinePrint::Engine => "/fine_print"
 
   use_doorkeeper do
-    controllers :applications => 'oauth/applications'
+    controllers applications: 'oauth/applications'
   end
 
   namespace 'admin' do

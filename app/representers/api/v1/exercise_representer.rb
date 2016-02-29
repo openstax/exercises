@@ -1,9 +1,16 @@
 module Api::V1
-  class ExerciseRepresenter < PublicationRepresenter
+  class ExerciseRepresenter < Roar::Decorator
 
-    has_attachments
+    include Roar::JSON
+
+    # Attachments may (for a while) contain collaborator solution attachments, so
+    # only show them to those who can see solutions
+    has_attachments(if: lambda { |args| can_view_solutions?(args[:user]) })
+
     has_logic
     has_tags
+
+    publishable
 
     property :title,
              type: String,

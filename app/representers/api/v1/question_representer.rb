@@ -35,21 +35,26 @@ module Api::V1
     collection :answers,
                class: Answer,
                decorator: AnswerRepresenter,
+               instance: lambda { |*| Answer.new(question: self) },
                writeable: true,
                readable: true,
                schema_info: {
                  required: true
                }
 
-    collection :solutions,
-               class: Solution,
-               decorator: SolutionRepresenter,
+    collection :collaborator_solutions,
+               class: CollaboratorSolution,
+               decorator: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) },
-               schema_info: {
-                 required: true
-               }
+               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+
+    collection :community_solutions,
+               class: CommunitySolution,
+               decorator: CommunitySolutionRepresenter,
+               writeable: false,
+               readable: true,
+               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
 
     collection :hints,
                type: String,

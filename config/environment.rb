@@ -13,6 +13,7 @@ require 'has_tags'
 
 require 'parsable'
 require 'publishable'
+require 'solution'
 require 'stylable'
 
 require 'active_record/calculations_patch'

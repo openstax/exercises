@@ -13,7 +13,8 @@ module Api::V1
       dbl = instance_spy(Question)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:answers).and_return([])
-      allow(dbl).to receive(:solutions).and_return([])
+      allow(dbl).to receive(:collaborator_solutions).and_return([])
+      allow(dbl).to receive(:community_solutions).and_return([])
       allow(dbl).to receive(:hints).and_return([])
       allow(dbl).to receive(:parent_dependencies).and_return([])
       dbl
@@ -140,15 +141,62 @@ module Api::V1
       end
     end
 
-    context 'solutions' do
+    context 'collaborator_solutions' do
       it 'can be read' do
-        solutions = [Solution.new(content: 'Of course.')]
-        solution_representations = solutions.collect{ |sol| SolutionRepresenter.new(sol).to_hash }
-        allow(question).to receive(:solutions).and_return(solutions)
-        expect(representation).to include('solutions' => solution_representations)
+        solutions = [CollaboratorSolution.new(content: 'Of course.')]
+        solution_representations = solutions.collect do |sol|
+          CollaboratorSolutionRepresenter.new(sol).to_hash
+        end
+        allow(question).to receive(:collaborator_solutions).and_return(solutions)
+        expect(representation).to include('collaborator_solutions' => solution_representations)
       end
 
-      xit 'can be written' do
+      it 'can be written' do
+        described_class.new(question).from_json(
+          {
+            'collaborator_solutions' => [
+              {
+                'title' => 'Test',
+                'solution_type' => 'example',
+                'content_html' => 'This is a test.'
+              }
+            ]
+          }.to_json
+        )
+
+        expect(question).to have_received(:collaborator_solutions=)
+                              .with([a_kind_of(CollaboratorSolution)]) do |collaborator_solutions|
+          expect(collaborator_solutions.first.title).to eq 'Test'
+          expect(collaborator_solutions.first.solution_type).to eq 'example'
+          expect(collaborator_solutions.first.content).to eq 'This is a test.'
+        end
+      end
+    end
+
+    context 'community_solutions' do
+      it 'can be read' do
+        solutions = [CommunitySolution.new(content: 'Of course.')]
+        solution_representations = solutions.collect do |sol|
+          CommunitySolutionRepresenter.new(sol).to_hash
+        end
+        allow(question).to receive(:community_solutions).and_return(solutions)
+        expect(representation).to include('community_solutions' => solution_representations)
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
+        described_class.new(question).from_json(
+          {
+            'community_solutions' => [
+              {
+                'title' => 'Test',
+                'solution_type' => 'example',
+                'content_html' => 'This is a test.'
+              }
+            ]
+          }.to_json
+        )
+
+        expect(question).not_to have_received(:community_solutions=)
       end
     end
 

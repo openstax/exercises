@@ -38,14 +38,15 @@ module Api::V1
               "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
     end
 
-    def get_solution
-      Solution.visible_for(current_api_user).with_uid(params[:solution_id]).first || \
+    def get_community_solution
+      CommunitySolution.visible_for(current_api_user)
+                       .with_uid(params[:community_solution_id]).first || \
         raise(ActiveRecord::RecordNotFound,
-              "Couldn't find Solution with 'uid'=#{params[:solution_id]}")
+              "Couldn't find Solution with 'uid'=#{params[:community_solution_id]}")
     end
 
     def get_publishable
-      @publishable = params[:solution_id].nil? ? get_exercise : get_solution
+      @publishable = params[:community_solution_id].nil? ? get_exercise : get_community_solution
     end
 
   end

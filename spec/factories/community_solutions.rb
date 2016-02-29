@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :solution do
+  factory :community_solution do
     question
     solution_type SolutionType::EXAMPLE
     content "Worked example!"

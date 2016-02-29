@@ -6,6 +6,7 @@ FactoryGirl.define do
     transient do
       stems_count { stems.empty? ? 1 : 0 }
       answers_count { answers.empty? ? 3 : 0 }
+      collaborator_solutions_count 1
     end
 
     after(:build) do |question, evaluator|
@@ -18,6 +19,10 @@ FactoryGirl.define do
           stem_answer = build(:stem_answer, stem: stem, answer: answer)
           stem.stem_answers << stem_answer
           answer.stem_answers << stem_answer
+        end
+        evaluator.collaborator_solutions_count.times do
+          solution = build(:collaborator_solution, question: question)
+          question.collaborator_solutions << solution
         end
       end
     end

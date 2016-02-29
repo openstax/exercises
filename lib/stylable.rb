@@ -1,15 +1,9 @@
 module Stylable
   module ActiveRecord
     module Base
-      def self.included(base)
-        base.extend(ClassMethods)
-      end
-
-      module ClassMethods
-        def stylable
-          class_exec do
-            has_many :stylings, as: :stylable, dependent: :destroy
-          end
+      def stylable
+        class_exec do
+          has_many :stylings, as: :stylable, dependent: :destroy
         end
       end
     end
@@ -36,5 +30,5 @@ module Stylable
   end
 end
 
-ActiveRecord::Base.send :include, Stylable::ActiveRecord::Base
+ActiveRecord::Base.extend Stylable::ActiveRecord::Base
 Roar::Decorator.extend Stylable::Roar::Decorator
