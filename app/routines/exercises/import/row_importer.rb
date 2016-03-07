@@ -90,11 +90,11 @@ module Exercises
 
         lo_tags = split(row[3]).map{ |lo| "lo:#{books.first}:#{chapter}-#{section}-#{lo}" }
 
-        id_tag = "id:#{books.first}:#{row[4]}"
+        id_tag = "exid:#{books.first}:#{row[4]}"
 
         cnxmod_tag = "cnxmod:#{row[5]}"
 
-        type_tags = split(row[6]).map{ |type| "ost-type:#{type}" }
+        type_tags = split(row[6]).map{ |type| "type:#{type}" }
         dok_tag = "dok:#{row[7]}"
         blooms_tag = "blooms:#{row[8]}"
         time_tag = "time:#{row[10]}"
