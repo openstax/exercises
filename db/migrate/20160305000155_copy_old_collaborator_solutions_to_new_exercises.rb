@@ -2,7 +2,9 @@ class CopyOldCollaboratorSolutionsToNewExercises < ActiveRecord::Migration
   def up
     Exercise.preload([:publication, {questions: :collaborator_solutions}])
             .to_a.group_by(&:number).each do |number, exercises|
-      exercises_with_sols = exercises.select{ |ex| ex.questions.first.collaborator_solutions.any? }
+      exercises_with_sols = exercises.select do |ex|
+        ex.questions.first.try(:collaborator_solutions).try(:any?)
+      end
       next if exercises_with_sols.empty?
 
       newest_ex_with_sol = exercises_with_sols.max_by(&:version)
