@@ -83,14 +83,27 @@ class MigrateHsTags < ActiveRecord::Migration
     new_tag inbook_tag, 'filter-type:inbook'
     new_tag inbook_tag, 'type:conceptual-or-recall'
 
-    old_concepts_tag = Tag.find_by(name: 'os-practice-concepts') # Used by Tutor
-    new_tag old_concepts_tag, 'type:conceptual'
-
     old_practice_tag = Tag.find_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
 
+    old_concepts_tag = Tag.find_by(name: 'os-practice-concepts') # Used by Tutor
+    new_tag old_concepts_tag, 'type:conceptual'
+
+    conceptual_tag = Tag.find_or_create_by(name: 'type:conceptual')
+    practice_tag = Tag.find_or_create_by(name: 'type:practice')
+
     old_cr_tag = Tag.find_by(name: 'ost-chapter-review') # Used by Tutor
+    chapter_review_exercise_tags = old_cr_tag.try(:exercise_tags)
+                                             .try(:preload, exercise: :tags) || []
+    chapter_review_exercise_tags.each do |et|
+      tag = et.exercise.tags.map(&:name).include?('concept') ? conceptual_tag : practice_tag
+      ExerciseTag.create!(exercise: et.exercise, tag: tag)
+    end
     new_tag old_cr_tag, 'filter-type:chapter-review'
+
+    old_tp_tag = Tag.find_by(name: 'ost-test-prep') # Unused
+    new_tag old_tp_tag, 'type:practice'
+    new_tag old_tp_tag, 'filter-type:test-prep'
   end
 
   def down
