@@ -18,7 +18,7 @@ class MigrateHsTags < ActiveRecord::Migration
       map_collection(hash['tree'], cnx_id_map[book_name])
     end
 
-    # LO tags
+    # LO tags (unchanged for now)
     lo_tags = Tag.where{name.like ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
     all_lo_tags = lo_tags + aplo_tags
@@ -26,7 +26,7 @@ class MigrateHsTags < ActiveRecord::Migration
     # ID tags
     id_tags = Tag.where{name.like ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
     id_tags.sort_by(&:name).each_with_index do |tag, index|
-      name, book_name = /\A(\d+)-ch\d+-ex\d+\z/
+      name, book_name = /\A(\d+)-ch\d+-ex\d+\z/.match tag.name
       # The new format does not have the chapter number
       new_tag tag, "exid:stax-#{book_name}:#{index}"
     end
@@ -35,7 +35,7 @@ class MigrateHsTags < ActiveRecord::Migration
     section_and_all_lo_tags = Tag.where{name.like ['k12phys-ch%-s%', 'apbio-ch%-s%']}
     section_tags = section_and_all_lo_tags - all_lo_tags
     section_tags.each do |tag|
-      book_name, chapter, section = /\A(\d+)-ch(\d+)-s(\d+)\z/.match tag.name
+      name, book_name, chapter, section = /\A(\d+)-ch(\d+)-s(\d+)\z/.match tag.name
       uuid = cnx_id_map[book_name][chapter.to_i][section.to_i]
       new_tag tag, "cnxmod:#{uuid}"
     end
@@ -53,11 +53,11 @@ class MigrateHsTags < ActiveRecord::Migration
     time_tags = Tag.where{name.like 'time%'} # Used in Tutor
     time_tags.each{ |tag| new_tag tag, tag.name.gsub(/time-?/, 'time:') }
 
-    # Display tags (Unused)
-    Tag.where(name: 'display-simple-mc').destroy_all
-    Tag.where(name: 'display-free-response').destroy_all
-    Tag.where(name: 'display:multiple-choice').destroy_all
-    Tag.where(name: 'display-rec-sensitive').destroy_all
+    # Display tags (Unused - Remove)
+    Tag.where{name.like 'display%'}.destroy_all
+
+    # Requires choices tags (Unused - Remove)
+    Tag.where{name.like 'requires-choices:%'}.destroy_all
 
     # Tagging legend changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
