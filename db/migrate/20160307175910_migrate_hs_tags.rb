@@ -83,6 +83,9 @@ class MigrateHsTags < ActiveRecord::Migration
     new_tag inbook_tag, 'filter-type:inbook'
     new_tag inbook_tag, 'type:conceptual-or-recall'
 
+    grasp_check_tag = Tag.find_by(name: 'grasp-check') # Unused
+    new_tag grasp_check_tag, 'filter-type:grasp-check'
+
     old_practice_tag = Tag.find_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
 
