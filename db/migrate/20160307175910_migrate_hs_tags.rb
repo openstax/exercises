@@ -6,7 +6,7 @@ class MigrateHsTags < ActiveRecord::Migration
     'apbio' => 'd52e93f4-8653-4273-86da-3850001c0786'
   }
 
-  # Creates new tags for HS questions but does not delete the old ones
+  # Creates new tags for HS questions but does not delete old ones (except for a few unused tags)
   # Does not create new LO tags
   # Migrate LO's and delete old tags after May 30th
   def up
