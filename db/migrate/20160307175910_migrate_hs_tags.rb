@@ -41,7 +41,7 @@ class MigrateHsTags < ActiveRecord::Migration
     end
 
     book_tags = Tag.where(name: ['k12phys', 'apbio']) # Unused
-    book_tags.each{ |tag| new_tag tag, "book:stax-#{tag.name}" }
+    book_tags.each{ |tag| tag.update_attribute :name, "book:stax-#{tag.name}" }
 
     # DoK, Blooms, Time
     dok_tags = Tag.where{name.like 'dok%'} # Used in Tutor
@@ -53,23 +53,11 @@ class MigrateHsTags < ActiveRecord::Migration
     time_tags = Tag.where{name.like 'time%'} # Used in Tutor
     time_tags.each{ |tag| new_tag tag, tag.name.gsub(/time-?/, 'time:') }
 
-    # Display tags
-    simple_mc_tag = Tag.find_by(name: 'display-simple-mc') # Unused
-    new_tag simple_mc_tag, 'requires-choices:y'
-
-    free_response_tag = Tag.find_by(name: 'display-free-response') # Unused
-    new_tag free_response_tag, 'requires-choices:n'
-
-    tl_multiple_choice_tag = Tag.find_or_create_by(name: 'display:multiple-choice')
-    display_tags = [simple_mc_tag, free_response_tag]
-    display_exercises = display_tags.compact
-                                    .flat_map{ |tag| tag.exercise_tags.map(&:exercise) }.uniq
-    display_exercises.each do |exercise|
-      ExerciseTag.create!(exercise: exercise, tag: tl_multiple_choice_tag)
-    end
-
-    rec_sensitive_tag = Tag.find_by(name: 'display-rec-sensitive') # Unused
-    new_tag rec_sensitive_tag, 'display:rec-sensitive'
+    # Display tags (Unused)
+    Tag.where(name: 'display-simple-mc').destroy_all
+    Tag.where(name: 'display-free-response').destroy_all
+    Tag.where(name: 'display:multiple-choice').destroy_all
+    Tag.where(name: 'display-rec-sensitive').destroy_all
 
     # Tagging legend changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
@@ -80,11 +68,10 @@ class MigrateHsTags < ActiveRecord::Migration
 
     # Type tags
     inbook_tag = Tag.find_by(name: 'inbook-yes') # Unused
-    new_tag inbook_tag, 'filter-type:inbook'
-    new_tag inbook_tag, 'type:conceptual-or-recall'
+    inbook_tag.update_attribute :name, 'type:conceptual-or-recall'
 
     grasp_check_tag = Tag.find_by(name: 'grasp-check') # Unused
-    new_tag grasp_check_tag, 'filter-type:grasp-check'
+    grasp_check_tag.update_attribute :name, 'filter-type:grasp-check'
 
     old_practice_tag = Tag.find_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'

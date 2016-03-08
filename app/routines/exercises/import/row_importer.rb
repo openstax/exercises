@@ -98,12 +98,9 @@ module Exercises
         dok_tag = "dok:#{row[7]}"
         blooms_tag = "blooms:#{row[8]}"
         time_tag = "time:#{row[10]}"
-        display_tag = "display:#{row[11]}"
-        requires_choices_tag = "requires-choices:#{row[12]}"
 
         ex.tags = book_tags + lo_tags + type_tags + \
-                  [id_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag,
-                   display_tag, requires_choices_tag]
+                  [id_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag]
 
         latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
                                   .where(exercise_tags: {tag: {name: id_tag}})
@@ -121,7 +118,7 @@ module Exercises
         question_stem_content = parse(row[14], ex)
 
         styles = [Style::MULTIPLE_CHOICE]
-        styles << Style::FREE_RESPONSE unless requires_choices_tag.include?('requires-choices:y')
+        styles << Style::FREE_RESPONSE unless row[12].include?('y')
         explanation = parse(row[15], ex)
         correct_answer_index = row[16].downcase.strip.each_byte.first - 97
 
