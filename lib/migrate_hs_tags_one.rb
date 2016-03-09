@@ -1,16 +1,18 @@
 require 'open-uri'
 
-class MigrateHsTags < ActiveRecord::Migration
+# Creates new tags for HS questions but does not delete old ones (except for a few unused tags)
+# Does not create new LO tags
+# Migrate LO's and delete old tags after May 30th
+class MigrateHsTagsOne
+
+  lev_routine transaction: :no_transaction
+
   BOOK_UUIDS = {
     'k12phys' => '334f8b61-30eb-4475-8e05-5260a4866b4b',
     'apbio' => 'd52e93f4-8653-4273-86da-3850001c0786'
   }
 
-  # Creates new tags for HS questions but does not delete old ones (except for a few unused tags)
-  # Does not create new LO tags
-  # Migrate LO's and delete old tags after May 30th
-  def up
-    # Get module UUID's from CNX
+  def exec
     cnx_id_map = Hash.new{ |hash, key| hash[key] = Hash.new{ |hash, key| hash[key] = {} } }
     BOOK_UUIDS.each do |book_name, uuid|
       url = "https://archive-staging-tutor.cnx.org/contents/#{uuid}.json"
@@ -67,37 +69,32 @@ class MigrateHsTags < ActiveRecord::Migration
     tl_type_tags.each{ |tag| tag.update_attribute :name, tag.name.gsub('ost-type:', 'type:') }
 
     # Type tags
-    inbook_tag = Tag.find_by(name: 'inbook-yes') # Unused
+    inbook_tag = Tag.find_or_create_by(name: 'inbook-yes') # Unused
     inbook_tag.update_attribute :name, 'type:conceptual-or-recall'
 
-    grasp_check_tag = Tag.find_by(name: 'grasp-check') # Unused
+    grasp_check_tag = Tag.find_or_create_by(name: 'grasp-check') # Unused
     grasp_check_tag.update_attribute :name, 'filter-type:grasp-check'
 
-    old_practice_tag = Tag.find_by(name: 'os-practice-problems') # Used by Tutor
+    old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
 
-    old_concepts_tag = Tag.find_by(name: 'os-practice-concepts') # Used by Tutor
+    old_concepts_tag = Tag.find_or_create_by(name: 'os-practice-concepts') # Used by Tutor
     new_tag old_concepts_tag, 'type:conceptual'
 
     conceptual_tag = Tag.find_or_create_by(name: 'type:conceptual')
     practice_tag = Tag.find_or_create_by(name: 'type:practice')
 
-    old_cr_tag = Tag.find_by(name: 'ost-chapter-review') # Used by Tutor
-    chapter_review_exercise_tags = old_cr_tag.try(:exercise_tags)
-                                             .try(:preload, exercise: :tags) || []
+    old_cr_tag = Tag.find_or_create_by(name: 'ost-chapter-review') # Used by Tutor
+    chapter_review_exercise_tags = old_cr_tag.exercise_tags.preload(exercise: :tags)
     chapter_review_exercise_tags.each do |et|
       tag = et.exercise.tags.map(&:name).include?('concept') ? conceptual_tag : practice_tag
       ExerciseTag.create!(exercise: et.exercise, tag: tag)
     end
     new_tag old_cr_tag, 'filter-type:chapter-review'
 
-    old_tp_tag = Tag.find_by(name: 'ost-test-prep') # Unused
+    old_tp_tag = Tag.find_or_create_by(name: 'ost-test-prep') # Unused
     new_tag old_tp_tag, 'type:practice'
     new_tag old_tp_tag, 'filter-type:test-prep'
-  end
-
-  def down
-    raise ActiveRecord::IrreversibleMigration, 'Just restore the backup...'
   end
 
   protected
@@ -129,4 +126,5 @@ class MigrateHsTags < ActiveRecord::Migration
 
     return chapter_number
   end
+
 end
