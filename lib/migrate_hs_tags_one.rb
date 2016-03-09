@@ -21,23 +21,27 @@ class MigrateHsTagsOne
     end
 
     # LO tags (unchanged for now)
-    lo_tags = Tag.where{name.like ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
+    lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
     all_lo_tags = lo_tags + aplo_tags
 
     # ID tags
-    id_tags = Tag.where{name.like ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
+    id_tags = Tag.where{name.like_any ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
     id_tags.sort_by(&:name).each_with_index do |tag, index|
-      name, book_name = /\A(\d+)-ch\d+-ex\d+\z/.match tag.name
+      matches = /\A(\w+)-ch\d+-ex\d+\z/.match tag.name
+      book_name = matches[1]
       # The new format does not have the chapter number
-      new_tag tag, "exid:stax-#{book_name}:#{index}"
+      new_tag tag, "exid:stax-#{book_name}:#{index + 1}"
     end
 
     # Book location tags
-    section_and_all_lo_tags = Tag.where{name.like ['k12phys-ch%-s%', 'apbio-ch%-s%']}
+    section_and_all_lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%', 'apbio-ch%-s%']}
     section_tags = section_and_all_lo_tags - all_lo_tags
     section_tags.each do |tag|
-      name, book_name, chapter, section = /\A(\d+)-ch(\d+)-s(\d+)\z/.match tag.name
+      matches = /\A(\w+)-ch(\d+)-s(\d+)\z/.match tag.name
+      book_name = matches[1]
+      chapter = matches[2]
+      section = matches[3]
       uuid = cnx_id_map[book_name][chapter.to_i][section.to_i]
       new_tag tag, "cnxmod:#{uuid}"
     end
@@ -63,17 +67,19 @@ class MigrateHsTagsOne
 
     # Tagging legend changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
-    tl_id_tags.each{ tag.update_attribute :name, tag.name.gsub('id:', 'exid:') }
+    tl_id_tags.each{ |tag| tag.update_attribute :name, tag.name.gsub('id:', 'exid:') }
 
     tl_type_tags = Tag.where{name.like 'ost-type:%'} # Unused (CC uses all exercises)
     tl_type_tags.each{ |tag| tag.update_attribute :name, tag.name.gsub('ost-type:', 'type:') }
 
     # Type tags
     inbook_tag = Tag.find_or_create_by(name: 'inbook-yes') # Unused
-    inbook_tag.update_attribute :name, 'type:conceptual-or-recall'
+    new_tag inbook_tag, 'type:conceptual-or-recall'
+    inbook_tag.destroy
 
     grasp_check_tag = Tag.find_or_create_by(name: 'grasp-check') # Unused
-    grasp_check_tag.update_attribute :name, 'filter-type:grasp-check'
+    new_tag grasp_check_tag, 'filter-type:grasp-check'
+    grasp_check_tag.destroy
 
     old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
