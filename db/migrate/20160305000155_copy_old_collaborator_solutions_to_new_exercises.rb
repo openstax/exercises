@@ -14,7 +14,10 @@ class CopyOldCollaboratorSolutionsToNewExercises < ActiveRecord::Migration
       newest_sol = newest_ex_with_sol.questions.first.collaborator_solutions.first
 
       newer_exercises.each do |exercise|
-        exercise.questions.first.collaborator_solutions.create!(
+        question = exercise.questions.first
+        next if question.nil?
+
+        question.collaborator_solutions.create!(
           title: newest_sol.title,
           solution_type: newest_sol.solution_type,
           content: newest_sol.content
