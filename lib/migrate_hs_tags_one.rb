@@ -67,10 +67,16 @@ class MigrateHsTagsOne
              .each{ |tag| new_tag tag, tag.name.gsub('time-', 'time:') }
 
     # Display tags (Unused - Remove)
-    Tag.where{name.like 'display%'}.preload(exercise_tags: [:exercise, :tag]).destroy_all
+    Tag.where{name.like 'display%'}.preload(:exercise_tags).each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
 
     # Requires choices tags (Unused - Remove)
-    Tag.where{name.like 'requires-choices:%'}.preload(exercise_tags: [:exercise, :tag]).destroy_all
+    Tag.where{name.like 'requires-choices:%'}.preload(:exercise_tags).each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
 
     # Tagging legend changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
