@@ -27,7 +27,7 @@ class MigrateHsTagsOne
 
     # ID tags
     id_tags = Tag.where{name.like_any ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
-    id_tags.sort_by(&:name).each_with_index do |tag, index|
+    id_tags.preload(exercise_tags: :exercise).sort_by(&:name).each_with_index do |tag, index|
       matches = /\A(\w+)-ch\d+-ex\d+\z/.match tag.name
       book_name = matches[1]
       # The new format does not have the chapter number
@@ -36,6 +36,7 @@ class MigrateHsTagsOne
 
     # Book location tags
     section_and_all_lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%', 'apbio-ch%-s%']}
+                                 .preload(exercise_tags: :exercise)
     section_tags = section_and_all_lo_tags - all_lo_tags
     section_tags.each do |tag|
       matches = /\A(\w+)-ch(\d+)-s(\d+)\z/.match tag.name
@@ -51,19 +52,31 @@ class MigrateHsTagsOne
 
     # DoK, Blooms, Time
     dok_tags = Tag.where{name.like 'dok%'} # Used in Tutor
-    dok_tags.each{ |tag| new_tag tag, tag.name.gsub(/dok-?/, 'dok:') }
+    dok_tags.preload(exercise_tags: :exercise).each do |tag|
+      next if tag.name.include? ':'
 
-    blooms_tags = Tag.where{name.like 'blooms%'} # Used in Tutor
-    blooms_tags.each{ |tag| new_tag tag, tag.name.gsub(/blooms-?/, 'blooms:') }
+      new_tag tag, tag.name.gsub('dok', 'dok:')
+    end
 
-    time_tags = Tag.where{name.like 'time%'} # Used in Tutor
-    time_tags.each{ |tag| new_tag tag, tag.name.gsub(/time-?/, 'time:') }
+    blooms_tags = Tag.where{name.like 'blooms-%'} # Used in Tutor
+    blooms_tags.preload(exercise_tags: :exercise)
+               .each{ |tag| new_tag tag, tag.name.gsub('blooms-', 'blooms:') }
+
+    time_tags = Tag.where{name.like 'time-%'} # Used in Tutor
+    time_tags.preload(exercise_tags: :exercise)
+             .each{ |tag| new_tag tag, tag.name.gsub('time-', 'time:') }
 
     # Display tags (Unused - Remove)
-    Tag.where{name.like 'display%'}.destroy_all
+    Tag.where{name.like 'display%'}.preload(:exercise_tags).each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
 
     # Requires choices tags (Unused - Remove)
-    Tag.where{name.like 'requires-choices:%'}.destroy_all
+    Tag.where{name.like 'requires-choices:%'}.preload(:exercise_tags).each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
 
     # Tagging legend changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
