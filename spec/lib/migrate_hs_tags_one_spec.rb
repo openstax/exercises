@@ -43,10 +43,17 @@ RSpec.describe MigrateHsTagsOne do
     end
 
     it 'assigns new DoK tags correctly' do
-      ex = FactoryGirl.create :exercise, tags: ['dok-1']
+      ex = FactoryGirl.create :exercise, tags: ['dok1']
       described_class.call
-      expect(ex.reload.tags).to include('dok-1')
+      expect(ex.reload.tags).to include('dok1')
       expect(ex.tags).to include('dok:1')
+    end
+
+    it 'does not create dok:: tags' do
+      ex = FactoryGirl.create :exercise, tags: ['dok:1']
+      described_class.call
+      expect(ex.reload.tags).to include('dok:1')
+      expect(ex.tags).not_to include('dok::1')
     end
 
     it 'assigns new Blooms tags correctly' do
@@ -56,11 +63,25 @@ RSpec.describe MigrateHsTagsOne do
       expect(ex.tags).to include('blooms:1')
     end
 
+    it 'does not create blooms:: tags' do
+      ex = FactoryGirl.create :exercise, tags: ['blooms:1']
+      described_class.call
+      expect(ex.reload.tags).to include('blooms:1')
+      expect(ex.tags).not_to include('blooms::1')
+    end
+
     it 'assigns new time tags correctly' do
       ex = FactoryGirl.create :exercise, tags: ['time-short']
       described_class.call
       expect(ex.reload.tags).to include('time-short')
       expect(ex.tags).to include('time:short')
+    end
+
+    it 'does not create time:: tags' do
+      ex = FactoryGirl.create :exercise, tags: ['time:short']
+      described_class.call
+      expect(ex.reload.tags).to include('time:short')
+      expect(ex.tags).not_to include('time::short')
     end
 
     it 'removes display tags' do
