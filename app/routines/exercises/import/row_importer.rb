@@ -224,7 +224,6 @@ module Exercises
         Rails.logger.info "#{row} - #{uid} - #{changes}"
       end
 
-
     end
   end
 end

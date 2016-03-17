@@ -2,17 +2,13 @@ module Exercises
   module Import
     module Quadbase
 
-      EXERCISES_HOST = 'http://localhost:3000'
-      EXERCISES_ATTACHMENTS_URL = "#{EXERCISES_HOST}/attachments"
-      EXERCISES_ATTACHMENTS_PATH = 'public/attachments'
-
       QUADBASE_URL = 'https://quadbase.org'
       QUADBASE_QUESTIONS_URL = "#{QUADBASE_URL}/questions/q"
 
       ATTACHMENT_EXTENSIONS = ['jpeg', 'jpg', 'png', 'gif', 'pdf']
       FILENAME_EXPRESSION = "[\\w-]+\\.(?:#{ATTACHMENT_EXTENSIONS.join('|')})"
-      QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/(#{FILENAME_EXPRESSION}))\\\"></center></p>"
-      QUADBASE_MATH_REGEX = /\$+[^\$]*\$+/m
+      QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/#{FILENAME_EXPRESSION})\\\"></center></p>"
+      QUADBASE_MATH_REGEX = /(\${1,2})[^\$]+\1/m
 
       # Returns the license to be applied to quadbase questions
       def default_license
@@ -24,20 +20,11 @@ module Exercises
         Net::HTTP.get(URI.parse(url))
       end
 
-      # Writes a string to a file, erasing the contents and creating it if needed
-      def write_to_file(filename, content)
-        open(filename, 'wb') do |file|
-          file.write(content)
-        end
-      end
-
-      # Gets a file from a url and saves it locally
-      def download_attachment(url, filename)
-        Dir.mkdir EXERCISES_ATTACHMENTS_PATH \
-          unless File.exists? EXERCISES_ATTACHMENTS_PATH
-        destination = "#{EXERCISES_ATTACHMENTS_PATH}/#{filename}"
-        write_to_file(destination, http_get(url))
-        "#{EXERCISES_ATTACHMENTS_URL}/#{filename}"
+      # Copies the file in the given url to S3
+      # Returns the new file url
+      def copy_attachment(attachable, url)
+        outputs = AttachFile.call(attachable: exercise, url: url).outputs
+        outputs[:large_url] || outputs[:url]
       end
 
       # Converts Quadbase's dollar sign math to a math tag
@@ -48,15 +35,16 @@ module Exercises
           inner_math = inner_math[1..-2]
           tag = 'div'
         end
+        escaped_math = Rack::Utils.escape_html(inner_math)
 
-        "<#{tag} data-math=\"#{inner_math.gsub('"', '&quot;')}\"></#{tag}>"
+        "<#{tag} data-math=\"#{escaped_math}\">#{escaped_math}</#{tag}>"
       end
 
       # Converts Quadbase HTML to Exercises HTML
-      def convert_html(html)
+      def convert_html(attachable, html)
         attachments = html.to_s.scan(QUADBASE_ATTACHMENTS_REGEX)
-        attachments.each do |url, filename|
-          html = html.gsub(url, download_attachment(url, filename))
+        attachments.each do |url|
+          html = html.gsub(url, copy_attachment(attachable, url))
         end
         maths = html.scan(QUADBASE_MATH_REGEX)
         maths.each do |math|
@@ -111,15 +99,16 @@ module Exercises
       # Returns an Exercise
       def import_introduction(hash)
         exercise = Exercise.new
-        exercise.stimulus = convert_html(hash['html']) unless hash.nil?
+        exercise.stimulus = convert_html(exercise, hash['html']) unless hash.nil?
         exercise
       end
 
       # Imports a Quadbase question without the introduction
       # Returns the Question
-      def import_without_introduction(hash)
+      def import_without_introduction(attachable, hash)
         question = Question.new
-        stem = Stem.new(question: question, content: convert_html(hash['content']['html']))
+        stem = Stem.new(question: question,
+                        content: convert_html(attachable, hash['content']['html']))
 
         stem.stylings << Styling.new(stylable: stem, style: Style::DRAWING) \
           if hash['answer_can_be_sketched']
@@ -128,7 +117,7 @@ module Exercises
           stem.stylings << Styling.new(stylable: stem, style: Style::MULTIPLE_CHOICE)
 
           hash['answer_choices'].each do |ac|
-            answer = Answer.new(question: question, content: convert_html(ac['html']))
+            answer = Answer.new(question: question, content: convert_html(attachable, ac['html']))
             question.answers << answer
             stem.stem_answers << StemAnswer.new(stem: stem, answer: answer,
                                                 correctness: ac['credit'])
@@ -145,7 +134,7 @@ module Exercises
       # Returns an Exercise
       def import_simple(hash)
         exercise = import_introduction(hash['introduction'])
-        question = import_without_introduction(hash)
+        question = import_without_introduction(exercise, hash)
         question.exercise = exercise
         exercise.questions << question
         exercise
@@ -160,13 +149,12 @@ module Exercises
 
         # First construct all question objects and the maps
         hash['parts'].each do |p|
-          question = import_without_introduction(p['simple_question'])
+          question = import_without_introduction(exercise, p['simple_question'])
           question.exercise = exercise
           id_map[p['simple_question']['id']] = question
           prerequisites = (p['prerequisites'] || []).collect{|pre| pre['id']}
           supports = (p['supported_by'] || []).collect{|pre| pre['id']}
-          dependency_map[question] = {prerequisites: prerequisites,
-                                      supports: supports}
+          dependency_map[question] = {prerequisites: prerequisites, supports: supports}
           exercise.questions << question
         end
 
@@ -203,16 +191,6 @@ module Exercises
         elsif hash['simple_question']
           hash = hash['simple_question']
           exercise = import_simple(hash)
-
-          # Skip duplicates (to avoid importing the individual
-          #                  parts of multipart questions)
-          stimulus = ParseContent.call(exercise.stimulus).outputs[:content]
-          stem = ParseContent.call(exercise.questions.first.stems.first.content)
-                             .outputs[:content]
-          return false if Exercise.joins(questions: :stems)
-                                  .where(stimulus: stimulus,
-                                         questions: { stems: { content: stem } })
-                                  .exists?
         end
         publication = import_metadata(hash['attribution'])
         publication.publishable = exercise
