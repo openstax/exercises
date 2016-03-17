@@ -69,34 +69,21 @@ module Exercises
       # Returns the collaborator
       def import_collaborator(hash, klass)
         username = hash['username']
-        return if username.nil?
+        email = hash['email']
+        name = hash['name']
 
-        account = OpenStax::Accounts::Account.find_by(username: username)
-        if account.nil?
-          email = hash.delete('email')
-          return if email.nil?
+        # Minimize calls to Accounts and DB queries
+        @collaborator_users ||= {}
+        user = @collaborator_users[username]
+        if user.nil?
+          account = OpenStax::Accounts::Account.find_or_create_account(
+            username: username, email: email
+          ).outputs.account
+          account.update_column :full_name, name
 
-          hash.delete('id')
-          hash['full_name'] = hash.delete('name')
-
-          #  TODO: Make an API in OpenStax Accounts that finds or creates an Account
-          #  for an email address (returns only the openstax_uid, no other info)
-          #  Call that API and link the local account to the remote one by ID
-          # hash['openstax_uid'] = OpenStax::Accounts.configuration.enable_stubbing? ? -SecureRandom.hex.to_i(16) : \
-          #  OpenStax::Accounts.find_or_create_account_by_email(email)
-          hash['openstax_uid'] = -SecureRandom.hex(4).to_i(16)/2
-
-          # Create the local Account
-          begin
-            OpenStax::Accounts.syncing = true
-            # Just noticed that syncing in accounts-rails is not thread-safe...
-            account = OpenStax::Accounts::Account.create!(hash)
-          ensure
-            OpenStax::Accounts.syncing = false
-          end
+          user = User.find_or_create_by(account: account)
+          @collaborator_users[username] = user
         end
-
-        user = User.find_or_create_by(account_id: account.id)
 
         collaborator = klass.new(user: user)
         collaborator
@@ -132,27 +119,22 @@ module Exercises
       # Returns the Question
       def import_without_introduction(hash)
         question = Question.new
-        stem = Stem.new(question: question,
-                        content: convert_html(hash['content']['html']))
+        stem = Stem.new(question: question, content: convert_html(hash['content']['html']))
 
-        stem.stylings << Styling.new(stylable: stem,
-                                     style: Style::DRAWING) \
+        stem.stylings << Styling.new(stylable: stem, style: Style::DRAWING) \
           if hash['answer_can_be_sketched']
 
         if hash['answer_choices']
-          stem.stylings << Styling.new(stylable: stem,
-                                       style: Style::MULTIPLE_CHOICE)
+          stem.stylings << Styling.new(stylable: stem, style: Style::MULTIPLE_CHOICE)
 
           hash['answer_choices'].each do |ac|
-            answer = Answer.new(question: question,
-                                content: convert_html(ac['html']))
+            answer = Answer.new(question: question, content: convert_html(ac['html']))
             question.answers << answer
             stem.stem_answers << StemAnswer.new(stem: stem, answer: answer,
                                                 correctness: ac['credit'])
           end
         else
-          stem.stylings << Styling.new(stylable: stem,
-                                       style: Style::FREE_RESPONSE)
+          stem.stylings << Styling.new(stylable: stem, style: Style::FREE_RESPONSE)
         end
 
         question.stems << stem
@@ -227,7 +209,7 @@ module Exercises
           stimulus = ParseContent.call(exercise.stimulus).outputs[:content]
           stem = ParseContent.call(exercise.questions.first.stems.first.content)
                              .outputs[:content]
-          return false if Exercise.joins(:questions => :stems)
+          return false if Exercise.joins(questions: :stems)
                                   .where(stimulus: stimulus,
                                          questions: { stems: { content: stem } })
                                   .exists?
