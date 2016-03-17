@@ -20,7 +20,8 @@ module Api::V1
       #{json_schema(Api::V1::AttachmentRepresenter, include: :readable)}
     EOS
     def create
-      attachment = AttachFile.call(@exercise, params[:image].tempfile).outputs[:attachment]
+      attachment = AttachFile.call(attachable: @exercise,
+                                   file: params[:image].tempfile).outputs[:attachment]
       respond_with attachment, represent_with: Api::V1::AttachmentRepresenter, location: nil
     end
 
