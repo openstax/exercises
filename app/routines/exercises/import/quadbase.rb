@@ -10,6 +10,60 @@ module Exercises
       QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/#{FILENAME_EXPRESSION})\\\"></center></p>"
       QUADBASE_MATH_REGEX = /(\${1,2})[^\$]+\1/m
 
+      # Imports and saves a Quadbase question as an Exercise
+      # Returns true if the Exercise was saved or false otherwise
+      def import_question(hash)
+        if hash['multipart_question']
+          hash = hash['multipart_question']
+          exercise = import_multipart(hash)
+        elsif hash['simple_question']
+          hash = hash['simple_question']
+          exercise = import_simple(hash)
+        end
+        exercise.tags = convert_tags(hash)
+        publication = import_metadata(hash['attribution'])
+        publication.publishable = exercise
+        exercise.publication = publication
+
+        exercise.save
+      end
+
+      # Imports Quadbase questions from the given file
+      def import_file(filename)
+        json = File.open(filename, 'r') { |file| file.read }
+        hash = JSON.parse(json)
+        questions = hash['questions']
+        puts "Importing #{questions.length} exercises"
+        questions.each { |q| import_question(q) }
+      end
+
+      # Imports a Quadbase question by question ID
+      # Returns true if the Exercise was saved or false otherwise
+      def remote_import_question(id)
+        id = id.to_s
+        id[0] = '' if id[0] == 'q'
+
+        url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
+        content = http_get(url)
+        return false if content.blank?
+
+        import_question(JSON.parse(content))
+      end
+
+      # Imports all Quadbase questions in the given ID range
+      def remote_import_range(id_range)
+        puts 'Importing...'
+        Exercise.transaction do
+          for id in id_range
+            puts "Question q#{id}"
+            remote_import_question(id)
+          end
+        end
+        puts 'Done.'
+      end
+
+      protected
+
       # Returns the license to be applied to quadbase questions
       def default_license
         @@default_license ||= License.find_by(name: 'cc_by_4_0')
@@ -18,6 +72,18 @@ module Exercises
       # Gets the contents of the given URL
       def http_get(url)
         Net::HTTP.get(URI.parse(url))
+      end
+
+      # Gets the new CNX id for a legacy CNX id
+      def get_cnx_id(legacy_id)
+        @cnx_ids ||= {}
+        new_id = @cnx_ids[legacy_id]
+        return new_id unless new_id.nil?
+
+        archive_url = "https://archive.cnx.org/content/#{legacy_id}"
+        new_url = http_get(archive_url)['Location']
+        new_id = /\Ahttps?:\/\/archive.cnx.org\/content\/([\w-]+)/.match(new_url)[1]
+        @cnx_ids[legacy_id] = new_id
       end
 
       # Copies the file in the given url to S3
@@ -182,55 +248,23 @@ module Exercises
         exercise
       end
 
-      # Imports and saves a Quadbase question as an Exercise
-      # Returns true if the Exercise was saved or false otherwise
-      def import_question(hash)
-        if hash['multipart_question']
-          hash = hash['multipart_question']
-          exercise = import_multipart(hash)
-        elsif hash['simple_question']
-          hash = hash['simple_question']
-          exercise = import_simple(hash)
+      # Converts Quadbase tags to Exercises tags
+      def convert_tags(hash)
+        tags = hash['tags'] || []
+        id = hash['id']
+
+        id_tag = "exid:qb:#{id}"
+        filter_tag = "filter-type:qb"
+
+        module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }
+        if module_tag.nil?
+          cnxmod_tag = nil
+        else
+          cnx_id = get_cnx_id(module_tag)
+          cnxmod_tag = "cnxmod:#{cnx_id}"
         end
-        publication = import_metadata(hash['attribution'])
-        publication.publishable = exercise
-        exercise.publication = publication
 
-        exercise.save
-      end
-
-      # Imports Quadbase questions from the given file
-      def import_file(filename)
-        json = File.open(filename, 'r') { |file| file.read }
-        hash = JSON.parse(json)
-        questions = hash['questions']
-        puts "Importing #{questions.length} exercises"
-        questions.each { |q| import_question(q) }
-      end
-
-      # Imports a Quadbase question by question ID
-      # Returns true if the Exercise was saved or false otherwise
-      def remote_import_question(id)
-        id = id.to_s
-        id[0] = '' if id[0] == 'q'
-
-        url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
-        content = http_get(url)
-        return false if content.blank?
-
-        import_question(JSON.parse(content))
-      end
-
-      # Imports all Quadbase questions in the given ID range
-      def remote_import_range(id_range)
-        puts 'Importing...'
-        Exercise.transaction do
-          for id in id_range
-            puts "Question q#{id}"
-            remote_import_question(id)
-          end
-        end
-        puts 'Done.'
+        [id_tag, filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
       end
 
     end
