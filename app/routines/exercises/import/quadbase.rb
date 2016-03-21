@@ -20,12 +20,59 @@ module Exercises
           hash = hash['simple_question']
           exercise = import_simple(hash)
         end
-        exercise.tags = convert_tags(hash)
+        id_tag = "exid:qb:#{hash['id']}"
+
+        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
+                                  .where(exercise_tags: {tag: {name: id_tag}})
+                                  .order{[publication.number.desc, publication.version.desc]}.first
+
         publication = import_metadata(hash['attribution'])
+
+        unless latest_exercise.nil?
+          publication.number = latest_exercise.publication.number
+          publication.version = latest_exercise.publication.version + 1
+        end
+
         publication.publishable = exercise
         exercise.publication = publication
+        exercise.tags = [id_tag] + convert_tags(hash['tags'])
 
-        exercise.save
+        list_name = hash['lists'].first
+        list = List.find_by(name: list_name)
+        if list.nil?
+          list = List.create(name: list_name)
+
+          [publication.author, publication.copyright_holder].compact.uniq.each do |collaborator|
+            user = collaborator.user
+            lo = ListOwner.new
+            lo.owner = user
+            lo.list = list
+            list.list_owners << lo
+          end
+
+          list.save!
+          Rails.logger.info "Created new list: #{list_name}"
+        end
+
+        le = ListExercise.new
+        le.exercise = exercise
+        le.list = list
+        exercise.list_exercises << le
+        exercise.save!
+        list.list_exercises << le
+
+        if exercise.content_equals?(latest_exercise)
+          exercise.destroy
+          skipped = true
+        else
+          skipped = false
+        end
+
+        ex = "Imported Exercise #{hash['id']}"
+        uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{exercise.uid}"
+        changes = skipped ? "Exercise skipped (no changes)" : \
+                            "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
+        Rails.logger.info "#{ex} - #{uid} - #{changes}"
       end
 
       # Imports Quadbase questions from the given file
@@ -249,11 +296,8 @@ module Exercises
       end
 
       # Converts Quadbase tags to Exercises tags
-      def convert_tags(hash)
-        tags = hash['tags'] || []
-        id = hash['id']
-
-        id_tag = "exid:qb:#{id}"
+      def convert_tags(tags)
+        tags ||= []
         filter_tag = "filter-type:qb"
 
         module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }

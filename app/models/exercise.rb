@@ -1,5 +1,30 @@
 class Exercise < ActiveRecord::Base
 
+  EQUALITY_ASSOCIATIONS = [
+    :attachments,
+    :logic,
+    :tags,
+    {
+      publication: [
+        :derivations, {
+          authors: :user,
+          copyright_holders: :user,
+          editors: :user
+        }
+      ],
+      questions: [
+        :hints, {
+          answers: :stem_answers,
+          stems: [
+            :stylings, :combo_choices
+          ]
+        }
+      ]
+    }
+  ]
+  EQUALITY_EXCLUDED_FIELDS = ['id', 'created_at', 'updated_at', 'version',
+                              'published_at', 'yanked_at', 'embargoed_until']
+
   # deep_clone does not iterate through hashes, so each hash must have only 1 key
   NEW_VERSION_DUPED_ASSOCIATIONS = [
     :attachments,
@@ -64,6 +89,18 @@ class Exercise < ActiveRecord::Base
               stems: [:stylings, :combo_choices]
             ])
   }
+
+  def content_equals?(other_exercise)
+    return false unless other_exercise.is_a? ActiveRecord::Base
+
+    association_attributes_arguments = [EQUALITY_ASSOCIATIONS, except: EQUALITY_EXCLUDED_FIELDS,
+                                                               exclude_foreign_keys: true,
+                                                               transform_arrays_into_sets: true]
+    attrs = association_attributes(*association_attributes_arguments)
+    other_attrs = other_exercise.association_attributes(*association_attributes_arguments)
+
+    attrs == other_attrs
+  end
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
