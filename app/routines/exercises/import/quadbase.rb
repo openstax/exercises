@@ -1,6 +1,12 @@
 module Exercises
   module Import
-    module Quadbase
+    class Quadbase
+
+      lev_routine
+
+      uses_routine OpenStax::Accounts::FindOrCreateAccount,
+                   translations: { outputs: { type: :verbatim } },
+                   as: :find_or_create_account
 
       QUADBASE_URL = 'https://quadbase.org'
       QUADBASE_QUESTIONS_URL = "#{QUADBASE_URL}/questions/q"
@@ -9,6 +15,24 @@ module Exercises
       FILENAME_EXPRESSION = "[\\w-]+\\.(?:#{ATTACHMENT_EXTENSIONS.join('|')})"
       QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/#{FILENAME_EXPRESSION})\\\"></center></p>"
       QUADBASE_MATH_REGEX = /(\${1,2})[^\$]+\1/m
+
+      def exec(id: nil, range: nil, file: nil)
+        fatal_error(code: :no_args,
+                    message: 'Must specify a question id, a range or a file to import') \
+          if id.nil? && range.nil? && file.nil?
+
+        unless id.nil?
+          remote_import_question(id)
+        end
+
+        unless range.nil?
+          remote_import_range(range)
+        end
+
+        unless file.nil?
+          import_file(file)
+        end
+      end
 
       # Imports and saves a Quadbase question as an Exercise
       # Returns true if the Exercise was saved or false otherwise
@@ -37,29 +61,33 @@ module Exercises
         exercise.publication = publication
         exercise.tags = [id_tag] + convert_tags(hash['tags'])
 
-        list_name = hash['lists'].first
-        list = List.find_by(name: list_name)
-        if list.nil?
-          list = List.create(name: list_name)
+        list_name = (hash['lists'] || []).first
 
-          [publication.author, publication.copyright_holder].compact.uniq.each do |collaborator|
-            user = collaborator.user
-            lo = ListOwner.new
-            lo.owner = user
-            lo.list = list
-            list.list_owners << lo
+        if list_name.present?
+          list = List.find_by(name: list_name)
+          if list.nil?
+            list = List.create(name: list_name)
+
+            [publication.author, publication.copyright_holder].compact.uniq.each do |collaborator|
+              user = collaborator.user
+              lo = ListOwner.new
+              lo.owner = user
+              lo.list = list
+              list.list_owners << lo
+            end
+
+            list.save!
+            Rails.logger.info "Created new list: #{list_name}"
           end
 
-          list.save!
-          Rails.logger.info "Created new list: #{list_name}"
+          le = ListExercise.new
+          le.exercise = exercise
+          le.list = list
+          exercise.list_exercises << le
+          list.list_exercises << le
         end
 
-        le = ListExercise.new
-        le.exercise = exercise
-        le.list = list
-        exercise.list_exercises << le
         exercise.save!
-        list.list_exercises << le
 
         if exercise.content_equals?(latest_exercise)
           exercise.destroy
@@ -76,12 +104,12 @@ module Exercises
       end
 
       # Imports Quadbase questions from the given file
-      def import_file(filename)
-        json = File.open(filename, 'r') { |file| file.read }
+      def import_file(file)
+        json = File.open(file, 'r') { |ff| ff.read }
         hash = JSON.parse(json)
         questions = hash['questions']
         puts "Importing #{questions.length} exercises"
-        questions.each { |q| import_question(q) }
+        questions.each { |qq| import_question(qq) }
       end
 
       # Imports a Quadbase question by question ID
@@ -136,7 +164,7 @@ module Exercises
       # Copies the file in the given url to S3
       # Returns the new file url
       def copy_attachment(attachable, url)
-        outputs = AttachFile.call(attachable: exercise, url: url).outputs
+        outputs = AttachFile.call(attachable: attachable, url: url).outputs
         outputs[:large_url] || outputs[:url]
       end
 
@@ -156,11 +184,13 @@ module Exercises
       # Converts Quadbase HTML to Exercises HTML
       def convert_html(attachable, html)
         attachments = html.to_s.scan(QUADBASE_ATTACHMENTS_REGEX)
-        attachments.each do |url|
+        attachments.each do |matches|
+          url = matches.first
           html = html.gsub(url, copy_attachment(attachable, url))
         end
         maths = html.scan(QUADBASE_MATH_REGEX)
-        maths.each do |math|
+        maths.each do |matches|
+          math = matches.first
           html = html.gsub(math, math_tag(math))
         end
         html
@@ -173,13 +203,14 @@ module Exercises
         email = hash['email']
         name = hash['name']
 
+        # Username is only available in files exported using the rake questions:export:json task
+        return if username.nil?
+
         # Minimize calls to Accounts and DB queries
         @collaborator_users ||= {}
         user = @collaborator_users[username]
         if user.nil?
-          account = OpenStax::Accounts::Account.find_or_create_account(
-            username: username, email: email
-          ).outputs.account
+          account = run(:find_or_create_account, username: username, email: email).outputs.account
           account.update_column :full_name, name
 
           user = User.find_or_create_by(account: account)
@@ -308,7 +339,7 @@ module Exercises
           cnxmod_tag = "cnxmod:#{cnx_id}"
         end
 
-        [id_tag, filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
+        [filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
       end
 
     end
