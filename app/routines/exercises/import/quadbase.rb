@@ -21,17 +21,11 @@ module Exercises
                     message: 'Must specify a question id, a range or a file to import') \
           if id.nil? && range.nil? && file.nil?
 
-        unless id.nil?
-          remote_import_question(id)
-        end
+        remote_import_question(id) unless id.nil?
 
-        unless range.nil?
-          remote_import_range(range)
-        end
+        remote_import_range(range) unless range.nil?
 
-        unless file.nil?
-          import_file(file)
-        end
+        import_file(file) unless file.nil?
       end
 
       # Imports and saves a Quadbase question as an Exercise
@@ -59,7 +53,7 @@ module Exercises
 
         publication.publishable = exercise
         exercise.publication = publication
-        exercise.tags = [id_tag] + convert_tags(hash['tags'])
+        exercise.tags = [id_tag] + convert_tags(hash)
 
         list_name = (hash['lists'] || []).first
 
@@ -68,8 +62,8 @@ module Exercises
           if list.nil?
             list = List.create(name: list_name)
 
-            [publication.author, publication.copyright_holder].compact.uniq.each do |collaborator|
-              user = collaborator.user
+            (publication.authors.map(&:user) + \
+             publication.copyright_holders.map(&:user)).uniq.each do |user|
               lo = ListOwner.new
               lo.owner = user
               lo.list = list
@@ -119,7 +113,7 @@ module Exercises
         id[0] = '' if id[0] == 'q'
 
         url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
-        content = http_get(url)
+        content = Net::HTTP.get(URI.parse(url))
         return false if content.blank?
 
         import_question(JSON.parse(content))
@@ -144,11 +138,6 @@ module Exercises
         @@default_license ||= License.find_by(name: 'cc_by_4_0')
       end
 
-      # Gets the contents of the given URL
-      def http_get(url)
-        Net::HTTP.get(URI.parse(url))
-      end
-
       # Gets the new CNX id for a legacy CNX id
       def get_cnx_id(legacy_id)
         @cnx_ids ||= {}
@@ -156,9 +145,9 @@ module Exercises
         return new_id unless new_id.nil?
 
         archive_url = "https://archive.cnx.org/content/#{legacy_id}"
-        new_url = http_get(archive_url)['Location']
-        new_id = /\Ahttps?:\/\/archive.cnx.org\/content\/([\w-]+)/.match(new_url)[1]
-        @cnx_ids[legacy_id] = new_id
+        new_url = Net::HTTP.get_response(URI.parse(archive_url))['Location']
+        matches = /\Ahttps?:\/\/archive.cnx.org\/contents\/([\w-]+)/.match(new_url) || []
+        @cnx_ids[legacy_id] = matches[1]
       end
 
       # Copies the file in the given url to S3
@@ -327,13 +316,14 @@ module Exercises
       end
 
       # Converts Quadbase tags to Exercises tags
-      def convert_tags(tags)
-        tags ||= []
+      def convert_tags(hash)
+        tags = hash['tags'] || []
         filter_tag = "filter-type:qb"
 
         module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }
         if module_tag.nil?
           cnxmod_tag = nil
+          Rails.logger.warn "No cnxmod tag for #{hash['id']}"
         else
           cnx_id = get_cnx_id(module_tag)
           cnxmod_tag = "cnxmod:#{cnx_id}"
