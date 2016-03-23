@@ -1,43 +1,160 @@
 module Exercises
   module Import
-    module Quadbase
+    class Quadbase
 
-      EXERCISES_HOST = 'http://localhost:3000'
-      EXERCISES_ATTACHMENTS_URL = "#{EXERCISES_HOST}/attachments"
-      EXERCISES_ATTACHMENTS_PATH = 'public/attachments'
+      lev_routine
+
+      uses_routine OpenStax::Accounts::FindOrCreateAccount,
+                   translations: { outputs: { type: :verbatim } },
+                   as: :find_or_create_account
 
       QUADBASE_URL = 'https://quadbase.org'
       QUADBASE_QUESTIONS_URL = "#{QUADBASE_URL}/questions/q"
 
       ATTACHMENT_EXTENSIONS = ['jpeg', 'jpg', 'png', 'gif', 'pdf']
       FILENAME_EXPRESSION = "[\\w-]+\\.(?:#{ATTACHMENT_EXTENSIONS.join('|')})"
-      QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/(#{FILENAME_EXPRESSION}))\\\"></center></p>"
-      QUADBASE_MATH_REGEX = /\$+[^\$]*\$+/m
+      QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/#{FILENAME_EXPRESSION})\\\"></center></p>"
+      QUADBASE_MATH_REGEX = /(\${1,2})[^\$]+\1/m
+
+      def exec(id: nil, range: nil, file: nil)
+        fatal_error(code: :no_args,
+                    message: 'Must specify a question id, a range or a file to import') \
+          if id.nil? && range.nil? && file.nil?
+
+        remote_import_question(id) unless id.nil?
+
+        remote_import_range(range) unless range.nil?
+
+        import_file(file) unless file.nil?
+      end
+
+      # Imports and saves a Quadbase question as an Exercise
+      # Returns true if the Exercise was saved or false otherwise
+      def import_question(hash)
+        if hash['multipart_question']
+          hash = hash['multipart_question']
+          exercise = import_multipart(hash)
+        elsif hash['simple_question']
+          hash = hash['simple_question']
+          exercise = import_simple(hash)
+        end
+        id_tag = "exid:qb:#{hash['id']}"
+
+        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
+                                  .where(exercise_tags: {tag: {name: id_tag}})
+                                  .order{[publication.number.desc, publication.version.desc]}.first
+
+        publication = import_metadata(hash['attribution'])
+
+        unless latest_exercise.nil?
+          publication.number = latest_exercise.publication.number
+          publication.version = latest_exercise.publication.version + 1
+        end
+
+        publication.publishable = exercise
+        exercise.publication = publication
+        exercise.tags = [id_tag] + convert_tags(hash)
+
+        list_name = (hash['lists'] || []).first
+
+        if list_name.present?
+          list = List.find_by(name: list_name)
+          if list.nil?
+            list = List.create(name: list_name)
+
+            (publication.authors.map(&:user) + \
+             publication.copyright_holders.map(&:user)).uniq.each do |user|
+              lo = ListOwner.new
+              lo.owner = user
+              lo.list = list
+              list.list_owners << lo
+            end
+
+            list.save!
+            Rails.logger.info "Created new list: #{list_name}"
+          end
+
+          le = ListExercise.new
+          le.exercise = exercise
+          le.list = list
+          exercise.list_exercises << le
+          list.list_exercises << le
+        end
+
+        exercise.save!
+
+        if exercise.content_equals?(latest_exercise)
+          exercise.destroy
+          skipped = true
+        else
+          skipped = false
+        end
+
+        ex = "Imported Exercise #{hash['id']}"
+        uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{exercise.uid}"
+        changes = skipped ? "Exercise skipped (no changes)" : \
+                            "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
+        Rails.logger.info "#{ex} - #{uid} - #{changes}"
+      end
+
+      # Imports Quadbase questions from the given file
+      def import_file(file)
+        json = File.open(file, 'r') { |ff| ff.read }
+        hash = JSON.parse(json)
+        questions = hash['questions']
+        puts "Importing #{questions.length} exercises"
+        questions.each { |qq| import_question(qq) }
+      end
+
+      # Imports a Quadbase question by question ID
+      # Returns true if the Exercise was saved or false otherwise
+      def remote_import_question(id)
+        id = id.to_s
+        id[0] = '' if id[0] == 'q'
+
+        url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
+        content = Net::HTTP.get(URI.parse(url))
+        return false if content.blank?
+
+        import_question(JSON.parse(content))
+      end
+
+      # Imports all Quadbase questions in the given ID range
+      def remote_import_range(id_range)
+        puts 'Importing...'
+        Exercise.transaction do
+          for id in id_range
+            puts "Question q#{id}"
+            remote_import_question(id)
+          end
+        end
+        puts 'Done.'
+      end
+
+      protected
 
       # Returns the license to be applied to quadbase questions
       def default_license
         @@default_license ||= License.find_by(name: 'cc_by_4_0')
       end
 
-      # Gets the contents of the given URL
-      def http_get(url)
-        Net::HTTP.get(URI.parse(url))
+      # Gets the new CNX id for a legacy CNX id
+      def get_cnx_id(legacy_id)
+        @cnx_ids ||= {}
+        new_id = @cnx_ids[legacy_id]
+        return new_id unless new_id.nil?
+
+        archive_url = "https://archive.cnx.org/content/#{legacy_id}"
+        new_url = Net::HTTP.get_response(URI.parse(archive_url))['Location']
+        matches = /\Ahttps?:\/\/archive.cnx.org\/contents\/([\w-]+)/.match(new_url) || []
+        @cnx_ids[legacy_id] = matches[1]
       end
 
-      # Writes a string to a file, erasing the contents and creating it if needed
-      def write_to_file(filename, content)
-        open(filename, 'wb') do |file|
-          file.write(content)
-        end
-      end
-
-      # Gets a file from a url and saves it locally
-      def download_attachment(url, filename)
-        Dir.mkdir EXERCISES_ATTACHMENTS_PATH \
-          unless File.exists? EXERCISES_ATTACHMENTS_PATH
-        destination = "#{EXERCISES_ATTACHMENTS_PATH}/#{filename}"
-        write_to_file(destination, http_get(url))
-        "#{EXERCISES_ATTACHMENTS_URL}/#{filename}"
+      # Copies the file in the given url to S3
+      # Returns the new file url
+      def copy_attachment(attachable, url)
+        outputs = AttachFile.call(attachable: attachable, url: url).outputs
+        outputs[:large_url] || outputs[:url]
       end
 
       # Converts Quadbase's dollar sign math to a math tag
@@ -48,18 +165,21 @@ module Exercises
           inner_math = inner_math[1..-2]
           tag = 'div'
         end
+        escaped_math = Rack::Utils.escape_html(inner_math)
 
-        "<#{tag} data-math=\"#{inner_math.gsub('"', '&quot;')}\"></#{tag}>"
+        "<#{tag} data-math=\"#{escaped_math}\">#{escaped_math}</#{tag}>"
       end
 
       # Converts Quadbase HTML to Exercises HTML
-      def convert_html(html)
+      def convert_html(attachable, html)
         attachments = html.to_s.scan(QUADBASE_ATTACHMENTS_REGEX)
-        attachments.each do |url, filename|
-          html = html.gsub(url, download_attachment(url, filename))
+        attachments.each do |matches|
+          url = matches.first
+          html = html.gsub(url, copy_attachment(attachable, url))
         end
         maths = html.scan(QUADBASE_MATH_REGEX)
-        maths.each do |math|
+        maths.each do |matches|
+          math = matches.first
           html = html.gsub(math, math_tag(math))
         end
         html
@@ -69,34 +189,22 @@ module Exercises
       # Returns the collaborator
       def import_collaborator(hash, klass)
         username = hash['username']
+        email = hash['email']
+        name = hash['name']
+
+        # Username is only available in files exported using the rake questions:export:json task
         return if username.nil?
 
-        account = OpenStax::Accounts::Account.find_by(username: username)
-        if account.nil?
-          email = hash.delete('email')
-          return if email.nil?
+        # Minimize calls to Accounts and DB queries
+        @collaborator_users ||= {}
+        user = @collaborator_users[username]
+        if user.nil?
+          account = run(:find_or_create_account, username: username, email: email).outputs.account
+          account.update_column :full_name, name
 
-          hash.delete('id')
-          hash['full_name'] = hash.delete('name')
-
-          #  TODO: Make an API in OpenStax Accounts that finds or creates an Account
-          #  for an email address (returns only the openstax_uid, no other info)
-          #  Call that API and link the local account to the remote one by ID
-          # hash['openstax_uid'] = OpenStax::Accounts.configuration.enable_stubbing? ? -SecureRandom.hex.to_i(16) : \
-          #  OpenStax::Accounts.find_or_create_account_by_email(email)
-          hash['openstax_uid'] = -SecureRandom.hex(4).to_i(16)/2
-
-          # Create the local Account
-          begin
-            OpenStax::Accounts.syncing = true
-            # Just noticed that syncing in accounts-rails is not thread-safe...
-            account = OpenStax::Accounts::Account.create!(hash)
-          ensure
-            OpenStax::Accounts.syncing = false
-          end
+          user = User.find_or_create_by(account: account)
+          @collaborator_users[username] = user
         end
-
-        user = User.find_or_create_by(account_id: account.id)
 
         collaborator = klass.new(user: user)
         collaborator
@@ -124,35 +232,31 @@ module Exercises
       # Returns an Exercise
       def import_introduction(hash)
         exercise = Exercise.new
-        exercise.stimulus = convert_html(hash['html']) unless hash.nil?
+        exercise.stimulus = convert_html(exercise, hash['html']) unless hash.nil?
         exercise
       end
 
       # Imports a Quadbase question without the introduction
       # Returns the Question
-      def import_without_introduction(hash)
+      def import_without_introduction(attachable, hash)
         question = Question.new
         stem = Stem.new(question: question,
-                        content: convert_html(hash['content']['html']))
+                        content: convert_html(attachable, hash['content']['html']))
 
-        stem.stylings << Styling.new(stylable: stem,
-                                     style: Style::DRAWING) \
+        stem.stylings << Styling.new(stylable: stem, style: Style::DRAWING) \
           if hash['answer_can_be_sketched']
 
         if hash['answer_choices']
-          stem.stylings << Styling.new(stylable: stem,
-                                       style: Style::MULTIPLE_CHOICE)
+          stem.stylings << Styling.new(stylable: stem, style: Style::MULTIPLE_CHOICE)
 
           hash['answer_choices'].each do |ac|
-            answer = Answer.new(question: question,
-                                content: convert_html(ac['html']))
+            answer = Answer.new(question: question, content: convert_html(attachable, ac['html']))
             question.answers << answer
             stem.stem_answers << StemAnswer.new(stem: stem, answer: answer,
                                                 correctness: ac['credit'])
           end
         else
-          stem.stylings << Styling.new(stylable: stem,
-                                       style: Style::FREE_RESPONSE)
+          stem.stylings << Styling.new(stylable: stem, style: Style::FREE_RESPONSE)
         end
 
         question.stems << stem
@@ -163,7 +267,7 @@ module Exercises
       # Returns an Exercise
       def import_simple(hash)
         exercise = import_introduction(hash['introduction'])
-        question = import_without_introduction(hash)
+        question = import_without_introduction(exercise, hash)
         question.exercise = exercise
         exercise.questions << question
         exercise
@@ -178,13 +282,12 @@ module Exercises
 
         # First construct all question objects and the maps
         hash['parts'].each do |p|
-          question = import_without_introduction(p['simple_question'])
+          question = import_without_introduction(exercise, p['simple_question'])
           question.exercise = exercise
           id_map[p['simple_question']['id']] = question
           prerequisites = (p['prerequisites'] || []).collect{|pre| pre['id']}
           supports = (p['supported_by'] || []).collect{|pre| pre['id']}
-          dependency_map[question] = {prerequisites: prerequisites,
-                                      supports: supports}
+          dependency_map[question] = {prerequisites: prerequisites, supports: supports}
           exercise.questions << question
         end
 
@@ -212,65 +315,21 @@ module Exercises
         exercise
       end
 
-      # Imports and saves a Quadbase question as an Exercise
-      # Returns true if the Exercise was saved or false otherwise
-      def import_question(hash)
-        if hash['multipart_question']
-          hash = hash['multipart_question']
-          exercise = import_multipart(hash)
-        elsif hash['simple_question']
-          hash = hash['simple_question']
-          exercise = import_simple(hash)
+      # Converts Quadbase tags to Exercises tags
+      def convert_tags(hash)
+        tags = hash['tags'] || []
+        filter_tag = "filter-type:qb"
 
-          # Skip duplicates (to avoid importing the individual
-          #                  parts of multipart questions)
-          stimulus = ParseContent.call(exercise.stimulus).outputs[:content]
-          stem = ParseContent.call(exercise.questions.first.stems.first.content)
-                             .outputs[:content]
-          return false if Exercise.joins(:questions => :stems)
-                                  .where(stimulus: stimulus,
-                                         questions: { stems: { content: stem } })
-                                  .exists?
+        module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }
+        if module_tag.nil?
+          cnxmod_tag = nil
+          Rails.logger.warn "No cnxmod tag for #{hash['id']}"
+        else
+          cnx_id = get_cnx_id(module_tag)
+          cnxmod_tag = "cnxmod:#{cnx_id}"
         end
-        publication = import_metadata(hash['attribution'])
-        publication.publishable = exercise
-        exercise.publication = publication
 
-        exercise.save
-      end
-
-      # Imports Quadbase questions from the given file
-      def import_file(filename)
-        json = File.open(filename, 'r') { |file| file.read }
-        hash = JSON.parse(json)
-        questions = hash['questions']
-        puts "Importing #{questions.length} exercises"
-        questions.each { |q| import_question(q) }
-      end
-
-      # Imports a Quadbase question by question ID
-      # Returns true if the Exercise was saved or false otherwise
-      def remote_import_question(id)
-        id = id.to_s
-        id[0] = '' if id[0] == 'q'
-
-        url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
-        content = http_get(url)
-        return false if content.blank?
-
-        import_question(JSON.parse(content))
-      end
-
-      # Imports all Quadbase questions in the given ID range
-      def remote_import_range(id_range)
-        puts 'Importing...'
-        Exercise.transaction do
-          for id in id_range
-            puts "Question q#{id}"
-            remote_import_question(id)
-          end
-        end
-        puts 'Done.'
+        [filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
       end
 
     end

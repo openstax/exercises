@@ -4,30 +4,6 @@ module Exercises
 
       DEFAULT_AUTHOR_ID = 1
       DEFAULT_CH_ID = 2
-      EQUALITY_ASSOCIATIONS = [
-        :attachments,
-        :logic,
-        :tags,
-        {
-          publication: [
-            :derivations, {
-              authors: :user,
-              copyright_holders: :user,
-              editors: :user
-            }
-          ],
-          questions: [
-            :hints, {
-              answers: :stem_answers,
-              stems: [
-                :stylings, :combo_choices
-              ]
-            }
-          ]
-        }
-      ]
-      EQUALITY_EXCLUDED_FIELDS = ['id', 'created_at', 'updated_at', 'version',
-                                  'published_at', 'yanked_at', 'embargoed_until']
 
       attr_reader :skip_first_row, :author, :copyright_holder
 
@@ -198,23 +174,11 @@ module Exercises
         ex.save!
         list.list_exercises << le
 
-        skipped = false
-        unless latest_exercise.nil?
-          old_attributes = latest_exercise.association_attributes(
-            EQUALITY_ASSOCIATIONS, except: EQUALITY_EXCLUDED_FIELDS,
-                                   exclude_foreign_keys: true,
-                                   transform_arrays_into_sets: true
-          )
-          new_attributes = ex.association_attributes(
-            EQUALITY_ASSOCIATIONS, except: EQUALITY_EXCLUDED_FIELDS,
-                                   exclude_foreign_keys: true,
-                                   transform_arrays_into_sets: true
-          )
-
-          if old_attributes == new_attributes
-            ex.destroy
-            skipped = true
-          end
+        if ex.content_equals?(latest_exercise)
+          ex.destroy
+          skipped = true
+        else
+          skipped = false
         end
 
         row = "Imported row ##{row_number}"
@@ -223,7 +187,6 @@ module Exercises
                             "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
         Rails.logger.info "#{row} - #{uid} - #{changes}"
       end
-
 
     end
   end

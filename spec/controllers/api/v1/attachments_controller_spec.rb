@@ -50,7 +50,9 @@ module Api::V1
 
     describe "DELETE destroy" do
       it 'removes the attachment when called' do
-        attachment = AttachFile.call(exercise, 'spec/fixtures/os_exercises_logo.png').outputs[:attachment]
+        attachment = AttachFile.call(
+          attachable: exercise, file: 'spec/fixtures/os_exercises_logo.png'
+        ).outputs[:attachment]
 
         expect{ api_delete :destroy, user_token,
                            parameters: { exercise_id: exercise_id, id: attachment.id }

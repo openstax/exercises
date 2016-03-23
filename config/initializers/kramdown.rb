@@ -5,7 +5,8 @@ Kramdown::Parser::Kramdown.class_exec do
 
   def add_link_with_attachments(el, href, title, alt_text = nil, ial = nil)
     if Addressable::URI.parse(href).relative? && @options[:attachable]
-      outputs = AttachFile.call(@options[:attachable], href).outputs
+      # href is actually a path to a local file for the spreadsheet importer
+      outputs = AttachFile.call(attachable: @options[:attachable], file: href).outputs
       href = outputs.large_url || outputs.url
     end
 
