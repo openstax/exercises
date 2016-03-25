@@ -11,12 +11,12 @@ describe 'exercises import' do
     let(:fixture_path) { '../spec/fixtures/sample_exercises.xlsx' }
 
     let :run_rake_task do
-      Rake::Task["exercises:import:excel"].reenable
-      Rake.application.invoke_task "exercises:import:excel[#{fixture_path},42,10]"
+      Rake::Task["exercises:import:xlsx"].reenable
+      Rake.application.invoke_task "exercises:import:xlsx[#{fixture_path},42,10]"
     end
 
-    it 'passes arguments to Exercises::Import::Excel' do
-      expect(Exercises::Import::Excel).to(
+    it 'passes arguments to Exercises::Import::Xlsx' do
+      expect(Exercises::Import::Xlsx).to(
         receive(:call).with(filename: fixture_path, author_id: '42', ch_id: '10')
       )
       run_rake_task

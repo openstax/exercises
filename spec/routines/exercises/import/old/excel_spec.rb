@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Exercises::Import
-  RSpec.describe Old::Excel do
+  RSpec.describe Old::Xlsx do
     let(:fixture_path) { 'spec/fixtures/old/sample_exercises.xlsx' }
 
     let!(:author) { FactoryGirl.create :user }
