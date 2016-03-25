@@ -4,6 +4,23 @@ module Exercises::Import
   RSpec.describe Xlsx do
     let(:fixture_path) { 'spec/fixtures/sample_exercises.xlsx' }
 
+    let(:expected_los) {
+      [
+        'lo:k12phys:3-1-1',
+        'lo:k12phys:3-1-2',
+        'lo:k12phys:3-2-1',
+        'lo:k12phys:3-2-2',
+        'lo:k12phys:4-1-1',
+        'lo:k12phys:4-1-2',
+        'lo:k12phys:4-2-1',
+        'lo:k12phys:4-2-2',
+        'lo:k12phys:4-3-1',
+        'lo:k12phys:4-3-2',
+        'lo:k12phys:4-4-1',
+        'lo:k12phys:4-4-2'
+      ]
+    }
+
     let!(:author) { FactoryGirl.create :user }
     let!(:ch)     { FactoryGirl.create :user }
 
@@ -23,22 +40,8 @@ module Exercises::Import
         )
 
         expect(exercise.tags).not_to be_blank
-        expect(exercise.tags).to satisfy do |tags|
-          tag_names = tags.collect { |tag| tag.name }
-          (tag_names & ['lo:k12phys:3-1-1',
-                        'lo:k12phys:3-1-2',
-                        'lo:k12phys:3-2-1',
-                        'lo:k12phys:3-2-2',
-                        'lo:k12phys:4-1-1',
-                        'lo:k12phys:4-1-2',
-                        'lo:k12phys:4-2-1',
-                        'lo:k12phys:4-2-2',
-                        'lo:k12phys:4-3-1',
-                        'lo:k12phys:4-3-2',
-                        'lo:k12phys:4-4-1',
-                        'lo:k12phys:4-4-2']).length == 1
-        end
-
+        tag_names = exercise.tags.map(&:name)
+        expect((tag_names & expected_los).length).to eq 1
 
         expect(exercise.stimulus).to be_blank
         expect(exercise.questions.length).to eq 1

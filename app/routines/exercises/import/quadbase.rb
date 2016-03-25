@@ -102,7 +102,7 @@ module Exercises
         json = File.open(file, 'r') { |ff| ff.read }
         hash = JSON.parse(json)
         questions = hash['questions']
-        puts "Importing #{questions.length} exercises"
+        Rails.logger.info "Importing #{questions.length} exercises from #{file}"
         questions.each { |qq| import_question(qq) }
       end
 
@@ -121,14 +121,13 @@ module Exercises
 
       # Imports all Quadbase questions in the given ID range
       def remote_import_range(id_range)
-        puts 'Importing...'
+        Rails.logger.info "Importing range #{id_range}"
         Exercise.transaction do
           for id in id_range
-            puts "Question q#{id}"
+            Rails.logger.info "Question q#{id}"
             remote_import_question(id)
           end
         end
-        puts 'Done.'
       end
 
       protected
