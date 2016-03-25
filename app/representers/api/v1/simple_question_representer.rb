@@ -79,7 +79,7 @@ module Api::V1
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |args| stems.first.stylings.collect{ |s| s.style } },
+               getter: lambda { |args| stems.first.try(:stylings).try(:map, &:style) },
                setter: lambda { |values, args|
                  values.each do |value|
                    styling = stems.first.stylings
