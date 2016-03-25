@@ -5,9 +5,8 @@ class ParseContent
   protected
 
   def exec(content)
-    outputs[:content] = ActionView::Base.new.auto_link(
-                          content, :html => { :target => '_blank' }
-                        )
+    linked_content = Rinku.auto_link(content, :urls, 'target="_blank"')
+    outputs[:content] = linked_content
   end
 
 end

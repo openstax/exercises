@@ -43,7 +43,7 @@ gem 'rails-html-sanitizer'
 gem 'addressable'
 
 # Converts links in Strings to HTML anchors
-gem 'rails_autolink'
+gem 'rinku'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
