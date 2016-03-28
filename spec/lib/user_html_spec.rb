@@ -5,7 +5,7 @@ RSpec.describe UserHtml do
     expect(ActiveRecord::Base).to respond_to(:user_html)
   end
 
-  it 'converts url\'s to html anchors with rel="nofollow"' do
+  it 'converts url\'s to html anchors with rel="nofollow" and target="_blank"' do
     content = 'Here is a cool link: http://www.example.com.'
     expect(described_class.link_and_sanitize(content)).to(
       eq 'Here is a cool link: <a href="http://www.example.com" ' +
@@ -13,7 +13,7 @@ RSpec.describe UserHtml do
     )
   end
 
-  it 'adds rel="nofollow" to existing html anchors' do
+  it 'adds rel="nofollow" and target="_blank" to existing html anchors' do
     content = 'Here is a cooler link: <a href="https://www.example.com">Example</a>.'
     expect(described_class.link_and_sanitize(content)).to(
       eq 'Here is a cooler link: <a href="https://www.example.com" ' +

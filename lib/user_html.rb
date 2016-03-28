@@ -2,7 +2,7 @@ module UserHtml
   mattr_accessor :sanitize_config
 
   def self.link_and_sanitize(content)
-    linked_content = Rinku.auto_link(content, :urls, 'target="_blank"')
+    linked_content = Rinku.auto_link(content, :urls)
     Sanitize.fragment(linked_content, UserHtml.sanitize_config)
   end
 
