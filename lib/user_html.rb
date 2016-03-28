@@ -1,6 +1,11 @@
 module UserHtml
   mattr_accessor :sanitize_config
 
+  def self.link_and_sanitize(content)
+    linked_content = Rinku.auto_link(content, :urls, 'target="_blank"')
+    Sanitize.fragment(linked_content, UserHtml.sanitize_config)
+  end
+
   module ActiveRecord
     module Base
       def user_html(*attributes)
@@ -14,10 +19,7 @@ module UserHtml
               content = send(attribute)
               return if content.nil?
 
-              linked_content = Rinku.auto_link(content, :urls, 'target="_blank"')
-              sanitized_content = Sanitize.fragment(linked_content, UserHtml.sanitize_config)
-
-              send("#{attribute}=", sanitized_content)
+              send("#{attribute}=", UserHtml.link_and_sanitize(content))
             end
           end
         end

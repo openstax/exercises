@@ -15,10 +15,10 @@ embed_transformer = lambda do |env|
   # Don't continue unless the node is an iframe.
   return unless node_name == 'iframe'
 
-  # Verify that the video URL is actually a valid YouTube video URL.
+  # Verify that the video URL is actually a valid whitelisted domain video URL.
   return unless EMBED_URL_REGEXES.any?{ |regex| node['src'] =~ regex }
 
-  # We're now certain that this is a YouTube embed, but we still need to run
+  # We're now certain that this is a whitelisted domain embed, but we still need to run
   # it through a special Sanitize step to ensure that no unwanted elements or
   # attributes that don't belong in an embed can sneak in.
   Sanitize.node!(
@@ -32,7 +32,7 @@ embed_transformer = lambda do |env|
     }
   )
 
-  # Now that we're sure that this is a valid YouTube embed and that there are
+  # Now that we're sure that this is a valid whitelisted domain embed and that there are
   # no unwanted elements or attributes hidden inside it, we can tell Sanitize
   # to whitelist the current node.
   { node_whitelist: [node] }
@@ -41,7 +41,7 @@ end
 UserHtml.sanitize_config = Sanitize::Config.merge(
   Sanitize::Config::RELAXED,
   add_attributes: {
-    'a' => {'rel' => 'nofollow'}
+    'a' => {'rel' => 'nofollow', 'target' => '_blank'}
   },
   transformers: [embed_transformer]
 )
