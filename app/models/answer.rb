@@ -2,7 +2,7 @@ class Answer < ActiveRecord::Base
 
   attr_accessor :temp_id
 
-  parsable :content
+  user_html :content
 
   sortable_belongs_to :question, inverse_of: :answers
 

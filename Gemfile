@@ -45,6 +45,9 @@ gem 'addressable'
 # Converts links in Strings to HTML anchors
 gem 'rinku'
 
+# Sanitizes user content
+gem 'sanitize'
+
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
 

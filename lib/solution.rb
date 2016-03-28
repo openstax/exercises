@@ -5,7 +5,7 @@ module Solution
         class_exec do
 
           acts_as_votable
-          parsable :content
+          user_html :content
           has_attachments
           has_logic :javascript, :latex
           stylable

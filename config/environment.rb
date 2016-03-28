@@ -11,10 +11,10 @@ require 'has_attachments'
 require 'has_logic'
 require 'has_tags'
 
-require 'parsable'
 require 'publishable'
 require 'solution'
 require 'stylable'
+require 'user_html'
 
 require 'active_record/calculations_patch'
 

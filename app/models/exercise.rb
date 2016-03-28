@@ -63,7 +63,7 @@ class Exercise < ActiveRecord::Base
   ]
 
   acts_as_votable
-  parsable :stimulus
+  user_html :stimulus
   publishable
   has_attachments
   has_logic :javascript, :latex
