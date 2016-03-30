@@ -1,6 +1,6 @@
 class Question < ActiveRecord::Base
 
-  parsable :stimulus
+  user_html :stimulus
 
   attr_accessor :temp_id
 

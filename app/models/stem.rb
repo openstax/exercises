@@ -1,6 +1,6 @@
 class Stem < ActiveRecord::Base
 
-  parsable :content
+  user_html :content
   stylable
 
   attr_accessor :temp_id
