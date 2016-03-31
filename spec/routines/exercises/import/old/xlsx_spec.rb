@@ -1,9 +1,17 @@
 require 'rails_helper'
 
 module Exercises::Import
-  RSpec.describe Old::Excel do
+  RSpec.describe Old::Xlsx do
     let(:fixture_path) { 'spec/fixtures/old/sample_exercises.xlsx' }
 
+    let(:expected_los) {
+      [
+        'k12phys-ch04-s01',
+        'k12phys-ch04-s02',
+        'k12phys-ch04-s03',
+        'k12phys-ch04-s04'
+      ]
+    }
     let!(:author) { FactoryGirl.create :user }
     let!(:ch)     { FactoryGirl.create :user }
 
@@ -20,17 +28,11 @@ module Exercises::Import
 
         expect(exercise.list_exercises.first.list.name).to eq 'HS-Physics Chapter 04'
 
-        expect(exercise.tags).to include 'blooms-none'
-        expect(exercise.tags).to include 'k12phys'
-        expect(exercise.tags).to include 'k12phys-ch04'
-        expect(exercise.tags).to satisfy do |tags|
-          tag_names = tags.collect { |tag| tag.name }
-          (tag_names & ['k12phys-ch04-s01',
-                        'k12phys-ch04-s02',
-                        'k12phys-ch04-s03',
-                        'k12phys-ch04-s04']).length == 1
-        end
-
+        tag_names = exercise.tags.map(&:name)
+        expect(tag_names).to include 'blooms-none'
+        expect(tag_names).to include 'k12phys'
+        expect(tag_names).to include 'k12phys-ch04'
+        expect((tag_names & expected_los).length).to eq 1
 
         expect(exercise.stimulus).to be_blank
         expect(exercise.questions.length).to eq 1

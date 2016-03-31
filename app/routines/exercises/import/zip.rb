@@ -6,14 +6,14 @@ module Exercises
 
     lev_routine
 
-    uses_routine Exercises::Import::Excel,
+    uses_routine Exercises::Import::Xlsx,
                  as: :import_spreadsheet,
                  translations: { outputs: { type: :verbatim } }
 
     # Imports Exercises from a zip file
     def exec(filename: 'exercises.zip',
-             author_id: Exercises::Import::Excel::DEFAULT_AUTHOR_ID,
-             ch_id: Exercises::Import::Excel::DEFAULT_CH_ID,
+             author_id: Exercises::Import::Xlsx::DEFAULT_AUTHOR_ID,
+             ch_id: Exercises::Import::Xlsx::DEFAULT_CH_ID,
              skip_first_row: true)
       # Create a temp directory and extract the zip file into it
       zip_path = File.expand_path(filename)

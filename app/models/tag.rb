@@ -9,23 +9,15 @@ class Tag < ActiveRecord::Base
 
     # Get Tag objects in the given array
     result = remaining_tags.select{ |tag| tag.is_a?(Tag) }
-    remaining_tags = remaining_tags.reject{ |tag| tag.is_a?(Tag) }.collect{ |tag| tag.to_s.downcase }
+    remaining_tags = remaining_tags.reject{ |tag| tag.is_a?(Tag) }.map{ |tag| tag.to_s.downcase }
 
     # Get Tag objects in the database that match the given array
     db_result = where(name: remaining_tags).to_a
     result = result + db_result
-    remaining_tags -= db_result.collect{ |r| r.name }
+    remaining_tags -= db_result.map(&:name)
 
     # Initialize remaining Tag objects
-    result + remaining_tags.collect{ |tag| Tag.new(name: tag) }
-  end
-
-  def ==(tag)
-    name == tag || super
-  end
-
-  def eql?(tag)
-    name.eql?(tag) || super
+    result + remaining_tags.map{ |tag| Tag.new(name: tag) }
   end
 
   def to_s

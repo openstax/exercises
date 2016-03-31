@@ -1,11 +1,11 @@
-# Imports an Excel file
+# Imports an xlsx file
 
-# Reads xlxs
+# Reads xlsx
 require 'roo'
 
 module Exercises
   module Import
-    class Excel < RowImporter
+    class Old::Xlsx < Old::RowImporter
 
       lev_routine
 
