@@ -8,6 +8,7 @@ module Api::V1
              writeable: true,
              readable: true,
              setter: lambda { |val, *| self.temp_id = val },
+             getter: lambda { |*| id || temp_id! },
              schema_info: {
                required: true
              }

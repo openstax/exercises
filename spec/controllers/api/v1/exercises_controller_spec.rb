@@ -42,14 +42,22 @@ module Api::V1
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
           tags: ['tag1', 'tag2'],
           title: "Lorem ipsum",
-          stimulus: "Dolor",
-          questions: [{
-            stimulus: "Sit amet",
-            stem_html: "Consectetur adipiscing elit",
-            answers: [{
-              content_html: "Sed do eiusmod tempor"
-            }]
-          }]
+          stimulus_html: "Dolor",
+          questions: [
+            {
+              stimulus: "Sit amet",
+              stems: [{
+                content_html: "Consectetur adipiscing elit"
+              }],
+              answers: [{
+                id: (id = rand(1000000)),
+                content_html: "Sed quia non numquam"
+              }],
+              stem_answers: [{
+                answer_id: id,
+              }]
+            }
+          ]
         }.to_json)
         @exercise_1.save!
 
@@ -57,14 +65,22 @@ module Api::V1
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
           tags: ['tag2', 'tag3'],
           title: "Dolorem ipsum",
-          stimulus: "Quia dolor",
-          questions: [{
-            stimulus: "Sit amet",
-            stem_html: "Consectetur adipisci velit",
-            answers: [{
-              content_html: "Sed quia non numquam"
-            }]
-          }]
+          stimulus_html: "Quia dolor",
+          questions: [
+            {
+              stimulus: "Sit amet",
+              stems: [{
+                content_html: "Consectetur adipisci velit"
+              }],
+              answers: [{
+                id: (id = rand(1000000)),
+                content_html: "Sed quia non numquam"
+              }],
+              stem_answers: [{
+                answer_id: id,
+              }]
+            }
+          ]
         }.to_json)
         @exercise_2.save!
 
@@ -72,14 +88,22 @@ module Api::V1
         Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
           tags: ['all', 'the', 'tags'],
           title: "DRAFT",
-          stimulus: "This is a draft",
-          questions: [{
-            stimulus: "with no collaborators",
-            stem_html: "and should not appear",
-            answers: [{
-              content_html: "in most searches"
-            }]
-          }]
+          stimulus_html: "This is a draft",
+          questions: [
+            {
+              stimulus: "with no collaborators",
+              stems: [{
+                content_html: "and should not appear"
+              }],
+              answers: [{
+                id: (id = rand(1000000)),
+                content_html: "in most searches"
+              }],
+              stem_answers: [{
+                answer_id: id,
+              }]
+            }
+          ]
         }.to_json)
         @exercise_draft.save!
       end
@@ -248,9 +272,9 @@ module Api::V1
 
           response_hash = JSON.parse(response.body)
           expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
-          response_hash['questions'].first['answers'].each do |answer|
-            expect(answer['correctness']).to be_present
-            expect(answer['feedback_html']).to be_present
+          response_hash['questions'].first['stems'].first['stem_answers'].each do |stem_answer|
+            expect(stem_answer['correctness']).to be_present
+            expect(stem_answer['feedback_html']).to be_present
           end
         end
 
@@ -260,9 +284,9 @@ module Api::V1
 
           response_hash = JSON.parse(response.body)
           expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
-          response_hash['questions'].first['answers'].each do |answer|
-            expect(answer['correctness']).to be_present
-            expect(answer['feedback_html']).to be_present
+          response_hash['questions'].first['stems'].first['stem_answers'].each do |stem_answer|
+            expect(stem_answer['correctness']).to be_present
+            expect(stem_answer['feedback_html']).to be_present
           end
         end
 
@@ -273,10 +297,10 @@ module Api::V1
           expect(response).to have_http_status(:success)
 
           response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['collaborator_solutions']).to be_nil
-          response_hash['questions'].first['answers'].each do |answer|
-            expect(answer['correctness']).to be_nil
-            expect(answer['feedback_html']).to be_nil
+          expect(response_hash['questions'].first['collaborator_solutions']).to be_empty
+          response_hash['questions'].first['stems'].first['stem_answers'].each do |stem_answer|
+            expect(stem_answer['correctness']).to be_nil
+            expect(stem_answer['feedback_html']).to be_nil
           end
         end
 

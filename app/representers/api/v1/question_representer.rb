@@ -23,19 +23,20 @@ module Api::V1
              writeable: true,
              readable: true
 
-    collection :stems,
-               class: Stem,
-               decorator: StemRepresenter,
+    collection :answers,
+               class: Answer,
+               decorator: AnswerRepresenter,
+               instance: lambda { |*| Answer.new(question: self) },
                writeable: true,
                readable: true,
                schema_info: {
                  required: true
                }
 
-    collection :answers,
-               class: Answer,
-               decorator: AnswerRepresenter,
-               instance: lambda { |*| Answer.new(question: self) },
+    collection :stems,
+               class: Stem,
+               decorator: StemRepresenter,
+               instance: lambda { |*| Stem.new(question: self) },
                writeable: true,
                readable: true,
                schema_info: {
@@ -47,14 +48,14 @@ module Api::V1
                decorator: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+               skip_render: lambda { |_, args| !exercise.can_view_solutions?(args[:user]) }
 
     collection :community_solutions,
                class: CommunitySolution,
                decorator: CommunitySolutionRepresenter,
                writeable: false,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+               skip_render: lambda { |_, args| !exercise.can_view_solutions?(args[:user]) }
 
     collection :hints,
                type: String,

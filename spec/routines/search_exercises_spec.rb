@@ -22,13 +22,21 @@ RSpec.describe SearchExercises, type: :routine do
       tags: ['tag1', 'tag2'],
       title: "Lorem ipsum",
       stimulus: "Dolor",
-      questions: [{
-        stimulus: "Sit amet",
-        stem_html: "Consectetur adipiscing elit",
-        answers: [{
-          content_html: "Sed do eiusmod tempor"
-        }]
-      }]
+      questions: [
+        {
+          stimulus: "Sit amet",
+          stems: [{
+            content_html: "Consectetur adipiscing elit"
+          }],
+          answers: [{
+            id: (id = rand(1000000)),
+            content_html: "Sed do eiusmod tempor"
+          }],
+          stem_answers: [{
+            answer_id: id,
+          }]
+        }
+      ]
     }.to_json)
     @exercise_1.save!
     @exercise_1.publication.publish
@@ -39,13 +47,21 @@ RSpec.describe SearchExercises, type: :routine do
       tags: ['tag2', 'tag3'],
       title: "Dolorem ipsum",
       stimulus: "Quia dolor",
-      questions: [{
-        stimulus: "Sit amet",
-        stem_html: "Consectetur adipisci velit",
-        answers: [{
-          content_html: "Sed quia non numquam"
-        }]
-      }]
+      questions: [
+        {
+          stimulus: "Sit amet",
+          stems: [{
+            content_html: "Consectetur adipisci velit"
+          }],
+          answers: [{
+            id: (id = rand(1000000)),
+            content_html: "Sed quia non numquam"
+          }],
+          stem_answers: [{
+            answer_id: id,
+          }]
+        }
+      ]
     }.to_json)
     @exercise_2.save!
     @exercise_2.publication.publish

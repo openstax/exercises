@@ -13,4 +13,8 @@ class Answer < ActiveRecord::Base
   validates :question, presence: true
   validates :content, presence: true
 
+  def temp_id!
+    self.temp_id ||= SecureRandom.hex(8)
+  end
+
 end

@@ -80,10 +80,10 @@ module Api::V1
       it 'can be written' do
         stems = [Stem.new(content: 'Yes, I do!')]
         stem_representations = stems.collect{ |stem| StemRepresenter.new(stem).to_hash }
-        described_class.new(question).from_json({ 'stems' => stem_representations }.to_json)
-        expect(question).to have_received(:stems=).with([ a_kind_of(Stem) ]) do |stems|
-          expect(stems.first.content).to eq 'Yes, I do!'
-        end
+        new_question = Question.new
+        described_class.new(new_question).from_json({ 'stems' => stem_representations }.to_json)
+        expect(new_question.stems).to contain_exactly(a_kind_of(Stem))
+        expect(new_question.stems.first.content).to eq "Yes, I do!"
       end
     end
 

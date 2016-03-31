@@ -7,9 +7,10 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val|
-               self.answer = question.answers.select{|i| (i.id || i.temp_id) == val}.first
+             setter: lambda { |val, *|
+               self.answer = stem.question.answers.select{|i| (i.id || i.temp_id) == val}.first
              },
+             getter: lambda { |*| answer.id || answer.temp_id! },
              schema_info: {
                required: true
              }
@@ -18,7 +19,9 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             if: lambda { |args| stem.question.exercise.can_view_solutions?(args[:user]) },
+             skip_render: lambda { |represented, args|
+               !stem.question.exercise.can_view_solutions?(args[:user])
+             },
              schema_info: {
                type: 'number'
              }
@@ -28,7 +31,9 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
-             if: lambda { |args| stem.question.exercise.can_view_solutions?(args[:user]) }
+             skip_render: lambda { |represented, args|
+               !stem.question.exercise.can_view_solutions?(args[:user])
+             }
 
   end
 end

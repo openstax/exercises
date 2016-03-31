@@ -17,6 +17,7 @@ module Api::V1
     collection :stem_answers,
                class: StemAnswer,
                decorator: StemAnswerRepresenter,
+               instance: lambda { |*| StemAnswer.new(stem: self) },
                writeable: true,
                readable: true
 

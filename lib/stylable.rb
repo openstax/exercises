@@ -17,9 +17,11 @@ module Stylable
                    writeable: true,
                    readable: true,
                    getter: lambda { |args| stylings.collect{|s| s.style} },
-                   setter: lambda { |val, args|
-                     styling = stylings.find_or_initialize_by(style: val)
-                     stylings << styling unless styling.persisted?
+                   setter: lambda { |styles, args|
+                     [styles].flatten.each do |style|
+                       # This adds the new styling to stylings if not there
+                       stylings.find_or_initialize_by(style: style, stylable: self)
+                     end
                    },
                    schema_info: {
                      required: true,

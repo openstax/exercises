@@ -69,12 +69,13 @@ ActiveRecord::Schema.define(version: 20160305000155) do
   add_index "class_licenses", ["license_id", "class_name"], name: "index_class_licenses_on_license_id_and_class_name", unique: true, using: :btree
 
   create_table "collaborator_solutions", force: :cascade do |t|
-    t.integer  "question_id",   null: false
+    t.integer  "question_id",                                    null: false
     t.string   "title"
-    t.text     "solution_type", null: false
-    t.text     "content",       null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.text     "solution_type",                                  null: false
+    t.text     "content",                                        null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.string   "type",          default: "CollaboratorSolution", null: false
   end
 
   add_index "collaborator_solutions", ["question_id"], name: "index_collaborator_solutions_on_question_id", using: :btree
