@@ -69,7 +69,7 @@ class Exercise < ActiveRecord::Base
   has_logic :javascript, :latex
   has_tags
 
-  has_many :questions, dependent: :destroy, autosave: true
+  sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
   has_many :list_exercises, dependent: :destroy
 
