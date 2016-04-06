@@ -290,7 +290,7 @@ module Api::V1
         expect { api_post :create, user_token,
                           raw_post_data: Api::V1::ExerciseRepresenter.new(
                                            @exercise
-                                         ).to_json
+                                         ).to_json(user: user)
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
 
@@ -308,6 +308,13 @@ module Api::V1
         json_answers = @exercise.questions.first.answers
         expect(Set.new db_answers.collect { |answer| answer.content }).to(
           eq(Set.new json_answers.collect { |answer| answer.content })
+        )
+
+        db_solutions = new_exercise.questions.first.collaborator_solutions
+        json_solutions = @exercise.questions.first.collaborator_solutions
+
+        expect(Set.new db_solutions.collect { |solution| solution.content }).to(
+          eq(Set.new json_solutions.collect { |solution| solution.content })
         )
 
         expect(new_exercise.authors.first.user).to eq user
