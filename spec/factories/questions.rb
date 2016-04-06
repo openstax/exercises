@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :question do
-    exercise
     stimulus { Faker::Lorem.paragraph }
 
     transient do
@@ -10,6 +9,8 @@ FactoryGirl.define do
     end
 
     after(:build) do |question, evaluator|
+      question.exercise ||= build(:exercise, questions: [question])
+
       evaluator.stems_count.times do
         stem = build(:stem, question: question, stem_answers_count: 0)
         question.stems << stem
