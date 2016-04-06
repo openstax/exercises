@@ -1,10 +1,10 @@
 class Question < ActiveRecord::Base
 
-  user_html :stimulus
-
   attr_accessor :temp_id
 
-  belongs_to :exercise
+  user_html :stimulus
+
+  sortable_belongs_to :exercise, inverse_of: :questions
 
   has_many :stems, dependent: :destroy
 

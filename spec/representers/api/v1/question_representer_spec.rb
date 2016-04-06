@@ -91,30 +91,28 @@ module Api::V1
       it 'can be read' do
         answer_1 = instance_spy(Answer)
         allow(answer_1).to receive(:id).and_return(1)
-        allow(answer_1).to receive(:as_json).and_return(answer_1)
-        allow(answer_1).to receive(:question).and_return(question)
         allow(answer_1).to receive(:sort_position).and_return(2)
-        allow(answer_1).to receive(:stem_answers).and_return([])
         allow(answer_1).to receive(:content).and_return('No')
         answer_2 = instance_spy(Answer)
         allow(answer_2).to receive(:id).and_return(2)
-        allow(answer_2).to receive(:as_json).and_return(answer_2)
-        allow(answer_2).to receive(:question).and_return(question)
         allow(answer_2).to receive(:sort_position).and_return(1)
-        allow(answer_2).to receive(:stem_answers).and_return([])
         allow(answer_2).to receive(:content).and_return('Yes')
         answer_3 = instance_spy(Answer)
         allow(answer_3).to receive(:id).and_return(3)
-        allow(answer_3).to receive(:as_json).and_return(answer_3)
-        allow(answer_3).to receive(:question).and_return(question)
         allow(answer_3).to receive(:sort_position).and_return(3)
-        allow(answer_3).to receive(:stem_answers).and_return([])
         allow(answer_3).to receive(:content).and_return('Maybe so')
-        answers = [answer_2, answer_1, answer_3]
-        answer_representations = answers.collect do |answer|
+
+        sorted_answers = [answer_2, answer_1, answer_3]
+
+        answer_representations = sorted_answers.map do |answer|
+          allow(answer).to receive(:as_json).and_return(answer)
+          allow(answer).to receive(:question).and_return(question)
+          allow(answer).to receive(:stem_answers).and_return([])
           AnswerRepresenter.new(answer).to_hash
         end
-        allow(question).to receive(:answers).and_return(answers)
+
+        allow(question).to receive(:answers).and_return(sorted_answers)
+
         expect(representation).to include('answers' => answer_representations)
       end
 
