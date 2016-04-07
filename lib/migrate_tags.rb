@@ -27,6 +27,8 @@ class MigrateTags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
     lo_tags.each do |tag|
       matches = /\A(\w+)-ch(\d+)-s(\d+)-lo(\d+)\z/.match tag.name
+      next if matches.nil?
+
       book_name = matches[1]
       chapter = matches[2]
       section = matches[3]
@@ -37,6 +39,8 @@ class MigrateTags
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
     aplo_tags.each do |tag|
       matches = /\Aapbio-ch\d+-s\d+-aplo-([\w-]+)\z/.match tag.name
+      next if matches.nil?
+
       lo = matches[1]
       new_tag tag, "lo:aplo-bio:#{lo}"
     end
@@ -47,6 +51,8 @@ class MigrateTags
     id_tags = Tag.where{name.like_any ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
     id_tags.preload(exercise_tags: :exercise).sort_by(&:name).each_with_index do |tag, index|
       matches = /\A(\w+)-ch\d+-ex\d+\z/.match tag.name
+      next if matches.nil?
+
       book_name = matches[1]
       # The new format does not have the chapter number
       new_tag tag, "exid:stax-#{book_name}:#{index + 1}"
@@ -58,6 +64,8 @@ class MigrateTags
     section_tags = section_and_all_lo_tags - all_lo_tags
     section_tags.each do |tag|
       matches = /\A(\w+)-ch(\d+)-s(\d+)\z/.match tag.name
+      next if matches.nil?
+
       book_name = matches[1]
       chapter = matches[2]
       section = matches[3]
@@ -134,7 +142,7 @@ class MigrateTags
     chapter_review_exercise_tags = old_cr_tag.exercise_tags.preload(exercise: :tags)
     chapter_review_exercise_tags.each do |et|
       tag = et.exercise.tags.map(&:name).include?('concept') ? conceptual_tag : practice_tag
-      ExerciseTag.create!(exercise: et.exercise, tag: tag)
+      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: tag)
     end
     new_tag old_cr_tag, 'filter-type:chapter-review'
 
@@ -154,7 +162,9 @@ class MigrateTags
 
     @tags ||= {}
     @tags[name] ||= Tag.find_or_create_by(name: name)
-    tag.exercise_tags.each{ |et| ExerciseTag.create!(exercise: et.exercise, tag: @tags[name]) }
+    tag.exercise_tags.each do |et|
+      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: @tags[name])
+    end
   end
 
   # Puts the module UUID's from a CNX archive JSON hash into the cnx_id_map
