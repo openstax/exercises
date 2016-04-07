@@ -27,6 +27,8 @@ class MigrateTags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
     lo_tags.each do |tag|
       matches = /\A(\w+)-ch(\d+)-s(\d+)-lo(\d+)\z/.match tag.name
+      next if matches.nil?
+
       book_name = matches[1]
       chapter = matches[2]
       section = matches[3]
@@ -37,6 +39,8 @@ class MigrateTags
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
     aplo_tags.each do |tag|
       matches = /\Aapbio-ch\d+-s\d+-aplo-([\w-]+)\z/.match tag.name
+      next if matches.nil?
+
       lo = matches[1]
       new_tag tag, "lo:aplo-bio:#{lo}"
     end
@@ -47,6 +51,8 @@ class MigrateTags
     id_tags = Tag.where{name.like_any ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
     id_tags.preload(exercise_tags: :exercise).sort_by(&:name).each_with_index do |tag, index|
       matches = /\A(\w+)-ch\d+-ex\d+\z/.match tag.name
+      next if matches.nil?
+
       book_name = matches[1]
       # The new format does not have the chapter number
       new_tag tag, "exid:stax-#{book_name}:#{index + 1}"
@@ -58,6 +64,8 @@ class MigrateTags
     section_tags = section_and_all_lo_tags - all_lo_tags
     section_tags.each do |tag|
       matches = /\A(\w+)-ch(\d+)-s(\d+)\z/.match tag.name
+      next if matches.nil?
+
       book_name = matches[1]
       chapter = matches[2]
       section = matches[3]
@@ -65,8 +73,8 @@ class MigrateTags
       new_tag tag, "context-cnxmod:#{uuid}"
     end
 
-    book_tags = Tag.where(name: ['k12phys', 'apbio']) # Unused
-    book_tags.each{ |tag| tag.update_attribute :name, "book:stax-#{tag.name}" }
+    book_tags = Tag.where(name: ['k12phys', 'apbio']) # Used in Tutor
+    book_tags.each{ |tag| new_tag tag, "book:stax-#{tag.name}" }
 
     # DoK, Blooms, Time
     dok_tags = Tag.where{name.like 'dok%'} # Used in Tutor
@@ -110,16 +118,20 @@ class MigrateTags
 
     grasp_check_tag = Tag.find_or_create_by(name: 'grasp-check') # Unused
     new_tag grasp_check_tag, 'filter-type:grasp-check'
+    new_tag grasp_check_tag, 'requires-context:y'
     grasp_check_tag.destroy
 
     visual_connection_tag = Tag.find_or_create_by(name: 'visual-connection') # Unused
     new_tag visual_connection_tag, 'filter-type:grasp-check'
+    new_tag visual_connection_tag, 'requires-context:y'
 
     interactive_tag = Tag.find_or_create_by(name: 'interactive') # Unused
     new_tag interactive_tag, 'filter-type:grasp-check'
+    new_tag interactive_tag, 'requires-context:y'
 
     evolution_tag = Tag.find_or_create_by(name: 'evolution') # Unused
     new_tag evolution_tag, 'filter-type:grasp-check'
+    new_tag evolution_tag, 'requires-context:y'
 
     old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
@@ -128,13 +140,23 @@ class MigrateTags
     new_tag old_concepts_tag, 'type:conceptual'
 
     conceptual_tag = Tag.find_or_create_by(name: 'type:conceptual')
+    conceptual_or_recall_tag = Tag.find_or_create_by(name: 'type:conceptual-or-recall')
     practice_tag = Tag.find_or_create_by(name: 'type:practice')
 
     old_cr_tag = Tag.find_or_create_by(name: 'ost-chapter-review') # Used by Tutor
     chapter_review_exercise_tags = old_cr_tag.exercise_tags.preload(exercise: :tags)
     chapter_review_exercise_tags.each do |et|
-      tag = et.exercise.tags.map(&:name).include?('concept') ? conceptual_tag : practice_tag
-      ExerciseTag.create!(exercise: et.exercise, tag: tag)
+      tag_names = et.exercise.tags.map(&:name)
+      tag = if tag_names.include?('concept')
+        conceptual_tag
+      elsif tag_names.include?('apbio') &&
+            tag_names.include?('review') &&
+            tag_names.include?('time-short')
+        conceptual_or_recall_tag
+      else
+        practice_tag
+      end
+      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: tag)
     end
     new_tag old_cr_tag, 'filter-type:chapter-review'
 
@@ -143,6 +165,7 @@ class MigrateTags
     new_tag old_tp_tag, 'filter-type:test-prep'
 
     old_ap_tp_tag = Tag.find_or_create_by(name: 'ap-test-prep') # Unused
+    new_tag old_ap_tp_tag, 'type:practice'
     new_tag old_ap_tp_tag, 'filter-type:ap-test-prep'
   end
 
@@ -154,7 +177,9 @@ class MigrateTags
 
     @tags ||= {}
     @tags[name] ||= Tag.find_or_create_by(name: name)
-    tag.exercise_tags.each{ |et| ExerciseTag.create!(exercise: et.exercise, tag: @tags[name]) }
+    tag.exercise_tags.each do |et|
+      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: @tags[name])
+    end
   end
 
   # Puts the module UUID's from a CNX archive JSON hash into the cnx_id_map
