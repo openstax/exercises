@@ -73,8 +73,8 @@ class MigrateTags
       new_tag tag, "context-cnxmod:#{uuid}"
     end
 
-    book_tags = Tag.where(name: ['k12phys', 'apbio']) # Unused
-    book_tags.each{ |tag| tag.update_attribute :name, "book:stax-#{tag.name}" }
+    book_tags = Tag.where(name: ['k12phys', 'apbio']) # Used in Tutor
+    book_tags.each{ |tag| new_tag tag, "book:stax-#{tag.name}" }
 
     # DoK, Blooms, Time
     dok_tags = Tag.where{name.like 'dok%'} # Used in Tutor
@@ -118,16 +118,20 @@ class MigrateTags
 
     grasp_check_tag = Tag.find_or_create_by(name: 'grasp-check') # Unused
     new_tag grasp_check_tag, 'filter-type:grasp-check'
+    new_tag grasp_check_tag, 'requires-context:y'
     grasp_check_tag.destroy
 
     visual_connection_tag = Tag.find_or_create_by(name: 'visual-connection') # Unused
     new_tag visual_connection_tag, 'filter-type:grasp-check'
+    new_tag visual_connection_tag, 'requires-context:y'
 
     interactive_tag = Tag.find_or_create_by(name: 'interactive') # Unused
     new_tag interactive_tag, 'filter-type:grasp-check'
+    new_tag interactive_tag, 'requires-context:y'
 
     evolution_tag = Tag.find_or_create_by(name: 'evolution') # Unused
     new_tag evolution_tag, 'filter-type:grasp-check'
+    new_tag evolution_tag, 'requires-context:y'
 
     old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
@@ -136,12 +140,22 @@ class MigrateTags
     new_tag old_concepts_tag, 'type:conceptual'
 
     conceptual_tag = Tag.find_or_create_by(name: 'type:conceptual')
+    conceptual_or_recall_tag = Tag.find_or_create_by(name: 'type:conceptual-or-recall')
     practice_tag = Tag.find_or_create_by(name: 'type:practice')
 
     old_cr_tag = Tag.find_or_create_by(name: 'ost-chapter-review') # Used by Tutor
     chapter_review_exercise_tags = old_cr_tag.exercise_tags.preload(exercise: :tags)
     chapter_review_exercise_tags.each do |et|
-      tag = et.exercise.tags.map(&:name).include?('concept') ? conceptual_tag : practice_tag
+      tag_names = et.exercise.tags.map(&:name)
+      tag = if tag_names.include?('concept')
+        conceptual_tag
+      elsif tag_names.include?('apbio') &&
+            tag_names.include?('review') &&
+            tag_names.include?('time-short')
+        conceptual_or_recall_tag
+      else
+        practice_tag
+      end
       ExerciseTag.find_or_create_by(exercise: et.exercise, tag: tag)
     end
     new_tag old_cr_tag, 'filter-type:chapter-review'
@@ -151,6 +165,7 @@ class MigrateTags
     new_tag old_tp_tag, 'filter-type:test-prep'
 
     old_ap_tp_tag = Tag.find_or_create_by(name: 'ap-test-prep') # Unused
+    new_tag old_ap_tp_tag, 'type:practice'
     new_tag old_ap_tp_tag, 'filter-type:ap-test-prep'
   end
 

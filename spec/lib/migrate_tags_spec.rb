@@ -41,11 +41,11 @@ RSpec.describe MigrateTags do
       expect(tag_names).to include('context-cnxmod:17f6ff53-2d92-4669-acdd-9a958ea7fd0a')
     end
 
-    it 'migrates book tags correctly' do
+    it 'assigns new book tags correctly' do
       ex = FactoryGirl.create :exercise, tags: ['k12phys']
       described_class.call
       tag_names = ex.reload.tags.map(&:name)
-      expect(tag_names).not_to include('k12phys')
+      expect(tag_names).to include('k12phys')
       expect(tag_names).to include('book:stax-k12phys')
     end
 
@@ -135,9 +135,26 @@ RSpec.describe MigrateTags do
       described_class.call
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('ost-chapter-review')
+      expect(tag_names).to include('concept')
       expect(tag_names).to include('filter-type:chapter-review')
       expect(tag_names).to include('type:conceptual')
       expect(tag_names).not_to include('type:practice')
+    end
+
+    it 'assigns new tags for ost-chapter-review, review, time-short, apbio' do
+      ex = FactoryGirl.create :exercise, tags: ['ost-chapter-review', 'review',
+                                                'time-short', 'apbio']
+      described_class.call
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('ost-chapter-review')
+      expect(tag_names).to include('review')
+      expect(tag_names).to include('time-short')
+      expect(tag_names).to include('apbio')
+      expect(tag_names).to include('filter-type:chapter-review')
+      expect(tag_names).to include('type:conceptual-or-recall')
+      expect(tag_names).not_to include('type:practice')
+      expect(tag_names).to include('book:stax-apbio')
+      expect(tag_names).to include('time:short')
     end
 
     it 'assigns new tags for ost-test-prep' do
@@ -163,6 +180,7 @@ RSpec.describe MigrateTags do
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).not_to include('grasp-check')
       expect(tag_names).to include('filter-type:grasp-check')
+      expect(tag_names).to include('requires-context:y')
     end
 
     it 'assigns new tags for visual-connection' do
@@ -171,6 +189,7 @@ RSpec.describe MigrateTags do
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('visual-connection')
       expect(tag_names).to include('filter-type:grasp-check')
+      expect(tag_names).to include('requires-context:y')
     end
 
     it 'assigns new tags for interactive' do
@@ -179,6 +198,7 @@ RSpec.describe MigrateTags do
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('interactive')
       expect(tag_names).to include('filter-type:grasp-check')
+      expect(tag_names).to include('requires-context:y')
     end
 
     it 'assigns new tags for evolution' do
@@ -187,6 +207,7 @@ RSpec.describe MigrateTags do
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('evolution')
       expect(tag_names).to include('filter-type:grasp-check')
+      expect(tag_names).to include('requires-context:y')
     end
 
     it 'assigns new tags for ap-test-prep' do
@@ -194,6 +215,7 @@ RSpec.describe MigrateTags do
       described_class.call
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('ap-test-prep')
+      expect(tag_names).to include('type:practice')
       expect(tag_names).to include('filter-type:ap-test-prep')
     end
   end
