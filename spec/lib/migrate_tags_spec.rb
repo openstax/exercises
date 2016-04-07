@@ -1,18 +1,22 @@
 require 'rails_helper'
-require 'migrate_hs_tags_one'
+require 'migrate_tags'
 
-RSpec.describe MigrateHsTagsOne do
+RSpec.describe MigrateTags do
   context 'high school' do
-    it 'does not migrate LO\'s' do
+    it 'assigns new LO tags' do
       ex = FactoryGirl.create :exercise, tags: ['k12phys-ch01-s01-lo01']
       described_class.call
-      expect{ described_class.call }.not_to change{ ex.reload.tags }
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('k12phys-ch01-s01-lo01')
+      expect(tag_names).to include('lo:stax-k12phys:1-1-1')
     end
 
-    it 'does not migrate APLO\'s' do
+    it 'assigns new APLO tags' do
       ex = FactoryGirl.create :exercise, tags: ['apbio-ch01-s01-aplo-1-1']
       described_class.call
-      expect{ described_class.call }.not_to change{ ex.reload.tags }
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('apbio-ch01-s01-aplo-1-1')
+      expect(tag_names).to include('lo:aplo-bio:1-1')
     end
 
     it 'does not migrate chapter tags' do
@@ -34,7 +38,7 @@ RSpec.describe MigrateHsTagsOne do
       described_class.call
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('k12phys-ch01-s01')
-      expect(tag_names).to include('cnxmod:17f6ff53-2d92-4669-acdd-9a958ea7fd0a')
+      expect(tag_names).to include('context-cnxmod:17f6ff53-2d92-4669-acdd-9a958ea7fd0a')
     end
 
     it 'migrates book tags correctly' do
@@ -159,6 +163,38 @@ RSpec.describe MigrateHsTagsOne do
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).not_to include('grasp-check')
       expect(tag_names).to include('filter-type:grasp-check')
+    end
+
+    it 'assigns new tags for visual-connection' do
+      ex = FactoryGirl.create :exercise, tags: ['visual-connection']
+      described_class.call
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('visual-connection')
+      expect(tag_names).to include('filter-type:grasp-check')
+    end
+
+    it 'assigns new tags for interactive' do
+      ex = FactoryGirl.create :exercise, tags: ['interactive']
+      described_class.call
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('interactive')
+      expect(tag_names).to include('filter-type:grasp-check')
+    end
+
+    it 'assigns new tags for evolution' do
+      ex = FactoryGirl.create :exercise, tags: ['evolution']
+      described_class.call
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('evolution')
+      expect(tag_names).to include('filter-type:grasp-check')
+    end
+
+    it 'assigns new tags for ap-test-prep' do
+      ex = FactoryGirl.create :exercise, tags: ['ap-test-prep']
+      described_class.call
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('ap-test-prep')
+      expect(tag_names).to include('filter-type:ap-test-prep')
     end
   end
 

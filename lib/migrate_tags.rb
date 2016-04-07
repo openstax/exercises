@@ -1,9 +1,8 @@
 require 'open-uri'
 
 # Creates new tags for HS questions but does not delete old ones (except for a few unused tags)
-# Does not create new LO tags
-# Migrate LO's and delete old tags after May 30th
-class MigrateHsTagsOne
+# Also changes all cnxmod tags to context-cnxmod
+class MigrateTags
 
   lev_routine transaction: :no_transaction
 
@@ -20,9 +19,28 @@ class MigrateHsTagsOne
       map_collection(hash['tree'], cnx_id_map[book_name])
     end
 
-    # LO tags (unchanged for now)
+    # Cnxmod tags
+    cnxmod_tags = Tag.where{name.like 'cnxmod:%'}
+    cnxmod_tags.each{ |tag| tag.update_attribute :name, "context-#{tag.name}" }
+
+    # LO tags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
+    lo_tags.each do |tag|
+      matches = /\A(\w+)-ch(\d+)-s(\d+)-lo(\d+)\z/.match tag.name
+      book_name = matches[1]
+      chapter = matches[2]
+      section = matches[3]
+      lo = matches[4]
+      new_tag tag, "lo:stax-#{book_name}:#{chapter.to_i}-#{section.to_i}-#{lo.to_i}"
+    end
+
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
+    aplo_tags.each do |tag|
+      matches = /\Aapbio-ch\d+-s\d+-aplo-([\w-]+)\z/.match tag.name
+      lo = matches[1]
+      new_tag tag, "lo:aplo-bio:#{lo}"
+    end
+
     all_lo_tags = lo_tags + aplo_tags
 
     # ID tags
@@ -44,7 +62,7 @@ class MigrateHsTagsOne
       chapter = matches[2]
       section = matches[3]
       uuid = cnx_id_map[book_name][chapter.to_i][section.to_i]
-      new_tag tag, "cnxmod:#{uuid}"
+      new_tag tag, "context-cnxmod:#{uuid}"
     end
 
     book_tags = Tag.where(name: ['k12phys', 'apbio']) # Unused
@@ -94,6 +112,15 @@ class MigrateHsTagsOne
     new_tag grasp_check_tag, 'filter-type:grasp-check'
     grasp_check_tag.destroy
 
+    visual_connection_tag = Tag.find_or_create_by(name: 'visual-connection') # Unused
+    new_tag visual_connection_tag, 'filter-type:grasp-check'
+
+    interactive_tag = Tag.find_or_create_by(name: 'interactive') # Unused
+    new_tag interactive_tag, 'filter-type:grasp-check'
+
+    evolution_tag = Tag.find_or_create_by(name: 'evolution') # Unused
+    new_tag evolution_tag, 'filter-type:grasp-check'
+
     old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
 
@@ -114,6 +141,9 @@ class MigrateHsTagsOne
     old_tp_tag = Tag.find_or_create_by(name: 'ost-test-prep') # Unused
     new_tag old_tp_tag, 'type:practice'
     new_tag old_tp_tag, 'filter-type:test-prep'
+
+    old_ap_tp_tag = Tag.find_or_create_by(name: 'ap-test-prep') # Unused
+    new_tag old_ap_tp_tag, 'filter-type:ap-test-prep'
   end
 
   protected
