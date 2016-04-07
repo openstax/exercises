@@ -119,9 +119,6 @@ gem 'acts_as_votable'
 # Real time application monitoring
 gem 'newrelic_rpm'
 
-# YAML database backups
-gem 'yaml_db'
-
 # Admin console
 gem 'rails_admin'
 
