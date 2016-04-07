@@ -31,7 +31,7 @@ class MigrateTags
       chapter = matches[2]
       section = matches[3]
       lo = matches[4]
-      new_tag tag, "lo:stax-#{book_name}:#{chapter}-#{section}-#{lo}"
+      new_tag tag, "lo:stax-#{book_name}:#{chapter.to_i}-#{section.to_i}-#{lo.to_i}"
     end
 
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
@@ -112,6 +112,15 @@ class MigrateTags
     new_tag grasp_check_tag, 'filter-type:grasp-check'
     grasp_check_tag.destroy
 
+    visual_connection_tag = Tag.find_or_create_by(name: 'visual-connection') # Unused
+    new_tag visual_connection_tag, 'filter-type:grasp-check'
+
+    interactive_tag = Tag.find_or_create_by(name: 'interactive') # Unused
+    new_tag interactive_tag, 'filter-type:grasp-check'
+
+    evolution_tag = Tag.find_or_create_by(name: 'evolution') # Unused
+    new_tag evolution_tag, 'filter-type:grasp-check'
+
     old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
 
@@ -132,6 +141,9 @@ class MigrateTags
     old_tp_tag = Tag.find_or_create_by(name: 'ost-test-prep') # Unused
     new_tag old_tp_tag, 'type:practice'
     new_tag old_tp_tag, 'filter-type:test-prep'
+
+    old_ap_tp_tag = Tag.find_or_create_by(name: 'ap-test-prep') # Unused
+    new_tag old_ap_tp_tag, 'filter-type:ap-test-prep'
   end
 
   protected
