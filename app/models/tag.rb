@@ -9,7 +9,9 @@ class Tag < ActiveRecord::Base
 
     # Get Tag objects in the given array
     result = remaining_tags.select{ |tag| tag.is_a?(Tag) }
-    remaining_tags = remaining_tags.reject{ |tag| tag.is_a?(Tag) }.map{ |tag| tag.to_s.downcase }
+    remaining_tags = remaining_tags.reject{ |tag| tag.is_a?(Tag) }
+                                   .map{ |tag| tag.to_s.downcase }
+                                   .uniq
 
     # Get Tag objects in the database that match the given array
     db_result = where(name: remaining_tags).to_a

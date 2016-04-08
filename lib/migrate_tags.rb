@@ -21,7 +21,10 @@ class MigrateTags
 
     # Cnxmod tags
     cnxmod_tags = Tag.where{name.like 'cnxmod:%'}
-    cnxmod_tags.each{ |tag| tag.update_attribute :name, "context-#{tag.name}" }
+    cnxmod_tags.each do |tag|
+      new_tag tag, "context-#{tag.name}"
+      tag.destroy
+    end
 
     # LO tags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
