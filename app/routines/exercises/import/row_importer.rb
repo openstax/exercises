@@ -68,7 +68,7 @@ module Exercises
 
         id_tag = "exid:#{books.first}:#{row[4]}"
 
-        cnxmod_tag = "cnxmod:#{row[5]}"
+        cnxmod_tag = "context-cnxmod:#{row[5]}"
 
         type_tags = split(row[6]).map{ |type| "type:#{type}" }
         dok_tag = "dok:#{row[7]}"

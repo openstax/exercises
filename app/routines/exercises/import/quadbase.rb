@@ -325,7 +325,7 @@ module Exercises
           Rails.logger.warn "No cnxmod tag for #{hash['id']}"
         else
           cnx_id = get_cnx_id(module_tag)
-          cnxmod_tag = "cnxmod:#{cnx_id}"
+          cnxmod_tag = "context-cnxmod:#{cnx_id}"
         end
 
         [filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
