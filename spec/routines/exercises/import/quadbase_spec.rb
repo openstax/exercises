@@ -10,7 +10,7 @@ module Exercises::Import
 
     let(:expected_tags) {
       ['exid:qb:q1', 'exid:qb:d2', 'filter-type:qb',
-       'qb:concept coach', 'qb:simple', 'qb:multipart', 'qb:m1000',
+       'qb:concept-coach', 'qb:simple', 'qb:multipart', 'qb:m1000',
        'context-cnxmod:d6c29b47-d560-4571-bef0-b51fa3461d3b']
     }
 
