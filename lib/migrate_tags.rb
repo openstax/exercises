@@ -21,10 +21,7 @@ class MigrateTags
 
     # Cnxmod tags
     cnxmod_tags = Tag.where{name.like 'cnxmod:%'}
-    cnxmod_tags.each do |tag|
-      new_tag tag, "context-#{tag.name}"
-      tag.destroy
-    end
+    cnxmod_tags.each{ |tag| rename_tag tag, "context-#{tag.name}" }
 
     # LO tags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
@@ -109,20 +106,18 @@ class MigrateTags
 
     # Tagging legend changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
-    tl_id_tags.each{ |tag| tag.update_attribute :name, tag.name.gsub('id:', 'exid:') }
+    tl_id_tags.each{ |tag| rename_tag tag, tag.name.gsub('id:', 'exid:') }
 
     tl_type_tags = Tag.where{name.like 'ost-type:%'} # Unused (CC uses all exercises)
-    tl_type_tags.each{ |tag| tag.update_attribute :name, tag.name.gsub('ost-type:', 'type:') }
+    tl_type_tags.each{ |tag| rename_tag tag, tag.name.gsub('ost-type:', 'type:') }
 
     # Type tags
     inbook_tag = Tag.find_or_create_by(name: 'inbook-yes') # Unused
-    new_tag inbook_tag, 'type:conceptual-or-recall'
-    inbook_tag.destroy
+    rename_tag inbook_tag, 'type:conceptual-or-recall'
 
     grasp_check_tag = Tag.find_or_create_by(name: 'grasp-check') # Unused
-    new_tag grasp_check_tag, 'filter-type:grasp-check'
     new_tag grasp_check_tag, 'requires-context:y'
-    grasp_check_tag.destroy
+    rename_tag grasp_check_tag, 'filter-type:grasp-check'
 
     visual_connection_tag = Tag.find_or_create_by(name: 'visual-connection') # Unused
     new_tag visual_connection_tag, 'filter-type:grasp-check'
@@ -182,6 +177,39 @@ class MigrateTags
     @tags[name] ||= Tag.find_or_create_by(name: name)
     tag.exercise_tags.each do |et|
       ExerciseTag.find_or_create_by(exercise: et.exercise, tag: @tags[name])
+    end
+  end
+
+  # Creates a new tag and associates it with the same records as the given tag
+  def new_tag(tag, name)
+    return if tag.nil?
+
+    @tags ||= {}
+    @tags[name] ||= Tag.find_or_create_by(name: name)
+    tag.exercise_tags.each do |et|
+      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: @tags[name])
+    end
+  end
+
+  # Either finds an existing tag and associates it with the same records as the given tag,
+  # then destroys the original, or simply renames the given tag
+  def rename_tag(tag, name)
+    return if tag.nil?
+
+    @tags ||= {}
+    @tags[tag.name] = nil
+    @tags[name] ||= Tag.find_by(name: name)
+
+    if @tags[name]
+      tag.exercise_tags.each do |et|
+        et.tag = @tags[name]
+        et.save || et.destroy
+      end
+
+      tag.reload.destroy
+    else
+      tag.update_attribute :name, name
+      @tags[name] = tag
     end
   end
 
