@@ -20,7 +20,7 @@ module Exercises
             values = 0.upto(row.size - 1).map{ |index| row[index].try(:value).try(:to_s) }.compact
             next if values.size < 2
 
-            exercise_numbers = values.first.split(',')
+            exercise_numbers = values.first.split(',').map(&:to_i)
             tags = values.slice(1..-1).flat_map{ |value| value.split(',') }
 
             row_number = skip_first_row ? row_index + 2 : row_index + 1
@@ -48,7 +48,7 @@ module Exercises
           exercises = Exercise.joins(:publication).where(publication: {number: exercise_numbers})
                               .preload([:publication, :tags]).latest(nil, Publication.unscoped)
 
-          not_found_numbers = exercise_numbers - exercises.map{ |ex| ex.number.to_s }
+          not_found_numbers = exercise_numbers - exercises.map(&:number)
 
           Rails.logger.warn "WARNING: Couldn't find any Exercises with numbers #{
                             not_found_numbers.join(', ')}" unless not_found_numbers.empty?
@@ -75,7 +75,6 @@ module Exercises
               unpublished_uids << exercise.uid
             end
 
-            tagged_exercise = exercise.is_published? ? exercise.new_version : exercise
             tagged_exercise.tags = final_tags
             tagged_exercise.save!
             tagged_exercise.publication.publish.save!
