@@ -1,7 +1,7 @@
 class Tag < ActiveRecord::Base
   has_many :exercise_tags, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :name, presence: true, uniqueness: { case_sensitive: false }, format: /\A[0-9a-z:-]*\z/
 
   def self.get(tags)
     # Initialize array of remaining tags
@@ -9,9 +9,10 @@ class Tag < ActiveRecord::Base
 
     # Get Tag objects in the given array
     result = remaining_tags.select{ |tag| tag.is_a?(Tag) }
-    remaining_tags = remaining_tags.reject{ |tag| tag.is_a?(Tag) }
-                                   .map{ |tag| tag.to_s.downcase }
-                                   .uniq
+    remaining_tags = (remaining_tags - result).map do |tag|
+      sanitized_name = tag.to_s.downcase.gsub(/[^0-9a-z:]+/, '-').sub(/\A-/, '').sub(/-\z/, '')
+      sanitized_name unless sanitized_name.blank?
+    end.compact.uniq
 
     # Get Tag objects in the database that match the given array
     db_result = where(name: remaining_tags).to_a

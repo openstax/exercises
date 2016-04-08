@@ -42,5 +42,23 @@ namespace :exercises do
       end
     end
 
+    # Imports exercises from a Quadbase JSON file
+    # Arguments are, in order:
+    # filename, skip_first_row
+    # Example: rake exercises:import:qb[qb.json]
+    #          will import exercises from qb.json
+    desc "import a quadbase json file"
+    task :qb, [:file, :skip_first_row] => :environment do |t, args|
+      # Output import logging info to the console (except in the test environment)
+      original_logger = Rails.logger
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
+
+        Exercises::Import::Quadbase.call(args.to_h)
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
+      end
+    end
   end
 end
