@@ -191,15 +191,16 @@ ActiveRecord::Schema.define(version: 20160413223442) do
   add_index "derivations", ["derived_publication_id", "sort_position"], name: "index_derivations_on_derived_publication_id_and_sort_position", unique: true, using: :btree
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true, using: :btree
 
-  create_table "distractor_terms", force: :cascade do |t|
+  create_table "distractors", force: :cascade do |t|
     t.integer  "sort_position",      null: false
-    t.integer  "term_id",            null: false
+    t.integer  "parent_term_id",     null: false
     t.integer  "distractor_term_id", null: false
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
   end
 
-  add_index "distractor_terms", ["term_id", "sort_position"], name: "index_distractor_terms_on_term_id_and_sort_position", unique: true, using: :btree
+  add_index "distractors", ["distractor_term_id", "parent_term_id"], name: "index_distractors_on_distractor_term_id_and_parent_term_id", unique: true, using: :btree
+  add_index "distractors", ["parent_term_id", "sort_position"], name: "index_distractors_on_parent_term_id_and_sort_position", unique: true, using: :btree
 
   create_table "editors", force: :cascade do |t|
     t.integer  "sort_position",  null: false
@@ -230,7 +231,7 @@ ActiveRecord::Schema.define(version: 20160413223442) do
     t.integer  "term_id"
   end
 
-  add_index "exercises", ["term_id"], name: "index_exercises_on_term_id", unique: true, using: :btree
+  add_index "exercises", ["term_id"], name: "index_exercises_on_term_id", using: :btree
   add_index "exercises", ["title"], name: "index_exercises_on_title", using: :btree
 
   create_table "fine_print_contracts", force: :cascade do |t|
@@ -575,11 +576,13 @@ ActiveRecord::Schema.define(version: 20160413223442) do
 
   create_table "terms", force: :cascade do |t|
     t.string   "name",                             null: false
+    t.string   "description",                      null: false
     t.string   "distractor_literals", default: [], null: false, array: true
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
   end
 
+  add_index "terms", ["description"], name: "index_terms_on_description", using: :btree
   add_index "terms", ["name"], name: "index_terms_on_name", unique: true, using: :btree
 
   create_table "trusted_applications", force: :cascade do |t|
