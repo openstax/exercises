@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160406202802) do
+ActiveRecord::Schema.define(version: 20160413223442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,7 +33,6 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   end
 
   add_index "answers", ["question_id", "sort_position"], name: "index_answers_on_question_id_and_sort_position", unique: true, using: :btree
-  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
 
   create_table "attachments", force: :cascade do |t|
     t.integer  "parent_id",   null: false
@@ -192,6 +191,16 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   add_index "derivations", ["derived_publication_id", "sort_position"], name: "index_derivations_on_derived_publication_id_and_sort_position", unique: true, using: :btree
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true, using: :btree
 
+  create_table "distractor_terms", force: :cascade do |t|
+    t.integer  "sort_position",      null: false
+    t.integer  "term_id",            null: false
+    t.integer  "distractor_term_id", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "distractor_terms", ["term_id", "sort_position"], name: "index_distractor_terms_on_term_id_and_sort_position", unique: true, using: :btree
+
   create_table "editors", force: :cascade do |t|
     t.integer  "sort_position",  null: false
     t.integer  "publication_id", null: false
@@ -218,8 +227,10 @@ ActiveRecord::Schema.define(version: 20160406202802) do
     t.text     "stimulus"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "term_id"
   end
 
+  add_index "exercises", ["term_id"], name: "index_exercises_on_term_id", unique: true, using: :btree
   add_index "exercises", ["title"], name: "index_exercises_on_title", using: :btree
 
   create_table "fine_print_contracts", force: :cascade do |t|
@@ -522,7 +533,6 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   end
 
   add_index "questions", ["exercise_id", "sort_position"], name: "index_questions_on_exercise_id_and_sort_position", unique: true, using: :btree
-  add_index "questions", ["exercise_id"], name: "index_questions_on_exercise_id", using: :btree
 
   create_table "stem_answers", force: :cascade do |t|
     t.integer  "stem_id",                                           null: false
@@ -562,6 +572,15 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   end
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
+  create_table "terms", force: :cascade do |t|
+    t.string   "name",                             null: false
+    t.string   "distractor_literals", default: [], null: false, array: true
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "terms", ["name"], name: "index_terms_on_name", unique: true, using: :btree
 
   create_table "trusted_applications", force: :cascade do |t|
     t.integer  "application_id", null: false
