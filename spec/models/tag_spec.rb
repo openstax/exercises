@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rails_helper'
 
 RSpec.describe Tag, type: :model do
@@ -9,7 +10,7 @@ RSpec.describe Tag, type: :model do
 
   it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
 
-  let(:allowed_tags)   { ['test', 'test-test', 'test:test'] }
+  let(:allowed_tags)   { ['test', 'test-test', 'test:test', 'test#-22'] }
   let(:forbidden_tags) { [nil, '', ' ', '  ', 'em—dash', '"quotes"', "'quotes'",
                           '“smartquotes”', '‘smartquotes’', '_underscore_'] }
 
