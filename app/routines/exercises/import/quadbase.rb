@@ -317,7 +317,7 @@ module Exercises
       # Converts Quadbase tags to Exercises tags
       def convert_tags(hash)
         tags = hash['tags'] || []
-        filter_tag = "filter-type:qb"
+        filter_tag = "filter-type:import:qb"
 
         module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }
         if module_tag.nil?

@@ -24,9 +24,14 @@ class MigrateTags
       map_collection(hash['tree'], cnx_id_map[book_name])
     end
 
+    # Correct previous migrations - pre
     # Cnxmod tags
     cnxmod_tags = Tag.where{name.like 'cnxmod:%'}
     cnxmod_tags.each{ |tag| rename_tag tag, "context-#{tag.name}" }
+
+    # Change filter-type:grasp-check back to grasp-check
+    grasp_check_tag = Tag.find_by(name: 'filter-type:grasp-check')
+    rename_tag grasp_check_tag, 'grasp-check' unless grasp_check_tag.nil?
 
     # LO tags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
@@ -89,7 +94,7 @@ class MigrateTags
       tag.delete
     end
 
-    # Tagging legend changes
+    # Tag namespace changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
     tl_id_tags.each{ |tag| rename_tag tag, tag.name.sub('id:', 'exid:') }
 
@@ -143,12 +148,6 @@ class MigrateTags
     old_ap_tp_tag = Tag.find_or_create_by(name: 'ap-test-prep') # Unused
     new_tag old_ap_tp_tag, 'type:practice'
 
-    # Remove double tags
-    ExerciseTag.where(tag_id: conceptual_or_recall_tag.id)
-               .joins{ ExerciseTag.unscoped.as(:other_tag)
-               .on{ (~exercise_id == other_tag.exercise_id) &
-                    (other_tag.tag_id.in [conceptual_tag.id, practice_tag.id]) } }.destroy_all
-
     # Mark exercises with no type tags
     no_rule_tag = Tag.find_or_create_by(name: 'filter-type:import:no-rule')
     Exercise.joins{ Tag.unscoped.as(:tags).on{
@@ -156,20 +155,58 @@ class MigrateTags
     }.outer }.where(tags: {id: nil}).each do |exercise|
       ExerciseTag.find_or_create_by(exercise: exercise, tag: no_rule_tag)
     end
+
+    # Correct previous migrations - post
+    # Remove double type tags
+    ExerciseTag.where(tag_id: conceptual_or_recall_tag.id)
+               .joins{ ExerciseTag.unscoped.as(:other_tag)
+               .on{ (~exercise_id == other_tag.exercise_id) &
+                    (other_tag.tag_id.in [conceptual_tag.id, practice_tag.id]) } }.destroy_all
+
+    # Remove migrated HS exids
+    Tag.where{name.like_any ['exid:stax-k12phys:%', 'exid:stax-apbio:%']}.each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
+
+    # Remove migrated HS LOs
+    Tag.where{name.like_any ['lo:stax-k12phys:%', 'lo:stax-apbio:%', 'lo:aplo-bio:%']}.each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
+
+    # Remove alternate- from all tags
+    Tag.where{name.like 'alternate-%'}.each do |tag|
+      matches = /\Aalternate-(.+)\z/.match tag.name
+      rename_tag tag, matches[1]
+    end
+
+    # Remove OBE filter-type tags
+    Tag.where(name: ['filter-type:chapter-review',
+                     'filter-type:test-prep',
+                     'filter-type:ap-test-prep']).each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
+
+    # Add import namespace to some filter-type tags
+    Tag.where(name: ['filter-type:qb',
+                     'filter-type:multi-cnxmod',
+                     'filter-type:multi-lo']).each do |tag|
+      rename_tag tag, tag.name.sub('filter-type:', 'filter-type:import:')
+    end
+
+    # Remove requires-context:y from embed tags
+    requires_context_tag = Tag.find_by(name: 'requires-context:y')
+    embed_tag_ids = embed_tags.map(&:id)
+    ExerciseTag.where(tag_id: requires_context_tag.id)
+               .joins{ ExerciseTag.unscoped.as(:other_tag)
+               .on{ (~exercise_id == other_tag.exercise_id) &
+                    (other_tag.tag_id.in embed_tag_ids) } }.destroy_all\
+      unless requires_context_tag.nil?
   end
 
   protected
-
-  # Creates a new tag and associates it with the same records as the given tag
-  def new_tag(tag, name)
-    return if tag.nil?
-
-    @tags ||= {}
-    @tags[name] ||= Tag.find_or_create_by(name: name)
-    tag.exercise_tags.each do |et|
-      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: @tags[name])
-    end
-  end
 
   # Creates a new tag and associates it with the same records as the given tag
   def new_tag(tag, name)
