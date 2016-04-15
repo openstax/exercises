@@ -2,7 +2,8 @@
 
 EMBED_URL_REGEXES = [
   /\A(?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\//,
-  /\A(?:https?:)?\/\/(?:www\.)?khanacademy\.org\//
+  /\A(?:https?:)?\/\/(?:www\.)?khanacademy\.org\//,
+  /\A(?:https?:)?\/\/(?:www\.)?cnx\.org\//
 ]
 
 embed_transformer = lambda do |env|
