@@ -58,6 +58,20 @@ RSpec.describe UserHtml do
       "webkitallowfullscreen=\"\" mozallowfullscreen=\"\"></iframe>"
 
     expect(described_class.link_and_sanitize(khan_content)).to eq expected_khan_content
+
+  end
+
+  it 'allows various cnx domains' do
+    valid_urls = %w{
+      https://cnx.org/content
+      http://archive-staging.cnx.org/content
+      https://server2.cnx.org/content
+    }
+    valid_urls.each do | url |
+      expect(described_class.link_and_sanitize(
+              "<iframe src='#{url}' />"
+            )).to eq  "<iframe src=\"#{url}\"></iframe>"
+    end
   end
 
   it 'removes iframes to non-whitelisted domains' do
