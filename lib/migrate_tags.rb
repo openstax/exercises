@@ -98,12 +98,12 @@ class MigrateTags
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
     tl_id_tags.each{ |tag| rename_tag tag, tag.name.sub('id:', 'exid:') }
 
-    tl_type_tags = Tag.where{name.like 'ost-type:%'} # Unused (CC uses all exercises)
-    tl_type_tags.each{ |tag| rename_tag tag, tag.name.sub('ost-type:', 'type:') }
+    # Undo type:concept-coach migration
+    concept_coach_tag = Tag.find_by(name: 'type:concept-coach')
+    rename_tag concept_coach_tag, 'ost-type:concept-coach' unless concept_coach_tag.nil?
 
-    # Concept Coach questions
-    concept_coach_tag = Tag.find_or_create_by(name: 'type:concept-coach')
-    new_tag concept_coach_tag, 'type:conceptual-or-recall'
+    concept_coach_tag = Tag.find_by(name: 'ost-type:concept-coach')
+    new_tag concept_coach_tag, 'type:conceptual-or-recall' unless concept_coach_tag.nil?
 
     # Reading embed tags
     embed_tags = Tag.where(
@@ -149,10 +149,11 @@ class MigrateTags
     new_tag old_ap_tp_tag, 'type:practice'
 
     # Mark exercises with no type tags
+    type_tag_ids = Tag.where{ name.like 'type:%' }.pluck(:id)
     no_rule_tag = Tag.find_or_create_by(name: 'filter-type:import:no-rule')
-    Exercise.joins{ Tag.unscoped.as(:tags).on{
-      tags.name.in ['type:conceptual-or-recall', 'type:conceptual', 'type:recall', 'type:practice']
-    }.outer }.where(tags: {id: nil}).each do |exercise|
+    Exercise.joins{ ExerciseTag.unscoped.as(:exercise_tag).on{
+      (exercise_tag.exercise_id == ~id) & (exercise_tag.tag_id.in type_tag_ids)
+    }.outer }.where(exercise_tag: {id: nil}).each do |exercise|
       ExerciseTag.find_or_create_by(exercise: exercise, tag: no_rule_tag)
     end
 

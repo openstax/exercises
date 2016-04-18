@@ -47,6 +47,8 @@ RSpec.describe MigrateTags do
       tag_names = ex.reload.tags.map(&:name)
       expect(tag_names).to include('k12phys')
       expect(tag_names).to include('book:stax-k12phys')
+      expect(tag_names).to include('book:stax-phys')
+      expect(tag_names).to include('filter-type:import:hs')
     end
 
     it 'assigns new DoK tags correctly' do
@@ -101,7 +103,8 @@ RSpec.describe MigrateTags do
       ex = FactoryGirl.create :exercise, tags: ['display-foo', 'display:foo']
       described_class.call
       tag_names = ex.reload.tags.map(&:name)
-      expect(tag_names).to be_empty
+      expect(tag_names).not_to include('display-foo')
+      expect(tag_names).not_to include('display:foo')
     end
 
     it 'assigns new tags for os-practice-concepts' do
@@ -151,6 +154,7 @@ RSpec.describe MigrateTags do
       expect(tag_names).to include('type:conceptual-or-recall')
       expect(tag_names).not_to include('type:practice')
       expect(tag_names).to include('book:stax-apbio')
+      expect(tag_names).to include('book:stax-bio')
       expect(tag_names).to include('time:short')
     end
 
@@ -205,6 +209,13 @@ RSpec.describe MigrateTags do
       expect(tag_names).to include('ap-test-prep')
       expect(tag_names).to include('type:practice')
     end
+
+    it 'assigns new tags for missed questions' do
+      ex = FactoryGirl.create :exercise, tags: []
+      described_class.call
+      tag_names = ex.reload.tags.map(&:name)
+      expect(tag_names).to include('filter-type:import:no-rule')
+    end
   end
 
   context 'concept coach' do
@@ -216,12 +227,13 @@ RSpec.describe MigrateTags do
       expect(tag_names).to include('exid:blah')
     end
 
-    it 'migrates type tags correctly' do
-      ex = FactoryGirl.create :exercise, tags: ['ost-type:foo']
+    it 'assigns new tags for ost-type:concept-coach' do
+      ex = FactoryGirl.create :exercise, tags: ['ost-type:concept-coach']
       described_class.call
       tag_names = ex.reload.tags.map(&:name)
-      expect(tag_names).not_to include('ost-type:foo')
-      expect(tag_names).to include('type:foo')
+      expect(tag_names).to include('ost-type:concept-coach')
+      expect(tag_names).not_to include('type:concept-coach')
+      expect(tag_names).to include('type:conceptual-or-recall')
     end
   end
 end
