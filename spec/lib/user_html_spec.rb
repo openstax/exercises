@@ -64,4 +64,25 @@ RSpec.describe UserHtml do
     content = "Funny cat videos: <iframe src=\"http://mal.icio.us\">"
     expect(described_class.link_and_sanitize(content)).to eq 'Funny cat videos: '
   end
+
+  describe 'data-math attribute' do
+    let (:formula){ %-\lim_{x\to\infty}f(x)=0- }
+
+    it 'is allowed on divs' do
+      content = "as a block: <div data-math='#{formula}'/>"
+      expect(described_class.link_and_sanitize(content)).to eq "as a block: <div data-math=\"#{formula}\"></div>"
+    end
+
+    it 'is allowed on spans' do
+      content = "as inline: <span data-math='#{formula}'/>"
+      expect(described_class.link_and_sanitize(content)).to eq "as inline: <span data-math=\"#{formula}\"></span>"
+    end
+
+    it 'is removed from other elements' do
+      content = "also: <p data-math='#{formula}'/>"
+      expect(described_class.link_and_sanitize(content)).to eq 'also: <p></p>'
+    end
+
+  end
+
 end

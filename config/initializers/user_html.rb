@@ -45,5 +45,9 @@ UserHtml.sanitize_config = Sanitize::Config.merge(
   add_attributes: {
     'a' => {'rel' => 'nofollow', 'target' => '_blank'}
   },
+  attributes: Sanitize::Config::RELAXED[:attributes].merge({
+    'span' => ['data-math'],
+    'div'  => ['data-math']
+  }),
   transformers: [embed_transformer]
 )
