@@ -111,8 +111,8 @@ class MigrateTags
     )
     # All unused
     embed_tags.each do |tag|
-      new_tag grasp_check_tag, 'type:practice'
-      new_tag grasp_check_tag, 'filter-type:import:has-context'
+      new_tag tag, 'type:practice'
+      new_tag tag, 'filter-type:import:has-context'
     end
 
     # Type tags
