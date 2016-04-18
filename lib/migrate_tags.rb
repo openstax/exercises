@@ -11,6 +11,11 @@ class MigrateTags
     'apbio' => 'd52e93f4-8653-4273-86da-3850001c0786'
   }
 
+  NEW_BOOK_NAMES = {
+    'k12phys' => 'phys',
+    'apbio' => 'bio'
+  }
+
   def exec
     cnx_id_map = Hash.new{ |hash, key| hash[key] = Hash.new{ |hash, key| hash[key] = {} } }
     BOOK_UUIDS.each do |book_name, uuid|
@@ -19,43 +24,24 @@ class MigrateTags
       map_collection(hash['tree'], cnx_id_map[book_name])
     end
 
+    # Correct previous migrations - pre
     # Cnxmod tags
     cnxmod_tags = Tag.where{name.like 'cnxmod:%'}
     cnxmod_tags.each{ |tag| rename_tag tag, "context-#{tag.name}" }
 
+    # Change filter-type:grasp-check back to grasp-check
+    grasp_check_tag = Tag.find_by(name: 'filter-type:grasp-check')
+    rename_tag grasp_check_tag, 'grasp-check' unless grasp_check_tag.nil?
+
     # LO tags
     lo_tags = Tag.where{name.like_any ['k12phys-ch%-s%-lo%', 'apbio-ch%-s%-lo%']} # Used by Tutor
-    lo_tags.each do |tag|
-      matches = /\A(\w+)-ch(\d+)-s(\d+)-lo(\d+)\z/.match tag.name
-      next if matches.nil?
-
-      book_name = matches[1]
-      chapter = matches[2]
-      section = matches[3]
-      lo = matches[4]
-      new_tag tag, "lo:stax-#{book_name}:#{chapter.to_i}-#{section.to_i}-#{lo.to_i}"
-    end
-
     aplo_tags = Tag.where{name.like 'apbio-ch%-s%-aplo-%'} # Used by Tutor
-    aplo_tags.each do |tag|
-      matches = /\Aapbio-ch\d+-s\d+-aplo-([\w-]+)\z/.match tag.name
-      next if matches.nil?
-
-      lo = matches[1]
-      new_tag tag, "lo:aplo-bio:#{lo}"
-    end
-
     all_lo_tags = lo_tags + aplo_tags
 
     # ID tags
     id_tags = Tag.where{name.like_any ['k12phys-ch%-ex%', 'apbio-ch%-ex%']} # Used by CNX
-    id_tags.preload(exercise_tags: :exercise).sort_by(&:name).each_with_index do |tag, index|
-      matches = /\A(\w+)-ch\d+-ex\d+\z/.match tag.name
-      next if matches.nil?
-
-      book_name = matches[1]
-      # The new format does not have the chapter number
-      new_tag tag, "exid:stax-#{book_name}:#{index + 1}"
+    id_tags.preload(exercise_tags: :exercise).sort_by(&:name).each do |tag|
+      new_tag tag, "exid:#{tag.name}"
     end
 
     # Book location tags
@@ -74,23 +60,27 @@ class MigrateTags
     end
 
     book_tags = Tag.where(name: ['k12phys', 'apbio']) # Used in Tutor
-    book_tags.each{ |tag| new_tag tag, "book:stax-#{tag.name}" }
+    book_tags.each do |tag|
+      new_tag tag, "book:stax-#{tag.name}"
+      new_tag tag, "book:stax-#{NEW_BOOK_NAMES[tag.name]}"
+      new_tag tag, 'filter-type:import:hs'
+    end
 
     # DoK, Blooms, Time
     dok_tags = Tag.where{name.like 'dok%'} # Used in Tutor
     dok_tags.preload(exercise_tags: :exercise).each do |tag|
       next if tag.name.include? ':'
 
-      new_tag tag, tag.name.gsub('dok', 'dok:')
+      new_tag tag, tag.name.sub('dok', 'dok:')
     end
 
     blooms_tags = Tag.where{name.like 'blooms-%'} # Used in Tutor
     blooms_tags.preload(exercise_tags: :exercise)
-               .each{ |tag| new_tag tag, tag.name.gsub('blooms-', 'blooms:') }
+               .each{ |tag| new_tag tag, tag.name.sub('blooms-', 'blooms:') }
 
     time_tags = Tag.where{name.like 'time-%'} # Used in Tutor
     time_tags.preload(exercise_tags: :exercise)
-             .each{ |tag| new_tag tag, tag.name.gsub('time-', 'time:') }
+             .each{ |tag| new_tag tag, tag.name.sub('time-', 'time:') }
 
     # Display tags (Unused - Remove)
     Tag.where{name.like 'display%'}.preload(:exercise_tags).each do |tag|
@@ -104,38 +94,33 @@ class MigrateTags
       tag.delete
     end
 
-    # Tagging legend changes
+    # Tag namespace changes
     tl_id_tags = Tag.where{name.like 'id:%'} # Unused (CC does not use exercise ID's)
-    tl_id_tags.each{ |tag| rename_tag tag, tag.name.gsub('id:', 'exid:') }
+    tl_id_tags.each{ |tag| rename_tag tag, tag.name.sub('id:', 'exid:') }
 
-    tl_type_tags = Tag.where{name.like 'ost-type:%'} # Unused (CC uses all exercises)
-    tl_type_tags.each{ |tag| rename_tag tag, tag.name.gsub('ost-type:', 'type:') }
+    # Undo type:concept-coach migration
+    concept_coach_tag = Tag.find_by(name: 'type:concept-coach')
+    rename_tag concept_coach_tag, 'ost-type:concept-coach' unless concept_coach_tag.nil?
+
+    concept_coach_tag = Tag.find_by(name: 'ost-type:concept-coach')
+    new_tag concept_coach_tag, 'type:conceptual-or-recall' unless concept_coach_tag.nil?
+
+    # Reading embed tags
+    embed_tags = Tag.where(
+      name: ['grasp-check', 'worked-example', 'visual-connection', 'interactive', 'evolution']
+    )
+    # All unused
+    embed_tags.each do |tag|
+      new_tag tag, 'type:practice'
+      new_tag tag, 'filter-type:import:has-context'
+    end
 
     # Type tags
-    inbook_tag = Tag.find_or_create_by(name: 'inbook-yes') # Unused
-    rename_tag inbook_tag, 'type:conceptual-or-recall'
-
-    grasp_check_tag = Tag.find_or_create_by(name: 'grasp-check') # Unused
-    new_tag grasp_check_tag, 'requires-context:y'
-    rename_tag grasp_check_tag, 'filter-type:grasp-check'
-
-    visual_connection_tag = Tag.find_or_create_by(name: 'visual-connection') # Unused
-    new_tag visual_connection_tag, 'filter-type:grasp-check'
-    new_tag visual_connection_tag, 'requires-context:y'
-
-    interactive_tag = Tag.find_or_create_by(name: 'interactive') # Unused
-    new_tag interactive_tag, 'filter-type:grasp-check'
-    new_tag interactive_tag, 'requires-context:y'
-
-    evolution_tag = Tag.find_or_create_by(name: 'evolution') # Unused
-    new_tag evolution_tag, 'filter-type:grasp-check'
-    new_tag evolution_tag, 'requires-context:y'
-
     old_practice_tag = Tag.find_or_create_by(name: 'os-practice-problems') # Used by Tutor
     new_tag old_practice_tag, 'type:practice'
 
     old_concepts_tag = Tag.find_or_create_by(name: 'os-practice-concepts') # Used by Tutor
-    new_tag old_concepts_tag, 'type:conceptual'
+    new_tag old_concepts_tag, 'type:conceptual-or-recall'
 
     conceptual_tag = Tag.find_or_create_by(name: 'type:conceptual')
     conceptual_or_recall_tag = Tag.find_or_create_by(name: 'type:conceptual-or-recall')
@@ -156,29 +141,73 @@ class MigrateTags
       end
       ExerciseTag.find_or_create_by(exercise: et.exercise, tag: tag)
     end
-    new_tag old_cr_tag, 'filter-type:chapter-review'
 
     old_tp_tag = Tag.find_or_create_by(name: 'ost-test-prep') # Unused
     new_tag old_tp_tag, 'type:practice'
-    new_tag old_tp_tag, 'filter-type:test-prep'
 
     old_ap_tp_tag = Tag.find_or_create_by(name: 'ap-test-prep') # Unused
     new_tag old_ap_tp_tag, 'type:practice'
-    new_tag old_ap_tp_tag, 'filter-type:ap-test-prep'
+
+    # Mark exercises with no type tags
+    type_tag_ids = Tag.where{ name.like 'type:%' }.pluck(:id)
+    no_rule_tag = Tag.find_or_create_by(name: 'filter-type:import:no-rule')
+    Exercise.joins{ ExerciseTag.unscoped.as(:exercise_tag).on{
+      (exercise_tag.exercise_id == ~id) & (exercise_tag.tag_id.in type_tag_ids)
+    }.outer }.where(exercise_tag: {id: nil}).each do |exercise|
+      ExerciseTag.find_or_create_by(exercise: exercise, tag: no_rule_tag)
+    end
+
+    # Correct previous migrations - post
+    # Remove double type tags
+    ExerciseTag.where(tag_id: conceptual_or_recall_tag.id)
+               .joins{ ExerciseTag.unscoped.as(:other_tag)
+               .on{ (~exercise_id == other_tag.exercise_id) &
+                    (other_tag.tag_id.in [conceptual_tag.id, practice_tag.id]) } }.destroy_all
+
+    # Remove migrated HS exids
+    Tag.where{name.like_any ['exid:stax-k12phys:%', 'exid:stax-apbio:%']}.each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
+
+    # Remove migrated HS LOs
+    Tag.where{name.like_any ['lo:stax-k12phys:%', 'lo:stax-apbio:%', 'lo:aplo-bio:%']}.each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
+
+    # Remove alternate- from all tags
+    Tag.where{name.like 'alternate-%'}.each do |tag|
+      matches = /\Aalternate-(.+)\z/.match tag.name
+      rename_tag tag, matches[1]
+    end
+
+    # Remove OBE filter-type tags
+    Tag.where(name: ['filter-type:chapter-review',
+                     'filter-type:test-prep',
+                     'filter-type:ap-test-prep']).each do |tag|
+      tag.exercise_tags.delete_all
+      tag.delete
+    end
+
+    # Add import namespace to some filter-type tags
+    Tag.where(name: ['filter-type:qb',
+                     'filter-type:multi-cnxmod',
+                     'filter-type:multi-lo']).each do |tag|
+      rename_tag tag, tag.name.sub('filter-type:', 'filter-type:import:')
+    end
+
+    # Remove requires-context:y from embed tags
+    requires_context_tag = Tag.find_by(name: 'requires-context:y')
+    embed_tag_ids = embed_tags.map(&:id)
+    ExerciseTag.where(tag_id: requires_context_tag.id)
+               .joins{ ExerciseTag.unscoped.as(:other_tag)
+               .on{ (~exercise_id == other_tag.exercise_id) &
+                    (other_tag.tag_id.in embed_tag_ids) } }.destroy_all\
+      unless requires_context_tag.nil?
   end
 
   protected
-
-  # Creates a new tag and associates it with the same records as the given tag
-  def new_tag(tag, name)
-    return if tag.nil?
-
-    @tags ||= {}
-    @tags[name] ||= Tag.find_or_create_by(name: name)
-    tag.exercise_tags.each do |et|
-      ExerciseTag.find_or_create_by(exercise: et.exercise, tag: @tags[name])
-    end
-  end
 
   # Creates a new tag and associates it with the same records as the given tag
   def new_tag(tag, name)

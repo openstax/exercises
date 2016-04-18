@@ -9,7 +9,7 @@ module Exercises::Import
     }
 
     let(:expected_tags) {
-      ['exid:qb:q1', 'exid:qb:d2', 'filter-type:qb',
+      ['exid:qb:q1', 'exid:qb:d2', 'filter-type:import:qb',
        'qb:concept-coach', 'qb:simple', 'qb:multipart', 'qb:m1000',
        'context-cnxmod:d6c29b47-d560-4571-bef0-b51fa3461d3b']
     }
@@ -31,7 +31,7 @@ module Exercises::Import
         expect(exercise.list_exercises.first.list.name).to eq 'Concept Coach'
 
         expect(exercise.tags).not_to be_blank
-        exercise.tags.map(&:name).each{ |tag_name| expect(tag_name).to be_in expected_tags }
+        exercise.tags.map(&:name).each{ |tag_name| expect(expected_tags).to include(tag_name) }
 
         expect(exercise.stimulus).to be_in expected_exercise_stimuli
         expect(exercise.questions.length).to be > 0
