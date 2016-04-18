@@ -58,10 +58,45 @@ RSpec.describe UserHtml do
       "webkitallowfullscreen=\"\" mozallowfullscreen=\"\"></iframe>"
 
     expect(described_class.link_and_sanitize(khan_content)).to eq expected_khan_content
+
+  end
+
+  it 'allows various cnx domains' do
+    valid_urls = %w{
+      https://cnx.org/content
+      http://archive-staging.cnx.org/content
+      https://server2.cnx.org/content
+    }
+    valid_urls.each do | url |
+      expect(described_class.link_and_sanitize(
+              "<iframe src='#{url}' />"
+            )).to eq  "<iframe src=\"#{url}\"></iframe>"
+    end
   end
 
   it 'removes iframes to non-whitelisted domains' do
     content = "Funny cat videos: <iframe src=\"http://mal.icio.us\">"
     expect(described_class.link_and_sanitize(content)).to eq 'Funny cat videos: '
   end
+
+  describe 'data-math attribute' do
+    let (:formula){ %-\lim_{x\to\infty}f(x)=0- }
+
+    it 'is allowed on divs' do
+      content = "as a block: <div data-math='#{formula}'/>"
+      expect(described_class.link_and_sanitize(content)).to eq "as a block: <div data-math=\"#{formula}\"></div>"
+    end
+
+    it 'is allowed on spans' do
+      content = "as inline: <span data-math='#{formula}'/>"
+      expect(described_class.link_and_sanitize(content)).to eq "as inline: <span data-math=\"#{formula}\"></span>"
+    end
+
+    it 'is removed from other elements' do
+      content = "also: <p data-math='#{formula}'/>"
+      expect(described_class.link_and_sanitize(content)).to eq 'also: <p></p>'
+    end
+
+  end
+
 end

@@ -3,7 +3,7 @@
 EMBED_URL_REGEXES = [
   /\A(?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\//,
   /\A(?:https?:)?\/\/(?:www\.)?khanacademy\.org\//,
-  /\A(?:https?:)?\/\/(?:www\.)?cnx\.org\//,
+  /\A(?:https?:)?\/\/(?:[\w-]+\.)?cnx\.org\//,
   /\A(?:https?:)?\/\/phet\.colorado\.edu\//
 ]
 
@@ -45,5 +45,9 @@ UserHtml.sanitize_config = Sanitize::Config.merge(
   add_attributes: {
     'a' => {'rel' => 'nofollow', 'target' => '_blank'}
   },
+  attributes: Sanitize::Config::RELAXED[:attributes].merge({
+    'span' => ['data-math'],
+    'div'  => ['data-math']
+  }),
   transformers: [embed_transformer]
 )
