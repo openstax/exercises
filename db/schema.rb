@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160413223442) do
+ActiveRecord::Schema.define(version: 20160420172854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -574,6 +574,16 @@ ActiveRecord::Schema.define(version: 20160413223442) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "term_tags", force: :cascade do |t|
+    t.integer  "term_id"
+    t.integer  "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "term_tags", ["tag_id"], name: "index_term_tags_on_tag_id", using: :btree
+  add_index "term_tags", ["term_id", "tag_id"], name: "index_term_tags_on_term_id_and_tag_id", unique: true, using: :btree
+
   create_table "terms", force: :cascade do |t|
     t.string   "name",                             null: false
     t.string   "description",                      null: false
@@ -625,4 +635,6 @@ ActiveRecord::Schema.define(version: 20160413223442) do
 
   add_foreign_key "exercise_tags", "exercises", on_update: :cascade, on_delete: :cascade
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "term_tags", "tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "term_tags", "terms", on_update: :cascade, on_delete: :cascade
 end
