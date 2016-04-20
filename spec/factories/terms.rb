@@ -9,7 +9,8 @@ FactoryGirl.define do
     after(:build) do |term, evaluator|
       term.publication ||= build(:publication, publishable: term)
 
-      evaluator.distractors_count.times { term.distractors << build(:distractor, term: term) }
+      evaluator.distractors_count.times { term.distractors << build(:distractor,
+                                                                    parent_term: term) }
     end
 
     trait(:published) { after(:build) { |term| term.publication.publish } }
