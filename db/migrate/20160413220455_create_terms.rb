@@ -7,7 +7,7 @@ class CreateTerms < ActiveRecord::Migration
 
       t.timestamps null: false
 
-      t.index :name, unique: true
+      t.index [:name, :description], unique: true
       t.index :description
     end
   end

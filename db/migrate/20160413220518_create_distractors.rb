@@ -6,9 +6,10 @@ class CreateDistractors < ActiveRecord::Migration
       t.references :distractor_term, null: false
 
       t.timestamps null: false
+
+      t.index :distractors, [:distractor_term_id, :parent_term_id], unique: true
     end
 
     add_sortable_index :distractors, scope: :parent_term_id
-    add_index :distractors, [:distractor_term_id, :parent_term_id], unique: true
   end
 end
