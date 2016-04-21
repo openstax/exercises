@@ -593,7 +593,7 @@ ActiveRecord::Schema.define(version: 20160420172854) do
   end
 
   add_index "terms", ["description"], name: "index_terms_on_description", using: :btree
-  add_index "terms", ["name"], name: "index_terms_on_name", unique: true, using: :btree
+  add_index "terms", ["name", "description"], name: "index_terms_on_name_and_description", unique: true, using: :btree
 
   create_table "trusted_applications", force: :cascade do |t|
     t.integer  "application_id", null: false

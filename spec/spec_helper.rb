@@ -2,6 +2,9 @@ require 'simplecov'
 require 'coveralls'
 require 'parallel_tests'
 
+# Coveralls color output depends on the term-ansicolor gem which conflicts with our Term model
+Coveralls::Output.no_color = true
+
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
