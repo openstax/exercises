@@ -1,5 +1,5 @@
 module Api::V1
-  class TermRepresenter < Roar::Decorator
+  class VocabTermRepresenter < Roar::Decorator
 
     include Roar::JSON
 
@@ -15,7 +15,7 @@ module Api::V1
                required: true
              }
 
-    property :description,
+    property :definition,
              type: String,
              writeable: true,
              readable: true,

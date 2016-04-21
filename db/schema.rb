@@ -191,17 +191,6 @@ ActiveRecord::Schema.define(version: 20160420172854) do
   add_index "derivations", ["derived_publication_id", "sort_position"], name: "index_derivations_on_derived_publication_id_and_sort_position", unique: true, using: :btree
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true, using: :btree
 
-  create_table "distractors", force: :cascade do |t|
-    t.integer  "sort_position",      null: false
-    t.integer  "parent_term_id",     null: false
-    t.integer  "distractor_term_id", null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-  end
-
-  add_index "distractors", ["distractor_term_id", "parent_term_id"], name: "index_distractors_on_distractor_term_id_and_parent_term_id", unique: true, using: :btree
-  add_index "distractors", ["parent_term_id", "sort_position"], name: "index_distractors_on_parent_term_id_and_sort_position", unique: true, using: :btree
-
   create_table "editors", force: :cascade do |t|
     t.integer  "sort_position",  null: false
     t.integer  "publication_id", null: false
@@ -226,13 +215,13 @@ ActiveRecord::Schema.define(version: 20160420172854) do
   create_table "exercises", force: :cascade do |t|
     t.string   "title"
     t.text     "stimulus"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer  "term_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "vocab_term_id"
   end
 
-  add_index "exercises", ["term_id"], name: "index_exercises_on_term_id", using: :btree
   add_index "exercises", ["title"], name: "index_exercises_on_title", using: :btree
+  add_index "exercises", ["vocab_term_id"], name: "index_exercises_on_vocab_term_id", using: :btree
 
   create_table "fine_print_contracts", force: :cascade do |t|
     t.string   "name",       null: false
@@ -574,27 +563,6 @@ ActiveRecord::Schema.define(version: 20160420172854) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
-  create_table "term_tags", force: :cascade do |t|
-    t.integer  "term_id"
-    t.integer  "tag_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "term_tags", ["tag_id"], name: "index_term_tags_on_tag_id", using: :btree
-  add_index "term_tags", ["term_id", "tag_id"], name: "index_term_tags_on_term_id_and_tag_id", unique: true, using: :btree
-
-  create_table "terms", force: :cascade do |t|
-    t.string   "name",                             null: false
-    t.string   "description",                      null: false
-    t.string   "distractor_literals", default: [], null: false, array: true
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-  end
-
-  add_index "terms", ["description"], name: "index_terms_on_description", using: :btree
-  add_index "terms", ["name", "description"], name: "index_terms_on_name_and_description", unique: true, using: :btree
-
   create_table "trusted_applications", force: :cascade do |t|
     t.integer  "application_id", null: false
     t.datetime "created_at",     null: false
@@ -618,6 +586,38 @@ ActiveRecord::Schema.define(version: 20160420172854) do
   add_index "users", ["account_id"], name: "index_users_on_account_id", unique: true, using: :btree
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
 
+  create_table "vocab_distractors", force: :cascade do |t|
+    t.integer  "sort_position",      null: false
+    t.integer  "vocab_term_id",      null: false
+    t.integer  "distractor_term_id", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "vocab_distractors", ["distractor_term_id", "vocab_term_id"], name: "index_vocab_distractors_on_distractor_term_id_and_vocab_term_id", unique: true, using: :btree
+  add_index "vocab_distractors", ["vocab_term_id", "sort_position"], name: "index_vocab_distractors_on_vocab_term_id_and_sort_position", unique: true, using: :btree
+
+  create_table "vocab_term_tags", force: :cascade do |t|
+    t.integer  "vocab_term_id"
+    t.integer  "tag_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "vocab_term_tags", ["tag_id"], name: "index_vocab_term_tags_on_tag_id", using: :btree
+  add_index "vocab_term_tags", ["vocab_term_id", "tag_id"], name: "index_vocab_term_tags_on_vocab_term_id_and_tag_id", unique: true, using: :btree
+
+  create_table "vocab_terms", force: :cascade do |t|
+    t.string   "name",                             null: false
+    t.string   "definition",                       null: false
+    t.string   "distractor_literals", default: [], null: false, array: true
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "vocab_terms", ["definition"], name: "index_vocab_terms_on_definition", using: :btree
+  add_index "vocab_terms", ["name", "definition"], name: "index_vocab_terms_on_name_and_definition", unique: true, using: :btree
+
   create_table "votes", force: :cascade do |t|
     t.integer  "votable_id"
     t.string   "votable_type"
@@ -635,6 +635,6 @@ ActiveRecord::Schema.define(version: 20160420172854) do
 
   add_foreign_key "exercise_tags", "exercises", on_update: :cascade, on_delete: :cascade
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "term_tags", "tags", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "term_tags", "terms", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "vocab_term_tags", "tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "vocab_term_tags", "vocab_terms", on_update: :cascade, on_delete: :cascade
 end

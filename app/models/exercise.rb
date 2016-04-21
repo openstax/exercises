@@ -73,7 +73,7 @@ class Exercise < ActiveRecord::Base
 
   has_many :list_exercises, dependent: :destroy
 
-  belongs_to :term
+  belongs_to :vocab_term
 
   scope :preloaded, -> {
     preload(:attachments,

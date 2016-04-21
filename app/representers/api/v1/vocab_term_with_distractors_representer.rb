@@ -1,9 +1,9 @@
 module Api::V1
-  class TermWithDistractorsRepresenter < TermRepresenter
+  class VocabTermWithDistractorsRepresenter < VocabTermRepresenter
 
     collection :distractor_terms,
-               class: Term,
-               decorator: TermRepresenter,
+               class: VocabTerm,
+               decorator: VocabTermRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
