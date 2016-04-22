@@ -4,7 +4,7 @@ module Publishable
       def publishable(options = {})
         class_exec do
 
-          has_one :publication, as: :publishable, dependent: :destroy
+          has_one :publication, as: :publishable, dependent: :destroy, inverse_of: :publishable
 
           has_many :authors, through: :publication
           has_many :copyright_holders, through: :publication

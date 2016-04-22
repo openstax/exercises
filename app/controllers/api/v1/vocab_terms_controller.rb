@@ -91,12 +91,12 @@ module Api::V1
     description <<-EOS
       Creates a VocabTerm with the given attributes.
 
-      #{json_schema(Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+      #{json_schema(Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
                     include: :writeable)}
     EOS
     def create
       user = current_human_user
-      standard_create(VocabTerm.new, Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+      standard_create(VocabTerm.new, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
                       user: current_api_user) do |vocab_term|
         vocab_term.publication.authors << Author.new(
           publication: vocab_term.publication, user: user
@@ -115,11 +115,11 @@ module Api::V1
     description <<-EOS
       Gets the VocabTerm that matches the provided UID.
 
-      #{json_schema(Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+      #{json_schema(Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
                     include: :readable)}
     EOS
     def show
-      standard_read(@vocab_term, Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+      standard_read(@vocab_term, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
                     false, user: current_api_user)
     end
 
@@ -131,11 +131,11 @@ module Api::V1
     description <<-EOS
       Updates the VocabTerm that matches the provided UID with the given attributes.
 
-      #{json_schema(Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+      #{json_schema(Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
                     include: :writeable)}
     EOS
     def update
-      standard_update(@vocab_term, Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+      standard_update(@vocab_term, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
                       user: current_api_user)
     end
 

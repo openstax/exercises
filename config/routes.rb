@@ -35,6 +35,10 @@ Exercises::Application.routes.draw do
       end
     end
 
+    resources :vocab_terms do
+      publishable
+    end
+
     # Not in V1
     #resources :logics, only: [] do
     #  post 'seeds', on: :member

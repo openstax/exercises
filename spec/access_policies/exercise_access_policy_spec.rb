@@ -8,11 +8,11 @@ RSpec.describe ExerciseAccessPolicy do
 
   context 'search' do
     it 'can be accessed by everyone' do
-      expect(ExerciseAccessPolicy.action_allowed?(:search, anon, Exercise)).to eq true
+      expect(described_class.action_allowed?(:search, anon, Exercise)).to eq true
 
-      expect(ExerciseAccessPolicy.action_allowed?(:search, user, Exercise)).to eq true
+      expect(described_class.action_allowed?(:search, user, Exercise)).to eq true
 
-      expect(ExerciseAccessPolicy.action_allowed?(:search, app, Exercise)).to eq true
+      expect(described_class.action_allowed?(:search, app, Exercise)).to eq true
     end
   end
 
@@ -23,31 +23,31 @@ RSpec.describe ExerciseAccessPolicy do
 
     context 'not published' do
       it 'cannot be accessed by anonymous users, applications or human users without roles' do
-        expect(ExerciseAccessPolicy.action_allowed?(:read, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:read, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:read, app, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:read, user, exercise)).to eq false
       end
 
       it 'can be accessed by humans editors, authors and copyright holders' do
         editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
         editor.destroy
         exercise.reload
 
         author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
         author.destroy
         exercise.reload
 
         cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication,
                                                    user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
         cr.destroy
         exercise.reload
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:read, user, exercise)).to eq false
       end
     end
 
@@ -56,11 +56,11 @@ RSpec.describe ExerciseAccessPolicy do
         exercise.publication.published_at = Time.now
         exercise.publication.save!
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, anon, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, anon, exercise)).to eq true
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
 
-        expect(ExerciseAccessPolicy.action_allowed?(:read, app, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, app, exercise)).to eq true
       end
     end
   end
@@ -68,13 +68,13 @@ RSpec.describe ExerciseAccessPolicy do
   context 'create' do
     context 'not created' do
       it 'cannot be accessed by anonymous users or applications' do
-        expect(ExerciseAccessPolicy.action_allowed?(:create, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:create, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:create, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:create, app, exercise)).to eq false
       end
 
       it 'can be accessed by humans users' do
-        expect(ExerciseAccessPolicy.action_allowed?(:create, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:create, user, exercise)).to eq true
       end
     end
 
@@ -85,11 +85,11 @@ RSpec.describe ExerciseAccessPolicy do
         FactoryGirl.create(:author, publication: exercise.publication, user: user)
         FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
 
-        expect(ExerciseAccessPolicy.action_allowed?(:create, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:create, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:create, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:create, user, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:create, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:create, app, exercise)).to eq false
       end
     end
   end
@@ -101,38 +101,38 @@ RSpec.describe ExerciseAccessPolicy do
 
     context 'not published' do
       it 'cannot be accessed by anonymous users, applications or human users without roles' do
-        expect(ExerciseAccessPolicy.action_allowed?(:update, anon, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, app, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, app, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq false
       end
 
       it 'can be accessed by humans editors, authors and copyright holders' do
         editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq true
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
         editor.destroy
         exercise.reload
 
         author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq true
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
         author.destroy
         exercise.reload
 
         cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication,
                                                    user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq true
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
         cr.destroy
         exercise.reload
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq false
       end
     end
 
@@ -145,14 +145,14 @@ RSpec.describe ExerciseAccessPolicy do
         exercise.publication.published_at = Time.now
         exercise.publication.save!
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, anon, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, user, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:update, app, exercise)).to eq false
-        expect(ExerciseAccessPolicy.action_allowed?(:destroy, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:update, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:destroy, app, exercise)).to eq false
       end
     end
   end
@@ -169,59 +169,53 @@ RSpec.describe ExerciseAccessPolicy do
       end
 
       it 'cannot be accessed by anonymous users, applications or human users without roles' do
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
       end
 
       it 'can be accessed by humans editors, authors and copyright holders' do
         editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
         editor.destroy
         exercise.reload
 
         author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
         author.destroy
         exercise.reload
 
         cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
         cr.destroy
         exercise.reload
 
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
       end
     end
 
     context 'not published' do
       it 'cannot be accessed by anyone' do
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, anon, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, anon, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
 
-        expect(ExerciseAccessPolicy.action_allowed?(:new_version, app, exercise)).to eq false
+        expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
       end
     end
   end
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, Exercise))
-        .to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, Exercise))
-        .to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, Exercise))
-        .to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, anon, Exercise)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, user, Exercise)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, app, Exercise)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, exercise))
-        .to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, exercise))
-        .to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, exercise))
-        .to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, anon, exercise)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, user, exercise)).to eq false
+      expect(OSU::AccessPolicy.action_allowed?(:other, app, exercise)).to eq false
     end
   end
 end

@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 module Api::V1
-  RSpec.describe VocabTermWithDistractorsAndExercisesRepresenter, type: :representer do
+  RSpec.describe VocabTermWithDistractorsAndExerciseIdsRepresenter, type: :representer do
 
     let!(:vocab_term) {
       dbl = instance_spy(VocabTerm)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:distractor_terms).and_return([])
       allow(dbl).to receive(:distractor_literals).and_return([])
+      allow(dbl).to receive(:exercise_ids).and_return([])
       allow(dbl).to receive(:tags).and_return([])
       allow(dbl).to receive(:license).and_return(nil)
       allow(dbl).to receive(:editors).and_return([])
@@ -120,6 +121,23 @@ module Api::V1
         described_class.new(vocab_term).from_json({'distractor_literals' => [
           'Literal 1', 'Literal 2', 'Literal 3'
         ]}.to_json)
+      end
+    end
+
+    context 'exercise_ids' do
+      it 'can be read' do
+        exercise_ids = [42, 4, 2]
+
+        allow(vocab_term).to receive(:exercise_ids).and_return(exercise_ids)
+
+        expect(representation).to include('exercise_ids' => exercise_ids)
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
+        expect(vocab_term).not_to receive(:exercises=)
+        expect(vocab_term).not_to receive(:exercise_ids=)
+
+        described_class.new(vocab_term).from_json({'exercise_ids' => [42, 4, 2]}.to_json)
       end
     end
 

@@ -38,7 +38,7 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def publication_validation
-    return true unless distractor_terms.empty? && distractor_literals.empty?
+    return true if vocab_distractors.any? || distractor_literals.any?
     errors.add(:base, 'must have at least 1 distractor')
     false
   end
