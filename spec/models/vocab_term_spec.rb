@@ -15,4 +15,18 @@ RSpec.describe VocabTerm, type: :model do
   it { is_expected.to validate_presence_of(:definition) }
 
   it { is_expected.to validate_uniqueness_of(:definition).scoped_to(:name) }
+
+  it 'ensures that it has at least 1 distractor before publication' do
+    vocab_term = FactoryGirl.create :vocab_term
+    vocab_term.publication_validation
+    expect(vocab_term.errors).to be_empty
+
+    vocab_term.distractor_terms.destroy_all
+    vocab_term.distractor_literals = ['Distractor']
+    expect(vocab_term.errors).to be_empty
+
+    vocab_term.distractor_literals = []
+    vocab_term.publication_validation
+    expect(vocab_term.errors[:base]).to include('must have at least 1 distractor')
+  end
 end

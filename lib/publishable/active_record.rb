@@ -16,20 +16,6 @@ module Publishable
             joins(:publication).where{publication.published_at != nil}
           }
 
-          scope :visible_for, ->(user) {
-            user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
-            next published if !user.is_a?(User) || user.is_anonymous?
-            next self if user.administrator
-            user_id = user.id
-            joins{publication.authors.outer}
-              .joins{publication.copyright_holders.outer}
-              .joins{publication.editors.outer}
-              .where{ (publication.published_at != nil) | \
-                      (authors.user_id == user_id) | \
-                      (copyright_holders.user_id == user_id) | \
-                      (editors.user_id == user_id) }
-          }
-
           scope :with_uid, ->(uid) {
             number, version = uid.to_s.split('@')
             relation = joins(:publication)

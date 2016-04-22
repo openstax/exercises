@@ -72,13 +72,13 @@ class Publication < ActiveRecord::Base
   end
 
   def valid_license
-    return if license.nil? || license.valid_for?(publishable_type)
+    return if published_at.nil? || license.nil? || license.valid_for?(publishable_type)
     errors.add(:license, "is invalid for #{publishable_type}")
     false
   end
 
   def valid_publishable
-    return if publishable.nil?
+    return if published_at.nil? || publishable.nil?
     publishable.publication_validation
     return if publishable.errors.empty?
     publishable.errors.full_messages.each do |message|

@@ -92,6 +92,20 @@ class Exercise < ActiveRecord::Base
             ])
   }
 
+  scope :visible_for, ->(user) {
+    user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+    next published if !user.is_a?(User) || user.is_anonymous?
+    next self if user.administrator
+    user_id = user.id
+    joins{publication.authors.outer}
+      .joins{publication.copyright_holders.outer}
+      .joins{publication.editors.outer}
+      .where{ (publication.published_at != nil) | \
+              (authors.user_id == user_id) | \
+              (copyright_holders.user_id == user_id) | \
+              (editors.user_id == user_id) }
+  }
+
   def content_equals?(other_exercise)
     return false unless other_exercise.is_a? ActiveRecord::Base
 
@@ -116,7 +130,7 @@ class Exercise < ActiveRecord::Base
 
   def can_view_solutions?(user)
     return false if user.nil? # Not given
-    return true if new_record? # in process of being created
+    return true if new_record? # In process of being created
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     return true if user.nil? # Application user
     return false if user.is_anonymous? # Anonymous user

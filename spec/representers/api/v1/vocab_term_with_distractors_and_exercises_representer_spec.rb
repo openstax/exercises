@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Api::V1
-  RSpec.describe VocabTermWithDistractorsRepresenter, type: :representer do
+  RSpec.describe VocabTermWithDistractorsAndExercisesRepresenter, type: :representer do
 
     let!(:vocab_term) {
       dbl = instance_spy(VocabTerm)
