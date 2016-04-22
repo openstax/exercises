@@ -14,7 +14,9 @@ RSpec.describe SearchVocabTerms, type: :routine do
     end
 
     lorem = "%lorem ipsu%"
-    VocabTerm.where{(name.like lorem) | (definition.like lorem)}.delete_all
+    ad = "%adipiscing elit%"
+    test_terms = [lorem, ad]
+    VocabTerm.where{(name.like_any test_terms) | (definition.like_any test_terms)}.delete_all
 
     @vocab_term_1 = VocabTerm.new
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
@@ -55,15 +57,6 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_2]
     end
 
-    it "does not match distractors" do
-      result = described_class.call({q: 'content:"aDiPiScInG eLiT"'}, user: author_user)
-      expect(result.errors).to be_empty
-
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 0
-      expect(outputs.items).to be_empty
-    end
-
     it "returns a VocabTerm matching the tags" do
       result = described_class.call({q: 'tag:tAg1'}, user: author_user)
       expect(result.errors).to be_empty
@@ -81,6 +74,15 @@ RSpec.describe SearchVocabTerms, type: :routine do
       outputs = result.outputs
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [@vocab_term_2]
+    end
+
+    it "does not match distractors" do
+      result = described_class.call({q: 'content:"aDiPiScInG eLiT"'}, user: author_user)
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 0
+      expect(outputs.items).to be_empty
     end
 
     it "does not return old versions of VocabTerms matching the tags" do
