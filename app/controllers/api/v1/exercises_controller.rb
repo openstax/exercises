@@ -26,7 +26,7 @@ module Api::V1
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/exercises',
-                           url_end: '?q=username:bob%20name=Jones')}"
+                           url_end: '?q=author:"bob" content:"test"')}"
     param :q, String, required: true, desc: <<-EOS
       The search query string, built up as a space-separated collection of
       search conditions on different fields. Each condition is formatted as

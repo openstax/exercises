@@ -26,7 +26,7 @@ module Api::V1
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/vocab_terms',
-                           url_end: '?q=username:bob%20name=Jones')}"
+                           url_end: '?q=name:"term" definition:"def"')}"
     param :q, String, required: true, desc: <<-EOS
       The search query string, built up as a space-separated collection of
       search conditions on different fields. Each condition is formatted as
@@ -38,9 +38,9 @@ module Api::V1
       When a field is listed as using wildcard matching, it means that any
       fields that start with a comma-separated-value will be matched.
 
-      * `content` &ndash; Matches the vocab term content. (uses wildcard matching)
-      * `solution` &ndash; Matches the vocab term solution content.
-                           (uses wildcard matching)
+      * `name` &ndash; Matches the vocab term itself. (uses wildcard matching)
+      * `definition` &ndash; Matches the vocab term definition. (uses wildcard matching)
+      * `content` &ndash; Matches the vocab term or its definition. (uses wildcard matching)
       * `author` &ndash; Matches authors' and copyright holders' first, last, or full names.
                          (uses wildcard matching)
       * `number` &ndash; Matches the vocab term number exactly.
@@ -79,7 +79,8 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(VocabTerm, SearchVocabTerms, VocabTermSearchRepresenter, user: current_api_user)
+      standard_search(VocabTerm, SearchVocabTerms, VocabTermSearchRepresenter,
+                      user: current_api_user)
     end
 
     ##########
@@ -90,11 +91,13 @@ module Api::V1
     description <<-EOS
       Creates a VocabTerm with the given attributes.
 
-      #{json_schema(Api::V1::VocabTermRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+                    include: :writeable)}
     EOS
     def create
       user = current_human_user
-      standard_create(VocabTerm.new, nil, user: current_api_user) do |vocab_term|
+      standard_create(VocabTerm.new, Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+                      user: current_api_user) do |vocab_term|
         vocab_term.publication.authors << Author.new(
           publication: vocab_term.publication, user: user
         ) unless vocab_term.publication.authors.any?{ |a| a.user = user }
@@ -112,10 +115,12 @@ module Api::V1
     description <<-EOS
       Gets the VocabTerm that matches the provided UID.
 
-      #{json_schema(Api::V1::VocabTermRepresenter, include: :readable)}
+      #{json_schema(Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+                    include: :readable)}
     EOS
     def show
-      standard_read(@vocab_term, nil, false, user: current_api_user)
+      standard_read(@vocab_term, Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+                    false, user: current_api_user)
     end
 
     ##########
@@ -126,10 +131,12 @@ module Api::V1
     description <<-EOS
       Updates the VocabTerm that matches the provided UID with the given attributes.
 
-      #{json_schema(Api::V1::VocabTermRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+                    include: :writeable)}
     EOS
     def update
-      standard_update(@vocab_term, nil, user: current_api_user)
+      standard_update(@vocab_term, Api::V1::VocabTermWithDistractorsAndExercisesRepresenter,
+                      user: current_api_user)
     end
 
 
