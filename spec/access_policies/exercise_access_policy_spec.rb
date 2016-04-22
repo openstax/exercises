@@ -162,47 +162,65 @@ RSpec.describe ExerciseAccessPolicy do
       exercise.save!
     end
 
-    context 'published' do
+    context 'vocab' do
       before(:each) do
+        exercise.vocab_term = FactoryGirl.create :vocab_term
         exercise.publication.published_at = Time.now
         exercise.publication.save!
       end
 
-      it 'cannot be accessed by anonymous users, applications or human users without roles' do
-        expect(described_class.action_allowed?(:new_version, anon, exercise)).to eq false
-
-        expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
-
-        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
-      end
-
-      it 'can be accessed by humans editors, authors and copyright holders' do
-        editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
-        editor.destroy
-        exercise.reload
-
-        author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
-        author.destroy
-        exercise.reload
-
-        cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
-        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
-        cr.destroy
-        exercise.reload
-
-        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
-      end
-    end
-
-    context 'not published' do
       it 'cannot be accessed by anyone' do
         expect(described_class.action_allowed?(:new_version, anon, exercise)).to eq false
 
         expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
 
         expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
+      end
+    end
+
+    context 'not vocab' do
+      context 'published' do
+        before(:each) do
+          exercise.publication.published_at = Time.now
+          exercise.publication.save!
+        end
+
+        it 'cannot be accessed by anonymous users, applications or human users without roles' do
+          expect(described_class.action_allowed?(:new_version, anon, exercise)).to eq false
+
+          expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
+
+          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
+        end
+
+        it 'can be accessed by humans editors, authors and copyright holders' do
+          editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
+          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
+          editor.destroy
+          exercise.reload
+
+          author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
+          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
+          author.destroy
+          exercise.reload
+
+          cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
+          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
+          cr.destroy
+          exercise.reload
+
+          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
+        end
+      end
+
+      context 'not published' do
+        it 'cannot be accessed by anyone' do
+          expect(described_class.action_allowed?(:new_version, anon, exercise)).to eq false
+
+          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
+
+          expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
+        end
       end
     end
   end

@@ -8,13 +8,13 @@ class ExerciseAccessPolicy
     when :create
       !requestor.is_anonymous? && requestor.is_human? && !exercise.persisted?
     when :read
-      exercise.is_public? || exercise.has_collaborator?(requestor) || \
+      exercise.is_public? || exercise.has_collaborator?(requestor) ||
       requestor.is_administrator?
     when :update, :destroy
-      !exercise.is_published? && exercise.has_collaborator?(requestor) || \
+      !exercise.is_published? && exercise.has_collaborator?(requestor) ||
       requestor.is_administrator?
     when :new_version
-      exercise.is_published? && \
+      exercise.is_published? && exercise.vocab_term_id.nil? &&
       (exercise.has_collaborator?(requestor) || requestor.is_administrator?)
     else
       false
