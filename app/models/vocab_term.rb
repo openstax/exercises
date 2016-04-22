@@ -1,4 +1,18 @@
 class VocabTerm < ActiveRecord::Base
+
+  # deep_clone does not iterate through hashes, so each hash must have only 1 key
+  NEW_VERSION_DUPED_ASSOCIATIONS = [
+    :tags,
+    :vocab_distractors,
+    {
+      publication: [
+        :authors,
+        :copyright_holders,
+        :editors
+      ]
+    }
+  ]
+
   publishable
 
   has_tags
@@ -12,7 +26,7 @@ class VocabTerm < ActiveRecord::Base
   has_many :exercises, dependent: :destroy
 
   validates :name, presence: true
-  validates :definition, presence: true, uniqueness: { scope: :name }
+  validates :definition, presence: true
 
   scope :preloaded, -> {
     preload(:tags,
@@ -33,6 +47,16 @@ class VocabTerm < ActiveRecord::Base
               (copyright_holders.user_id == user_id) | \
               (editors.user_id == user_id) }
   }
+
+  def new_version
+    nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
+    nv.publication.version = version + 1
+    nv.publication.published_at = nil
+    nv.publication.yanked_at = nil
+    nv.publication.embargoed_until = nil
+    nv.publication.major_change = false
+    nv
+  end
 
   def exercise_ids
     exercises.pluck(:id)

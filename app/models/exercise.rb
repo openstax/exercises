@@ -22,6 +22,7 @@ class Exercise < ActiveRecord::Base
       ]
     }
   ]
+
   EQUALITY_EXCLUDED_FIELDS = ['id', 'created_at', 'updated_at', 'version',
                               'published_at', 'yanked_at', 'embargoed_until']
 

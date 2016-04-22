@@ -56,7 +56,7 @@ RSpec.describe SearchExercises, type: :routine do
 
   context "single match" do
     it "returns an Exercise matching the content" do
-      result = SearchExercises.call(q: 'content:aDiPiScInG eLiT')
+      result = described_class.call(q: 'content:"aDiPiScInG eLiT"')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -65,7 +65,7 @@ RSpec.describe SearchExercises, type: :routine do
     end
 
     it "returns an Exercise matching the tags" do
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -75,7 +75,7 @@ RSpec.describe SearchExercises, type: :routine do
 
     it "returns an Exercise matching the publication number" do
       number = @exercise_2.publication.number
-      result = SearchExercises.call(q: "number:#{number}")
+      result = described_class.call(q: "number:#{number}")
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -84,24 +84,11 @@ RSpec.describe SearchExercises, type: :routine do
     end
 
     it "does not return old versions of published Exercises matching the tags" do
-      new_exercise = Exercise.new
-      Api::V1::ExerciseRepresenter.new(new_exercise).from_json({
-        tags: ['tag2', 'tag3'],
-        title: "Lorem ipsum",
-        stimulus: "Dolor",
-        questions: [{
-          stimulus: "Sit amet",
-          stem_html: "Consectetur adipiscing elit",
-          answers: [{
-            content_html: "Sed do eiusmod tempor"
-          }]
-        }]
-      }.to_json)
-      new_exercise.publication.number = @exercise_1.publication.number
-      new_exercise.publication.version = @exercise_1.publication.version + 1
+      new_exercise = @exercise_1.new_version
+      new_exercise.tags = ['tag2', 'tag3']
       new_exercise.save!
 
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -111,31 +98,18 @@ RSpec.describe SearchExercises, type: :routine do
       new_exercise.publication.publish
       new_exercise.publication.save!
 
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 0
       expect(outputs.items).to eq []
 
-      new_exercise_2 = Exercise.new
-      Api::V1::ExerciseRepresenter.new(new_exercise_2).from_json({
-        tags: ['tag1', 'tag2', 'tag3'],
-        title: "Lorem ipsum",
-        stimulus: "Dolor",
-        questions: [{
-          stimulus: "Sit amet",
-          stem_html: "Consectetur adipiscing elit",
-          answers: [{
-            content_html: "Sed do eiusmod tempor"
-          }]
-        }]
-      }.to_json)
-      new_exercise_2.publication.number = new_exercise.publication.number
-      new_exercise_2.publication.version = new_exercise.publication.version + 1
+      new_exercise_2 = new_exercise.new_version
+      new_exercise_2.tags = ['tag1', 'tag2', 'tag3']
       new_exercise_2.save!
 
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -145,7 +119,7 @@ RSpec.describe SearchExercises, type: :routine do
       new_exercise_2.publication.publish
       new_exercise_2.publication.save!
 
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -154,24 +128,11 @@ RSpec.describe SearchExercises, type: :routine do
     end
 
     it 'changes the definition of "latest" if published_before is specified' do
-      new_exercise = Exercise.new
-      Api::V1::ExerciseRepresenter.new(new_exercise).from_json({
-        tags: ['tag2', 'tag3'],
-        title: "Lorem ipsum",
-        stimulus: "Dolor",
-        questions: [{
-          stimulus: "Sit amet",
-          stem_html: "Consectetur adipiscing elit",
-          answers: [{
-            content_html: "Sed do eiusmod tempor"
-          }]
-        }]
-      }.to_json)
-      new_exercise.publication.number = @exercise_1.publication.number
-      new_exercise.publication.version = @exercise_1.publication.version + 1
+      new_exercise = @exercise_1.new_version
+      new_exercise.tags = ['tag2', 'tag3']
       new_exercise.save!
 
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -181,14 +142,14 @@ RSpec.describe SearchExercises, type: :routine do
       new_exercise.publication.publish
       new_exercise.publication.save!
 
-      result = SearchExercises.call(q: 'tag:tAg1')
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 0
       expect(outputs.items).to eq []
 
-      result = SearchExercises.call(
+      result = described_class.call(
         q: "tag:tAg1 published_before:\"#{new_exercise.published_at.as_json}\""
       )
 
@@ -202,7 +163,7 @@ RSpec.describe SearchExercises, type: :routine do
 
   context "multiple matches" do
     it "returns Exercises matching the content" do
-      result = SearchExercises.call(q: 'content:AdIpIsCi')
+      result = described_class.call(q: 'content:AdIpIsCi')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -211,7 +172,7 @@ RSpec.describe SearchExercises, type: :routine do
     end
 
     it "returns Exercises matching the tags" do
-      result = SearchExercises.call(q: 'tag:TaG2')
+      result = described_class.call(q: 'tag:TaG2')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -220,8 +181,7 @@ RSpec.describe SearchExercises, type: :routine do
     end
 
     it "sorts by multiple fields in different directions" do
-      result = SearchExercises.call(q: 'content:aDiPiScI',
-                                    order_by: "number DESC, version ASC")
+      result = described_class.call(q: 'content:aDiPiScI', order_by: "number DESC, version ASC")
       expect(result.errors).to be_empty
 
       outputs = result.outputs

@@ -616,7 +616,7 @@ ActiveRecord::Schema.define(version: 20160420172854) do
   end
 
   add_index "vocab_terms", ["definition"], name: "index_vocab_terms_on_definition", using: :btree
-  add_index "vocab_terms", ["name", "definition"], name: "index_vocab_terms_on_name_and_definition", unique: true, using: :btree
+  add_index "vocab_terms", ["name", "definition"], name: "index_vocab_terms_on_name_and_definition", using: :btree
 
   create_table "votes", force: :cascade do |t|
     t.integer  "votable_id"
