@@ -2,11 +2,7 @@ require "rails_helper"
 
 RSpec.describe SearchExercises, type: :routine do
   before(:each) do
-    10.times do
-      ex = FactoryGirl.create(:exercise)
-      ex.publication.publish
-      ex.publication.save!
-    end
+    10.times { FactoryGirl.create(:exercise, :published) }
 
     ad = "%adipisci%"
     Exercise.joins{questions.outer.stems.outer}
@@ -51,7 +47,33 @@ RSpec.describe SearchExercises, type: :routine do
     @exercise_2.publication.publish
     @exercise_2.publication.save!
 
+    @exercise_draft = FactoryGirl.build(:exercise)
+    Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
+      tags: ['all', 'the', 'tags'],
+      title: "DRAFT",
+      stimulus: "This is a draft",
+      questions: [{
+        stimulus: "with no collaborators",
+        stem_html: "and should not appear",
+        answers: [{
+          content_html: "in most searches"
+        }]
+      }]
+    }.to_json)
+    @exercise_draft.save!
+
     @exercises_count = Exercise.count
+  end
+
+  context "no matches" do
+    it "does not return drafts that the user is not allowed to see" do
+      result = described_class.call(q: 'content:draft')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 0
+      expect(outputs.items).to be_empty
+    end
   end
 
   context "single match" do
