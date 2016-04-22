@@ -72,7 +72,7 @@ class Publication < ActiveRecord::Base
   end
 
   def valid_license
-    return if published_at.nil? || license.nil? || license.valid_for?(publishable_type)
+    return if license.nil? || license.valid_for?(publishable_type)
     errors.add(:license, "is invalid for #{publishable_type}")
     false
   end

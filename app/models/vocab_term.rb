@@ -25,6 +25,7 @@ class VocabTerm < ActiveRecord::Base
     next none if !user.is_a?(User) || user.is_anonymous?
     next self if user.administrator
     user_id = user.id
+
     joins{publication.authors.outer}
       .joins{publication.copyright_holders.outer}
       .joins{publication.editors.outer}

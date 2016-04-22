@@ -1,6 +1,12 @@
 module Api::V1
   class PublicationsController < OpenStax::Api::V1::ApiController
 
+    PUBLISH_REPRESENTERS = {
+      'CommunitySolution' => 'Api::V1::CommunitySolutionRepresenter',
+      'Exercise' => 'Api::V1::ExerciseRepresenter',
+      'VocabTerm' => 'Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter',
+    }
+
     before_filter :get_publishable
 
     resource_description do
@@ -27,7 +33,10 @@ module Api::V1
       )
 
       if @publishable.publication.publish.save
-        respond_with @publishable.reload, responder: ResponderWithPutContent,
+        representer = PUBLISH_REPRESENTERS[@publishable.class.name].classify.constantize
+
+        respond_with @publishable.reload, represent_with: representer,
+                                          responder: ResponderWithPutContent,
                                           user: current_api_user
       else
         render_api_errors @publishable.publication.errors
@@ -42,6 +51,12 @@ module Api::V1
               "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
     end
 
+    def get_vocab_term
+      VocabTerm.visible_for(current_api_user).with_uid(params[:vocab_term_id]).first || \
+        raise(ActiveRecord::RecordNotFound,
+              "Couldn't find VocabTerm with 'uid'=#{params[:vocab_term_id]}")
+    end
+
     def get_community_solution
       CommunitySolution.visible_for(current_api_user)
                        .with_uid(params[:community_solution_id]).first || \
@@ -50,7 +65,14 @@ module Api::V1
     end
 
     def get_publishable
-      @publishable = params[:community_solution_id].nil? ? get_exercise : get_community_solution
+      ids = [params[:community_solution_id], params[:vocab_term_id], params[:exercise_id]].compact
+      raise(ActionController::BadRequest, 'You must provide either a community_solution_id, ' +
+                                          'a vocab_term_id or an exercise_id') if ids.size == 0
+      raise(ActionController::BadRequest, 'Please publish one object at a time') if ids.size > 1
+
+      @publishable = get_community_solution if params[:community_solution_id].present?
+      @publishable = get_exercise           if params[:exercise_id].present?
+      @publishable = get_vocab_term         if params[:vocab_term_id].present?
     end
 
   end

@@ -23,8 +23,7 @@ RSpec.describe Publication, type: :model do
 
   it 'requires a unique publishable' do
     publication.save!
-    publication_2 = FactoryGirl.build :publication,
-                                      publishable: publication.publishable
+    publication_2 = FactoryGirl.build :publication, publishable: publication.publishable
     expect(publication_2).not_to be_valid
     expect(publication_2.errors[:publishable_id]).to(
       include('has already been taken'))
