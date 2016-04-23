@@ -10,10 +10,10 @@ class VocabTermAccessPolicy
     when :read
       vocab_term.has_collaborator?(requestor) || requestor.is_administrator?
     when :update, :destroy
-      !vocab_term.is_published? && vocab_term.has_collaborator?(requestor) || \
-      requestor.is_administrator?
+      !vocab_term.is_published? &&
+      (vocab_term.has_collaborator?(requestor) || requestor.is_administrator?)
     when :new_version
-      vocab_term.is_published? && \
+      vocab_term.is_published? &&
       (vocab_term.has_collaborator?(requestor) || requestor.is_administrator?)
     else
       false

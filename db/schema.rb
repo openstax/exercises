@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160420172854) do
+ActiveRecord::Schema.define(version: 20160423000618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -514,12 +514,12 @@ ActiveRecord::Schema.define(version: 20160420172854) do
   add_index "question_dependencies", ["parent_question_id"], name: "index_question_dependencies_on_parent_question_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.integer  "exercise_id",                         null: false
+    t.integer  "exercise_id",                          null: false
     t.text     "stimulus"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.boolean  "answer_order_matters", default: true, null: false
-    t.integer  "sort_position",                       null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.boolean  "answer_order_matters", default: false, null: false
+    t.integer  "sort_position",                        null: false
   end
 
   add_index "questions", ["exercise_id", "sort_position"], name: "index_questions_on_exercise_id_and_sort_position", unique: true, using: :btree

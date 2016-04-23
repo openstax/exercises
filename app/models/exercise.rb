@@ -122,7 +122,7 @@ class Exercise < ActiveRecord::Base
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
-    nv.publication.version = version + 1
+    nv.publication.version += 1
     nv.publication.published_at = nil
     nv.publication.yanked_at = nil
     nv.publication.embargoed_until = nil
