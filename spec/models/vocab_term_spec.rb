@@ -19,8 +19,9 @@ RSpec.describe VocabTerm, type: :model do
     vocab_term.publication_validation
     expect(vocab_term.errors).to be_empty
 
-    vocab_term.distractor_terms.destroy_all
+    vocab_term.vocab_distractors.destroy_all
     vocab_term.distractor_literals = ['Distractor']
+    vocab_term.publication_validation
     expect(vocab_term.errors).to be_empty
 
     vocab_term.distractor_literals = []
