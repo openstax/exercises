@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SolutionAccessPolicy do
+RSpec.describe SolutionAccessPolicy, type: :access_policy do
   let!(:anon)        { AnonymousUser.instance }
   let!(:user)        { FactoryGirl.create(:user) }
   let!(:admin)       { FactoryGirl.create(:user, :administrator) }
