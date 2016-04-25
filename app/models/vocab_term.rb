@@ -74,8 +74,12 @@ class VocabTerm < ActiveRecord::Base
     exercises.pluck(:id)
   end
 
+  def distractors
+    ([definition] + distractor_terms.map(&:definition) + distractor_literals).shuffle
+  end
+
   def before_publication
-    vocab_exercises.each do |exercise|
+    exercises.each do |exercise|
       exercise.publication.update_attribute :published_at, publication.published_at
     end
 
@@ -116,7 +120,6 @@ class VocabTerm < ActiveRecord::Base
       question = exercise.questions.first
       stem = question.stems.first
       stem.content = "#{name}?"
-      distractors = (([self] + distractor_terms).map(&:definition) + distractor_literals).shuffle
       answers = distractors.map{ |distractor| Answer.new(question: question, content: distractor) }
       stem_answers = answers.map do |answer|
         StemAnswer.new(stem: stem, answer: answer,

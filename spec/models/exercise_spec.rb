@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Exercise, type: :model do
 
-  it { is_expected.to have_many(:questions).dependent(:destroy)
-                                           .autosave(true) }
+  it { is_expected.to have_many(:questions).dependent(:destroy).autosave(true) }
   it { is_expected.to have_many(:list_exercises).dependent(:destroy) }
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
@@ -19,13 +18,13 @@ RSpec.describe Exercise, type: :model do
 
   it 'ensures that no questions have all incorrect answers before publication' do
     exercise = FactoryGirl.create :exercise
-    exercise.publication_validation
+    exercise.before_publication
     expect(exercise.errors).to be_empty
 
     exercise.questions.first.stems.first.stem_answers.each do |stem_answer|
       stem_answer.update_attribute :correctness, 0.0
     end
-    exercise.publication_validation
+    exercise.before_publication
     expect(exercise.errors[:base]).to include('has a question with only incorrect answers')
   end
 
