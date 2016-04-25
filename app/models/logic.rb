@@ -1,6 +1,6 @@
 class Logic < ActiveRecord::Base
 
-  belongs_to :parent, polymorphic: true
+  belongs_to :parent, polymorphic: true, inverse_of: :logic
 
   has_many :logic_variables, dependent: :destroy
 

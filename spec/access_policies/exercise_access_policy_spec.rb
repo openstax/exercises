@@ -32,22 +32,18 @@ RSpec.describe ExerciseAccessPolicy do
 
       it 'can be accessed by humans editors, authors and copyright holders' do
         editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, user, exercise.reload)).to eq true
         editor.destroy
-        exercise.reload
 
         author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:read, user, exercise.reload)).to eq true
         author.destroy
-        exercise.reload
 
-        cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication,
-                                                   user: user)
-        expect(described_class.action_allowed?(:read, user, exercise)).to eq true
-        cr.destroy
-        exercise.reload
+        ch = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
+        expect(described_class.action_allowed?(:read, user, exercise.reload)).to eq true
+        ch.destroy
 
-        expect(described_class.action_allowed?(:read, user, exercise)).to eq false
+        expect(described_class.action_allowed?(:read, user, exercise.reload)).to eq false
       end
     end
 
@@ -144,25 +140,21 @@ RSpec.describe ExerciseAccessPolicy do
 
         it 'can be accessed by humans editors, authors and copyright holders' do
           editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+          expect(described_class.action_allowed?(:update, user, exercise.reload)).to eq true
           expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
           editor.destroy
-          exercise.reload
 
           author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+          expect(described_class.action_allowed?(:update, user, exercise.reload)).to eq true
           expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
           author.destroy
-          exercise.reload
 
-          cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication,
-                                                     user: user)
-          expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+          ch = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
+          expect(described_class.action_allowed?(:update, user, exercise.reload)).to eq true
           expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
-          cr.destroy
-          exercise.reload
+          ch.destroy
 
-          expect(described_class.action_allowed?(:update, user, exercise)).to eq false
+          expect(described_class.action_allowed?(:update, user, exercise.reload)).to eq false
           expect(described_class.action_allowed?(:destroy, user, exercise)).to eq false
         end
       end
@@ -227,21 +219,18 @@ RSpec.describe ExerciseAccessPolicy do
 
         it 'can be accessed by humans editors, authors and copyright holders' do
           editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
+          expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq true
           editor.destroy
-          exercise.reload
 
           author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
+          expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq true
           author.destroy
-          exercise.reload
 
-          cr = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq true
-          cr.destroy
-          exercise.reload
+          ch = FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
+          expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq true
+          ch.destroy
 
-          expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
+          expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq false
         end
       end
 

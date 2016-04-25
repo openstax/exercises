@@ -1,5 +1,7 @@
 class Tag < ActiveRecord::Base
+
   has_many :exercise_tags, dependent: :destroy
+  has_many :vocab_term_tags, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, format: /\A[\w:#-]*\z/
 
@@ -38,4 +40,5 @@ class Tag < ActiveRecord::Base
   def as_json(options = nil)
     name.as_json(options)
   end
+
 end

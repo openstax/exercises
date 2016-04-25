@@ -3,7 +3,7 @@ module Stylable
     module Base
       def stylable
         class_exec do
-          has_many :stylings, as: :stylable, dependent: :destroy
+          has_many :stylings, as: :stylable, dependent: :destroy, inverse_of: :stylable
         end
       end
     end
@@ -16,14 +16,14 @@ module Stylable
                    type: String,
                    writeable: true,
                    readable: true,
-                   getter: lambda { |args| stylings.collect{|s| s.style} },
+                   getter: lambda { |args| stylings.map(&:style) },
                    setter: lambda { |val, args|
                      styling = stylings.find_or_initialize_by(style: val)
                      stylings << styling unless styling.persisted?
                    },
                    schema_info: {
                      required: true,
-                     description: 'The formats allowed for this object'
+                     description: 'The question formats allowed for this object'
                    }
       end
     end

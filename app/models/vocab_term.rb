@@ -85,9 +85,15 @@ class VocabTerm < ActiveRecord::Base
   def build_or_update_vocab_exercises
     return if definition.nil?
 
-    vocab_exercises = exercises.empty? ? \
-                        [Exercise.new(questions: [Question.new(answer_order_matters: false,
-                                                               stems: [Stem.new])])] : exercises
+    vocab_exercises = exercises.any? ? exercises : [
+      Exercise.new(questions: [
+        Question.new(answer_order_matters: false,  stems: [
+          Stem.new(stylings: [Style::MULTIPLE_CHOICE, Style::FREE_RESPONSE].map do |style|
+            Styling.new(style: style)
+          end)
+        ])
+      ])
+    ]
 
     vocab_exercises.each do |exercise|
       exercise.tags = tags
