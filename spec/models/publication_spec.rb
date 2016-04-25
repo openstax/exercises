@@ -109,14 +109,14 @@ RSpec.describe Publication, type: :model do
 
   it 'validates the publishable before publication' do
     publication.save!
-    expect(publication.reload.publishable).to receive(:publication_validation) do
+    expect(publication.reload.publishable).to receive(:before_publication) do
       publication.publishable.errors.add(:base, 'is invalid')
       false
     end
     expect(publication.publish.save).to eq false
     expect(publication.errors.first).to eq [:exercise, 'is invalid']
 
-    expect(publication.reload.publishable).to receive(:publication_validation)
+    expect(publication.reload.publishable).to receive(:before_publication)
     expect(publication.publish.save).to eq true
   end
 
