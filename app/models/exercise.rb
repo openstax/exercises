@@ -139,7 +139,7 @@ class Exercise < ActiveRecord::Base
     has_collaborator?(user) # Regular user
   end
 
-  def publication_validation
+  def before_publication
     # Check that all stems have either no answers (free response) or at least one correct answer
     questions.each do |question|
       question.stems.each do |stem|

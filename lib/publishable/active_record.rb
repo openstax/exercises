@@ -62,7 +62,7 @@ module Publishable
                    :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
-          def publication_validation
+          def before_publication
           end
 
           protected

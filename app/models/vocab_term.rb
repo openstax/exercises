@@ -74,7 +74,11 @@ class VocabTerm < ActiveRecord::Base
     exercises.pluck(:id)
   end
 
-  def publication_validation
+  def before_publication
+    vocab_exercises.each do |exercise|
+      exercise.publication.update_attribute :published_at, publication.published_at
+    end
+
     return true if vocab_distractors.any? || distractor_literals.any?
     errors.add(:base, 'must have at least 1 distractor')
     false

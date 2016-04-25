@@ -19,7 +19,9 @@ class Publication < ActiveRecord::Base
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :number, presence: true
   validates :version, presence: true, uniqueness: { scope: [:publishable_type, :number] }
-  validate  :valid_license, :valid_publishable
+  validate  :valid_license
+
+  before_save :before_publication
 
   before_validation :assign_number_and_version, on: :create
 
@@ -77,9 +79,9 @@ class Publication < ActiveRecord::Base
     false
   end
 
-  def valid_publishable
+  def before_publication
     return if published_at.nil? || publishable.nil?
-    publishable.publication_validation
+    publishable.before_publication
     return if publishable.errors.empty?
     publishable.errors.full_messages.each do |message|
       errors.add(publishable_type.underscore.to_sym, message)
