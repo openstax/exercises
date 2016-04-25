@@ -33,6 +33,8 @@ class VocabTerm < ActiveRecord::Base
 
   has_many :exercises, dependent: :destroy, autosave: true
 
+  has_many :list_vocab_terms, dependent: :destroy
+
   before_validation :build_or_update_vocab_exercises
 
   validates :name, presence: true
