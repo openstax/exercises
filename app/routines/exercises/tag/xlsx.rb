@@ -7,6 +7,8 @@ module Exercises
   module Tag
     class Xlsx
 
+      include RowParser
+
       lev_routine
 
       # Tags Exercises based on a spreadsheet
@@ -25,20 +27,6 @@ module Exercises
 
             row_number = skip_first_row ? row_index + 2 : row_index + 1
             tag(exercise_numbers, tags, row_number, failures)
-          end
-        end
-      end
-
-      def record_failures
-        Exercise.transaction do
-          @failures = {}
-
-          yield @failures
-
-          @failures.empty? ? \
-            Rails.logger.info('Success!') : Rails.logger.error("Failed rows: #{@failures.keys}")
-          @failures.each do |key, value|
-            Rails.logger.error "Row #{key}: #{value}"
           end
         end
       end

@@ -1,12 +1,12 @@
-# Imports an xlsx file containing Exercises
+# Imports an xlsx file containing VocabTerms
 
-module Exercises
+module VocabTerms
   module Import
     class Xlsx
 
       lev_routine
 
-      include ::Import::ExerciseImporter
+      include ::Import::VocabTermImporter
       include ::Import::XlsxImporter
 
     end
