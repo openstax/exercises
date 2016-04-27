@@ -42,6 +42,10 @@ RSpec.describe VocabTerm, type: :model do
       )
       expect(question.answers).not_to be_empty
       expect(Set.new question.answers.map(&:content)).to eq Set.new vocab_term.distractors
+      stem.stem_answers.each do |stem_answer|
+        correctness = stem_answer.answer.content == vocab_term.definition ? 1.0 : 0.0
+        expect(stem_answer.correctness).to eq correctness
+      end
     end
   end
 
