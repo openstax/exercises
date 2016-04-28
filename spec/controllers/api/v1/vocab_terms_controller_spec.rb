@@ -62,11 +62,21 @@ module Api::V1
                                                         user: user)
         @vocab_term_2.publication.publish
         @vocab_term_2.publication.save!
+
+        @vocab_term_draft = FactoryGirl.build(:vocab_term)
+        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
+                                                                  .from_json({
+          tags: ['all', 'the', 'tags'],
+          term: "draft",
+          definition: "Not ready for prime time",
+          distractor_literals: ["Release to production NOW"]
+        }.to_json)
+        @vocab_term_draft.save!
       end
 
       context "no matches" do
-        it "does not return vocab_terms that the user is not allowed to see" do
-          api_get :index, nil, parameters: {q: 'content:"oLoReM iPsU"'}
+        it "does not return drafts that the user is not allowed to see" do
+          api_get :index, nil, parameters: {q: 'content:draft'}
           expect(response).to have_http_status(:success)
 
           expected_response = {
@@ -79,6 +89,21 @@ module Api::V1
       end
 
       context "single match" do
+        it "returns drafts that the user is allowed to see" do
+          @vocab_term_draft.publication.authors << Author.new(user: user)
+          @vocab_term_draft.reload
+          user.reload
+          api_get :index, user_token, parameters: {q: 'content:draft'}
+          expect(response).to have_http_status(:success)
+
+          expected_response = {
+            total_count: 1,
+            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_draft).to_hash(user: user)]
+          }.to_json
+
+          expect(response.body).to eq(expected_response)
+        end
+
         it "returns a VocabTerm matching the content" do
           api_get :index, user_token, parameters: {q: 'content:"oLoReM iPsU"'}
           expect(response).to have_http_status(:success)

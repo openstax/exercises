@@ -71,6 +71,16 @@ class SearchVocabTerms
         latest_scope = nil
       end
 
+      # Block to be used for searches by name or term
+      name_search_block = lambda do |names|
+        names.each do |name|
+          sanitized_names = to_string_array(name, append_wildcard: true, prepend_wildcard: true)
+          next @items = @items.none if sanitized_names.empty?
+
+          @items = @items.where{name.like_any sanitized_names}
+        end
+      end
+
       with.default_keyword :content
 
       with.keyword :id, &id_search_block
@@ -108,14 +118,9 @@ class SearchVocabTerms
         end
       end
 
-      with.keyword :name do |names|
-        names.each do |name|
-          sanitized_names = to_string_array(name, append_wildcard: true, prepend_wildcard: true)
-          next @items = @items.none if sanitized_names.empty?
+      with.keyword :name, &name_search_block
 
-          @items = @items.where{name.like_any sanitized_names}
-        end
-      end
+      with.keyword :term, &name_search_block
 
       with.keyword :definition do |definitions|
         definitions.each do |definition|

@@ -21,5 +21,6 @@ class VocabDistractor < ActiveRecord::Base
 
   def distractor_term=(new_term)
     self.distractor_publication = new_term.publication
+    super
   end
 end
