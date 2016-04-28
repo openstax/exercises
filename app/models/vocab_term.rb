@@ -144,7 +144,10 @@ class VocabTerm < ActiveRecord::Base
 
       question = exercise.questions.first
       stem = question.stems.first
-      stem.content = "#{name}?"
+      # Ideally we would use separate stems here for free response vs multiple choice,
+      # but we don't support that yet. Instead, we rely on tutor-js to split this stem for us.
+      stem.content = "Define #{name} in your own words, " +
+                     'then select the best multiple choice option.'
       answers = distractors.map{ |distractor| Answer.new(question: question, content: distractor) }
       stem_answers = answers.map do |answer|
         StemAnswer.new(stem: stem, answer: answer,
