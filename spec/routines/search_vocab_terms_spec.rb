@@ -1,20 +1,14 @@
 require "rails_helper"
 
 RSpec.describe SearchVocabTerms, type: :routine do
-  let!(:user) { FactoryGirl.create :user }
-
   before(:each) do
-    10.times do
-      vt = FactoryGirl.create(:vocab_term, :published)
-      vt.publication.authors << Author.new(publication: vt.publication, user: user)
-    end
+    10.times{ FactoryGirl.create(:vocab_term, :published) }
 
-    lorem = "%lorem ipsu%"
-    ad = "%adipiscing elit%"
-    test_terms = [lorem, ad]
-    VocabTerm.where{(name.like_any test_terms) | (definition.like_any test_terms)}.delete_all
+    tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
+    VocabTerm.where{(name.like_any tested_strings) |
+                    (definition.like_any tested_strings)}.delete_all
 
-    @vocab_term_1 = FactoryGirl.build(:vocab_term)
+    @vocab_term_1 = FactoryGirl.build(:vocab_term, :published)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
       tags: ['tag1', 'tag2'],
       term: "Lorem ipsum",
@@ -22,12 +16,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
       distractor_literals: ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
     }.to_json)
     @vocab_term_1.save!
-    @vocab_term_1.publication.authors << Author.new(publication: @vocab_term_1.publication,
-                                                    user: user)
-    @vocab_term_1.publication.publish
-    @vocab_term_1.publication.save!
 
-    @vocab_term_2 = FactoryGirl.build(:vocab_term)
+    @vocab_term_2 = FactoryGirl.build(:vocab_term, :published)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
       tags: ['tag2', 'tag3'],
       term: "Dolorem ipsum",
@@ -35,14 +25,9 @@ RSpec.describe SearchVocabTerms, type: :routine do
       distractor_literals: ["Consectetur adipisci velit", "Sed quia non numquam"]
     }.to_json)
     @vocab_term_2.save!
-    @vocab_term_2.publication.authors << Author.new(publication: @vocab_term_2.publication,
-                                                    user: user)
-    @vocab_term_2.publication.publish
-    @vocab_term_2.publication.save!
 
     @vocab_term_draft = FactoryGirl.build(:vocab_term)
-    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
-                                                              .from_json({
+    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_json({
       tags: ['all', 'the', 'tags'],
       term: "draft",
       definition: "Not ready for prime time",
@@ -54,8 +39,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
   end
 
   context "no matches" do
-    it "does not return VocabTerms that the user is not allowed to see" do
-      result = described_class.call(q: 'content:"oLoReM iPsU"')
+    it "does not return drafts that the user is not allowed to see" do
+      result = described_class.call(q: 'content:draft')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -65,8 +50,20 @@ RSpec.describe SearchVocabTerms, type: :routine do
   end
 
   context "single match" do
+    it "returns drafts that the user is allowed to see" do
+      user = FactoryGirl.create :user
+      @vocab_term_draft.publication.authors << Author.new(user: user)
+      @vocab_term_draft.reload
+      result = described_class.call({q: 'content:draft'}, user: user)
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_draft]
+    end
+
     it "returns a VocabTerm matching the content" do
-      result = described_class.call({q: 'content:"oLoReM iPsU"'}, user: user)
+      result = described_class.call(q: 'content:"oLoReM iPsU"')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -75,7 +72,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     end
 
     it "returns a VocabTerm matching the tags" do
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -85,7 +82,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
 
     it "returns a VocabTerm matching the publication number" do
       number = @vocab_term_2.publication.number
-      result = described_class.call({q: "number:#{number}"}, user: user)
+      result = described_class.call(q: "number:#{number}")
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -94,7 +91,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     end
 
     it "does not match distractors" do
-      result = described_class.call({q: 'content:"aDiPiScInG eLiT"'}, user: user)
+      result = described_class.call(q: 'content:"aDiPiScInG eLiT"')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -107,7 +104,17 @@ RSpec.describe SearchVocabTerms, type: :routine do
       new_vocab_term.tags = ['tag2', 'tag3']
       new_vocab_term.save!
 
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+
+      new_vocab_term.publication.publish
+      new_vocab_term.publication.save!
+
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -117,7 +124,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       new_vocab_term.publication.publish
       new_vocab_term.publication.save!
 
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -128,7 +135,17 @@ RSpec.describe SearchVocabTerms, type: :routine do
       new_vocab_term_2.tags = ['tag1', 'tag2', 'tag3']
       new_vocab_term_2.save!
 
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 0
+      expect(outputs.items).to be_empty
+
+      new_vocab_term_2.publication.publish
+      new_vocab_term_2.publication.save!
+
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -138,7 +155,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       new_vocab_term_2.publication.publish
       new_vocab_term_2.publication.save!
 
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -151,17 +168,17 @@ RSpec.describe SearchVocabTerms, type: :routine do
       new_vocab_term.tags = ['tag2', 'tag3']
       new_vocab_term.save!
 
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
-      expect(outputs.total_count).to eq 0
-      expect(outputs.items).to be_empty
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
 
       new_vocab_term.publication.publish
       new_vocab_term.publication.save!
 
-      result = described_class.call({q: 'tag:tAg1'}, user: user)
+      result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -169,7 +186,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to be_empty
 
       result = described_class.call(
-        {q: "tag:tAg1 published_before:\"#{new_vocab_term.published_at.as_json}\""}, user: user
+        q: "tag:tAg1 published_before:\"#{new_vocab_term.published_at.as_json}\""
       )
 
       expect(result.errors).to be_empty
@@ -182,7 +199,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
 
   context "multiple matches" do
     it "returns VocabTerms matching the content" do
-      result = described_class.call({q: 'content:"lOrEm IpSuM"'}, user: user)
+      result = described_class.call(q: 'content:"lOrEm IpSuM"')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -191,7 +208,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     end
 
     it "returns VocabTerms matching the tags" do
-      result = described_class.call({q: 'tag:TaG2'}, user: user)
+      result = described_class.call(q: 'tag:TaG2')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -200,9 +217,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     end
 
     it "sorts by multiple fields in different directions" do
-      result = described_class.call(
-        {q: 'content:lOrEm IpSuM', order_by: "number DESC, version ASC"}, user: user
-      )
+      result = described_class.call(q: 'content:lOrEm IpSuM', order_by: "number DESC, version ASC")
       expect(result.errors).to be_empty
 
       outputs = result.outputs

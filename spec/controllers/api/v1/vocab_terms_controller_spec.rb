@@ -32,10 +32,9 @@ module Api::V1
           vt.publication.authors << Author.new(publication: vt.publication, user: user)
         end
 
-        lorem = "%lorem ipsu%"
-        ad = "%adipiscing elit%"
-        test_terms = [lorem, ad]
-        VocabTerm.where{(name.like_any test_terms) | (definition.like_any test_terms)}.delete_all
+        tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
+        VocabTerm.where{(name.like_any tested_strings) |
+                        (definition.like_any tested_strings)}.delete_all
 
         @vocab_term_1 = FactoryGirl.build(:vocab_term, :published)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({

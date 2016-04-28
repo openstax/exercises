@@ -29,14 +29,14 @@ module Api::V1
       before(:each) do
         10.times { FactoryGirl.create(:exercise, :published) }
 
-        ad = "%adipisci%"
+        tested_strings = ["%adipisci%", "%draft%"]
         Exercise.joins{questions.outer.stems.outer}
                 .joins{questions.outer.answers.outer}
-                .where{(title.like ad) |\
-                       (stimulus.like ad) |\
-                       (questions.stimulus.like ad) |\
-                       (stems.content.like ad) |\
-                       (answers.content.like ad)}.delete_all
+                .where{(title.like_any tested_strings) |\
+                       (stimulus.like_any tested_strings) |\
+                       (questions.stimulus.like_any tested_strings) |\
+                       (stems.content.like_any tested_strings) |\
+                       (answers.content.like_any tested_strings)}.delete_all
 
         @exercise_1 = FactoryGirl.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({

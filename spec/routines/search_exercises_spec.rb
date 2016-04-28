@@ -4,14 +4,14 @@ RSpec.describe SearchExercises, type: :routine do
   before(:each) do
     10.times { FactoryGirl.create(:exercise, :published) }
 
-    ad = "%adipisci%"
+    tested_strings = ["%adipisci%", "%draft%"]
     Exercise.joins{questions.outer.stems.outer}
             .joins{questions.outer.answers.outer}
-            .where{(title.like ad) |\
-                   (stimulus.like ad) |\
-                   (questions.stimulus.like ad) |\
-                   (stems.content.like ad) |\
-                   (answers.content.like ad)}.delete_all
+            .where{(title.like_any tested_strings) |\
+                   (stimulus.like_any tested_strings) |\
+                   (questions.stimulus.like_any tested_strings) |\
+                   (stems.content.like_any tested_strings) |\
+                   (answers.content.like_any tested_strings)}.delete_all
 
     @exercise_1 = Exercise.new
     Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
@@ -77,6 +77,18 @@ RSpec.describe SearchExercises, type: :routine do
   end
 
   context "single match" do
+    it "returns drafts that the user is allowed to see" do
+      user = FactoryGirl.create :user
+      @exercise_draft.publication.authors << Author.new(user: user)
+      @exercise_draft.reload
+      result = described_class.call({q: 'content:draft'}, user: user.reload)
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_draft]
+    end
+
     it "returns an Exercise matching the content" do
       result = described_class.call(q: 'content:"aDiPiScInG eLiT"')
       expect(result.errors).to be_empty
@@ -125,7 +137,7 @@ RSpec.describe SearchExercises, type: :routine do
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 0
-      expect(outputs.items).to eq []
+      expect(outputs.items).to be_empty
 
       new_exercise_2 = new_exercise.new_version
       new_exercise_2.tags = ['tag1', 'tag2', 'tag3']
@@ -136,7 +148,7 @@ RSpec.describe SearchExercises, type: :routine do
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 0
-      expect(outputs.items).to eq []
+      expect(outputs.items).to be_empty
 
       new_exercise_2.publication.publish
       new_exercise_2.publication.save!
@@ -169,7 +181,7 @@ RSpec.describe SearchExercises, type: :routine do
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 0
-      expect(outputs.items).to eq []
+      expect(outputs.items).to be_empty
 
       result = described_class.call(
         q: "tag:tAg1 published_before:\"#{new_exercise.published_at.as_json}\""
