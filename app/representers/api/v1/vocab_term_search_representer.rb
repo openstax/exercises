@@ -3,7 +3,7 @@ module Api::V1
 
     collection :items, inherit: true,
                        class: VocabTerm,
-                       decorator: VocabTermWithDistractorsAndExerciseIdsRepresenter
+                       decorator: VocabTermRepresenter
 
   end
 end

@@ -17,7 +17,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     @vocab_term_1 = VocabTerm.new
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
       tags: ['tag1', 'tag2'],
-      name: "Lorem ipsum",
+      term: "Lorem ipsum",
       definition: "Dolor sit amet",
       distractor_literals: ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
     }.to_json)
@@ -30,7 +30,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     @vocab_term_2 = VocabTerm.new
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
       tags: ['tag2', 'tag3'],
-      name: "Dolorem ipsum",
+      term: "Dolorem ipsum",
       definition: "Quia dolor sit amet",
       distractor_literals: ["Consectetur adipisci velit", "Sed quia non numquam"]
     }.to_json)

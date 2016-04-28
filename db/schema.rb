@@ -598,15 +598,14 @@ ActiveRecord::Schema.define(version: 20160425191417) do
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
 
   create_table "vocab_distractors", force: :cascade do |t|
-    t.integer  "sort_position",      null: false
-    t.integer  "vocab_term_id",      null: false
-    t.integer  "distractor_term_id", null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.integer  "vocab_term_id",          null: false
+    t.integer  "distractor_term_number", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  add_index "vocab_distractors", ["distractor_term_id", "vocab_term_id"], name: "index_vocab_distractors_on_distractor_term_id_and_vocab_term_id", unique: true, using: :btree
-  add_index "vocab_distractors", ["vocab_term_id", "sort_position"], name: "index_vocab_distractors_on_vocab_term_id_and_sort_position", unique: true, using: :btree
+  add_index "vocab_distractors", ["distractor_term_number"], name: "index_vocab_distractors_on_distractor_term_number", using: :btree
+  add_index "vocab_distractors", ["vocab_term_id", "distractor_term_number"], name: "index_vocab_distractors_on_v_t_id_and_d_t_number", unique: true, using: :btree
 
   create_table "vocab_term_tags", force: :cascade do |t|
     t.integer  "vocab_term_id"

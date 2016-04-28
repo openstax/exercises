@@ -15,7 +15,19 @@ module Import
     include PublishableImporter
     include RowParser
 
-    def import_row(row, row_number)
+    def populate_term_map(row, row_number)
+      term = row[4]
+
+      @term_row_map ||= {}
+      existing_row = @term_row_map[term]
+      raise "Duplicate Term: Rows #{existing_row} and #{row_number}" unless existing_row.nil?
+      @term_row_map[term] = row_number
+
+      @term_map ||= {}
+
+    end
+
+    def import_term(row, row_number)
       term = row[4]
 
       @term_row_map ||= {}
@@ -26,16 +38,16 @@ module Import
       book_title = row[0]
       uuid = row[3]
       lo = row[5]
-      distractors = row[6..-2]
+      distractor_terms = row[6..-2]
       definition = row[-1]
 
       book = BOOK_NAMES[book_title]
 
       book_tag = "book:stax-#{book}"
 
-      @term_map ||= {}
-      @term_map[term] ||= VocabTerm.new(name: name, definition: definition)
+      @term_map ||= Hash.new{ |hash, key| hash[key] = VocabTerm.new(name: key) }
       vt = @term_map[term]
+      vt.definition = definition
 
       lo_tag = "lo:stax-#{book}:#{lo}"
 
@@ -43,8 +55,10 @@ module Import
 
       vt.tags = [book_tag, lo_tag, cnxmod_tag]
 
+      vt_id = vt.id
       latest_vocab_term = VocabTerm.joins([:publication, vocab_term_tags: :tag])
-                                   .where(vocab_term_tags: {tag: {name: book_tag}})
+                                   .where{id != vt_id}
+                                   .where(name: term, vocab_term_tags: {tag: {name: book_tag}})
                                    .order{[publication.number.desc, publication.version.desc]}.first
 
       unless latest_vocab_term.nil?
@@ -54,54 +68,39 @@ module Import
 
       vt.save!
 
-      vt.distractor_terms = distractors.map{ |distractor| @term_map[distractor] }
+      vt.distractor_terms = distractor_terms.map{ |dt| @term_map[dt] }
 
-      if author
-        au = Author.new
-        au.publication = vt.publication
-        au.user = author
-        vt.publication.authors << au
-      end
-
-      if copyright_holder
-        cc = CopyrightHolder.new
-        cc.publication = vt.publication
-        cc.user = copyright_holder
-        vt.publication.copyright_holders << cc
-      end
+      vt.publication.authors << Author.new(user: author) if author
+      vt.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder) \
+        if copyright_holder
 
       chapter = /\A(\d+)-\d+-\d+\z/.match(lo)[1]
       list_name = "#{book.capitalize} Chapter #{chapter}"
 
-      list = List.find_by(name: list_name)
-      if list.nil?
-        list = List.create(name: list_name)
-
-        [author, copyright_holder].compact.uniq.each do |u|
-          lo = ListOwner.new
-          lo.owner = u
-          lo.list = list
-          list.list_owners << lo
+      list = List.find_or_create_by!(name: list_name) do |list|
+        [author, copyright_holder].compact.uniq.each do |owner|
+          list.list_owners << ListOwner.new(owner: owner)
         end
 
         list.save!
         Rails.logger.info "Created new list: #{list_name}"
       end
 
-      lvt = ListVocabTerm.new
-      lvt.vocab_term = vt
-      lvt.list = list
+      lvt = ListVocabTerm.new(list: list, vocab_term: vt)
+      list.list_vocab_terms << lvt
       vt.list_vocab_terms << lvt
       vt.save!
-      list.list_vocab_terms << lvt
 
       if vt.content_equals?(latest_vocab_term)
-        vt.destroy
-        skipped = true
+        vt.vocab_distracteds.each do |vocab_distracted|
+          vocab_distracted.update_attribute :distractor_term, latest_vocab_term
+        end
+        vt.reload.destroy!
         @term_map[term] = latest_vocab_term
+        skipped = true
       else
+        vt.publication.publish.save!
         skipped = false
-        @term_map[term] = vt
       end
 
       row = "Imported row ##{row_number}"

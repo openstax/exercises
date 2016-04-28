@@ -1,9 +1,18 @@
 module Api::V1
   class VocabTermWithDistractorsAndExerciseIdsRepresenter < VocabTermRepresenter
 
-    collection :distractor_terms,
-               class: VocabTerm,
-               decorator: VocabTermRepresenter,
+    property :name,
+             inherit: true,
+             writeable: true
+
+    property :definition,
+             inherit: true,
+             writeable: true
+
+    collection :vocab_distractors,
+               as: :distractor_terms,
+               class: VocabDistractor,
+               decorator: VocabDistractorRepresenter,
                writeable: true,
                readable: true,
                schema_info: {

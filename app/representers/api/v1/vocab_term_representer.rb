@@ -8,17 +8,18 @@ module Api::V1
     publishable
 
     property :name,
+             as: :term,
              type: String,
-             writeable: true,
              readable: true,
+             writeable: false,
              schema_info: {
                required: true
              }
 
     property :definition,
              type: String,
-             writeable: true,
              readable: true,
+             writeable: false,
              schema_info: {
                required: true
              }

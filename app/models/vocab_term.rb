@@ -1,11 +1,30 @@
 class VocabTerm < ActiveRecord::Base
 
+  EQUALITY_ASSOCIATIONS = [
+    :tags,
+    {
+      publication: [
+        :license,
+        {
+          derivations: :source_publication,
+          authors: :user,
+          copyright_holders: :user,
+          editors: :user
+        }
+      ]
+    }
+  ]
+
+  EQUALITY_EXCLUDED_FIELDS = ['id', 'created_at', 'updated_at', 'version',
+                              'published_at', 'yanked_at', 'embargoed_until']
+
   # deep_clone does not iterate through hashes, so each hash must have only 1 key
   NEW_VERSION_DUPED_ASSOCIATIONS = [
     :tags,
     :vocab_distractors,
     {
       publication: [
+        :derivations,
         :authors,
         :copyright_holders,
         :editors
@@ -27,9 +46,6 @@ class VocabTerm < ActiveRecord::Base
 
   has_many :vocab_distractors, dependent: :destroy
   has_many :distractor_terms, through: :vocab_distractors
-  has_many :vocab_distracteds, class_name: 'VocabDistractor', foreign_key: 'distractor_term_id',
-                               dependent: :destroy, inverse_of: :distractor_term
-  has_many :distracted_terms, through: :vocab_distracteds, source: :vocab_term
 
   has_many :exercises, dependent: :destroy, autosave: true
 
@@ -47,19 +63,18 @@ class VocabTerm < ActiveRecord::Base
             vocab_distractors: :distractor_term)
   }
 
-  scope :visible_for, ->(user) {
-    user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
-    next none if !user.is_a?(User) || user.is_anonymous?
-    next self if user.administrator
-    user_id = user.id
+  def content_equals?(other_vocab_term)
+    return false unless other_vocab_term.is_a? ActiveRecord::Base
 
-    joins{publication.authors.outer}
-      .joins{publication.copyright_holders.outer}
-      .joins{publication.editors.outer}
-      .where{ (authors.user_id == user_id) | \
-              (copyright_holders.user_id == user_id) | \
-              (editors.user_id == user_id) }
-  }
+    association_attributes_arguments = [EQUALITY_ASSOCIATIONS, except: EQUALITY_EXCLUDED_FIELDS,
+                                                               exclude_foreign_keys: true,
+                                                               transform_arrays_into_sets: true]
+    attrs = association_attributes(*association_attributes_arguments)
+    other_attrs = other_vocab_term.association_attributes(*association_attributes_arguments)
+
+    attrs == other_attrs &&
+    Set.new(distractor_term_numbers) == Set.new(other_vocab_term.distractor_term_numbers)
+  end
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
@@ -76,8 +91,16 @@ class VocabTerm < ActiveRecord::Base
     exercises.pluck(:id)
   end
 
+  def distractor_term_numbers
+    vocab_distractors.map(&:distractor_term_number)
+  end
+
+  def distractor_term_definitions
+    distractor_terms.map(&:definition)
+  end
+
   def distractors
-    ([definition] + distractor_terms.map(&:definition) + distractor_literals).shuffle
+    ([definition] + distractor_term_definitions + distractor_literals).shuffle
   end
 
   def before_publication

@@ -45,11 +45,26 @@ module Publishable
                     .as(:newer_publishable)
                     .on{ newer_publishable.id == ~publishable_id }
                 }.as(:newer_publication)
-                 .on{ (newer_publication.publishable_type == publishable_class_name) &\
-                      (newer_publication.number == ~publication.number) & \
+                 .on{ (newer_publication.publishable_type == publishable_class_name) &
+                      (newer_publication.number == ~publication.number) &
                       (newer_publication.version > ~publication.version) }
                  .outer
             }.where{ newer_publication.id == nil }
+          }
+
+          scope :visible_for, ->(user) {
+            user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+            next published if !user.is_a?(User) || user.is_anonymous?
+            next self if user.administrator
+            user_id = user.id
+
+            joins{publication.authors.outer}
+              .joins{publication.copyright_holders.outer}
+              .joins{publication.editors.outer}
+              .where{ (publication.published_at != nil) | \
+                      (authors.user_id == user_id) | \
+                      (copyright_holders.user_id == user_id) | \
+                      (editors.user_id == user_id) }
           }
 
           after_initialize :build_publication, unless: [:persisted?, :publication]

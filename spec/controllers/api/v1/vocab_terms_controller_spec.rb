@@ -40,7 +40,7 @@ module Api::V1
         @vocab_term_1 = VocabTerm.new
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
           tags: ['tag1', 'tag2'],
-          name: "Lorem ipsum",
+          term: "Lorem ipsum",
           definition: "Dolor sit amet",
           distractor_literals: ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
         }.to_json)
@@ -53,7 +53,7 @@ module Api::V1
         @vocab_term_2 = VocabTerm.new
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
           tags: ['tag2', 'tag3'],
-          name: "Dolorem ipsum",
+          term: "Dolorem ipsum",
           definition: "Quia dolor sit amet",
           distractor_literals: ["Consectetur adipisci velit", "Sed quia non numquam"]
         }.to_json)
@@ -85,7 +85,7 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2)]
+            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_2)]
           }.to_json
 
           expect(response.body).to eq(expected_response)
@@ -97,7 +97,7 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1)]
+            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_1)]
           }.to_json
 
           expect(response.body).to eq(expected_response)
@@ -111,8 +111,8 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1),
-                    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2)]
+            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_1),
+                    Api::V1::VocabTermRepresenter.new(@vocab_term_2)]
           }.to_json
 
           expect(response.body).to eq(expected_response)
@@ -124,8 +124,8 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1),
-                    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2)]
+            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_1),
+                    Api::V1::VocabTermRepresenter.new(@vocab_term_2)]
           }.to_json
 
           expect(response.body).to eq(expected_response)
@@ -138,8 +138,8 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2),
-                    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1)]
+            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_2),
+                    Api::V1::VocabTermRepresenter.new(@vocab_term_1)]
           }.to_json
 
           expect(response.body).to eq(expected_response)
@@ -238,7 +238,7 @@ module Api::V1
 
       it "updates the requested VocabTerm" do
         api_patch :update, user_token, parameters: { id: @vocab_term.uid },
-                                       raw_post_data: { name: "Ipsum lorem" }
+                                       raw_post_data: { term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
         new_attributes = @vocab_term.attributes
@@ -252,7 +252,7 @@ module Api::V1
         @vocab_term.publication.publish.save!
 
         expect{ api_patch :update, user_token, parameters: { id: @vocab_term.uid },
-                                               raw_post_data: { name: "Ipsum lorem" } }.to(
+                                               raw_post_data: { term: "Ipsum lorem" } }.to(
           raise_error(SecurityTransgression)
         )
         @vocab_term.reload
@@ -267,7 +267,7 @@ module Api::V1
         vocab_term_2.reload
 
         api_patch :update, user_token, parameters: { id: "#{@vocab_term.number}@draft" },
-                                       raw_post_data: { name: "Ipsum lorem" }
+                                       raw_post_data: { term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
@@ -287,7 +287,7 @@ module Api::V1
 
         expect{
           api_patch :update, user_token, parameters: { id: "#{@vocab_term.number}@draft" },
-                                         raw_post_data: { name: "Ipsum lorem" } }.to(
+                                         raw_post_data: { term: "Ipsum lorem" } }.to(
           change{ VocabTerm.count }.by(1)
         )
         expect(response).to have_http_status(:success)

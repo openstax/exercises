@@ -25,9 +25,21 @@ class Publication < ActiveRecord::Base
 
   before_validation :assign_number_and_version, on: :create
 
-  default_scope { order{[number.asc, version.desc]} }
+  default_scope { order([arel_table[:number].asc, arel_table[:version].desc]) }
 
   scope :published, -> { where{published_at != nil} }
+
+  scope :latest, ->(publication_scope = Publication.unscoped.published) {
+    joins{
+      publication_scope
+        .reorder(nil).limit(nil).offset(nil)
+        .as(:newer_publication)
+        .on{ (newer_publication.publishable_type == ~publishable_type) &
+             (newer_publication.number == ~number) &
+             (newer_publication.version > ~version) }
+        .outer
+    }.where{ newer_publication.id == nil }
+  }
 
   def uid
     "#{number}@#{version}"

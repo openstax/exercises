@@ -72,81 +72,50 @@ module Import
       answers = row[17..-1].each_slice(2)
 
       qq = Question.new
-      qq.exercise = ex
       ex.questions << qq
 
-      st = Stem.new
-      st.content = question_stem_content
+      st = Stem.new(content: question_stem_content)
       qq.stems << st
 
       styles.each do |style|
-        styling = Styling.new
-        styling.stylable = st
-        styling.style = style
-        st.stylings << styling
+        st.stylings << Styling.new(style: style)
       end
 
-      if author
-        au = Author.new
-        au.publication = ex.publication
-        au.user = author
-        ex.publication.authors << au
-      end
-
-      if copyright_holder
-        cc = CopyrightHolder.new
-        cc.publication = ex.publication
-        cc.user = copyright_holder
-        ex.publication.copyright_holders << cc
-      end
+      ex.publication.authors << Author.new(user: author) if author
+      ex.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder) \
+        if copyright_holder
 
       answers.each_with_index do |af, j|
         aa = parse(af.first, ex)
         ff = parse(af.second, ex)
         next if aa.blank?
-        an = Answer.new
-        an.question = qq
-        an.content = aa
+        an = Answer.new(question: qq, content: aa)
 
-        sa = StemAnswer.new
-        sa.stem = st
-        sa.answer = an
-        sa.correctness = j == correct_answer_index ? 1 : 0
-        sa.feedback = ff
-        st.stem_answers << sa
+        correctness = j == correct_answer_index ? 1 : 0
+        st.stem_answers << StemAnswer.new(answer: an, correctness: correctness, feedback: ff)
       end
 
       if explanation.present?
-        sol = CollaboratorSolution.new(solution_type: SolutionType::DETAILED)
-        sol.question = qq
-        sol.content = explanation
+        sol = CollaboratorSolution.new(solution_type: SolutionType::DETAILED, content: explanation)
         qq.collaborator_solutions << sol
       end
 
-      list = List.find_by(name: list_name)
-      if list.nil?
-        list = List.create(name: list_name)
-
-        [author, copyright_holder].compact.uniq.each do |u|
-          lo = ListOwner.new
-          lo.owner = u
-          lo.list = list
-          list.list_owners << lo
+      list = List.find_or_create_by!(name: list_name) do |list|
+        [author, copyright_holder].compact.uniq.each do |owner|
+          list.list_owners << ListOwner.new(owner: owner)
         end
 
         list.save!
         Rails.logger.info "Created new list: #{list_name}"
       end
 
-      le = ListExercise.new
-      le.exercise = ex
-      le.list = list
+      le = ListExercise.new(list: list, exercise: ex)
+      list.list_exercises << le
       ex.list_exercises << le
       ex.save!
-      list.list_exercises << le
 
       if ex.content_equals?(latest_exercise)
-        ex.destroy
+        ex.destroy!
         skipped = true
       else
         skipped = false

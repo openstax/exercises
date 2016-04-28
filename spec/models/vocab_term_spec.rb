@@ -6,9 +6,6 @@ RSpec.describe VocabTerm, type: :model do
   it { is_expected.to have_many(:vocab_distractors) }
   it { is_expected.to have_many(:distractor_terms).through(:vocab_distractors) }
 
-  it { is_expected.to have_many(:vocab_distracteds) }
-  it { is_expected.to have_many(:distracted_terms).through(:vocab_distracteds) }
-
   it { is_expected.to have_many(:exercises).dependent(:destroy) }
 
   it { is_expected.to have_many(:list_vocab_terms).dependent(:destroy) }

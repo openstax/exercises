@@ -225,7 +225,7 @@ class SearchVocabTerms
 
     return if latest_scope.nil?
 
-    outputs[:items] = outputs[:items].latest(latest_scope, Publication.unscoped)
+    outputs[:items] = outputs[:items].latest(latest_scope)
     outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil).count
   end
 end

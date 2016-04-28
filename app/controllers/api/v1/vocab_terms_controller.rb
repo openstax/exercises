@@ -79,8 +79,17 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(VocabTerm, SearchVocabTerms, VocabTermSearchRepresenter,
-                      user: current_api_user)
+      # This is the same code as standard_search,
+      # except it doesn't enforce read access for each vocab term
+      # since we only return a subset of the attributes here
+      user = current_api_user
+      OSU::AccessPolicy.require_action_allowed!(:search, user, VocabTerm)
+
+      options = {user: user}
+      result = SearchVocabTerms.call(params, options)
+      return render_api_errors(result.errors) if result.errors.any?
+
+      respond_with result.outputs, options.merge(represent_with: VocabTermSearchRepresenter)
     end
 
     ##########

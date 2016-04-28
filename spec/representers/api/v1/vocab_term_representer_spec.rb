@@ -20,15 +20,15 @@ module Api::V1
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_term).as_json }
 
-    context 'name' do
+    context 'term' do
       it 'can be read' do
         allow(vocab_term).to receive(:name).and_return('Question')
-        expect(representation).to include('name' => 'Question')
+        expect(representation).to include('term' => 'Question')
       end
 
-      it 'can be written' do
-        described_class.new(vocab_term).from_json({'name' => 'Exercise'}.to_json)
-        expect(vocab_term).to have_received(:name=).with('Exercise')
+      it 'cannot be written (attempts are silently ignored)' do
+        described_class.new(vocab_term).from_json({'term' => 'Exercise'}.to_json)
+        expect(vocab_term).not_to have_received(:name=)
       end
     end
 
@@ -38,10 +38,10 @@ module Api::V1
         expect(representation).to include('definition' => 'This term is cool.')
       end
 
-      it 'can be written' do
+      it 'cannot be written (attempts are silently ignored)' do
         described_class.new(vocab_term)
                        .from_json({'definition' => 'This term is cooler.'}.to_json)
-        expect(vocab_term).to have_received(:definition=).with('This term is cooler.')
+        expect(vocab_term).not_to have_received(:definition=)
       end
     end
 

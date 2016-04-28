@@ -6,7 +6,7 @@ module Api::V1
     let!(:vocab_term) {
       dbl = instance_spy(VocabTerm)
       allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:distractor_terms).and_return([])
+      allow(dbl).to receive(:vocab_distractors).and_return([])
       allow(dbl).to receive(:distractor_literals).and_return([])
       allow(dbl).to receive(:exercise_ids).and_return([])
       allow(dbl).to receive(:tags).and_return([])
@@ -21,14 +21,14 @@ module Api::V1
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_term).as_json }
 
-    context 'name' do
+    context 'term' do
       it 'can be read' do
         allow(vocab_term).to receive(:name).and_return('Question')
-        expect(representation).to include('name' => 'Question')
+        expect(representation).to include('term' => 'Question')
       end
 
       it 'can be written' do
-        described_class.new(vocab_term).from_json({'name' => 'Exercise'}.to_json)
+        described_class.new(vocab_term).from_json({'term' => 'Exercise'}.to_json)
         expect(vocab_term).to have_received(:name=).with('Exercise')
       end
     end
@@ -48,52 +48,54 @@ module Api::V1
 
     context 'distractor_terms' do
       it 'can be read' do
-        vocab_term_1 = instance_spy(VocabTerm)
-        allow(vocab_term_1).to receive(:name).and_return('VocabTerm 1')
-        allow(vocab_term_1).to receive(:definition).and_return('Definition 1')
-        vocab_term_2 = instance_spy(VocabTerm)
-        allow(vocab_term_2).to receive(:name).and_return('VocabTerm 2')
-        allow(vocab_term_2).to receive(:definition).and_return('Definition 2')
-        vocab_term_3 = instance_spy(VocabTerm)
-        allow(vocab_term_3).to receive(:name).and_return('VocabTerm 3')
-        allow(vocab_term_3).to receive(:definition).and_return('definition 3')
+        vocab_distractor_1 = instance_spy(VocabDistractor)
+        allow(vocab_distractor_1).to receive(:distractor_term_number).and_return(1)
+        allow(vocab_distractor_1).to receive(:name).and_return('VocabTerm 1')
+        allow(vocab_distractor_1).to receive(:definition).and_return('Definition 1')
+        vocab_distractor_2 = instance_spy(VocabDistractor)
+        allow(vocab_distractor_2).to receive(:distractor_term_number).and_return(2)
+        allow(vocab_distractor_2).to receive(:name).and_return('VocabTerm 2')
+        allow(vocab_distractor_2).to receive(:definition).and_return('Definition 2')
+        vocab_distractor_3 = instance_spy(VocabDistractor)
+        allow(vocab_distractor_3).to receive(:distractor_term_number).and_return(3)
+        allow(vocab_distractor_3).to receive(:name).and_return('VocabTerm 3')
+        allow(vocab_distractor_3).to receive(:definition).and_return('definition 3')
 
-        distractor_terms = [vocab_term_1, vocab_term_2, vocab_term_3]
+        vocab_distractors = [vocab_distractor_1, vocab_distractor_2, vocab_distractor_3]
 
-        vocab_term_representations = distractor_terms.map do |distractor_term|
-          allow(distractor_term).to receive(:as_json).and_return(distractor_term)
-          allow(distractor_term).to receive(:distractor_terms).and_return([])
-          allow(distractor_term).to receive(:distractor_literals).and_return([])
-          allow(distractor_term).to receive(:tags).and_return([])
-          allow(distractor_term).to receive(:license).and_return(nil)
-          allow(distractor_term).to receive(:editors).and_return([])
-          allow(distractor_term).to receive(:authors).and_return([])
-          allow(distractor_term).to receive(:copyright_holders).and_return([])
-          allow(distractor_term).to receive(:derivations).and_return([])
-          VocabTermRepresenter.new(distractor_term).to_hash
+        vocab_distractor_representations = vocab_distractors.map do |vocab_distractor|
+          allow(vocab_distractor).to receive(:as_json).and_return(vocab_distractor)
+          allow(vocab_distractor).to receive(:tags).and_return([])
+          allow(vocab_distractor).to receive(:license).and_return(nil)
+          allow(vocab_distractor).to receive(:editors).and_return([])
+          allow(vocab_distractor).to receive(:authors).and_return([])
+          allow(vocab_distractor).to receive(:copyright_holders).and_return([])
+          allow(vocab_distractor).to receive(:derivations).and_return([])
+          VocabDistractorRepresenter.new(vocab_distractor).to_hash
         end
 
-        allow(vocab_term).to receive(:distractor_terms).and_return(distractor_terms)
+        allow(vocab_term).to receive(:vocab_distractors).and_return(vocab_distractors)
 
-        expect(representation).to include('distractor_terms' => vocab_term_representations)
+        expect(representation).to include('distractor_terms' => vocab_distractor_representations)
       end
 
       it 'can be written' do
-        expect(vocab_term).to receive(:distractor_terms=)
-                          .with(3.times.map{ a_kind_of(VocabTerm) }) do |vocab_terms|
-          expect(vocab_terms.first.name).to  eq 'VocabTerm 1'
-          expect(vocab_terms.first.definition).to  eq 'Definition 1'
-          expect(vocab_terms.second.name).to eq 'VocabTerm 2'
-          expect(vocab_terms.second.definition).to  eq 'Definition 2'
-          expect(vocab_terms.third.name).to  eq 'VocabTerm 3'
-          expect(vocab_terms.third.definition).to  eq 'Definition 3'
-        end
+        vocab_distractors = 3.times.map{ FactoryGirl.create(:vocab_distractor) }
+        expect(vocab_term).to(
+          receive(:vocab_distractors=)
+            .with(3.times.map{ a_kind_of(VocabDistractor) }) do |new_vocab_distractors|
+            expect(Set.new new_vocab_distractors.map(&:distractor_term)).to eq(
+              Set.new(vocab_distractors.map(&:distractor_term))
+            )
+          end
+        )
 
-        described_class.new(vocab_term).from_json({'distractor_terms' => [
-          { 'name' => 'VocabTerm 1', 'definition' => 'Definition 1' },
-          { 'name' => 'VocabTerm 2', 'definition' => 'Definition 2' },
-          { 'name' => 'VocabTerm 3', 'definition' => 'Definition 3' }
-        ]}.to_json)
+        distractor_term_hash = vocab_distractors.map do |vocab_distractor|
+          { 'number' => vocab_distractor.distractor_term_number }
+        end
+        described_class.new(vocab_term).from_json(
+          {'distractor_terms' => distractor_term_hash}.to_json
+        )
       end
     end
 

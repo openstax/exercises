@@ -6,7 +6,9 @@ class Exercise < ActiveRecord::Base
     :tags,
     {
       publication: [
-        :derivations, {
+        :license,
+        {
+          derivations: :source_publication,
           authors: :user,
           copyright_holders: :user,
           editors: :user
@@ -91,21 +93,6 @@ class Exercise < ActiveRecord::Base
               answers: :stem_answers,
               stems: [:stylings, :combo_choices]
             ])
-  }
-
-  scope :visible_for, ->(user) {
-    user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
-    next published if !user.is_a?(User) || user.is_anonymous?
-    next self if user.administrator
-    user_id = user.id
-
-    joins{publication.authors.outer}
-      .joins{publication.copyright_holders.outer}
-      .joins{publication.editors.outer}
-      .where{ (publication.published_at != nil) | \
-              (authors.user_id == user_id) | \
-              (copyright_holders.user_id == user_id) | \
-              (editors.user_id == user_id) }
   }
 
   def content_equals?(other_exercise)

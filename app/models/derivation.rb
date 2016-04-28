@@ -17,8 +17,7 @@ class Derivation < ActiveRecord::Base
 
   def source_or_custom
     return unless source_publication.nil? && custom_attribution.blank?
-    errors.add(:base,
-               'must have either a source publication or custom attribution')
+    errors.add(:base, 'must have either a source publication or custom attribution')
     false
   end
 
