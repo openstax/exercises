@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Import::Quadbase do
+RSpec.describe Exercises::Import::Quadbase, type: :routine do
   let(:fixture_path) { 'spec/fixtures/quadbase.json' }
 
   let(:expected_exercise_stimuli) {

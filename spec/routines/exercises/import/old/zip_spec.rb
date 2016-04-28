@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Exercises::Import
-  RSpec.describe Old::Zip do
+  RSpec.describe Old::Zip, type: :routine do
     let(:fixture_path) { 'spec/fixtures/old/sample_exercises.zip' }
 
     let!(:author) { FactoryGirl.create :user }

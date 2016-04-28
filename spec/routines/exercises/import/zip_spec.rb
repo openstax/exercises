@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Import::Zip do
+RSpec.describe Exercises::Import::Zip, type: :routine do
   let(:fixture_path) { 'spec/fixtures/sample_exercises.zip' }
 
   let!(:author) { FactoryGirl.create :user }

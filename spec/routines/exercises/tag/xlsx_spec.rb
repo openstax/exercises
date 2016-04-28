@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Tag::Xlsx do
+RSpec.describe Exercises::Tag::Xlsx, type: :routine do
   let(:fixture_path)  { 'spec/fixtures/sample_tags.xlsx' }
 
   let(:expected_tags) { Set.new [

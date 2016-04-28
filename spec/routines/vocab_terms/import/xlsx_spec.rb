@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe VocabTerms::Import::Xlsx do
+RSpec.describe VocabTerms::Import::Xlsx, type: :routine do
   let(:fixture_path) { 'spec/fixtures/sample_vocab_terms.xlsx' }
 
   let(:expected_names) {
@@ -45,6 +45,8 @@ RSpec.describe VocabTerms::Import::Xlsx do
     imported_vocab_terms = VocabTerm.order(created_at: :desc).limit(8).to_a
 
     imported_vocab_terms.each do |vocab_term|
+      expect(vocab_term).to be_is_published
+
       expect(vocab_term.authors.first.user).to eq author
       expect(vocab_term.copyright_holders.first.user).to eq ch
 

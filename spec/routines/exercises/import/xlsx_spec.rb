@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Import::Xlsx do
+RSpec.describe Exercises::Import::Xlsx, type: :routine do
   let(:fixture_path) { 'spec/fixtures/sample_exercises.xlsx' }
 
   let(:expected_los) {
