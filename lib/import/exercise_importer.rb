@@ -58,7 +58,7 @@ module Import
         ex.publication.version = latest_exercise.publication.version + 1
       end
 
-      ex.save! # Need to save before we add attachments (see parse method)
+      ex.save! # Need to save before we add attachments (see parse method above)
 
       question_stem_content = parse(row[14], ex)
 

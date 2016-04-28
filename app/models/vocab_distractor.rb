@@ -19,4 +19,9 @@ class VocabDistractor < ActiveRecord::Base
   def number
     distractor_term_number
   end
+
+  def distractor_term=(other_term)
+    self.distractor_publication = other_term.publication
+    super
+  end
 end

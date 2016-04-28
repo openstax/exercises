@@ -10,6 +10,11 @@ RSpec.describe VocabTerms::Import::Xlsx do
   let(:expected_definitions) {
     [
       'lowest level programming language',
+      'most widely used low level programming language',
+      'most popular high level programming language',
+      'programming language used for the majority of this repository',
+      'ruby framework for creating websites',
+      'python CMS framework',
       'the backend of OpenStax Tutor',
       'the frontend of OpenStax Tutor'
     ]
@@ -40,7 +45,6 @@ RSpec.describe VocabTerms::Import::Xlsx do
     imported_vocab_terms = VocabTerm.order(created_at: :desc).limit(8).to_a
 
     imported_vocab_terms.each do |vocab_term|
-      debugger if vocab_term.authors.empty?
       expect(vocab_term.authors.first.user).to eq author
       expect(vocab_term.copyright_holders.first.user).to eq ch
 

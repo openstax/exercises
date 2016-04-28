@@ -15,19 +15,7 @@ module Import
     include PublishableImporter
     include RowParser
 
-    def populate_term_map(row, row_number)
-      term = row[4]
-
-      @term_row_map ||= {}
-      existing_row = @term_row_map[term]
-      raise "Duplicate Term: Rows #{existing_row} and #{row_number}" unless existing_row.nil?
-      @term_row_map[term] = row_number
-
-      @term_map ||= {}
-
-    end
-
-    def import_term(row, row_number)
+    def import_row(row, row_number)
       term = row[4]
 
       @term_row_map ||= {}
@@ -44,42 +32,43 @@ module Import
       book = BOOK_NAMES[book_title]
 
       book_tag = "book:stax-#{book}"
-
-      @term_map ||= Hash.new{ |hash, key| hash[key] = VocabTerm.new(name: key) }
-      vt = @term_map[term]
-      vt.definition = definition
-
       lo_tag = "lo:stax-#{book}:#{lo}"
-
       cnxmod_tag = "context-cnxmod:#{uuid}"
 
-      vt.tags = [book_tag, lo_tag, cnxmod_tag]
-
-      vt_id = vt.id
-      latest_vocab_term = VocabTerm.joins([:publication, vocab_term_tags: :tag])
-                                   .where{id != vt_id}
-                                   .where(name: term, vocab_term_tags: {tag: {name: book_tag}})
-                                   .order{[publication.number.desc, publication.version.desc]}.first
-
-      unless latest_vocab_term.nil?
-        vt.publication.number = latest_vocab_term.publication.number
-        vt.publication.version = latest_vocab_term.publication.version + 1
+      @latest_term_map ||= Hash.new do |hash, key|
+        hash[key] = VocabTerm.joins([:publication, vocab_term_tags: :tag])
+                             .where(name: key, vocab_term_tags: {tag: {name: book_tag}})
+                             .order{[publication.number.desc, publication.version.desc]}.first
       end
 
-      vt.distractor_terms = distractor_terms.map{ |dt| @term_map[dt] }
+      @term_map ||= Hash.new do |hash, key|
+        hash[key] = VocabTerm.new(name: key, definition: 'N/A').tap do |term|
+          unless @latest_term_map[key].nil?
+            term.publication.number = @latest_term_map[key].publication.number
+            term.publication.version = @latest_term_map[key].publication.version + 1
+          end
+        end
+      end
+
+      vt = @term_map[term]
+      vt.definition = definition
+      vt.tags = [book_tag, lo_tag, cnxmod_tag]
+
+      vt.vocab_distractors = distractor_terms.map do |dt|
+        distractor_term = @term_map[dt]
+        distractor_term.save! # Save before linking to other terms
+        VocabDistractor.new(distractor_term: distractor_term)
+      end
 
       vt.publication.authors << Author.new(user: author) if author
       vt.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder) \
         if copyright_holder
 
-      if vt.content_equals?(latest_vocab_term)
-        vt.vocab_distracteds.each do |vocab_distracted|
-          vocab_distracted.update_attribute :distractor_term, latest_vocab_term
-        end
-        vt.vocab_distracteds.reset
+      vt.save! # Save before comparing with existing records
 
-        vt.destroy! if vt.persisted?
-        @term_map[term] = latest_vocab_term
+      if vt.content_equals?(@latest_term_map[term])
+        vt.destroy!
+        @term_map[term] = @latest_term_map[term]
 
         skipped = true
       else
