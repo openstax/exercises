@@ -37,7 +37,7 @@ module Api::V1
         test_terms = [lorem, ad]
         VocabTerm.where{(name.like_any test_terms) | (definition.like_any test_terms)}.delete_all
 
-        @vocab_term_1 = VocabTerm.new
+        @vocab_term_1 = FactoryGirl.build(:vocab_term, :published)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
           tags: ['tag1', 'tag2'],
           term: "Lorem ipsum",
@@ -45,12 +45,8 @@ module Api::V1
           distractor_literals: ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
         }.to_json)
         @vocab_term_1.save!
-        @vocab_term_1.publication.authors << Author.new(publication: @vocab_term_1.publication,
-                                                        user: user)
-        @vocab_term_1.publication.publish
-        @vocab_term_1.publication.save!
 
-        @vocab_term_2 = VocabTerm.new
+        @vocab_term_2 = FactoryGirl.build(:vocab_term, :published)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
           tags: ['tag2', 'tag3'],
           term: "Dolorem ipsum",
@@ -58,10 +54,6 @@ module Api::V1
           distractor_literals: ["Consectetur adipisci velit", "Sed quia non numquam"]
         }.to_json)
         @vocab_term_2.save!
-        @vocab_term_2.publication.authors << Author.new(publication: @vocab_term_2.publication,
-                                                        user: user)
-        @vocab_term_2.publication.publish
-        @vocab_term_2.publication.save!
 
         @vocab_term_draft = FactoryGirl.build(:vocab_term)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
@@ -234,6 +226,13 @@ module Api::V1
     end
 
     describe "POST create" do
+
+      before(:each) do
+        @vocab_term.vocab_distractors.each do |vd|
+          vd.distractor_term.save!
+          vd.distractor_term_number = vd.distractor_term.publication.number
+        end
+      end
 
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
         expect {

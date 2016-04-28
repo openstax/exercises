@@ -26,9 +26,9 @@ module Api::V1
         expect(representation).to include('term' => 'Question')
       end
 
-      it 'cannot be written (attempts are silently ignored)' do
+      it 'can be written' do
         described_class.new(vocab_term).from_json({'term' => 'Exercise'}.to_json)
-        expect(vocab_term).not_to have_received(:name=)
+        expect(vocab_term).to have_received(:name=).with('Exercise')
       end
     end
 
@@ -38,10 +38,10 @@ module Api::V1
         expect(representation).to include('definition' => 'This term is cool.')
       end
 
-      it 'cannot be written (attempts are silently ignored)' do
+      it 'can be written' do
         described_class.new(vocab_term)
                        .from_json({'definition' => 'This term is cooler.'}.to_json)
-        expect(vocab_term).not_to have_received(:definition=)
+        expect(vocab_term).to have_received(:definition=).with('This term is cooler.')
       end
     end
 

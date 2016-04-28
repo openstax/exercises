@@ -14,7 +14,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     test_terms = [lorem, ad]
     VocabTerm.where{(name.like_any test_terms) | (definition.like_any test_terms)}.delete_all
 
-    @vocab_term_1 = VocabTerm.new
+    @vocab_term_1 = FactoryGirl.build(:vocab_term)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
       tags: ['tag1', 'tag2'],
       term: "Lorem ipsum",
@@ -27,7 +27,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     @vocab_term_1.publication.publish
     @vocab_term_1.publication.save!
 
-    @vocab_term_2 = VocabTerm.new
+    @vocab_term_2 = FactoryGirl.build(:vocab_term)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
       tags: ['tag2', 'tag3'],
       term: "Dolorem ipsum",
@@ -39,6 +39,16 @@ RSpec.describe SearchVocabTerms, type: :routine do
                                                     user: user)
     @vocab_term_2.publication.publish
     @vocab_term_2.publication.save!
+
+    @vocab_term_draft = FactoryGirl.build(:vocab_term)
+    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
+                                                              .from_json({
+      tags: ['all', 'the', 'tags'],
+      term: "draft",
+      definition: "Not ready for prime time",
+      distractor_literals: ["Release to production NOW"]
+    }.to_json)
+    @vocab_term_draft.save!
 
     @vocab_terms_count = VocabTerm.count
   end

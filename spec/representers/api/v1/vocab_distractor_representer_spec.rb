@@ -3,16 +3,23 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabDistractorRepresenter, type: :representer do
 
+    let!(:distractor_term) {
+      instance_spy(VocabTerm).tap do |dbl|
+        allow(dbl).to receive(:as_json).and_return(dbl)
+      end
+    }
+
     let!(:vocab_distractor) {
-      dbl = instance_spy(VocabDistractor)
-      allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:tags).and_return([])
-      allow(dbl).to receive(:license).and_return(nil)
-      allow(dbl).to receive(:editors).and_return([])
-      allow(dbl).to receive(:authors).and_return([])
-      allow(dbl).to receive(:copyright_holders).and_return([])
-      allow(dbl).to receive(:derivations).and_return([])
-      dbl
+      instance_spy(VocabDistractor).tap do |dbl|
+        allow(dbl).to receive(:as_json).and_return(dbl)
+        allow(dbl).to receive(:tags).and_return([])
+        allow(dbl).to receive(:license).and_return(nil)
+        allow(dbl).to receive(:editors).and_return([])
+        allow(dbl).to receive(:authors).and_return([])
+        allow(dbl).to receive(:copyright_holders).and_return([])
+        allow(dbl).to receive(:derivations).and_return([])
+        allow(dbl).to receive(:distractor_term).and_return(distractor_term)
+      end
     }
 
     # This is lazily-evaluated on purpose
@@ -38,7 +45,7 @@ module Api::V1
 
       it 'cannot be written (attempts are silently ignored)' do
         described_class.new(vocab_distractor).from_json({'term' => 'Exercise'}.to_json)
-        expect(vocab_distractor).not_to have_received(:name=)
+        expect(distractor_term).not_to have_received(:name=)
       end
     end
 
@@ -51,7 +58,7 @@ module Api::V1
       it 'cannot be written (attempts are silently ignored)' do
         described_class.new(vocab_distractor)
                        .from_json({'definition' => 'This term is cooler.'}.to_json)
-        expect(vocab_distractor).not_to have_received(:definition=)
+        expect(distractor_term).not_to have_received(:definition=)
       end
     end
 

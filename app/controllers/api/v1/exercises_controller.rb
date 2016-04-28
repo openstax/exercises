@@ -97,10 +97,10 @@ module Api::V1
       standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.authors.any?{ |a| a.user = user }
+        ) unless exercise.publication.authors.any?{ |au| au.user = user }
         exercise.publication.copyright_holders << CopyrightHolder.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.copyright_holders.any?{ |a| a.user = user }
+        ) unless exercise.publication.copyright_holders.any?{ |ch| ch.user = user }
       end
     end
 

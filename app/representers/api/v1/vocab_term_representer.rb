@@ -11,7 +11,7 @@ module Api::V1
              as: :term,
              type: String,
              readable: true,
-             writeable: false,
+             writeable: true,
              schema_info: {
                required: true
              }
@@ -19,7 +19,7 @@ module Api::V1
     property :definition,
              type: String,
              readable: true,
-             writeable: false,
+             writeable: true,
              schema_info: {
                required: true
              }

@@ -58,9 +58,7 @@ module Import
         ex.publication.version = latest_exercise.publication.version + 1
       end
 
-      ex.save!
-
-      list_name = row[13]
+      ex.save! # Need to save before we add attachments (see parse method)
 
       question_stem_content = parse(row[14], ex)
 
@@ -100,24 +98,28 @@ module Import
         qq.collaborator_solutions << sol
       end
 
-      list = List.find_or_create_by!(name: list_name) do |list|
-        [author, copyright_holder].compact.uniq.each do |owner|
-          list.list_owners << ListOwner.new(owner: owner)
-        end
-
-        list.save!
-        Rails.logger.info "Created new list: #{list_name}"
-      end
-
-      le = ListExercise.new(list: list, exercise: ex)
-      list.list_exercises << le
-      ex.list_exercises << le
-      ex.save!
-
       if ex.content_equals?(latest_exercise)
         ex.destroy!
+
         skipped = true
       else
+        list_name = row[13]
+        @lists ||= {}
+        @lists[list_name] ||= List.find_or_create_by!(name: list_name) do |list|
+          [author, copyright_holder].compact.uniq.each do |owner|
+            list.list_owners << ListOwner.new(owner: owner)
+          end
+
+          Rails.logger.info "Created new list: #{list_name}"
+        end
+        list = @lists[list_name]
+
+        le = ListExercise.new(list: list, exercise: ex)
+        ex.list_exercises << le
+        list.list_exercises << le
+        ex.save!
+        ex.publication.publish.save!
+
         skipped = false
       end
 

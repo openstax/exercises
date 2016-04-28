@@ -109,10 +109,10 @@ module Api::V1
                       user: current_api_user) do |vocab_term|
         vocab_term.publication.authors << Author.new(
           publication: vocab_term.publication, user: user
-        ) unless vocab_term.publication.authors.any?{ |a| a.user = user }
+        ) unless vocab_term.publication.authors.any?{ |au| au.user = user }
         vocab_term.publication.copyright_holders << CopyrightHolder.new(
           publication: vocab_term.publication, user: user
-        ) unless vocab_term.publication.copyright_holders.any?{ |a| a.user = user }
+        ) unless vocab_term.publication.copyright_holders.any?{ |ch| ch.user = user }
       end
     end
 

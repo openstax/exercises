@@ -31,6 +31,8 @@ RSpec.describe Exercises::Import::Xlsx do
     imported_exercises = Exercise.order(created_at: :desc).limit(200).to_a
 
     imported_exercises.each do |exercise|
+      expect(exercise).to be_is_published
+
       expect(exercise.authors.first.user).to eq author
       expect(exercise.copyright_holders.first.user).to eq ch
 

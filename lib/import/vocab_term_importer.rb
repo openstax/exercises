@@ -66,40 +66,41 @@ module Import
         vt.publication.version = latest_vocab_term.publication.version + 1
       end
 
-      vt.save!
-
       vt.distractor_terms = distractor_terms.map{ |dt| @term_map[dt] }
 
       vt.publication.authors << Author.new(user: author) if author
       vt.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder) \
         if copyright_holder
 
-      chapter = /\A(\d+)-\d+-\d+\z/.match(lo)[1]
-      list_name = "#{book.capitalize} Chapter #{chapter}"
-
-      list = List.find_or_create_by!(name: list_name) do |list|
-        [author, copyright_holder].compact.uniq.each do |owner|
-          list.list_owners << ListOwner.new(owner: owner)
-        end
-
-        list.save!
-        Rails.logger.info "Created new list: #{list_name}"
-      end
-
-      lvt = ListVocabTerm.new(list: list, vocab_term: vt)
-      list.list_vocab_terms << lvt
-      vt.list_vocab_terms << lvt
-      vt.save!
-
       if vt.content_equals?(latest_vocab_term)
         vt.vocab_distracteds.each do |vocab_distracted|
           vocab_distracted.update_attribute :distractor_term, latest_vocab_term
         end
-        vt.reload.destroy!
+        vt.vocab_distracteds.reset
+
+        vt.destroy! if vt.persisted?
         @term_map[term] = latest_vocab_term
+
         skipped = true
       else
+        chapter = /\A(\d+)-\d+-\d+\z/.match(lo)[1]
+        list_name = "#{book.capitalize} Chapter #{chapter}"
+        @lists ||= {}
+        @lists[list_name] ||= List.find_or_create_by!(name: list_name) do |list|
+          [author, copyright_holder].compact.uniq.each do |owner|
+            list.list_owners << ListOwner.new(owner: owner)
+          end
+
+          Rails.logger.info "Created new list: #{list_name}"
+        end
+        list = @lists[list_name]
+
+        lvt = ListVocabTerm.new(list: list, vocab_term: vt)
+        vt.list_vocab_terms << lvt
+        list.list_vocab_terms << lvt
+        vt.save!
         vt.publication.publish.save!
+
         skipped = false
       end
 
