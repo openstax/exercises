@@ -217,7 +217,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
     end
 
     it "sorts by multiple fields in different directions" do
-      result = described_class.call(q: 'content:lOrEm IpSuM', order_by: "number DESC, version ASC")
+      result = described_class.call(q: 'content:"lOrEm IpSuM"',
+                                    order_by: "number DESC, version ASC")
       expect(result.errors).to be_empty
 
       outputs = result.outputs

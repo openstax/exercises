@@ -1,6 +1,9 @@
 class VocabDistractor < ActiveRecord::Base
   belongs_to :vocab_term, inverse_of: :vocab_distractors
-  belongs_to :distractor_publication, -> { where(publishable_type: 'VocabTerm').limit(1) },
+  belongs_to :distractor_publication, -> { where(publishable_type: 'VocabTerm')
+                                             .reorder([Publication.arel_table[:published_at].desc,
+                                                       Publication.arel_table[:version].desc])
+                                             .limit(1) },
                                       class_name: 'Publication',
                                       primary_key: 'number',
                                       foreign_key: 'distractor_term_number'
