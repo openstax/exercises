@@ -128,6 +128,10 @@ class Exercise < ActiveRecord::Base
     has_collaborator?(user) # Regular user
   end
 
+  def is_vocab?
+    vocab_term_id.present?
+  end
+
   def before_publication
     # Check that all stems have either no answers (free response) or at least one correct answer
     questions.each do |question|

@@ -12,6 +12,11 @@ module Api::V1
 
     publishable
 
+    property :is_vocab?,
+             as: :is_vocab,
+             writeable: false,
+             readable: true
+
     property :vocab_term_id,
              type: Integer,
              writeable: false,
