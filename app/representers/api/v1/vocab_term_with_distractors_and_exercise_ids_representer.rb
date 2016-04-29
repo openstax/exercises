@@ -27,8 +27,9 @@ module Api::V1
                  required: true
                }
 
-    collection :exercise_ids,
-               type: Integer,
+    collection :latest_exercise_uids,
+               as: :exercise_uids,
+               type: String,
                writeable: false,
                readable: true,
                schema_info: {

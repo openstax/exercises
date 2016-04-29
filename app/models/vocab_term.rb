@@ -33,7 +33,7 @@ class VocabTerm < ActiveRecord::Base
   ]
 
   EXERCISE_PUBLICATION_FIELDS = [
-    :license, :published_at, :yanked_at, :embargoed_until, :embargo_children_only, :major_change
+    :license, :yanked_at, :embargoed_until, :embargo_children_only, :major_change
   ]
 
   EXERCISE_PUBLICATION_COLLABORATORS = [
@@ -45,7 +45,6 @@ class VocabTerm < ActiveRecord::Base
   has_tags
 
   has_many :vocab_distractors, dependent: :destroy
-  has_many :distractor_terms, through: :vocab_distractors
 
   has_many :exercises, dependent: :destroy, autosave: true
 
@@ -87,12 +86,20 @@ class VocabTerm < ActiveRecord::Base
     nv
   end
 
-  def exercise_ids
-    exercises.pluck(:id)
+  def latest_exercises
+    exercises.group_by(&:number).map{ |number, exercises| exercises.max_by(&:version) }
+  end
+
+  def latest_exercise_uids
+    latest_exercises.map(&:uid)
   end
 
   def distractor_term_numbers
     vocab_distractors.map(&:distractor_term_number)
+  end
+
+  def distractor_terms
+    vocab_distractors.map(&:distractor_term)
   end
 
   def distractor_term_definitions
@@ -104,21 +111,37 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def before_publication
-    exercises.each do |exercise|
-      exercise.publication.update_attribute :published_at, publication.published_at
+    if vocab_distractors.any? || distractor_literals.any?
+      # Publish exercises
+      latest_exercises.each do |exercise|
+        exercise.publication.update_attribute :published_at, published_at
+      end
+
+      last_def = VocabTerm.joins(:publication).where(publication: {number: number})
+                                              .where{id != my{id}}
+                                              .order{publication.version.desc}
+                                              .limit(1).pluck(:definition)
+
+      # Update distracted term exercises if the definition changed
+      VocabTerm.joins(:vocab_distractors)
+               .where(vocab_distractors: { distractor_term_number: publication.number })
+               .each{ |vt| vt.build_or_update_vocab_exercises(published_at) } \
+        if definition != last_def
+
+      return true
     end
 
-    return true if vocab_distractors.any? || distractor_literals.any?
     errors.add(:base, 'must have at least 1 distractor')
     false
   end
 
-  protected
-
-  def build_or_update_vocab_exercises
+  def build_or_update_vocab_exercises(publication_time = publication.published_at)
     return if definition.nil?
 
-    vocab_exercises = exercises.any? ? exercises : [
+    vocab_exercises = latest_exercises.map do |exercise|
+      exercise.is_published? ? exercise.new_version : exercise
+    end
+    vocab_exercises = [
       Exercise.new(questions: [
         Question.new(answer_order_matters: false,  stems: [
           Stem.new(stylings: [Style::MULTIPLE_CHOICE, Style::FREE_RESPONSE].map do |style|
@@ -126,7 +149,7 @@ class VocabTerm < ActiveRecord::Base
           end)
         ])
       ])
-    ]
+    ] if vocab_exercises.empty?
 
     vocab_exercises.each do |exercise|
       exercise.tags = tags
@@ -141,6 +164,7 @@ class VocabTerm < ActiveRecord::Base
         end
         ex_publication.send("#{collab_name}=", collaborators)
       end
+      ex_publication.published_at = publication_time if is_published?
 
       question = exercise.questions.first
       stem = question.stems.first
@@ -159,7 +183,7 @@ class VocabTerm < ActiveRecord::Base
       stem.stem_answers = stem_answers
     end
 
-    self.exercises = vocab_exercises
+    self.exercises += vocab_exercises
   end
 
 end

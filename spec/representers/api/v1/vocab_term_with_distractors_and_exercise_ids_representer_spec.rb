@@ -8,7 +8,7 @@ module Api::V1
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:vocab_distractors).and_return([])
       allow(dbl).to receive(:distractor_literals).and_return([])
-      allow(dbl).to receive(:exercise_ids).and_return([])
+      allow(dbl).to receive(:latest_exercise_uids).and_return([])
       allow(dbl).to receive(:tags).and_return([])
       allow(dbl).to receive(:license).and_return(nil)
       allow(dbl).to receive(:editors).and_return([])
@@ -126,20 +126,20 @@ module Api::V1
       end
     end
 
-    context 'exercise_ids' do
+    context 'exercise_uids' do
       it 'can be read' do
-        exercise_ids = [42, 4, 2]
+        exercise_uids = [42, 4, 2]
 
-        allow(vocab_term).to receive(:exercise_ids).and_return(exercise_ids)
+        allow(vocab_term).to receive(:latest_exercise_uids).and_return(exercise_uids)
 
-        expect(representation).to include('exercise_ids' => exercise_ids)
+        expect(representation).to include('exercise_uids' => exercise_uids)
       end
 
       it 'cannot be written (attempts are silently ignored)' do
         expect(vocab_term).not_to receive(:exercises=)
         expect(vocab_term).not_to receive(:exercise_ids=)
 
-        described_class.new(vocab_term).from_json({'exercise_ids' => [42, 4, 2]}.to_json)
+        described_class.new(vocab_term).from_json({'exercise_uids' => [42, 4, 2]}.to_json)
       end
     end
 
