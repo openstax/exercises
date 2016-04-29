@@ -58,8 +58,8 @@ class VocabTerm < ActiveRecord::Base
 
   scope :preloaded, -> {
     preload(:tags,
-            publication: [authors: :user, copyright_holders: :user, editors: :user],
-            vocab_distractors: :distractor_term)
+            :vocab_distractors,
+            publication: [authors: :user, copyright_holders: :user, editors: :user])
   }
 
   def content_equals?(other_vocab_term)
@@ -117,22 +117,24 @@ class VocabTerm < ActiveRecord::Base
         exercise.publication.update_attribute :published_at, published_at
       end
 
-      last_def = VocabTerm.joins(:publication).where(publication: {number: number})
-                                              .where{id != my{id}}
-                                              .order{publication.version.desc}
-                                              .limit(1).pluck(:definition)
-
-      # Update distracted term exercises if the definition changed
-      VocabTerm.joins(:vocab_distractors)
-               .where(vocab_distractors: { distractor_term_number: publication.number })
-               .each{ |vt| vt.build_or_update_vocab_exercises(published_at) } \
-        if definition != last_def
-
       return true
     end
 
     errors.add(:base, 'must have at least 1 distractor')
     false
+  end
+
+  def after_publication
+    last_def = VocabTerm.joins(:publication).where(publication: {number: number})
+                                            .where{id != my{id}}
+                                            .order{publication.version.desc}
+                                            .limit(1).pluck(:definition)
+
+    # Update distracted term exercises if the definition changed
+    VocabTerm.joins(:vocab_distractors)
+             .where(vocab_distractors: { distractor_term_number: publication.number })
+             .each{ |vt| vt.build_or_update_vocab_exercises(published_at) } \
+      if definition != last_def
   end
 
   def build_or_update_vocab_exercises(publication_time = publication.published_at)

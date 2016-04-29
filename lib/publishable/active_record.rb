@@ -80,6 +80,9 @@ module Publishable
           def before_publication
           end
 
+          def after_publication
+          end
+
           protected
 
           def ensure_publication

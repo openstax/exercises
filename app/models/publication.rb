@@ -22,6 +22,7 @@ class Publication < ActiveRecord::Base
   validate  :valid_license
 
   before_save :before_publication
+  after_save :after_publication
 
   before_validation :assign_number_and_version, on: :create
 
@@ -94,6 +95,16 @@ class Publication < ActiveRecord::Base
   def before_publication
     return if published_at.nil? || publishable.nil?
     publishable.before_publication
+    return if publishable.errors.empty?
+    publishable.errors.full_messages.each do |message|
+      errors.add(publishable_type.underscore.to_sym, message)
+    end
+    false
+  end
+
+  def after_publication
+    return if published_at.nil? || publishable.nil?
+    publishable.after_publication
     return if publishable.errors.empty?
     publishable.errors.full_messages.each do |message|
       errors.add(publishable_type.underscore.to_sym, message)
