@@ -10,9 +10,10 @@ RSpec.describe Tag, type: :model do
 
   it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
 
-  let(:allowed_tags)   { ['test', 'test-test', 'test:test', 'test#-22'] }
+  let(:allowed_tags)   { ['Test', 'test', 'test-test', 'namespace:tag',
+                          'url#anchor', '_underscore_'] }
   let(:forbidden_tags) { [nil, '', ' ', '  ', 'em—dash', '"quotes"', "'quotes'",
-                          '“smartquotes”', '‘smartquotes’', '_underscore_'] }
+                          '“smartquotes”', '‘smartquotes’'] }
 
   it 'validates the format of the tag\'s name' do
     allowed_tags.each{ |tag_name| expect(Tag.new(name: tag_name)).to be_valid }
@@ -23,7 +24,7 @@ RSpec.describe Tag, type: :model do
     tag_names_set = Set.new(Tag.get(allowed_tags + forbidden_tags).map(&:name))
     allowed_tags.each{ |tag_name| expect(tag_names_set).to include(tag_name) }
     forbidden_tags.compact.each do |tag_name|
-      sanitized_name = tag_name.gsub(/[^0-9a-z:]+/, '-').sub(/\A-/, '').sub(/-\z/, '')
+      sanitized_name = tag_name.gsub(/[^\w:#]+/, '-').gsub(/(?:\A-|-\z)/, '')
       expect(tag_names_set).to include(sanitized_name) unless sanitized_name.blank?
     end
   end
