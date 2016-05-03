@@ -10,13 +10,13 @@ module Exercises::Import
 
     let(:expected_tags) {
       ['exid:qb:q1', 'exid:qb:d2', 'filter-type:import:qb',
-       'qb:concept-coach', 'qb:simple', 'qb:multipart', 'qb:m1000',
-       'context-cnxmod:d6c29b47-d560-4571-bef0-b51fa3461d3b']
+       'qb:concept-coach', 'qb:simple', 'qb:multipart', 'qb:m42099',
+       'context-cnxmod:ea2bb23c-4fce-4e9d-a46b-3754125da988']
     }
 
     it 'imports the sample json' do
       expect {
-        described_class.call(file: fixture_path)
+        described_class.call(filename: fixture_path, book_name: 'physics')
       }.to change{ Exercise.count }.by(2)
 
       imported_exercises = Exercise.order(created_at: :desc).limit(2).to_a
@@ -58,11 +58,11 @@ module Exercises::Import
 
     it 'skips exercises with no changes' do
       expect {
-        described_class.call(file: fixture_path)
+        described_class.call(filename: fixture_path, book_name: 'physics')
       }.to change{ Exercise.count }.by(2)
 
       expect {
-        described_class.call(file: fixture_path)
+        described_class.call(filename: fixture_path, book_name: 'physics')
       }.not_to change{ Exercise.count }
     end
   end

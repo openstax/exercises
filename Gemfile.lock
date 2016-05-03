@@ -271,6 +271,9 @@ GEM
     hike (1.2.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.0)
@@ -604,6 +607,7 @@ DEPENDENCIES
   faker
   fine_print
   fog
+  httparty
   jquery-rails
   jquery-ui-rails
   keyword_search

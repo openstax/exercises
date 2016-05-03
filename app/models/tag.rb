@@ -1,7 +1,7 @@
 class Tag < ActiveRecord::Base
   has_many :exercise_tags, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: { case_sensitive: false }, format: /\A[\w:#-]*\z/
+  validates :name, presence: true, uniqueness: true, format: /\A[\w:#-]*\z/
 
   def self.get(tags)
     # Initialize array of remaining tags
