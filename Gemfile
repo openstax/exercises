@@ -125,6 +125,9 @@ gem 'rails_admin'
 # PostgreSQL database
 gem 'pg'
 
+# HTTP requests
+gem 'httparty'
+
 gem 'openstax_rescue_from', '~> 1.5.0'
 
 group :development, :test do

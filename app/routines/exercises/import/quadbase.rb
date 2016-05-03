@@ -16,16 +16,12 @@ module Exercises
       QUADBASE_ATTACHMENTS_REGEX = Regexp.new "<p><center><img src=\\\"(#{QUADBASE_URL}/system/attachments/[\\d]+/medium/#{FILENAME_EXPRESSION})\\\"></center></p>"
       QUADBASE_MATH_REGEX = /(\${1,2})[^\$]+\1/m
 
-      def exec(id: nil, range: nil, file: nil)
-        fatal_error(code: :no_args,
-                    message: 'Must specify a question id, a range or a file to import') \
-          if id.nil? && range.nil? && file.nil?
+      ORIGINAL_BOOKS = {
+        'physics' => 'https://archive.cnx.org/contents/031da8d3-b525-429c-80cf-6c8ed997733a'
+      }
 
-        remote_import_question(id) unless id.nil?
-
-        remote_import_range(range) unless range.nil?
-
-        import_file(file) unless file.nil?
+      def exec(filename:, book_name:, book_archive_url:)
+        import_file(filename, book_name, book_archive_url)
       end
 
       # Imports and saves a Quadbase question as an Exercise
@@ -97,37 +93,26 @@ module Exercises
         Rails.logger.info "#{ex} - #{uid} - #{changes}"
       end
 
-      # Imports Quadbase questions from the given file
-      def import_file(file)
-        json = File.open(file, 'r') { |ff| ff.read }
+      # Imports Quadbase questions from the given file for the given book
+      def import_file(filename, book_name, book_archive_url)
+        book_archive_json_url = "#{book_archive_url.sub('.html', '')}.json"
+        book_hash = HTTParty.get(book_archive_json_url).to_hash
+        @book_uuids = Hash.new{ |hash, key| hash[key] = {} }
+        map_collection_book_locations_to_uuids(book_hash['tree'], @book_uuids)
+
+        original_book_archive_url = ORIGINAL_BOOKS[book_name]
+        original_book_archive_json_url = "#{original_book_archive_url}.json"
+        original_book_hash = HTTParty.get(original_book_archive_json_url).to_hash
+        @original_book_locations = {}
+        map_collection_uuids_to_book_locations(original_book_hash['tree'], @original_book_locations)
+
+        @book_location_regex = Regexp.new "\\A#{book_name} (\\d+)-(\\d+)\\z"
+
+        json = File.open(filename, 'r') { |ff| ff.read }
         hash = JSON.parse(json)
         questions = hash['questions']
-        Rails.logger.info "Importing #{questions.length} exercises from #{file}"
+        Rails.logger.info "Importing #{questions.length} exercises from #{filename}"
         questions.each { |qq| import_question(qq) }
-      end
-
-      # Imports a Quadbase question by question ID
-      # Returns true if the Exercise was saved or false otherwise
-      def remote_import_question(id)
-        id = id.to_s
-        id[0] = '' if id[0] == 'q'
-
-        url = "#{QUADBASE_QUESTIONS_URL}#{id}.json"
-        content = Net::HTTP.get(URI.parse(url))
-        return false if content.blank?
-
-        import_question(JSON.parse(content))
-      end
-
-      # Imports all Quadbase questions in the given ID range
-      def remote_import_range(id_range)
-        Rails.logger.info "Importing range #{id_range}"
-        Exercise.transaction do
-          for id in id_range
-            Rails.logger.info "Question q#{id}"
-            remote_import_question(id)
-          end
-        end
       end
 
       protected
@@ -135,18 +120,6 @@ module Exercises
       # Returns the license to be applied to quadbase questions
       def default_license
         @@default_license ||= License.find_by(name: 'cc_by_4_0')
-      end
-
-      # Gets the new CNX id for a legacy CNX id
-      def get_cnx_id(legacy_id)
-        @cnx_ids ||= {}
-        new_id = @cnx_ids[legacy_id]
-        return new_id unless new_id.nil?
-
-        archive_url = "https://archive.cnx.org/content/#{legacy_id}"
-        new_url = Net::HTTP.get_response(URI.parse(archive_url))['Location']
-        matches = /\Ahttps?:\/\/archive.cnx.org\/contents\/([\w-]+)/.match(new_url) || []
-        @cnx_ids[legacy_id] = matches[1]
       end
 
       # Copies the file in the given url to S3
@@ -224,7 +197,7 @@ module Exercises
           publication.copyright_holders << c unless c.nil?
         end
 
-        publication
+        publication.publish
       end
 
       # Imports the introduction for a Quadbase question
@@ -314,6 +287,18 @@ module Exercises
         exercise
       end
 
+      # Gets the new CNX id for a legacy CNX id
+      def get_legacy_uuid(legacy_id)
+        @legacy_uuids ||= {}
+        uuid = @legacy_uuids[legacy_id]
+        return uuid unless uuid.nil?
+
+        archive_url = "https://archive.cnx.org/content/#{legacy_id}"
+        new_url = Net::HTTP.get_response(URI.parse(archive_url))['Location']
+        matches = /\Ahttps?:\/\/archive.cnx.org\/contents\/([\w-]+)/.match(new_url) || []
+        @legacy_uuids[legacy_id] = matches[1]
+      end
+
       # Converts Quadbase tags to Exercises tags
       def convert_tags(hash)
         tags = hash['tags'] || []
@@ -321,14 +306,81 @@ module Exercises
 
         module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }
         if module_tag.nil?
-          cnxmod_tag = nil
-          Rails.logger.warn "No cnxmod tag for #{hash['id']}"
+          book_location_tag = tags.find{ |tag| @book_location_regex.match tag }
+
+          if book_location_tag.nil?
+            cnxmod_tag = nil
+            Rails.logger.warn "No cnxmod tag for #{hash['id']}"
+          else
+            matches = @book_location_regex.match book_location_tag
+            uuid = @book_uuids[matches[1].to_i][matches[2].to_i]
+            cnxmod_tag = "context-cnxmod:#{uuid}"
+          end
         else
-          cnx_id = get_cnx_id(module_tag)
-          cnxmod_tag = "context-cnxmod:#{cnx_id}"
+          original_uuid = get_legacy_uuid(module_tag)
+          book_location = @original_book_locations[original_uuid]
+          uuid = @book_uuids[book_location.first][book_location.last]
+          cnxmod_tag = "context-cnxmod:#{uuid}"
         end
 
         [filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
+      end
+
+      # Creates a mapping from a CNX collection chapter and section numbers to their uuids
+      # Writes the result into the given cnx_book_hash
+      def map_collection_book_locations_to_uuids(hash, cnx_book_hash, chapter_number = 0)
+        contents = hash['contents']
+
+        if contents.any?{ |entry| entry['id'] == 'subcol' } # Book/Unit (internal node)
+          contents.each do |entry|
+            next if entry['id'] != 'subcol' # Skip anything not in a chapter (preface/appendix)
+
+            chapter_number = map_collection_book_locations_to_uuids(
+              entry, cnx_book_hash, chapter_number
+            )
+          end
+        else # Chapter (leaf)
+          chapter_number += 1
+          section_number = contents.first['title'].start_with?('Introduction') ? 0 : 1
+
+          contents.each do |entry|
+            cnx_book_hash[chapter_number][section_number] = extract_uuid(entry)
+            section_number += 1
+          end
+        end
+
+        return chapter_number
+      end
+
+      # Creates a mapping from a CNX collection uuids to their chapter and section numbers
+      # Writes the result into the given cnx_book_hash
+      def map_collection_uuids_to_book_locations(hash, cnx_book_hash, chapter_number = 0)
+        contents = hash['contents']
+
+        if contents.any?{ |entry| entry['id'] == 'subcol' } # Book/Unit (internal node)
+          contents.each do |entry|
+            next if entry['id'] != 'subcol' # Skip anything not in a chapter (preface/appendix)
+
+            chapter_number = map_collection_uuids_to_book_locations(
+              entry, cnx_book_hash, chapter_number
+            )
+          end
+        else # Chapter (leaf)
+          chapter_number += 1
+          section_number = contents.first['title'].start_with?('Introduction') ? 0 : 1
+
+          contents.each do |entry|
+            cnx_book_hash[extract_uuid(entry)] = [chapter_number, section_number]
+            section_number += 1
+          end
+        end
+
+        return chapter_number
+      end
+
+      # Returns the CNX uuid for a given section hash
+      def extract_uuid(section_hash)
+        section_hash['id'].split('@').first
       end
 
     end
