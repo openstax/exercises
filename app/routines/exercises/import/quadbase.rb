@@ -20,7 +20,7 @@ module Exercises
         'physics' => 'https://archive.cnx.org/contents/031da8d3-b525-429c-80cf-6c8ed997733a'
       }
 
-      def exec(filename:, book_name:, book_archive_url:)
+      def exec(filename:, book_name:, book_archive_url: nil)
         import_file(filename, book_name, book_archive_url)
       end
 
@@ -95,12 +95,13 @@ module Exercises
 
       # Imports Quadbase questions from the given file for the given book
       def import_file(filename, book_name, book_archive_url)
+        original_book_archive_url = ORIGINAL_BOOKS[book_name]
+        book_archive_url ||= original_book_archive_url
         book_archive_json_url = "#{book_archive_url.sub('.html', '')}.json"
         book_hash = HTTParty.get(book_archive_json_url).to_hash
         @book_uuids = Hash.new{ |hash, key| hash[key] = {} }
         map_collection_book_locations_to_uuids(book_hash['tree'], @book_uuids)
 
-        original_book_archive_url = ORIGINAL_BOOKS[book_name]
         original_book_archive_json_url = "#{original_book_archive_url}.json"
         original_book_hash = HTTParty.get(original_book_archive_json_url).to_hash
         @original_book_locations = {}

@@ -41,15 +41,18 @@ describe 'exercises import' do
 
   context 'qb' do
     let(:fixture_path) { '../spec/fixtures/quadbase.json' }
+    let(:archive_url)  { 'https://archive.cnx.org/contents/031da8d3-b525-429c-80cf-6c8ed997733a' }
 
     let :run_rake_task do
       Rake::Task["exercises:import:qb"].reenable
-      Rake.application.invoke_task "exercises:import:qb[#{fixture_path}]"
+      Rake.application.invoke_task "exercises:import:qb[#{fixture_path},physics,#{archive_url}]"
     end
 
     it 'passes arguments to Exercises::Import::Quadbase' do
       expect(Exercises::Import::Quadbase).to(
-        receive(:call).with(file: fixture_path)
+        receive(:call).with(filename: fixture_path,
+                            book_name: 'physics',
+                            book_archive_url: archive_url)
       )
       run_rake_task
     end
