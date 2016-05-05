@@ -30,6 +30,8 @@ RSpec.describe VocabTerm, type: :model do
   it 'automatically creates vocab exercises on save' do
     expect(vocab_term.exercises).not_to be_empty
     vocab_term.exercises.each do |exercise|
+      expect(Set.new exercise.tags).to eq Set.new(vocab_term.tags)
+
       question = exercise.questions.first
       stem = question.stems.first
       expect(stem.content).to eq "Define #{vocab_term.name} in your own words, then select the best multiple choice option."

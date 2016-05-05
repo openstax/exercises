@@ -17,10 +17,11 @@ module Api::V1
              writeable: false,
              readable: true
 
-    property :vocab_term_id,
+    property :vocab_term_uid,
              type: Integer,
              writeable: false,
              readable: true,
+             getter: ->(*) { vocab_term.try(:uid) },
              if: ->(args) { can_view_solutions?(args[:user]) }
 
     property :title,

@@ -21,6 +21,22 @@ module Api::V1
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(exercise).as_json }
 
+    context 'vocab_term_uid' do
+      it 'can be read' do
+        vocab_term = instance_spy(VocabTerm)
+        allow(vocab_term).to receive(:as_json).and_return(vocab_term)
+        allow(vocab_term).to receive(:uid).and_return('42@1')
+        allow(exercise).to receive(:vocab_term).and_return(vocab_term)
+        expect(representation).to include('vocab_term_uid' => '42@1')
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
+        described_class.new(exercise).from_json({'vocab_term_uid' => '42@1'}.to_json)
+        expect(exercise).not_to have_received(:vocab_term=)
+        expect(exercise).not_to have_received(:vocab_term_id=)
+      end
+    end
+
     context 'title' do
       it 'can be read' do
         allow(exercise).to receive(:title).and_return('A cool exercise')
