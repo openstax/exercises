@@ -3,18 +3,20 @@ require "rails_helper"
 module Api::V1
   describe UsersController, type: :controller, api: true, version: :v1 do
 
-    let!(:application)     { FactoryGirl.create :doorkeeper_application }
-    let!(:user)          { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)      { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let!(:application)       { FactoryGirl.create :doorkeeper_application }
 
-    let!(:user_token)    { FactoryGirl.create :doorkeeper_access_token,
-                                              application: application,
-                                              resource_owner_id: user.id }
+    let!(:user)              { FactoryGirl.create :user, :agreed_to_terms, first_name: 'U',
+                                                         last_name: 'ser', username: 'user' }
+    let!(:admin)             { FactoryGirl.create :user, :administrator,
+                                                  :agreed_to_terms, first_name: 'Ad',
+                                                  last_name: 'min', username: 'Admin'}
 
-    let!(:admin_token)    { FactoryGirl.create :doorkeeper_access_token,
-                                               application: application,
-                                               resource_owner_id: admin.id }
-
+    let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application,
+                                                  resource_owner_id: user.id }
+    let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+                                                  application: application,
+                                                  resource_owner_id: admin.id }
     let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: nil }
@@ -22,11 +24,11 @@ module Api::V1
     describe "GET index" do
 
       before(:each) do
-        100.times do
-          u = FactoryGirl.build(:user)
-          next if u.last_name == "Doe"
-          u.save!
-        end
+        100.times { FactoryGirl.create(:user) }
+
+        User.joins(:account).where{(account.first_name.like '%doe%') |
+                                   (account.last_name.like '%doe%') |
+                                   (account.username.like '%doe%')}.delete_all
 
         @john_doe = FactoryGirl.create :user, first_name: "John",
                                               last_name: "Doe",
