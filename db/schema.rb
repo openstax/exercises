@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160406202802) do
+ActiveRecord::Schema.define(version: 20160425191417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,7 +33,6 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   end
 
   add_index "answers", ["question_id", "sort_position"], name: "index_answers_on_question_id_and_sort_position", unique: true, using: :btree
-  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
 
   create_table "attachments", force: :cascade do |t|
     t.integer  "parent_id",   null: false
@@ -216,11 +215,13 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   create_table "exercises", force: :cascade do |t|
     t.string   "title"
     t.text     "stimulus"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "vocab_term_id"
   end
 
   add_index "exercises", ["title"], name: "index_exercises_on_title", using: :btree
+  add_index "exercises", ["vocab_term_id"], name: "index_exercises_on_vocab_term_id", using: :btree
 
   create_table "fine_print_contracts", force: :cascade do |t|
     t.string   "name",       null: false
@@ -335,6 +336,17 @@ ActiveRecord::Schema.define(version: 20160406202802) do
 
   add_index "list_readers", ["list_id"], name: "index_list_readers_on_list_id", using: :btree
   add_index "list_readers", ["reader_id", "reader_type", "list_id"], name: "index_list_readers_on_reader_id_and_reader_type_and_list_id", unique: true, using: :btree
+
+  create_table "list_vocab_terms", force: :cascade do |t|
+    t.integer  "sort_position", null: false
+    t.integer  "list_id",       null: false
+    t.integer  "vocab_term_id", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "list_vocab_terms", ["list_id", "sort_position"], name: "index_list_vocab_terms_on_list_id_and_sort_position", unique: true, using: :btree
+  add_index "list_vocab_terms", ["vocab_term_id", "list_id"], name: "index_list_vocab_terms_on_vocab_term_id_and_list_id", unique: true, using: :btree
 
   create_table "lists", force: :cascade do |t|
     t.string   "name",       null: false
@@ -513,16 +525,15 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   add_index "question_dependencies", ["parent_question_id"], name: "index_question_dependencies_on_parent_question_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.integer  "exercise_id",                         null: false
+    t.integer  "exercise_id",                          null: false
     t.text     "stimulus"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.boolean  "answer_order_matters", default: true, null: false
-    t.integer  "sort_position",                       null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.boolean  "answer_order_matters", default: false, null: false
+    t.integer  "sort_position",                        null: false
   end
 
   add_index "questions", ["exercise_id", "sort_position"], name: "index_questions_on_exercise_id_and_sort_position", unique: true, using: :btree
-  add_index "questions", ["exercise_id"], name: "index_questions_on_exercise_id", using: :btree
 
   create_table "stem_answers", force: :cascade do |t|
     t.integer  "stem_id",                                           null: false
@@ -586,6 +597,37 @@ ActiveRecord::Schema.define(version: 20160406202802) do
   add_index "users", ["account_id"], name: "index_users_on_account_id", unique: true, using: :btree
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
 
+  create_table "vocab_distractors", force: :cascade do |t|
+    t.integer  "vocab_term_id",          null: false
+    t.integer  "distractor_term_number", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "vocab_distractors", ["distractor_term_number"], name: "index_vocab_distractors_on_distractor_term_number", using: :btree
+  add_index "vocab_distractors", ["vocab_term_id", "distractor_term_number"], name: "index_vocab_distractors_on_v_t_id_and_d_t_number", unique: true, using: :btree
+
+  create_table "vocab_term_tags", force: :cascade do |t|
+    t.integer  "vocab_term_id"
+    t.integer  "tag_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "vocab_term_tags", ["tag_id"], name: "index_vocab_term_tags_on_tag_id", using: :btree
+  add_index "vocab_term_tags", ["vocab_term_id", "tag_id"], name: "index_vocab_term_tags_on_vocab_term_id_and_tag_id", unique: true, using: :btree
+
+  create_table "vocab_terms", force: :cascade do |t|
+    t.string   "name",                             null: false
+    t.string   "definition",                       null: false
+    t.string   "distractor_literals", default: [], null: false, array: true
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "vocab_terms", ["definition"], name: "index_vocab_terms_on_definition", using: :btree
+  add_index "vocab_terms", ["name", "definition"], name: "index_vocab_terms_on_name_and_definition", using: :btree
+
   create_table "votes", force: :cascade do |t|
     t.integer  "votable_id"
     t.string   "votable_type"
@@ -603,4 +645,8 @@ ActiveRecord::Schema.define(version: 20160406202802) do
 
   add_foreign_key "exercise_tags", "exercises", on_update: :cascade, on_delete: :cascade
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "list_vocab_terms", "lists"
+  add_foreign_key "list_vocab_terms", "vocab_terms"
+  add_foreign_key "vocab_term_tags", "tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "vocab_term_tags", "vocab_terms", on_update: :cascade, on_delete: :cascade
 end

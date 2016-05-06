@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Exercises::Import
-  RSpec.describe Old::Xlsx do
+  RSpec.describe Old::Xlsx, type: :routine do
     let(:fixture_path) { 'spec/fixtures/old/sample_exercises.xlsx' }
 
     let(:expected_los) {

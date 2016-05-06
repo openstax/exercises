@@ -1,6 +1,6 @@
 class Publication < ActiveRecord::Base
 
-  belongs_to :publishable, polymorphic: true
+  belongs_to :publishable, polymorphic: true, inverse_of: :publication
   belongs_to :license
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
@@ -19,13 +19,28 @@ class Publication < ActiveRecord::Base
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :number, presence: true
   validates :version, presence: true, uniqueness: { scope: [:publishable_type, :number] }
-  validate  :valid_license, :valid_publishable
+  validate  :valid_license
+
+  before_save :before_publication
+  after_save :after_publication
 
   before_validation :assign_number_and_version, on: :create
 
-  default_scope { order{[number.asc, version.desc]} }
+  default_scope { order([arel_table[:number].asc, arel_table[:version].desc]) }
 
   scope :published, -> { where{published_at != nil} }
+
+  scope :latest, ->(publication_scope = Publication.unscoped.published) {
+    joins{
+      publication_scope
+        .reorder(nil).limit(nil).offset(nil)
+        .as(:newer_publication)
+        .on{ (newer_publication.publishable_type == ~publishable_type) &
+             (newer_publication.number == ~number) &
+             (newer_publication.version > ~version) }
+        .outer
+    }.where{ newer_publication.id == nil }
+  }
 
   def uid
     "#{number}@#{version}"
@@ -77,9 +92,19 @@ class Publication < ActiveRecord::Base
     false
   end
 
-  def valid_publishable
-    return if publishable.nil?
-    publishable.publication_validation
+  def before_publication
+    return if published_at.nil? || publishable.nil?
+    publishable.before_publication
+    return if publishable.errors.empty?
+    publishable.errors.full_messages.each do |message|
+      errors.add(publishable_type.underscore.to_sym, message)
+    end
+    false
+  end
+
+  def after_publication
+    return if published_at.nil? || publishable.nil?
+    publishable.after_publication
     return if publishable.errors.empty?
     publishable.errors.full_messages.each do |message|
       errors.add(publishable_type.underscore.to_sym, message)

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Publishables::Publish
-  RSpec.describe All do
+  RSpec.describe All, type: :routine do
     let!(:published_exercise) { FactoryGirl.create :exercise, :published }
     let!(:published_solution) { FactoryGirl.create :community_solution, :published }
 

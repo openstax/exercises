@@ -18,6 +18,12 @@ require 'user_html'
 
 require 'active_record/calculations_patch'
 
+require 'row_parser'
+require 'import/xlsx_importer'
+require 'import/publishable_importer'
+require 'import/exercise_importer'
+require 'import/vocab_term_importer'
+
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"
 

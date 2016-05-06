@@ -3,7 +3,7 @@ module HasLogic
     module Base
       def has_logic(*languages)
         class_exec do
-          has_one :logic, as: :parent, dependent: :destroy
+          has_one :logic, as: :parent, dependent: :destroy, inverse_of: :parent
         end
       end
     end

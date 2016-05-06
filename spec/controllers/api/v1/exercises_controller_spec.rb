@@ -29,14 +29,14 @@ module Api::V1
       before(:each) do
         10.times { FactoryGirl.create(:exercise, :published) }
 
-        ad = "%adipisci%"
+        tested_strings = ["%adipisci%", "%draft%"]
         Exercise.joins{questions.outer.stems.outer}
                 .joins{questions.outer.answers.outer}
-                .where{(title.like ad) |\
-                       (stimulus.like ad) |\
-                       (questions.stimulus.like ad) |\
-                       (stems.content.like ad) |\
-                       (answers.content.like ad)}.delete_all
+                .where{(title.like_any tested_strings) |\
+                       (stimulus.like_any tested_strings) |\
+                       (questions.stimulus.like_any tested_strings) |\
+                       (stems.content.like_any tested_strings) |\
+                       (answers.content.like_any tested_strings)}.delete_all
 
         @exercise_1 = FactoryGirl.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
@@ -115,7 +115,7 @@ module Api::V1
         end
 
         it "returns an Exercise matching the content" do
-          api_get :index, user_token, parameters: {q: 'content:aDiPiScInG eLiT'}
+          api_get :index, user_token, parameters: {q: 'content:"aDiPiScInG eLiT"'}
           expect(response).to have_http_status(:success)
 
           expected_response = {
@@ -306,16 +306,12 @@ module Api::V1
 
         db_answers = new_exercise.questions.first.answers
         json_answers = @exercise.questions.first.answers
-        expect(Set.new db_answers.collect { |answer| answer.content }).to(
-          eq(Set.new json_answers.collect { |answer| answer.content })
-        )
+        expect(Set.new db_answers.map(&:content)).to eq(Set.new json_answers.map(&:content))
 
         db_solutions = new_exercise.questions.first.collaborator_solutions
         json_solutions = @exercise.questions.first.collaborator_solutions
 
-        expect(Set.new db_solutions.collect { |solution| solution.content }).to(
-          eq(Set.new json_solutions.collect { |solution| solution.content })
-        )
+        expect(Set.new db_solutions.map(&:content)).to eq(Set.new json_solutions.map(&:content))
 
         expect(new_exercise.authors.first.user).to eq user
         expect(new_exercise.copyright_holders.first.user).to eq user
@@ -328,7 +324,8 @@ module Api::V1
         )
 
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter.new(exercise).to_json(user: user)
+                          raw_post_data: Api::V1::ExerciseRepresenter.new(exercise)
+                                                                     .to_json(user: user)
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
 
@@ -424,8 +421,7 @@ module Api::V1
 
       it "deletes the requested draft Exercise" do
         @exercise.save!
-        expect{ api_delete :destroy, user_token,
-                           parameters: { id: @exercise.uid }
+        expect{ api_delete :destroy, user_token, parameters: { id: @exercise.uid }
         }.to change(Exercise, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(Exercise.where(id: @exercise.id)).not_to exist

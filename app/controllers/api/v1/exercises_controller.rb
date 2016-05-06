@@ -26,7 +26,7 @@ module Api::V1
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/exercises',
-                           url_end: '?q=username:bob%20name=Jones')}"
+                           url_end: '?q=author:"bob" content:"test"')}"
     param :q, String, required: true, desc: <<-EOS
       The search query string, built up as a space-separated collection of
       search conditions on different fields. Each condition is formatted as
@@ -97,10 +97,10 @@ module Api::V1
       standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.authors.any?{ |a| a.user = user }
+        ) unless exercise.publication.authors.any?{ |au| au.user = user }
         exercise.publication.copyright_holders << CopyrightHolder.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.copyright_holders.any?{ |a| a.user = user }
+        ) unless exercise.publication.copyright_holders.any?{ |ch| ch.user = user }
       end
     end
 

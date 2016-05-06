@@ -13,6 +13,7 @@ class List < ActiveRecord::Base
   has_many :list_readers, dependent: :destroy
 
   sortable_has_many :list_exercises, dependent: :destroy, inverse_of: :list
+  sortable_has_many :list_vocab_terms, dependent: :destroy, inverse_of: :list
 
   validates :name, presence: true
 

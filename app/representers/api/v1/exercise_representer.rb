@@ -5,12 +5,24 @@ module Api::V1
 
     # Attachments may (for a while) contain collaborator solution attachments, so
     # only show them to those who can see solutions
-    has_attachments(if: lambda { |args| can_view_solutions?(args[:user]) })
+    has_attachments(if: ->(args) { can_view_solutions?(args[:user]) })
 
     has_logic
     has_tags
 
     publishable
+
+    property :is_vocab?,
+             as: :is_vocab,
+             writeable: false,
+             readable: true
+
+    property :vocab_term_uid,
+             type: Integer,
+             writeable: false,
+             readable: true,
+             getter: ->(*) { vocab_term.try(:uid) },
+             if: ->(args) { can_view_solutions?(args[:user]) }
 
     property :title,
              type: String,
@@ -25,11 +37,11 @@ module Api::V1
 
     collection :questions,
                class: Question,
-               decorator: lambda { |klass, *|
+               decorator: ->(klass, *) {
                  klass.nil? || klass.stems.length > 1 ? \
                    QuestionRepresenter : SimpleQuestionRepresenter
                },
-               instance: lambda { |*| Question.new(exercise: self) },
+               instance: ->(*) { Question.new(exercise: self) },
                writeable: true,
                readable: true,
                schema_info: {
