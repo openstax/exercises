@@ -40,4 +40,19 @@ RSpec.describe WebviewController, type: :controller do
     end
   end
 
+  context "as a signed in user" do
+    render_views
+
+    it 'sets boostrap data in script tag' do
+      controller.sign_in registered_user
+      get :index
+      expect(response).to have_http_status(:success)
+      doc = Nokogiri::HTML(response.body)
+      data = ::JSON.parse(doc.css('script#exercises-boostrap-data').inner_text)
+      expect(data).to include({
+        'user' => Api::V1::UserRepresenter.new(registered_user).as_json
+      })
+    end
+  end
+
 end
