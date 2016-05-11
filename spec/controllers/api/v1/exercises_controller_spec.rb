@@ -189,7 +189,8 @@ module Api::V1
         @exercise.publication.publish
         @exercise.save!
         @exercise.reload
-
+        @exercise_1 = @exercise.new_version
+        @exercise_1.save!
         @exercise_2 = @exercise.new_version
         @exercise_2.save!
       end
@@ -211,6 +212,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"@draft\" is requested" do
+
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
 
@@ -219,7 +221,18 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
+      it "returns the latest version of a Exercise if \"@latest\" is requested" do
+        @exercise_1.publication.update_attributes(version: 1000)
+        api_get :show, user_token, parameters: { id: "#{@exercise.number}@latest" }
+        expect(response).to have_http_status(:success)
+
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_1.reload)
+                                                        .to_json(user: user)
+        expect(response.body).to eq(expected_response)
+      end
+
       it "creates a new draft version if no draft and \"@draft\" is requested" do
+        @exercise_1.destroy
         @exercise_2.destroy
 
         expect{ api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" } }.to(
