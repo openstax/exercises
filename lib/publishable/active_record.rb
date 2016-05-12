@@ -24,11 +24,12 @@ module Publishable
               relation = relation.where{ publication.published_at != nil }
             elsif version == 'draft' || version == 'd'
               pub_conditions[:published_at] = nil
-            else
+            elsif version != 'latest'
               pub_conditions[:version] = version
             end
             relation.where(publication: pub_conditions)
-                    .order{[publication.number.asc, publication.version.desc]}
+              .order{[publication.number.asc, publication.version.desc]}
+
           }
 
           # http://stackoverflow.com/a/7745635

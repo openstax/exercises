@@ -38,8 +38,6 @@ module Api::V1
                                               username: "doejane"
         @john_doe.account.reload
         @jane_doe.account.reload
-
-        @users_count = User.count
       end
 
       it "returns no results if the maximum number of results is exceeded" do
@@ -47,7 +45,7 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = {
-          total_count: @users_count,
+          total_count: User.count,
           items: []
         }.to_json
 
