@@ -10,7 +10,7 @@ module Admin
       context 'for anonymous' do
         it 'redirects to the login page' do
           xhr :get, :index
-          expect(response).to redirect_to(controller.openstax_accounts.login_path)
+          expect(response).to have_http_status(:forbidden)
         end
       end
 

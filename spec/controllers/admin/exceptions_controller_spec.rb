@@ -19,10 +19,10 @@ module Admin
 
     describe 'GET show' do
       context 'for anonymous' do
-        it 'redirects to the login page' do
+        it 'returns 403 forbidden' do
           EXCEPTIONS.each do |klass, args|
             xhr :get, :show, id: klass.name, args: args
-            expect(response).to redirect_to(controller.openstax_accounts.login_path)
+            expect(response).to have_http_status(:forbidden)
           end
         end
       end
