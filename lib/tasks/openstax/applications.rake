@@ -34,6 +34,7 @@ namespace :openstax do
 
           app_owner_group = OpenStax::Accounts::CreateGroup[name: 'ose_app_admin_group',
                                                             owner: admin_account]
+          app_owner_group.add_member(admin_account)
         end
 
         DEFAULT_APP_NAMES.each do |app_name|
