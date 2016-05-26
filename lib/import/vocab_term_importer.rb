@@ -17,11 +17,15 @@ module Import
 
     def import_row(row, row_number)
       term = row[4]
+      return if term.blank?
+
+      term = term.to_s.strip
 
       @term_row_map ||= {}
-      existing_row = @term_row_map[term]
-      raise "Duplicate Term: Rows #{existing_row} and #{row_number}" unless existing_row.nil?
-      @term_row_map[term] = row_number
+      existing_row = @term_row_map[term.downcase]
+      raise "Duplicate Term: Rows #{existing_row} and #{row_number} (#{term})" \
+        unless existing_row.nil?
+      @term_row_map[term.downcase] = row_number
 
       book_title = row[0]
       uuid = row[3]
@@ -55,10 +59,12 @@ module Import
       vt.tags = [book_tag, lo_tag, cnxmod_tag]
 
       vt.vocab_distractors = distractor_terms.map do |dt|
+        next if dt.blank?
+
         distractor_term = @term_map[dt]
         distractor_term.save! # Save before linking to other terms
         VocabDistractor.new(distractor_term: distractor_term)
-      end
+      end.compact
 
       vt.publication.authors << Author.new(user: author) if author
       vt.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder) \
@@ -94,9 +100,9 @@ module Import
       end
 
       row = "Imported row ##{row_number}"
-      uid = skipped ? "Existing uid: #{latest_vocab_term.uid}" : "New uid: #{vt.uid}"
+      uid = skipped ? "Existing uid: #{@latest_term_map[term].uid}" : "New uid: #{vt.uid}"
       changes = skipped ? "Vocab term skipped (no changes)" : \
-                          "New #{latest_vocab_term.nil? ? 'vocab term' : 'version'}"
+                          "New #{@latest_term_map[term].nil? ? 'vocab term' : 'version'}"
       Rails.logger.info "#{row} - #{uid} - #{changes}"
     end
 
