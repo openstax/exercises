@@ -25,12 +25,13 @@ module Import
       @term_row_map ||= {}
       existing_row, existing_chapter = @term_row_map[term.downcase]
       unless existing_row.nil?
-        Rails.logger.info {
-          "WARNING: Duplicate term #{term} found in row #{existing_row} (chapter #{
-          existing_chapter}) and row #{row_number} (chapter #{chapter})"
-        }
+        Rails.logger.info do
+          "WARNING: Duplicate term \"#{term}\" found in rows #{existing_row} (chapter #{
+          existing_chapter}) and #{row_number} (chapter #{chapter})"
+        end
 
-        raise 'Duplicate terms are not allowed in the same chapter' if existing_chapter == chapter
+        raise "Term \"#{term}\" appears twice in chapter #{chapter}" \
+          if existing_chapter == chapter
       end
       @term_row_map[term.downcase] = [row_number, chapter]
 
@@ -77,7 +78,9 @@ module Import
       uniq_distractor_terms = grouped_distractor_terms.keys
 
       duplicate_distractor_terms.each do |ddt|
-        Rails.logger.info { "WARNING: Duplicate distractor term #{ddt} found in row #{row_number}" }
+        Rails.logger.info do
+          "WARNING: Duplicate distractor term \"#{ddt}\" found in row #{row_number}"
+        end
       end
 
       vt.vocab_distractors = uniq_distractor_terms.map do |dt|
@@ -98,7 +101,7 @@ module Import
         skipped = true
       else
         chapter = /\A(\d+)-\d+-\d+\z/.match(lo)[1]
-        list_name = "#{book.capitalize} Chapter #{chapter}"
+        list_name = "#{book_title.capitalize} Chapter #{chapter}"
         @lists ||= {}
         @lists[list_name] ||= List.find_or_create_by!(name: list_name) do |list|
           [author, copyright_holder].compact.uniq.each do |owner|
@@ -118,12 +121,15 @@ module Import
         skipped = false
       end
 
-      row = "Imported row ##{row_number}"
-      uid = skipped ? "Existing uid: #{@latest_term_map[chapter][term].uid}" : "New uid: #{vt.uid}"
-      changes = skipped ? "Vocab term skipped (no changes)" : "New #{
-        @latest_term_map[chapter][term].nil? ? 'vocab term' : 'version'
-      }"
-      Rails.logger.info "#{row} - #{uid} - #{changes}"
+      Rails.logger.info do
+        row = "Imported row ##{row_number}"
+        uid = skipped ? "Existing uid: #{@latest_term_map[chapter][term].uid}" :
+                        "New uid: #{vt.uid}"
+        changes = skipped ? "Vocab term skipped (no changes)" : "New #{
+          @latest_term_map[chapter][term].nil? ? 'vocab term' : 'version'
+        }"
+        "#{row} - #{uid} - #{changes}"
+      end
     end
 
   end
