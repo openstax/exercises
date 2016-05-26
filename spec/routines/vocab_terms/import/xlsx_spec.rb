@@ -50,7 +50,9 @@ RSpec.describe VocabTerms::Import::Xlsx, type: :routine do
       expect(vocab_term.authors.first.user).to eq author
       expect(vocab_term.copyright_holders.first.user).to eq ch
 
-      expect(vocab_term.list_vocab_terms.first.list.name).to eq 'Prog Chapter 1'
+      expect(vocab_term.list_vocab_terms.first.list.name).to(
+        eq 'Introduction to programming Chapter 1'
+      )
 
       expect(vocab_term.tags).not_to be_blank
       tag_names = vocab_term.tags.map(&:name)
