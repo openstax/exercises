@@ -46,6 +46,10 @@ module Import
       book_tag = "book:stax-#{book}"
       lo_tag = "lo:stax-#{book}:#{lo}"
       cnxmod_tag = "context-cnxmod:#{uuid}"
+      dok_tag = 'dok:1'
+      blooms_tag = 'blooms:1'
+      time_tag = 'time:short'
+      type_tag = 'type:recall'
 
       @latest_term_map ||= Hash.new do |hash, chapter|
         hash[chapter] = Hash.new do |hash, name|
@@ -70,7 +74,7 @@ module Import
 
       vt = @term_map[chapter][term]
       vt.definition = definition
-      vt.tags = [book_tag, lo_tag, cnxmod_tag]
+      vt.tags = [book_tag, lo_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag, type_tag]
 
       # http://stackoverflow.com/a/8922049
       grouped_distractor_terms = distractor_terms.reject(&:blank?).group_by{ |elt| elt }
