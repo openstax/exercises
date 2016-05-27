@@ -126,7 +126,7 @@ module Import
       row = "Imported row ##{row_number}"
       uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"
       changes = skipped ? "Exercise skipped (no changes)" : \
-                          "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
+                          "New #{ex.version == 1 ? 'exercise' : 'version'}"
       Rails.logger.info "#{row} - #{uid} - #{changes}"
     end
 

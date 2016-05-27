@@ -129,9 +129,8 @@ module Import
         row = "Imported row ##{row_number}"
         uid = skipped ? "Existing uid: #{@latest_term_map[chapter][term].uid}" :
                         "New uid: #{vt.uid}"
-        changes = skipped ? "Vocab term skipped (no changes)" : "New #{
-          @latest_term_map[chapter][term].nil? ? 'vocab term' : 'version'
-        }"
+        changes = skipped ? "Vocab term skipped (no changes)" :
+                            "New #{vt.version == 1 ? 'vocab term' : 'version'}"
         "#{row} - #{uid} - #{changes}"
       end
     end
