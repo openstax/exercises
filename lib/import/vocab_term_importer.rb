@@ -112,7 +112,7 @@ module Import
             list.list_owners << ListOwner.new(owner: owner)
           end
 
-          Rails.logger.info "Created new list: #{list_name}"
+          Rails.logger.info { "Created new list: #{list_name}" }
         end
         list = @lists[list_name]
 
