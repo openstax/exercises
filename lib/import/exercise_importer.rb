@@ -24,7 +24,9 @@ module Import
 
       @id_map ||= {}
       existing_row = @id_map[id]
+
       raise "Duplicate ID: Rows #{existing_row} and #{row_number}" unless existing_row.nil?
+
       @id_map[id] = row_number
 
       ex = Exercise.new
@@ -110,7 +112,7 @@ module Import
             list.list_owners << ListOwner.new(owner: owner)
           end
 
-          Rails.logger.info "Created new list: #{list_name}"
+          Rails.logger.info { "Created new list: #{list_name}" }
         end
         list = @lists[list_name]
 
@@ -123,11 +125,13 @@ module Import
         skipped = false
       end
 
-      row = "Imported row ##{row_number}"
-      uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"
-      changes = skipped ? "Exercise skipped (no changes)" : \
-                          "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
-      Rails.logger.info "#{row} - #{uid} - #{changes}"
+      Rails.logger.info do
+        row = "Imported row ##{row_number}"
+        uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"
+        changes = skipped ? "Exercise skipped (no changes)" : \
+                            "New #{ex.version == 1 ? 'exercise' : 'version'}"
+        "#{row} - #{uid} - #{changes}"
+      end
     end
 
   end

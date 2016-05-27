@@ -112,7 +112,7 @@ module Import
             list.list_owners << ListOwner.new(owner: owner)
           end
 
-          Rails.logger.info "Created new list: #{list_name}"
+          Rails.logger.info { "Created new list: #{list_name}" }
         end
         list = @lists[list_name]
 
@@ -129,9 +129,8 @@ module Import
         row = "Imported row ##{row_number}"
         uid = skipped ? "Existing uid: #{@latest_term_map[chapter][term].uid}" :
                         "New uid: #{vt.uid}"
-        changes = skipped ? "Vocab term skipped (no changes)" : "New #{
-          @latest_term_map[chapter][term].nil? ? 'vocab term' : 'version'
-        }"
+        changes = skipped ? "Vocab term skipped (no changes)" :
+                            "New #{vt.version == 1 ? 'vocab term' : 'version'}"
         "#{row} - #{uid} - #{changes}"
       end
     end
