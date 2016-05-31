@@ -34,7 +34,7 @@ RSpec.describe VocabTerm, type: :model do
 
       question = exercise.questions.first
       stem = question.stems.first
-      expect(stem.content).to eq "Define #{vocab_term.name} in your own words, then select the best multiple choice option."
+      expect(stem.content).to eq "Define <strong>#{vocab_term.name}</strong> in your own words."
       expect(Set.new stem.stylings.map(&:style)).to(
         eq Set[Style::MULTIPLE_CHOICE, Style::FREE_RESPONSE]
       )
