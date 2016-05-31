@@ -1,8 +1,8 @@
-<%= user.is_deleted? ? \
-      link_to(undelete_admin_user_url(user), method: :patch, remote: true) do
+<%= user.is_deleted? ?
+      (link_to(undelete_admin_user_url(user), method: :patch, remote: true) do
         '<span class="glyphicon glyphicon-backward"></span>'.html_safe
-      end : \
-      link_to(delete_admin_user_url(user), method: :patch, remote: true,
-              data: {confirm: "Are you sure you want to disable this user's account?"}) do
+      end) :
+      (link_to(delete_admin_user_url(user), method: :patch, remote: true,
+               data: {confirm: "Are you sure you want to disable this user's account?"}) do
         '<span class="glyphicon glyphicon-trash orange"></span>'.html_safe
-      end %>
+      end) %>
