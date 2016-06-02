@@ -35,7 +35,7 @@ RSpec.describe VocabTerms::Import::Xlsx, type: :routine do
   let!(:author) { FactoryGirl.create :user }
   let!(:ch)     { FactoryGirl.create :user }
 
-  before { Import::VocabTermImporter::BOOK_NAMES.merge!('Introduction to Programming' => 'prog') }
+  before { VocabTerms::Importer::BOOK_NAMES.merge!('Introduction to Programming' => 'prog') }
 
   it 'imports the sample spreadsheet' do
     expect {

@@ -2,15 +2,13 @@ require "rails_helper"
 
 RSpec.describe License, type: :model do
 
-  subject { FactoryGirl.create(:license) }
+  subject!(:license) { FactoryGirl.create(:license) }
 
   it { is_expected.to have_many(:publications).dependent(:destroy) }
   it { is_expected.to have_many(:class_licenses).dependent(:destroy) }
 
-  it { is_expected.to have_many(:combined_license_compatibilities)
-                        .dependent(:destroy) }
-  it { is_expected.to have_many(:original_license_compatibilities)
-                        .dependent(:destroy) }
+  it { is_expected.to have_many(:combined_license_compatibilities).dependent(:destroy) }
+  it { is_expected.to have_many(:original_license_compatibilities).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:title) }
@@ -23,12 +21,10 @@ RSpec.describe License, type: :model do
   it { is_expected.to validate_uniqueness_of(:url) }
 
   it 'should know if it is valid for a given publishable object' do
-    license = FactoryGirl.create :license,
-                                 licensed_classes: ['Solution', 'List']
+    license = FactoryGirl.create :license, licensed_classes: ['Solution', 'List']
     expect(license.valid_for?(Exercise.name)).to eq false
 
-    class_license = FactoryGirl.create :class_license, license: license,
-                                                       class_name: 'Exercise'
+    class_license = FactoryGirl.create :class_license, license: license, class_name: 'Exercise'
     expect(license.reload.valid_for?(Exercise.name)).to eq true
   end
 

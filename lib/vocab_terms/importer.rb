@@ -1,6 +1,6 @@
 # Imports a spreadsheet containing vocab terms
-module Import
-  module VocabTermImporter
+module VocabTerms
+  module Importer
 
     BOOK_NAMES = {
       'Anatomy and Physiology' => 'anp',
@@ -12,7 +12,7 @@ module Import
       'Principles of Macroeconomics' => 'macro',
       'Principles of Microeconomics' => 'micro'
     }
-    include PublishableImporter
+    include Publishable::Importer
     include RowParser
 
     def import_row(row, row_number)

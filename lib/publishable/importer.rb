@@ -1,6 +1,6 @@
 # Imports a file containing Publishables
-module Import
-  module PublishableImporter
+module Publishable
+  module Importer
 
     DEFAULT_AUTHOR_ID = 1
     DEFAULT_CH_ID = 2
@@ -11,13 +11,13 @@ module Import
              author_id: DEFAULT_AUTHOR_ID,
              ch_id: DEFAULT_CH_ID,
              skip_first_row: true)
-      Rails.logger.info "Reading from #{filename}."
+      Rails.logger.info { "Reading from #{filename}." }
 
       @author = User.find_by(id: author_id)
       @copyright_holder = User.find_by(id: ch_id)
 
-      Rails.logger.info "Setting #{author.full_name} as Author"
-      Rails.logger.info "Setting #{copyright_holder.full_name} as Copyright Holder"
+      Rails.logger.info { "Setting #{author.full_name} as Author" }
+      Rails.logger.info { "Setting #{copyright_holder.full_name} as Copyright Holder" }
 
       import_file(filename, skip_first_row)
     end

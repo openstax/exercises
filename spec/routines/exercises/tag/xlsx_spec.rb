@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Exercises::Tag::Xlsx, type: :routine do
   let(:fixture_path)  { 'spec/fixtures/sample_tags.xlsx' }
 
-  let(:expected_tags) { Set.new [
+  let(:expected_tags) { Set[
     'context-cnxmod:39256206-03b0-4396-abb6-75e6ee5e3c7b',
     'context-cnxmod:102e9604-daa7-4a09-9f9e-232251d1a4ee',
     'alternate-context-cnxmod:39256206-03b0-4396-abb6-75e6ee5e3c7b',

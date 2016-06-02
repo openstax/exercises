@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe User, type: :model do
 
-  subject { FactoryGirl.create :user }
+  subject!(:user) { FactoryGirl.create :user }
 
   it { is_expected.to belong_to(:account) }
 
@@ -38,8 +38,6 @@ RSpec.describe User, type: :model do
   end
 
   context 'instance' do
-    let!(:user) { FactoryGirl.create :user }
-
     it 'defines has_many_through_groups methods' do
       expect(user).to respond_to(:deputizations)
       expect(user).to respond_to(:list_owners)

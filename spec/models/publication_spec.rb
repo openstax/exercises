@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Publication, type: :model do
 
-  subject { FactoryGirl.create :publication }
+  subject!(:publication) { FactoryGirl.create :publication }
 
   it { is_expected.to belong_to(:publishable) }
   it { is_expected.to belong_to(:license) }
@@ -19,14 +19,11 @@ RSpec.describe Publication, type: :model do
   it { is_expected.to validate_presence_of(:number) }
   it { is_expected.to validate_presence_of(:version) }
 
-  let!(:publication) { FactoryGirl.build :publication }
-
   it 'requires a unique publishable' do
     publication.save!
     publication_2 = FactoryGirl.build :publication, publishable: publication.publishable
     expect(publication_2).not_to be_valid
-    expect(publication_2.errors[:publishable_id]).to(
-      include('has already been taken'))
+    expect(publication_2.errors[:publishable_id]).to include 'has already been taken'
 
     publication_2.publishable = FactoryGirl.build :exercise
     expect(publication_2).to be_valid
@@ -37,8 +34,7 @@ RSpec.describe Publication, type: :model do
 
     publication.license = FactoryGirl.build :license, licensed_classes: []
     expect(publication).not_to be_valid
-    expect(publication.errors[:license]).to(
-      include('is invalid for Exercise'))
+    expect(publication.errors[:license]).to include 'is invalid for Exercise'
 
     publication.license = nil
     expect(publication).to be_valid

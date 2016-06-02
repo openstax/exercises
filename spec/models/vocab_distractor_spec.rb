@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe VocabDistractor, type: :model do
-  subject(:vocab_distractor) { FactoryGirl.create :vocab_distractor }
+  subject!(:vocab_distractor) { FactoryGirl.create :vocab_distractor }
 
   it { is_expected.to belong_to(:vocab_term) }
 

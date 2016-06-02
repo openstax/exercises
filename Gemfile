@@ -157,6 +157,9 @@ group :development, :test do
 
   # Lorem Ipsum
   gem 'faker'
+
+  # Database cleaning functionality for tests
+  gem 'database_cleaner'
 end
 
 group :development do

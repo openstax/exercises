@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe QuestionDependency, type: :model do
 
-  subject { FactoryGirl.create(:question_dependency) }
+  subject!(:question_dependency) { FactoryGirl.create(:question_dependency) }
 
   it { is_expected.to belong_to(:parent_question) }
   it { is_expected.to belong_to(:dependent_question) }
@@ -10,8 +10,7 @@ RSpec.describe QuestionDependency, type: :model do
   it { is_expected.to validate_presence_of(:parent_question) }
   it { is_expected.to validate_presence_of(:dependent_question) }
 
-  it { is_expected.to validate_uniqueness_of(:dependent_question)
-                        .scoped_to(:parent_question_id) }
+  it { is_expected.to validate_uniqueness_of(:dependent_question).scoped_to(:parent_question_id) }
 
   it 'requires both questions to belong to the same exercise' do
     qd = FactoryGirl.build(:question_dependency,
