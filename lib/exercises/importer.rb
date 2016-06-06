@@ -1,8 +1,8 @@
 # Imports a spreadsheet containing Exercises
-module Import
-  module ExerciseImporter
+module Exercises
+  module Importer
 
-    include PublishableImporter
+    include Publishable::Importer
     include RowParser
 
     # Parses the text using Markdown
@@ -64,7 +64,7 @@ module Import
 
       question_stem_content = parse(row[14], ex)
 
-      styles = [Style::MULTIPLE_CHOICE]
+      styles = [::Style::MULTIPLE_CHOICE]
       styles << Style::FREE_RESPONSE unless row[12].include?('y')
       explanation = parse(row[15], ex)
       correct_answer_index = row[16].downcase.strip.each_byte.first - 97

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ListExercise, type: :model do
 
-  subject { FactoryGirl.create :list_exercise }
+  subject!(:list_exercise) { FactoryGirl.create :list_exercise }
 
   it { is_expected.to belong_to(:list) }
   it { is_expected.to belong_to(:exercise) }

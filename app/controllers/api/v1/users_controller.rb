@@ -28,7 +28,7 @@ module Api::V1
       the system. The schema for the returned JSON result is shown below.
 
       #{json_schema(OpenStax::Accounts::Api::V1::AccountSearchRepresenter,
-                    include: :readable)}            
+                    include: :readable)}
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://users.openstax.org/api/users',
@@ -70,7 +70,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{OpenStax::Accounts::SearchLocalAccounts::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')}.
-      Sort directions can either be `ASC` for 
+      Sort directions can either be `ASC` for
       an ascending sort, or `DESC` for a
       descending sort. If not provided, an ascending sort is assumed. Sort
       directions should be separated from the fields by a space.
@@ -81,19 +81,12 @@ module Api::V1
       `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
     EOS
     def index
-      OSU::AccessPolicy.require_action_allowed!(
-        :search, current_api_user, User
-      )
-      outputs = OpenStax::Accounts::SearchAccounts.call(
-                  params[:q], params.slice(:order_by)).outputs
+      OSU::AccessPolicy.require_action_allowed! :search, current_api_user, User
+      outputs = OpenStax::Accounts::SearchAccounts.call(params[:q], params.slice(:order_by)).outputs
 
-      outputs[:items] = outputs[:items].none \
-        if outputs[:total_count] > MAX_USERS
+      outputs[:items] = outputs[:items].none if outputs[:total_count] > MAX_USERS
 
-      respond_with(
-        outputs,
-        represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
-      )
+      respond_with outputs, represent_with: OpenStax::Accounts::Api::V1::AccountSearchRepresenter
     end
 
     ########
@@ -104,7 +97,7 @@ module Api::V1
     description <<-EOS
       Gets the current user's profile.
 
-      #{json_schema(Api::V1::UserRepresenter, include: :readable)}        
+      #{json_schema(Api::V1::UserRepresenter, include: :readable)}
     EOS
     def show
       standard_read(current_human_user)
@@ -118,7 +111,7 @@ module Api::V1
     description <<-EOS
       Updates the current user's profile.
 
-      #{json_schema(Api::V1::UserRepresenter, include: :writeable)}        
+      #{json_schema(Api::V1::UserRepresenter, include: :writeable)}
     EOS
     def update
       standard_update(current_human_user)
@@ -130,7 +123,7 @@ module Api::V1
 
     api :DELETE, '/user', "Disables the current user's account"
     description <<-EOS
-      Disables the current user's account.     
+      Disables the current user's account.
     EOS
     def destroy
       standard_destroy(current_human_user)

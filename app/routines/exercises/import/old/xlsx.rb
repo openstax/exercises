@@ -1,8 +1,5 @@
 # Imports an xlsx file
 
-# Reads xlsx
-require 'roo'
-
 module Exercises
   module Import
     class Old::Xlsx < Old::RowImporter

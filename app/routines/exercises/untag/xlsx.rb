@@ -1,14 +1,14 @@
-# Tags Exercises based on an xlsx file
+# Removes Exercise tags based on an xlsx file
 
 module Exercises
-  module Tag
+  module Untag
     class Xlsx
 
       include ::Xlsx::Tagger
 
       lev_routine
 
-      def tag(exercises, new_tags, row_number)
+      def tag(exercises, removed_tags, row_number)
         skipped_uids = []
         unpublished_uids = []
         published_uids = []
@@ -16,7 +16,7 @@ module Exercises
 
         exercises.each do |exercise|
           current_tags = exercise.tags.map(&:name)
-          final_tags = (current_tags + new_tags).uniq
+          final_tags = current_tags - removed_tags
           if final_tags == current_tags
             skipped_uids << exercise.uid
             next
@@ -37,15 +37,15 @@ module Exercises
         end
 
         Rails.logger.info do
-          "Skipped #{skipped_uids.join(', ')} (already tagged)"
+          "Skipped #{skipped_uids.join(', ')} (tags not present)"
         end unless skipped_uids.empty?
         Rails.logger.info do
-          "Tagged #{unpublished_uids.join(', ')} with #{
-          new_tags.join(', ')} (reused unpublished exercises)"
+          "Removed #{removed_tags.join(', ')} from #{
+          unpublished_uids.join(', ')} (reused unpublished exercises)"
         end unless unpublished_uids.empty?
         Rails.logger.info do
-          "Tagged #{published_uids.join(', ')} with #{
-          new_tags.join(', ')} (new exercise uids: #{new_uids.join(', ')})"
+          "Removed #{removed_tags.join(', ')} from #{
+          published_uids.join(', ')} (new exercise uids: #{new_uids.join(', ')})"
         end unless published_uids.empty?
       end
 

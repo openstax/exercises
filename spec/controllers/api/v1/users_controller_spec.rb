@@ -45,7 +45,7 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = {
-          total_count: User.count,
+          total_count: OpenStax::Accounts::Account.count,
           items: []
         }.to_json
 

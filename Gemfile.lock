@@ -122,6 +122,7 @@ GEM
       thor (~> 0.19.1)
     crass (1.0.2)
     daemons (1.2.2)
+    database_cleaner (1.4.1)
     debug_inspector (0.0.2)
     deep_cloneable (2.1.1)
       activerecord (>= 3.1.0, < 5.0.0)
@@ -599,6 +600,7 @@ DEPENDENCIES
   commontator
   compass-rails
   coveralls
+  database_cleaner
   deep_cloneable
   doorkeeper
   eco
@@ -655,4 +657,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.11.2
+   1.12.5

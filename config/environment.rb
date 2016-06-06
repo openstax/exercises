@@ -11,18 +11,18 @@ require 'has_attachments'
 require 'has_logic'
 require 'has_tags'
 
+require 'row_parser'
+require 'xlsx'
+
 require 'publishable'
+require 'exercises'
+require 'vocab_terms'
+
 require 'solution'
 require 'stylable'
 require 'user_html'
 
 require 'active_record/calculations_patch'
-
-require 'row_parser'
-require 'import/xlsx_importer'
-require 'import/publishable_importer'
-require 'import/exercise_importer'
-require 'import/vocab_term_importer'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"

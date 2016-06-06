@@ -6,8 +6,8 @@ module Exercises
 
       lev_routine
 
-      include ::Import::ExerciseImporter
-      include ::Import::XlsxImporter
+      include ::Xlsx::Importer
+      include Exercises::Importer
 
     end
 

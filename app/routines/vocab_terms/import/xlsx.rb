@@ -6,8 +6,8 @@ module VocabTerms
 
       lev_routine
 
-      include ::Import::VocabTermImporter
-      include ::Import::XlsxImporter
+      include ::Xlsx::Importer
+      include VocabTerms::Importer
 
     end
 

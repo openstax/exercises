@@ -5,7 +5,7 @@ RSpec.describe LogicVariable, type: :model do
   INVALID_VARIABLES = ["'hello'", '"hello"', 'hel lo', '$hello$', '<hello>',
                        'hello?', 'http://hello', '/hel/lo', 'hel; lo']
 
-  subject { FactoryGirl.create(:logic_variable) }
+  subject!(:logic_variable) { FactoryGirl.create(:logic_variable) }
 
   it { is_expected.to belong_to(:logic) }
 
@@ -16,8 +16,7 @@ RSpec.describe LogicVariable, type: :model do
 
   it { is_expected.to validate_uniqueness_of(:variable).scoped_to(:logic_id) }
 
-  it { is_expected.to validate_exclusion_of(:variable)
-                        .in_array(LogicVariable::RESERVED_WORDS) }
+  it { is_expected.to validate_exclusion_of(:variable).in_array(LogicVariable::RESERVED_WORDS) }
 
   it 'validates the format of its variable' do
     lv = FactoryGirl.build(:logic_variable)

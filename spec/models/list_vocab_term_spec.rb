@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ListVocabTerm, type: :model do
 
-  subject { FactoryGirl.create :list_vocab_term }
+  subject!(:list_vocab_term) { FactoryGirl.create :list_vocab_term }
 
   it { is_expected.to belong_to(:list) }
   it { is_expected.to belong_to(:vocab_term) }

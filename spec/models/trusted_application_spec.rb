@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TrustedApplication, type: :model do
 
-  subject { FactoryGirl.create(:trusted_application) }
+  subject!(:trusted_application) { FactoryGirl.create(:trusted_application) }
 
   it { is_expected.to belong_to(:application) }
 

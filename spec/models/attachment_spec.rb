@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe Attachment, type: :model do
 
-  subject(:attachment) { FactoryGirl.create :attachment }
-  let!(:asset_path)    { attachment.asset.path }
+  subject!(:attachment) { FactoryGirl.create :attachment }
+  let!(:asset_path)     { attachment.asset.path }
 
   after(:each) { attachment.destroy }
 
@@ -18,9 +18,7 @@ RSpec.describe Attachment, type: :model do
 
     attachment_2.asset = attachment.asset
     expect(attachment_2).not_to be_valid
-    expect(attachment_2.errors[:asset]).to(
-      include('has already been associated with this resource')
-    )
+    expect(attachment_2.errors[:asset]).to include 'has already been associated with this resource'
 
     attachment_2.parent = FactoryGirl.build :exercise
     expect(attachment_2).to be_valid

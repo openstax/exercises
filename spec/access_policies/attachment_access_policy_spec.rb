@@ -8,7 +8,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
   context 'an attachment on an exercise' do
 
-    subject(:attachment) { FactoryGirl.build :attachment }
+    subject!(:attachment) { FactoryGirl.build :attachment }
 
     it 'cannot be accessed by anonymous users or applications' do
       expect(AttachmentAccessPolicy.action_allowed?(:create, anon, attachment)).to eq false
@@ -27,11 +27,12 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
     end
 
     it 'can be deleted by the exercise author' do
-      attachment.save
+      attachment.save!
       expect(AttachmentAccessPolicy.action_allowed?(:destroy, user, attachment)).to eq false
       FactoryGirl.create(:author, publication: attachment.parent.publication, user: user)
       attachment.parent.reload
       expect(AttachmentAccessPolicy.action_allowed?(:destroy, user, attachment)).to eq true
+      attachment.destroy!
     end
 
   end
