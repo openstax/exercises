@@ -10,7 +10,25 @@ RSpec.describe VocabTerm, type: :model do
   it { is_expected.to have_many(:list_vocab_terms).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_presence_of(:definition) }
+
+  it 'saves even if the definition is blank' do
+    vocab_term.definition = ''
+    vocab_term.save!
+
+    vt = VocabTerm.new(name: 'test')
+    vt.save!
+    expect(vt.definition).to eq ''
+  end
+
+  it 'ensures that it has a definition before publication' do
+    vocab_term.publication.publish
+    vocab_term.before_publication
+    expect(vocab_term.errors).to be_empty
+
+    vocab_term.definition = ''
+    vocab_term.before_publication
+    expect(vocab_term.errors[:base]).to include('must have a definition')
+  end
 
   it 'ensures that it has at least 1 distractor before publication' do
     vocab_term.publication.publish
