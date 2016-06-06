@@ -77,7 +77,7 @@ class VocabTerm < ActiveRecord::Base
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
-    nv.exercises = exercises.map(&:new_version)
+    nv.exercises = latest_exercises.map(&:new_version)
     nv.publication.version = nv.publication.version + 1
     nv.publication.published_at = nil
     nv.publication.yanked_at = nil
@@ -184,7 +184,7 @@ class VocabTerm < ActiveRecord::Base
       stem.stem_answers = stem_answers
     end
 
-    self.exercises += vocab_exercises
+    self.exercises = (exercises + vocab_exercises).uniq
   end
 
 end

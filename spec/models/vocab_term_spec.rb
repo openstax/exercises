@@ -54,6 +54,16 @@ RSpec.describe VocabTerm, type: :model do
     vocab_term.exercises.each{ |exercise| expect(exercise).to be_is_published }
   end
 
+  it 'does not create extra versions of exercises when creating a new version' do
+    vocab_term.exercises.first.publication.publish.save!
+    vocab_term.exercises << vocab_term.exercises.first.new_version
+    expect(vocab_term.exercises.size).to eq 2
+    vocab_term.publication.publish.save!
+    vocab_term.exercises.each{ |exercise| expect(exercise).to be_is_published }
+    new_version = vocab_term.new_version
+    expect(new_version.exercises.size).to eq 1
+  end
+
   it 'updates distracted_term exercises when published' do
     distractor_term = vocab_term.vocab_distractors.first.distractor_term
     distractor_term.distractor_literals = ['Required for publication']
