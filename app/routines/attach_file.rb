@@ -20,9 +20,9 @@ class AttachFile
     end
 
     attachment = Attachment.new(parent: attachable, asset: file)
-    filename = attachment.asset.filename
-    existing_attachment = attachable.attachments.where(asset: filename).first
+    existing_attachment = attachable.attachments.find{ |att| att.filename == attachment.filename }
     if existing_attachment.nil?
+      # The attachment MUST be saved or else the URL's returned will be wrong (tmp folder)
       attachment.save!
       attachable.attachments.reset
       transfer_errors_from(attachment, {type: :verbatim}, true)
