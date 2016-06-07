@@ -4,14 +4,12 @@ module Xlsx
 
     include RowParser
 
-    def exec(filename: 'tags.xlsx', skip_first_row: true)
-      Rails.logger.info { "Reading from #{filename}." }
-
+    def exec(filename:, skip_first_row: true)
       import_file(filename, skip_first_row)
     end
 
     def import_file(filename, skip_first_row)
-      Rails.logger.info { "Reading from #{filename}." }
+      Rails.logger.info { "Filename: #{filename}" }
 
       book = Roo::Excelx.new(filename)
       row_offset = skip_first_row ? 1 : 0

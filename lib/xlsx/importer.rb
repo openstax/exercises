@@ -5,7 +5,7 @@ module Xlsx
     include RowParser
 
     def import_file(filename, skip_first_row)
-      Rails.logger.info { "Reading from #{filename}." }
+      Rails.logger.info { "Filename: #{filename}" }
 
       book = Roo::Excelx.new(filename)
       row_offset = skip_first_row ? 1 : 0
