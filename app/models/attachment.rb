@@ -10,10 +10,14 @@ class Attachment < ActiveRecord::Base
   validates :parent, presence: true
   validate :unique_asset
 
+  def filename
+    new_record? ? asset.filename : read_attribute(:asset)
+  end
+
   protected
 
   def remove_asset!
-    super unless Attachment.where(asset: read_attribute(:asset)).exists?
+    super unless Attachment.where(asset: filename).exists?
   end
 
   def unique_asset

@@ -40,7 +40,7 @@ module Exercises
                                   .where(exercise_tags: {tag: {name: id_tag}})
                                   .order{[publication.number.desc, publication.version.desc]}.first
 
-        publication = import_metadata(hash['attribution'])
+        publication = import_metadata(exercise.publication, hash['attribution'])
 
         unless latest_exercise.nil?
           publication.number = latest_exercise.publication.number
@@ -183,10 +183,9 @@ module Exercises
         collaborator
       end
 
-      # Imports collaborators, licenses, etc
-      # Returns a Publication
-      def import_metadata(hash)
-        publication = Publication.new
+      # Imports collaborators, licenses, etc into a given Publication
+      # Returns the given Publication
+      def import_metadata(publication, hash)
         publication.license = default_license
 
         (hash['authors'] || []).each do |author|
