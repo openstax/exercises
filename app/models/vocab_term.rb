@@ -52,9 +52,7 @@ class VocabTerm < ActiveRecord::Base
 
   before_validation :build_or_update_vocab_exercises
 
-  validates :name, presence: true
-  validates :definition, presence: true
-  validates :exercises, presence: true
+  validates :name, :exercises, presence: true
 
   scope :preloaded, -> {
     preload(:tags,
@@ -77,7 +75,7 @@ class VocabTerm < ActiveRecord::Base
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
-    nv.exercises = exercises.map(&:new_version)
+    nv.exercises = latest_exercises.map(&:new_version)
     nv.publication.version = nv.publication.version + 1
     nv.publication.published_at = nil
     nv.publication.yanked_at = nil
@@ -111,17 +109,19 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def before_publication
-    if vocab_distractors.any? || distractor_literals.any?
-      # Publish exercises
-      latest_exercises.each do |exercise|
-        exercise.publication.update_attribute :published_at, published_at
-      end
+    errors.add(:base, 'must have a definition') if definition.blank?
 
-      return true
+    errors.add(:base, 'must have at least 1 distractor') \
+      if distractor_literals.empty? && vocab_distractors.empty?
+
+    return false if errors.any?
+
+    # Publish exercises
+    latest_exercises.each do |exercise|
+      exercise.publication.update_attribute :published_at, published_at
     end
 
-    errors.add(:base, 'must have at least 1 distractor')
-    false
+    true
   end
 
   def after_publication
@@ -138,8 +138,6 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def build_or_update_vocab_exercises(publication_time = publication.published_at)
-    return if definition.nil?
-
     vocab_exercises = latest_exercises.map do |exercise|
       exercise.is_published? ? exercise.new_version : exercise
     end
@@ -173,7 +171,8 @@ class VocabTerm < ActiveRecord::Base
       # Ideally we would use separate stems here for free response vs multiple choice,
       # but we don't support that yet. Instead, we rely on tutor-js to split this stem for us.
       stem.content = "Define <strong>#{name}</strong> in your own words."
-      answers = distractors.map{ |distractor| Answer.new(question: question, content: distractor) }
+      answers = distractors.reject(&:blank?)
+                           .map{ |distractor| Answer.new(question: question, content: distractor) }
       stem_answers = answers.map do |answer|
         StemAnswer.new(stem: stem, answer: answer,
                        correctness: answer.content == definition ? 1.0 : 0.0).tap do |stem_answer|
@@ -184,7 +183,7 @@ class VocabTerm < ActiveRecord::Base
       stem.stem_answers = stem_answers
     end
 
-    self.exercises += vocab_exercises
+    self.exercises = (exercises + vocab_exercises).uniq
   end
 
 end

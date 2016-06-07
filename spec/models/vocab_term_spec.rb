@@ -10,7 +10,25 @@ RSpec.describe VocabTerm, type: :model do
   it { is_expected.to have_many(:list_vocab_terms).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_presence_of(:definition) }
+
+  it 'saves even if the definition is blank' do
+    vocab_term.definition = ''
+    vocab_term.save!
+
+    vt = VocabTerm.new(name: 'test')
+    vt.save!
+    expect(vt.definition).to eq ''
+  end
+
+  it 'ensures that it has a definition before publication' do
+    vocab_term.publication.publish
+    vocab_term.before_publication
+    expect(vocab_term.errors).to be_empty
+
+    vocab_term.definition = ''
+    vocab_term.before_publication
+    expect(vocab_term.errors[:base]).to include('must have a definition')
+  end
 
   it 'ensures that it has at least 1 distractor before publication' do
     vocab_term.publication.publish
@@ -52,6 +70,16 @@ RSpec.describe VocabTerm, type: :model do
     vocab_term.exercises.each{ |exercise| expect(exercise).not_to be_is_published }
     vocab_term.publication.publish.save!
     vocab_term.exercises.each{ |exercise| expect(exercise).to be_is_published }
+  end
+
+  it 'does not create extra versions of exercises when creating a new version' do
+    vocab_term.exercises.first.publication.publish.save!
+    vocab_term.exercises << vocab_term.exercises.first.new_version
+    expect(vocab_term.exercises.size).to eq 2
+    vocab_term.publication.publish.save!
+    vocab_term.exercises.each{ |exercise| expect(exercise).to be_is_published }
+    new_version = vocab_term.new_version
+    expect(new_version.exercises.size).to eq 1
   end
 
   it 'updates distracted_term exercises when published' do

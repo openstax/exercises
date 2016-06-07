@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160425191417) do
+ActiveRecord::Schema.define(version: 20160606214816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -619,7 +619,7 @@ ActiveRecord::Schema.define(version: 20160425191417) do
 
   create_table "vocab_terms", force: :cascade do |t|
     t.string   "name",                             null: false
-    t.string   "definition",                       null: false
+    t.string   "definition",          default: "", null: false
     t.string   "distractor_literals", default: [], null: false, array: true
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
