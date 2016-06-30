@@ -28,7 +28,7 @@ embed_transformer = lambda do |env|
       elements: %w[iframe],
 
       attributes: {
-        'iframe'  => %w[allowfullscreen frameborder height mozallowfullscreen
+        'iframe'  => %w[allowfullscreen class frameborder height mozallowfullscreen
                         scrolling src width webkitallowfullscreen]
       }
     }
