@@ -4,6 +4,7 @@ EMBED_URL_REGEXES = [
   /\A(?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\//,
   /\A(?:https?:)?\/\/(?:www\.)?khanacademy\.org\//,
   /\A(?:https?:)?\/\/(?:[\w-]+\.)?cnx\.org\//,
+  /\A(?:https?:)?\/\/(?:[\w-]+\.)?openstax\.org\//,
   /\A(?:https?:)?\/\/phet\.colorado\.edu\//
 ]
 
