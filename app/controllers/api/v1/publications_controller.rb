@@ -36,7 +36,7 @@ module Api::V1
         representer = PUBLISH_REPRESENTERS[@publishable.class.name].classify.constantize
 
         respond_with @publishable.reload, represent_with: representer,
-                                          responder: ResponderWithPutContent,
+                                          responder: ResponderWithPutPatchDeleteContent,
                                           user: current_api_user
       else
         render_api_errors @publishable.publication.errors

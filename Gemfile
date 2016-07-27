@@ -61,11 +61,11 @@ gem 'omniauth-oauth2', '~> 1.3.1'
 gem 'openstax_accounts', '~> 6.4.0'
 
 # Access control for API's
-gem 'doorkeeper'
+gem 'doorkeeper', '~> 3.1.0'
 
 # API versioning and documentation
 gem 'representable', '~> 2.2.3'
-gem 'openstax_api', '~> 6.1.5'
+gem 'openstax_api', '~> 7.1.1'
 gem 'apipie-rails'
 gem 'maruku'
 
@@ -128,7 +128,13 @@ gem 'pg'
 # HTTP requests
 gem 'httparty'
 
+# Exception handling
 gem 'openstax_rescue_from', '~> 1.5.0'
+
+# API JSON rendering/parsing
+# Do not use Roar 1.0.4
+# Also, do not use Roar::Hypermedia links
+gem 'roar', '1.0.3'
 
 group :development, :test do
   # Run specs in parallel

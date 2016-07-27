@@ -30,9 +30,9 @@ module Admin
         prefix = ''
       end
       names = (search_params.query || '').split(/\s/)
-      query = names.collect{|name| "#{prefix}#{name}"}.join(' ').to_s
+      query = names.map{|name| "#{prefix}#{name}"}.join(' ').to_s
 
-      run(:search_users, search_params)
+      run(:search_users, query)
     end
 
   end
