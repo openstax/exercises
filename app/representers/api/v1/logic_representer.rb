@@ -29,7 +29,7 @@ module Api::V1
 
     collection :logic_variables,
                class: LogicVariable,
-               decorator: LogicVariableRepresenter,
+               extend: LogicVariableRepresenter,
                readable: true,
                writeable: true,
                parse_strategy: :sync,

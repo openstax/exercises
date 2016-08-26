@@ -7,9 +7,9 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val|
-               self.answer = question.answers.select{|i| (i.id || i.temp_id) == val}.first
-             },
+             setter: ->(input:, **) do
+               self.answer = question.answers.find{ |ans| (ans.id || ans.temp_id) == input }
+             end,
              schema_info: {
                required: true
              }

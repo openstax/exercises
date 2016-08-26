@@ -3,7 +3,7 @@ module Api::V1
 
     collection :items, inherit: true,
                        class: List,
-                       decorator: ListRepresenter
+                       extend: ListRepresenter
 
   end
 end

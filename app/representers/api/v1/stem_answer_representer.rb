@@ -3,13 +3,17 @@ module Api::V1
 
     include Roar::JSON
 
+    can_view_solutions_proc = ->(user_options:, **) do
+      stem.question.exercise.can_view_solutions?(user_options[:user])
+    end
+
     property :answer_id,
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val|
-               self.answer = question.answers.select{|i| (i.id || i.temp_id) == val}.first
-             },
+             setter: ->(input:, **) do
+               self.answer = question.answers.find{ |ans| (ans.id || ans.temp_id) == input }
+             end,
              schema_info: {
                required: true
              }
@@ -18,7 +22,7 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             if: lambda { |args| stem.question.exercise.can_view_solutions?(args[:user]) },
+             if: can_view_solutions_proc,
              schema_info: {
                type: 'number'
              }
@@ -28,7 +32,7 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
-             if: lambda { |args| stem.question.exercise.can_view_solutions?(args[:user]) }
+             if: can_view_solutions_proc
 
   end
 end

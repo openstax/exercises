@@ -15,7 +15,7 @@ module HasAttachments
         collection :attachments,
                    {
                      class: Attachment,
-                     decorator: Api::V1::AttachmentRepresenter,
+                     extend: Api::V1::AttachmentRepresenter,
                      writeable: false,
                      readable: true
                    }.merge(options)

@@ -16,13 +16,13 @@ module Api::V1
 
     collection :stem_answers,
                class: StemAnswer,
-               decorator: StemAnswerRepresenter,
+               extend: StemAnswerRepresenter,
                writeable: true,
                readable: true
 
     collection :combo_choices,
                class: ComboChoice,
-               decorator: ComboChoiceRepresenter,
+               extend: ComboChoiceRepresenter,
                writeable: true,
                readable: true
 

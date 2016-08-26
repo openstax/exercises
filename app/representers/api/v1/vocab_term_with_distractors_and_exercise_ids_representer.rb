@@ -12,7 +12,7 @@ module Api::V1
     collection :vocab_distractors,
                as: :distractor_terms,
                class: VocabDistractor,
-               decorator: VocabDistractorRepresenter,
+               extend: VocabDistractorRepresenter,
                writeable: true,
                readable: true,
                schema_info: {

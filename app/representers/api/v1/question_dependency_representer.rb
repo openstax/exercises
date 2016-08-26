@@ -7,12 +7,10 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val|
+             setter: ->(input:, **) do
                self.parent_question = dependent_question.exercise.questions
-                                        .select{ |i|
-                                          (i.id || i.temp_id) == val
-                                        }.first
-             }
+                                        .find{ |ans| (ans.id || ans.temp_id) == input }
+             end
 
     property :is_optional,
              as: :optional,

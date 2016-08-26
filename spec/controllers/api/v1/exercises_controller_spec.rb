@@ -108,7 +108,8 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_draft).to_hash(user: user)]
+            items: [Api::V1::ExerciseRepresenter.new(@exercise_draft)
+                                                .to_hash(user_options: { user: user })]
           }.to_json
 
           expect(response.body).to eq(expected_response)
@@ -199,7 +200,8 @@ module Api::V1
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
 
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json(user: user)
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
+                                                        .to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
@@ -207,7 +209,8 @@ module Api::V1
         api_get :show, user_token, parameters: { id: @exercise.number }
         expect(response).to have_http_status(:success)
 
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise).to_json(user: user)
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
+                                                        .to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
@@ -217,7 +220,7 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload)
-                                                        .to_json(user: user)
+                                                        .to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
@@ -227,7 +230,7 @@ module Api::V1
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise_1.reload)
-                                                        .to_json(user: user)
+                                                        .to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
@@ -301,9 +304,8 @@ module Api::V1
 
       it "creates the requested Exercise and assigns the user as author and CR holder" do
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter.new(
-                                           @exercise
-                                         ).to_json(user: user)
+                          raw_post_data: Api::V1::ExerciseRepresenter
+                                           .new(@exercise).to_json(user_options: { user: user })
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
 
@@ -337,8 +339,8 @@ module Api::V1
         )
 
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter.new(exercise)
-                                                                     .to_json(user: user)
+                          raw_post_data: Api::V1::ExerciseRepresenter
+                                           .new(exercise).to_json(user_options: { user: user })
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
 

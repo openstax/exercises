@@ -3,11 +3,15 @@ module Api::V1
 
     include Roar::JSON
 
+    can_view_solutions_proc = ->(user_options:, **) do
+      exercise.can_view_solutions?(user_options[:user])
+    end
+
     property :id,
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |value, args| self.temp_id = value }
+             setter: ->(input:, **) { self.temp_id = input }
 
     property :answer_order_matters,
              as: :is_answer_order_important,
@@ -25,7 +29,7 @@ module Api::V1
 
     collection :stems,
                class: Stem,
-               decorator: StemRepresenter,
+               extend: StemRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
@@ -33,9 +37,8 @@ module Api::V1
                }
 
     collection :answers,
-               class: Answer,
-               decorator: AnswerRepresenter,
-               instance: lambda { |*| Answer.new(question: self) },
+               instance: ->(*) { Answer.new(question: self) },
+               extend: AnswerRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
@@ -44,29 +47,29 @@ module Api::V1
 
     collection :collaborator_solutions,
                class: CollaboratorSolution,
-               decorator: CollaboratorSolutionRepresenter,
+               extend: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+               if: can_view_solutions_proc
 
     collection :community_solutions,
                class: CommunitySolution,
-               decorator: CommunitySolutionRepresenter,
+               extend: CommunitySolutionRepresenter,
                writeable: false,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+               if: can_view_solutions_proc
 
     collection :hints,
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |args| hints.collect{ |h| h.content } },
-               setter: lambda { |values, args|
-                 values.each do |v|
-                   hint = hints.find_or_initialize_by(content: v)
+               getter: ->(*) { hints.map(&:content) },
+               setter: ->(input:, **) do
+                 input.each do |val|
+                   hint = hints.find_or_initialize_by(content: val)
                    hints << hint unless hint.persisted?
                  end
-               },
+               end,
                schema_info: {
                  required: true,
                  description: 'Author-supplied hints for the question'
@@ -75,7 +78,7 @@ module Api::V1
     collection :parent_dependencies,
                as: :dependencies,
                class: QuestionDependency,
-               decorator: QuestionDependencyRepresenter,
+               extend: QuestionDependencyRepresenter,
                writeable: true,
                readable: true,
                schema_info: {

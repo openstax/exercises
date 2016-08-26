@@ -124,6 +124,8 @@ GEM
     daemons (1.2.2)
     database_cleaner (1.4.1)
     debug_inspector (0.0.2)
+    declarative (0.0.8)
+      uber (>= 0.0.15)
     deep_cloneable (2.1.1)
       activerecord (>= 3.1.0, < 5.0.0)
     diff-lcs (1.2.5)
@@ -440,10 +442,9 @@ GEM
       ffi (>= 0.5.0)
     ref (1.0.5)
     remotipart (1.2.1)
-    representable (2.2.3)
-      multi_json
-      nokogiri
-      uber (~> 0.0.7)
+    representable (3.0.0)
+      declarative (~> 0.0.5)
+      uber (~> 0.0.15)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
     rest-client (1.8.0)
@@ -637,7 +638,7 @@ DEPENDENCIES
   rails-html-sanitizer
   rails_admin
   remotipart
-  representable (~> 2.2.3)
+  representable (~> 3.0.0)
   rinku
   roar (= 1.0.3)
   roo

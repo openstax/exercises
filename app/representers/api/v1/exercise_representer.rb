@@ -3,9 +3,11 @@ module Api::V1
 
     include Roar::JSON
 
+    can_view_solutions_proc = ->(user_options:, **) { can_view_solutions?(user_options[:user]) }
+
     # Attachments may (for a while) contain collaborator solution attachments, so
     # only show them to those who can see solutions
-    has_attachments(if: ->(args) { can_view_solutions?(args[:user]) })
+    has_attachments(if: can_view_solutions_proc)
 
     has_logic
     has_tags
@@ -22,7 +24,7 @@ module Api::V1
              writeable: false,
              readable: true,
              getter: ->(*) { vocab_term.try(:uid) },
-             if: ->(args) { can_view_solutions?(args[:user]) }
+             if: can_view_solutions_proc
 
     property :title,
              type: String,
@@ -36,12 +38,11 @@ module Api::V1
              readable: true
 
     collection :questions,
-               class: Question,
-               decorator: ->(klass, *) {
-                 klass.nil? || klass.stems.length > 1 ? \
+               instance: ->(*) { Question.new(exercise: self) },
+               extend: ->(input:, **) {
+                 input.nil? || input.stems.length > 1 ? \
                    QuestionRepresenter : SimpleQuestionRepresenter
                },
-               instance: ->(*) { Question.new(exercise: self) },
                writeable: true,
                readable: true,
                schema_info: {
