@@ -79,21 +79,7 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      user = current_api_user
-      OSU::AccessPolicy.require_action_allowed!(:search, user, Exercise)
-
-      result = SearchExercises.call(params, user: current_api_user)
-      return render_api_errors(result.errors) if result.errors.any?
-
-      outputs = result.outputs
-      outputs[:items].each do |item|
-        OSU::AccessPolicy.require_action_allowed!(:read, user, item)
-      end
-
-      represent_with_options = { user_options: { user: user } }
-                                 .merge(represent_with: ExerciseSearchRepresenter)
-
-      respond_with outputs, represent_with_options
+      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter, user: current_api_user)
     end
 
     ##########
@@ -108,7 +94,7 @@ module Api::V1
     EOS
     def create
       user = current_human_user
-      standard_create(Exercise.new, nil, user_options: { user: current_api_user }) do |exercise|
+      standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user
         ) unless exercise.publication.authors.any?{ |au| au.user = user }
@@ -129,7 +115,7 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}
     EOS
     def show
-      standard_read(@exercise, nil, false, user_options: { user: current_api_user })
+      standard_read(@exercise, nil, false, user: current_api_user)
     end
 
     ##########
@@ -143,7 +129,7 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
     EOS
     def update
-      standard_update(@exercise, nil, user_options: { user: current_api_user })
+      standard_update(@exercise, nil, user: current_api_user)
     end
 
 
@@ -157,7 +143,7 @@ module Api::V1
       Deletes the Exercise that matches the provided UID.
     EOS
     def destroy
-      standard_destroy(@exercise, nil, user_options: { user: current_api_user })
+      standard_destroy(@exercise, nil, user: current_api_user)
     end
 
     protected
