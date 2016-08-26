@@ -89,7 +89,8 @@ module Api::V1
       result = SearchVocabTerms.call(params, options)
       return render_api_errors(result.errors) if result.errors.any?
 
-      respond_with result.outputs, options.merge(represent_with: VocabTermSearchRepresenter)
+      respond_with result.outputs, { user_options: options }
+                                     .merge(represent_with: VocabTermSearchRepresenter)
     end
 
     ##########
@@ -106,7 +107,7 @@ module Api::V1
     def create
       user = current_human_user
       standard_create(VocabTerm.new, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
-                      user: current_api_user) do |vocab_term|
+                      user_options: { user: current_api_user }) do |vocab_term|
         vocab_term.publication.authors << Author.new(
           publication: vocab_term.publication, user: user
         ) unless vocab_term.publication.authors.any?{ |au| au.user = user }
@@ -129,7 +130,7 @@ module Api::V1
     EOS
     def show
       standard_read(@vocab_term, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
-                    false, user: current_api_user)
+                    false, user_options: { user: current_api_user })
     end
 
     ##########
@@ -145,7 +146,7 @@ module Api::V1
     EOS
     def update
       standard_update(@vocab_term, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
-                      user: current_api_user)
+                      user_options: { user: current_api_user })
     end
 
 

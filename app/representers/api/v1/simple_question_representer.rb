@@ -3,6 +3,10 @@ module Api::V1
 
     include Roar::JSON
 
+    can_view_solutions_proc = ->(user_options:, **) do
+      exercise.can_view_solutions?(user_options[:user])
+    end
+
     property :id,
              type: Integer,
              writeable: false,
@@ -27,18 +31,18 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
-             getter: lambda { |args| stems.first.try(:content) || '' },
-             setter: lambda { |value, args|
+             getter: ->(*) { stems.first.try(:content) || '' },
+             setter: ->(input:, **) do
                stems << Stem.new(question: self) if stems.empty?
-               stems.first.content = value },
+               stems.first.content = input
+             end,
              schema_info: {
                required: true
              }
 
     collection :answers,
-               class: Answer,
-               decorator: SimpleAnswerRepresenter,
-               instance: lambda { |*| Answer.new(question: self) },
+               instance: ->(*) { Answer.new(question: self) },
+               extend: SimpleAnswerRepresenter,
                writeable: true,
                readable: true,
                schema_info: {
@@ -47,29 +51,29 @@ module Api::V1
 
     collection :collaborator_solutions,
                class: CollaboratorSolution,
-               decorator: CollaboratorSolutionRepresenter,
+               extend: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+               if: can_view_solutions_proc
 
     collection :community_solutions,
                class: CommunitySolution,
-               decorator: CommunitySolutionRepresenter,
+               extend: CommunitySolutionRepresenter,
                writeable: false,
                readable: true,
-               if: lambda { |args| exercise.can_view_solutions?(args[:user]) }
+               if: can_view_solutions_proc
 
     collection :hints,
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |args| hints.collect{|h| h.content} },
-               setter: lambda { |values, args|
-                 values.each do |v|
-                   hint = hints.find_or_initialize_by(content: v)
+               getter: ->(*) { hints.map(&:content) },
+               setter: ->(input:, **) do
+                 input.each do |val|
+                   hint = hints.find_or_initialize_by(content: val)
                    hints << hint unless hint.persisted?
                  end
-               },
+               end,
                schema_info: {
                  required: true,
                  description: 'Author-supplied hints for the question'
@@ -79,15 +83,14 @@ module Api::V1
                type: String,
                writeable: true,
                readable: true,
-               getter: lambda { |args| stems.first.try(:stylings).try(:map, &:style) },
-               setter: lambda { |values, args|
-                 values.each do |value|
-                   styling = stems.first.stylings
-                                  .find_or_initialize_by(style: value)
+               getter: ->(*) { stems.first.try(:stylings).try(:map, &:style) },
+               setter: ->(input:, **) do
+                 input.each do |val|
+                   styling = stems.first.stylings.find_or_initialize_by(style: val)
                    styling.stylable = stems.first
                    stems.first.stylings << styling unless styling.persisted?
                  end
-               },
+               end,
                schema_info: {
                  required: true,
                  description: 'The formats allowed for this object'
@@ -95,11 +98,11 @@ module Api::V1
 
     collection :combo_choices,
                class: ComboChoice,
-               decorator: ComboChoiceRepresenter,
+               extend: ComboChoiceRepresenter,
                writeable: true,
                readable: true,
-               getter: lambda { |args| stems.first.try(:combo_choices) },
-               setter: lambda { |value, args| stems.first.combo_choices = value }
+               getter: ->(*) { stems.first.try(:combo_choices) },
+               setter: ->(input:, **) { stems.first.combo_choices = input }
 
   end
 end

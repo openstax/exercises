@@ -25,35 +25,33 @@ module Publishable
 
         property :license,
                  class: License,
-                 decorator: Api::V1::LicenseRepresenter,
+                 extend: Api::V1::LicenseRepresenter,
                  writeable: true,
                  readable: true,
-                 setter: lambda { |val, args|
-                   self.license = License.find_by(name: val[:name])
-                 }
+                 setter: ->(input:, **) { self.license = License.find_by(name: input[:name]) }
 
         collection :editors,
                    class: Editor,
-                   decorator: Api::V1::RoleRepresenter,
+                   extend: Api::V1::RoleRepresenter,
                    writeable: true,
                    readable: true
 
         collection :authors,
                    class: Author,
-                   decorator: Api::V1::RoleRepresenter,
+                   extend: Api::V1::RoleRepresenter,
                    writeable: true,
                    readable: true
 
         collection :copyright_holders,
                    class: CopyrightHolder,
-                   decorator: Api::V1::RoleRepresenter,
+                   extend: Api::V1::RoleRepresenter,
                    writeable: true,
                    readable: true
 
         collection :derivations,
                    as: :derived_from,
                    class: Publication,
-                   decorator: self,
+                   extend: self,
                    writeable: true,
                    readable: true
 

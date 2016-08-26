@@ -37,7 +37,7 @@ module Api::V1
 
         respond_with @publishable.reload, represent_with: representer,
                                           responder: ResponderWithPutPatchDeleteContent,
-                                          user: current_api_user
+                                          user_options: { user: current_api_user }
       else
         render_api_errors @publishable.publication.errors
       end

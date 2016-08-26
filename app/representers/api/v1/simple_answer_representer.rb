@@ -3,6 +3,10 @@ module Api::V1
 
     include Roar::JSON
 
+    can_view_solutions_proc = ->(user_options:, **) do
+      question.exercise.can_view_solutions?(user_options[:user])
+    end
+
     property :id,
              type: Integer,
              writeable: false,
@@ -21,13 +25,13 @@ module Api::V1
              type: Float,
              writeable: true,
              readable: true,
-             if: lambda { |args| question.exercise.can_view_solutions?(args[:user]) },
-             getter: lambda { |args| stem_answers.first.try(:correctness) },
-             setter: lambda { |value, args|
+             if: can_view_solutions_proc,
+             getter: ->(*) { stem_answers.first.try(:correctness) },
+             setter: ->(input:, **) do
               stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                 if stem_answers.empty?
-              stem_answers.first.correctness = value
-             },
+              stem_answers.first.correctness = input
+             end,
              schema_info: {
                type: 'number'
              }
@@ -37,13 +41,13 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
-             if: lambda { |args| question.exercise.can_view_solutions?(args[:user]) },
-             getter: lambda { |args| stem_answers.first.try(:feedback) },
-             setter: lambda { |value, args|
+             if: can_view_solutions_proc,
+             getter: ->(*) { stem_answers.first.try(:feedback) },
+             setter: ->(input:, **) do
               stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                 if stem_answers.empty?
-              stem_answers.first.feedback = value
-             }
+              stem_answers.first.feedback = input
+             end
 
   end
 end

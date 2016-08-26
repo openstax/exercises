@@ -26,7 +26,7 @@ module HasLogic
       def has_logic
         property :logic,
                  class: Logic,
-                 decorator: Api::V1::LogicRepresenter,
+                 extend: Api::V1::LogicRepresenter,
                  writeable: true,
                  readable: true
       end

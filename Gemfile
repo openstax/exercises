@@ -64,7 +64,7 @@ gem 'openstax_accounts', '~> 6.4.0'
 gem 'doorkeeper', '~> 3.1.0'
 
 # API versioning and documentation
-gem 'representable', '~> 2.2.3'
+gem 'representable', '~> 3.0.0'
 gem 'openstax_api', '~> 7.1.1'
 gem 'apipie-rails'
 gem 'maruku'

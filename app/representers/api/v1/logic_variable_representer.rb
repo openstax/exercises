@@ -6,10 +6,9 @@ module Api::V1
     collection :logic_variable_values,
                as: :values,
                class: LogicVariableValue,
-               decorator: LogicVariableValueRepresenter,
+               extend: LogicVariableValueRepresenter,
                readable: false,
-               writeable: true,
-               parse_strategy: :sync
+               writeable: true
 
   end
 end

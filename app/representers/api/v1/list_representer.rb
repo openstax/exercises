@@ -13,42 +13,37 @@ module Api::V1
     collection :list_nestings,
                as: :nestings,
                class: ListNesting,
-               decorator: ListNestingRepresenter,
+               extend: ListNestingRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :list_exercises,
                as: :exercises,
                class: ListExercise,
-               decorator: ListExerciseRepresenter,
+               extend: ListExerciseRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :list_owners,
                as: :owners,
                class: ListOwner,
-               decorator: RoleRepresenter,
+               extend: RoleRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :list_editors,
                as: :editors,
                class: ListEditor,
-               decorator: RoleRepresenter,
+               extend: RoleRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
     collection :list_readers,
                as: :readers,
                class: ListReader,
-               decorator: RoleRepresenter,
+               extend: RoleRepresenter,
                writeable: true,
-               readable: true,
-               parse_strategy: :sync
+               readable: true
 
   end
 end

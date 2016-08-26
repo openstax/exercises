@@ -7,7 +7,7 @@ module Api::V1
              type: Integer,
              writeable: true,
              readable: true,
-             setter: lambda { |val, *| self.temp_id = val },
+             setter: ->(input:, **) { self.temp_id = input },
              schema_info: {
                required: true
              }

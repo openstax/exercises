@@ -16,11 +16,11 @@ module Stylable
                    type: String,
                    writeable: true,
                    readable: true,
-                   getter: lambda { |args| stylings.map(&:style) },
-                   setter: lambda { |val, args|
-                     styling = stylings.find_or_initialize_by(style: val)
+                   getter: ->(*) { stylings.map(&:style) },
+                   setter: ->(input:, **) do
+                     styling = stylings.find_or_initialize_by(style: input)
                      stylings << styling unless styling.persisted?
-                   },
+                   end,
                    schema_info: {
                      required: true,
                      description: 'The question formats allowed for this object'

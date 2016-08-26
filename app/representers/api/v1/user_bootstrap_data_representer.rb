@@ -9,6 +9,6 @@ module Api::V1
              extend: Api::V1::UserRepresenter,
              readable: true,
              writeable: false,
-             getter: ->(*){ self }
+             getter: ->(*) { self }
   end
 end

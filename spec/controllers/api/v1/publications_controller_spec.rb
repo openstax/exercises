@@ -38,8 +38,9 @@ module Api::V1
           api_put :publish, exercise_author_token,
                             parameters: { exercise_id: exercise.uid.to_s }
 
-          expected_response = Api::V1::ExerciseRepresenter.new(exercise.reload)
-                                                          .to_json(user: exercise_author.user)
+          expected_response = Api::V1::ExerciseRepresenter
+                                .new(exercise.reload)
+                                .to_json(user_options: { user: exercise_author.user })
           expect(response).to have_http_status(:success)
           expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
           expect(exercise.is_published?).to eq true
