@@ -297,7 +297,7 @@ module Api::V1
         expect(@vocab_term.attributes).to eq @old_attributes
 
         uid = JSON.parse(response.body)['uid']
-        new_vocab_term = VocabTerm.with_uid(uid).first
+        new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
         expect(new_vocab_term.name).to eq "Ipsum lorem"
@@ -319,7 +319,7 @@ module Api::V1
         expect(@vocab_term.attributes).to eq @old_attributes
 
         uid = JSON.parse(response.body)['uid']
-        new_vocab_term = VocabTerm.with_uid(uid).first
+        new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
         expect(new_vocab_term.id).not_to eq @vocab_term.id

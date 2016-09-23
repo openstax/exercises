@@ -7,7 +7,8 @@ class SearchExercises
                translations: { outputs: { type: :verbatim } }
 
   SORTABLE_FIELDS = {
-    'number' => Publication.arel_table[:number],
+    'number' => PublicationGroup.arel_table[:number],
+    'uuid' => PublicationGroup.arel_table[:uuid],
     'version' => Publication.arel_table[:version],
     'title' => :title,
     'created_at' => :created_at,
@@ -19,7 +20,7 @@ class SearchExercises
 
   def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
-    relation = Exercise.visible_for(options[:user]).joins(:publication)
+    relation = Exercise.visible_for(options[:user]).joins(publication: :publication_group)
 
     # By default, only return the latest exercises visible to the user.
     # If either versions, uids or a publication date are specified,
@@ -33,32 +34,34 @@ class SearchExercises
       # Block to be used for searches by id or uid
       id_search_block = lambda do |ids|
         ids.each do |id|
-          sanitized_ids = to_string_array(id).collect{|id| id.split('@')}
+          sanitized_ids = to_string_array(id).map{|id| id.split('@')}
           next @items = @items.none if sanitized_ids.empty?
 
-          sanitized_numbers = sanitized_ids.collect{|sid| sid.first}.compact
-          sanitized_versions = sanitized_ids.collect{|sid| sid.second}.compact
+          sanitized_numbers = sanitized_ids.map(&:first).compact
+          sanitized_versions = sanitized_ids.map(&:second).compact
           if sanitized_numbers.empty?
             @items = @items.where(publication: {version: sanitized_versions})
           elsif sanitized_versions.empty?
-            @items = @items.where(publication: {number: sanitized_numbers})
+            @items = @items.where{publication.publication_group.number.in(sanitized_numbers) |
+                                  publication.publication_group.uuid.in(sanitized_numbers)}
           else
             # Combine the id's one at a time using Squeel
             @items = @items.where do
-              only_numbers = sanitized_ids.select{ |sid| sid.second.blank? }.collect(&:first)
-              only_versions = sanitized_ids.select{ |sid| sid.first.blank? }.collect(&:second)
+              only_numbers = sanitized_ids.select{ |sid| sid.second.blank? }.map(&:first)
+              only_versions = sanitized_ids.select{ |sid| sid.first.blank? }.map(&:second)
               full_ids = sanitized_ids.reject{ |sid| sid.first.blank? || sid.second.blank? }
 
-              cumulative_query = publication.number.in(only_numbers) | \
+              cumulative_query = publication.publication_group.number.in(only_numbers) | \
+                                 publication.publication_group.uuid.in(only_numbers) | \
                                  publication.version.in(only_versions)
 
               full_ids.each do |full_id|
                 sanitized_number = full_id.first
                 sanitized_version = full_id.second
-                query = (publication.number == sanitized_number) & \
+                query = ((publication.publication_group.number == sanitized_number) |
+                         (publication.publication_group.uuid == sanitized_number)) & \
                         (publication.version == sanitized_version)
-                cumulative_query = cumulative_query | ((publication.number == sanitized_number) & \
-                                                       (publication.version == sanitized_version))
+                cumulative_query = cumulative_query | query
               end
 
               cumulative_query
@@ -76,12 +79,21 @@ class SearchExercises
 
       with.keyword :uid, &id_search_block
 
+      with.keyword :uuid do |uuids|
+        uuids.each do |uuid|
+          sanitized_uuids = to_string_array(uuids)
+          next @items = @items.none if sanitized_uuids.empty?
+
+          @items = @items.where(publication: {publication_group: {uuid: sanitized_uuids}})
+        end
+      end
+
       with.keyword :number do |numbers|
         numbers.each do |number|
           sanitized_numbers = to_string_array(numbers)
           next @items = @items.none if sanitized_numbers.empty?
 
-          @items = @items.where(publication: {number: sanitized_numbers})
+          @items = @items.where(publication: {publication_group: {number: sanitized_numbers}})
         end
       end
 
@@ -99,11 +111,10 @@ class SearchExercises
 
       with.keyword :tag do |tags|
         tags.each do |tag|
-          sanitized_tags = to_string_array(tag).collect{|t| t.downcase}
+          sanitized_tags = to_string_array(tag).map(&:downcase)
           next @items = @items.none if sanitized_tags.empty?
 
-          @items = @items.joins(:tags)
-                         .where(tags: {name: sanitized_tags})
+          @items = @items.joins(:tags).where(tags: {name: sanitized_tags})
         end
       end
 
@@ -233,7 +244,7 @@ class SearchExercises
 
     return if latest_scope.nil?
 
-    outputs[:items] = outputs[:items].latest(latest_scope)
+    outputs[:items] = outputs[:items].latest(scope: latest_scope)
     outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil).count
   end
 end

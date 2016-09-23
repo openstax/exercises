@@ -166,7 +166,7 @@ module Api::V1
     protected
 
     def get_vocab_term
-      @vocab_term = VocabTerm.visible_for(current_api_user).with_uid(params[:id]).first || \
+      @vocab_term = VocabTerm.visible_for(current_api_user).with_id(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound, "Couldn't find VocabTerm with 'uid'=#{params[:id]}")
     end
 
@@ -177,11 +177,11 @@ module Api::V1
 
         # If a draft has been requested, lock the latest published vocab_term first
         # so we don't create 2 drafts
-        published_vocab_term = VocabTerm.published.with_uid(@number).lock.first \
+        published_vocab_term = VocabTerm.published.with_id(@number).lock.first \
           if draft_requested
 
         # Attempt to find existing vocab_term
-        @vocab_term = VocabTerm.visible_for(current_api_user).with_uid(params[:id]).first
+        @vocab_term = VocabTerm.visible_for(current_api_user).with_id(params[:id]).first
         return unless @vocab_term.nil?
 
         # VocabTerm not found and either draft not requested or

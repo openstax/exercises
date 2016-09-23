@@ -4,6 +4,7 @@ class VocabTerm < ActiveRecord::Base
     :tags,
     {
       publication: [
+        :publication_group,
         :license,
         {
           derivations: :source_publication,
@@ -57,7 +58,12 @@ class VocabTerm < ActiveRecord::Base
   scope :preloaded, -> {
     preload(:tags,
             :vocab_distractors,
-            publication: [authors: :user, copyright_holders: :user, editors: :user])
+            publication: [
+              :publication_group,
+              {authors: :user},
+              {copyright_holders: :user},
+              {editors: :user}
+            ])
   }
 
   def content_equals?(other_vocab_term)
@@ -125,10 +131,11 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def after_publication
-    last_def = VocabTerm.joins(:publication).where(publication: {number: number})
-                                            .where{id != my{id}}
-                                            .order{publication.version.desc}
-                                            .limit(1).pluck(:definition)
+    last_def = VocabTerm.joins(publication: :publication_group)
+                        .where(publication: {publication_group: {number: number}})
+                        .where{id != my{id}}
+                        .order{publication.version.desc}
+                        .limit(1).pluck(:definition)
 
     # Update distracted term exercises if the definition changed
     VocabTerm.joins(:vocab_distractors)

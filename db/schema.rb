@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160610191504) do
+ActiveRecord::Schema.define(version: 20160922231345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -491,11 +491,22 @@ ActiveRecord::Schema.define(version: 20160610191504) do
   add_index "openstax_accounts_groups", ["is_public"], name: "index_openstax_accounts_groups_on_is_public", using: :btree
   add_index "openstax_accounts_groups", ["openstax_uid"], name: "index_openstax_accounts_groups_on_openstax_uid", unique: true, using: :btree
 
+  create_table "publication_groups", force: :cascade do |t|
+    t.string   "publishable_type", null: false
+    t.integer  "number",           null: false
+    t.uuid     "uuid",             null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "publication_groups", ["number", "publishable_type"], name: "index_publication_groups_on_number_and_publishable_type", unique: true, using: :btree
+  add_index "publication_groups", ["publishable_type"], name: "index_publication_groups_on_publishable_type", using: :btree
+  add_index "publication_groups", ["uuid"], name: "index_publication_groups_on_uuid", unique: true, using: :btree
+
   create_table "publications", force: :cascade do |t|
     t.integer  "publishable_id",                        null: false
     t.string   "publishable_type",                      null: false
     t.integer  "license_id"
-    t.integer  "number",                                null: false
     t.integer  "version",                               null: false
     t.datetime "published_at"
     t.datetime "yanked_at"
@@ -504,11 +515,12 @@ ActiveRecord::Schema.define(version: 20160610191504) do
     t.boolean  "major_change",          default: false, null: false
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.integer  "publication_group_id",                  null: false
   end
 
   add_index "publications", ["embargoed_until"], name: "index_publications_on_embargoed_until", using: :btree
   add_index "publications", ["license_id"], name: "index_publications_on_license_id", using: :btree
-  add_index "publications", ["number", "publishable_type", "version"], name: "index_publications_on_number_and_publishable_type_and_version", unique: true, using: :btree
+  add_index "publications", ["publication_group_id"], name: "index_publications_on_publication_group_id", using: :btree
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true, using: :btree
   add_index "publications", ["published_at"], name: "index_publications_on_published_at", using: :btree
   add_index "publications", ["yanked_at"], name: "index_publications_on_yanked_at", using: :btree

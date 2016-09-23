@@ -42,7 +42,7 @@ module Api::V1
     protected
 
     def get_exercise
-      @exercise = Exercise.visible_for(current_api_user).with_uid(params[:exercise_id]).first || \
+      @exercise = Exercise.visible_for(current_api_user).with_id(params[:exercise_id]).first || \
         raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
     end
 

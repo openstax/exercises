@@ -397,7 +397,7 @@ module Api::V1
         expect(@exercise.attributes).to eq @old_attributes
 
         uid = JSON.parse(response.body)['uid']
-        new_exercise = Exercise.with_uid(uid).first
+        new_exercise = Exercise.with_id(uid).first
         new_attributes = new_exercise.attributes
 
         expect(new_exercise.title).to eq "Ipsum lorem"
@@ -419,7 +419,7 @@ module Api::V1
         expect(@exercise.attributes).to eq @old_attributes
 
         uid = JSON.parse(response.body)['uid']
-        new_exercise = Exercise.with_uid(uid).first
+        new_exercise = Exercise.with_id(uid).first
         new_attributes = new_exercise.attributes
 
         expect(new_exercise.id).not_to eq @exercise.id

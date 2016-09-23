@@ -21,8 +21,10 @@ module Xlsx
           next if values.size < 2
 
           exercise_numbers = values.first.split(',').map(&:to_i)
-          exercises = Exercise.joins(:publication).where(publication: {number: exercise_numbers})
-                              .preload([:publication, :tags]).latest(nil, Publication.unscoped)
+          exercises = Exercise.joins(:publication)
+                              .where(publication: {publication_group: {number: exercise_numbers}})
+                              .preload([:tags, publication: :publication_group])
+                              .latest(published: false)
 
           not_found_numbers = exercise_numbers - exercises.map(&:number)
 
