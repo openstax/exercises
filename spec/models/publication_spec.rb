@@ -4,6 +4,7 @@ RSpec.describe Publication, type: :model do
 
   subject!(:publication) { FactoryGirl.create :publication }
 
+  it { is_expected.to belong_to(:publication_group) }
   it { is_expected.to belong_to(:publishable) }
   it { is_expected.to belong_to(:license) }
 
@@ -14,9 +15,8 @@ RSpec.describe Publication, type: :model do
   it { is_expected.to have_many(:sources).dependent(:destroy) }
   it { is_expected.to have_many(:derivations).dependent(:destroy) }
 
+  it { is_expected.to validate_presence_of(:publication_group) }
   it { is_expected.to validate_presence_of(:publishable) }
-
-  it { is_expected.to validate_presence_of(:number) }
   it { is_expected.to validate_presence_of(:version) }
 
   it 'requires a unique publishable' do

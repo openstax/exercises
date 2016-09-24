@@ -18,6 +18,7 @@ class Publication < ActiveRecord::Base
 
   delegate :number, :uuid, to: :publication_group
 
+  validates :publication_group, presence: true
   validates :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :version, presence: true, uniqueness: { scope: :publication_group_id }

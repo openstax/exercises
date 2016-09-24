@@ -20,10 +20,6 @@ module Publishable
                    :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
-          default_scope do
-            joins(publication: :publication_group).eager_load(publication: :publication_group)
-          end
-
           scope :published, -> {
             joins(:publication).where{publication.published_at != nil}
           }

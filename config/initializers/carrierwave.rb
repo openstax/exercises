@@ -17,8 +17,11 @@ CarrierWave.configure do |config|
     config.fog_directory  = secrets['bucket_name']
     config.fog_attributes = { 'Cache-Control' => 'max-age=31536000' }
     config.asset_host = secrets['asset_host']
-    config.storage = :fog
-  else
-    config.storage = :file
   end
+
+  # Upload to AWS only in the production environment
+  config.storage = Rails.env.production? ? :fog : :file
+
+  # Image processing is nondeterministic
+  config.enable_processing = !Rails.env.test?
 end

@@ -21,7 +21,7 @@ module Xlsx
           next if values.size < 2
 
           exercise_numbers = values.first.split(',').map(&:to_i)
-          exercises = Exercise.joins(:publication)
+          exercises = Exercise.joins(publication: :publication_group)
                               .where(publication: {publication_group: {number: exercise_numbers}})
                               .preload([:tags, publication: :publication_group])
                               .latest(published: false)
