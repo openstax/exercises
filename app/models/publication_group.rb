@@ -8,6 +8,8 @@ class PublicationGroup < ActiveRecord::Base
 
   before_validation :assign_number_and_uuid, on: :create
 
+  default_scope { order(:number) }
+
   def readonly?
     !new_record?
   end
