@@ -3,7 +3,7 @@ module Publishable
     module Decorator
       def publishable
 
-        property :uid,
+        property :uuid,
                  type: String,
                  writeable: false,
                  readable: true
@@ -15,6 +15,11 @@ module Publishable
 
         property :version,
                  type: Integer,
+                 writeable: false,
+                 readable: true
+
+        property :uid,
+                 type: String,
                  writeable: false,
                  readable: true
 

@@ -3,7 +3,6 @@ module Api::V1
 
     before_filter :get_exercise
 
-
     ##########
     # create #
     ##########
@@ -43,7 +42,8 @@ module Api::V1
 
     def get_exercise
       @exercise = Exercise.visible_for(current_api_user).with_id(params[:exercise_id]).first || \
-        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
+        raise(ActiveRecord::RecordNotFound,
+              "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
     end
 
   end
