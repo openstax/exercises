@@ -26,18 +26,22 @@ module Publishable
 
           scope :with_id, ->(id) {
             number, version = id.to_s.split('@')
+
             relation = joins(publication: :publication_group)
-            pub_conditions = { publication_group: { number: number } }
+                         .where{ (publication.publication_group.uuid == number) |
+                                 (publication.publication_group.number == number) }
+                         .order{[publication.publication_group.number.asc,
+                                 publication.version.desc]}
+
             if version.nil?
               relation = relation.where{ publication.published_at != nil }
             elsif version == 'draft' || version == 'd'
-              pub_conditions[:published_at] = nil
+              relation = relation.where{ publication.published_at == nil }
             elsif version != 'latest'
-              pub_conditions[:version] = version
+              relation = relation.where{ publication.version == version }
             end
-            relation.where(publication: pub_conditions)
-              .order{[publication.publication_group.number.asc, publication.version.desc]}
 
+            relation
           }
 
           # http://stackoverflow.com/a/7745635
