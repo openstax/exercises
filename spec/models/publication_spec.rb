@@ -2,8 +2,9 @@ require "rails_helper"
 
 RSpec.describe Publication, type: :model do
 
-  subject!(:publication) { FactoryGirl.create :publication }
+  subject(:publication) { FactoryGirl.create :publication }
 
+  it { is_expected.to belong_to(:publication_group) }
   it { is_expected.to belong_to(:publishable) }
   it { is_expected.to belong_to(:license) }
 
@@ -14,13 +15,11 @@ RSpec.describe Publication, type: :model do
   it { is_expected.to have_many(:sources).dependent(:destroy) }
   it { is_expected.to have_many(:derivations).dependent(:destroy) }
 
+  it { is_expected.to validate_presence_of(:publication_group) }
   it { is_expected.to validate_presence_of(:publishable) }
-
-  it { is_expected.to validate_presence_of(:number) }
   it { is_expected.to validate_presence_of(:version) }
 
   it 'requires a unique publishable' do
-    publication.save!
     publication_2 = FactoryGirl.build :publication, publishable: publication.publishable
     expect(publication_2).not_to be_valid
     expect(publication_2.errors[:publishable_id]).to include 'has already been taken'
@@ -55,7 +54,6 @@ RSpec.describe Publication, type: :model do
   end
 
   it 'defaults to ordering by number ASC and version DESC' do
-    publication.save!
     publication_2 = FactoryGirl.create :publication,
                                        number: publication.number,
                                        version: publication.version + 1
@@ -104,7 +102,6 @@ RSpec.describe Publication, type: :model do
   end
 
   it 'validates the publishable before publication' do
-    publication.save!
     expect(publication.reload.publishable).to receive(:before_publication) do
       publication.publishable.errors.add(:base, 'is invalid')
       false

@@ -1,5 +1,6 @@
 class Publication < ActiveRecord::Base
 
+  belongs_to :publication_group, inverse_of: :publications
   belongs_to :publishable, polymorphic: true, inverse_of: :publication
   belongs_to :license
 
@@ -15,28 +16,35 @@ class Publication < ActiveRecord::Base
                          dependent: :destroy,
                          inverse_of: :source_publication
 
+  delegate :number, :uuid, to: :publication_group
+
+  validates :publication_group, presence: true
   validates :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }
-  validates :number, presence: true
-  validates :version, presence: true, uniqueness: { scope: [:publishable_type, :number] }
-  validate  :valid_license
+  validates :version, presence: true, uniqueness: { scope: :publication_group_id }
+  validate  :valid_license, :valid_publication_group
 
   before_save :before_publication
   after_save :after_publication
 
-  before_validation :assign_number_and_version, on: :create
+  after_initialize :build_publication_group, unless: [:persisted?, :publication_group]
+  before_validation :assign_version, on: :create
 
-  default_scope { order([arel_table[:number].asc, arel_table[:version].desc]) }
+  default_scope do
+    joins(:publication_group).eager_load(:publication_group)
+      .order([PublicationGroup.arel_table[:number].asc, arel_table[:version].desc])
+  end
 
   scope :published, -> { where{published_at != nil} }
 
-  scope :latest, ->(publication_scope = Publication.unscoped.published) {
+  scope :latest, ->(published: true) {
+    publication_scope = Publication.unscoped
+    publication_scope = publication_scope.published if published
+
     joins{
       publication_scope
-        .reorder(nil).limit(nil).offset(nil)
         .as(:newer_publication)
-        .on{ (newer_publication.publishable_type == ~publishable_type) &
-             (newer_publication.number == ~number) &
+        .on{ (newer_publication.publication_group_id == ~publication_group_id) &
              (newer_publication.version > ~version) }
         .outer
     }.where{ newer_publication.id == nil }
@@ -73,22 +81,27 @@ class Publication < ActiveRecord::Base
     self
   end
 
+  def build_publication_group
+    self.publication_group = PublicationGroup.new(publishable_type: publishable_type)
+  end
+
   protected
 
-  def assign_number_and_version
-    if number
-      self.version = (Publication.where(publishable_type: publishable_type, number: number)
-                                 .maximum(:version) || 0) + 1
-    else
-      self.number = (Publication.where(publishable_type: publishable_type)
-                                .maximum(:number) || 0) + 1
-      self.version = 1
-    end
+  def assign_version
+    self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
   end
 
   def valid_license
     return if license.nil? || license.valid_for?(publishable_type)
     errors.add(:license, "is invalid for #{publishable_type}")
+    false
+  end
+
+  def valid_publication_group
+    return if publication_group.nil?
+    publication_group.publishable_type ||= publishable_type
+    return if publication_group.publishable_type == publishable_type
+    errors.add(:publication_group, "is invalid for #{publishable_type}")
     false
   end
 

@@ -54,10 +54,11 @@ module VocabTerms
       @latest_term_map ||= Hash.new do |hash, chapter|
         hash[chapter] = Hash.new do |hash, name|
           lo_like = "lo:stax-#{book}:#{chapter}-%"
-          hash[name] = VocabTerm.joins([:publication, vocab_term_tags: :tag])
-                                .where(name: name)
-                                .where{vocab_term_tags.tag.name.like lo_like}
-                                .order{[publication.number.desc, publication.version.desc]}.first
+          hash[name] = VocabTerm
+            .joins([{publication: :publication_group}, {vocab_term_tags: :tag}])
+            .where(name: name)
+            .where{vocab_term_tags.tag.name.like lo_like}
+            .order{[publication.publication_group.number.desc, publication.version.desc]}.first
         end
       end
 
@@ -65,7 +66,8 @@ module VocabTerms
         hash[chapter] = Hash.new do |hash, name|
           hash[name] = VocabTerm.new(name: name, definition: 'N/A').tap do |term|
             unless @latest_term_map[chapter][name].nil?
-              term.publication.number = @latest_term_map[chapter][name].publication.number
+              term.publication.publication_group = \
+                @latest_term_map[chapter][name].publication.publication_group
               term.publication.version = @latest_term_map[chapter][name].publication.version + 1
             end
           end

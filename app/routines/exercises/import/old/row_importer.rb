@@ -93,12 +93,13 @@ module Exercises
                 dok_tag, time_tag, display_type_tags, blooms_tag].flatten.uniq
         ex.tags = tags
 
-        latest_exercise = Exercise.joins([:publication, exercise_tags: :tag])
-                                  .where(exercise_tags: {tag: {name: exercise_id_tag}})
-                                  .order{[publication.number.desc, publication.version.desc]}.first
+        latest_exercise = Exercise
+          .joins([{publication: :publication_group}, {exercise_tags: :tag}])
+          .where(exercise_tags: {tag: {name: exercise_id_tag}})
+          .order{[publication.publication_group.number.desc, publication.version.desc]}.first
 
         unless latest_exercise.nil?
-          ex.publication.number = latest_exercise.publication.number
+          ex.publication.publication_group = latest_exercise.publication.publication_group
           ex.publication.version = latest_exercise.publication.version + 1
         end
 

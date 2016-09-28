@@ -66,7 +66,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{
-        SearchVocabTerms::SORTABLE_FIELDS.keys.collect{|sf| "`"+sf+"`"}.join(', ')
+        SearchVocabTerms::SORTABLE_FIELDS.keys.map{|sf| "`"+sf+"`"}.join(', ')
       }.
       Sort directions can either be `ASC` for
       an ascending sort, or `DESC` for a
@@ -89,8 +89,8 @@ module Api::V1
       result = SearchVocabTerms.call(params, options)
       return render_api_errors(result.errors) if result.errors.any?
 
-      respond_with result.outputs, { user_options: options }
-                                     .merge(represent_with: VocabTermSearchRepresenter)
+      respond_with result.outputs,
+                   { user_options: options }.merge(represent_with: VocabTermSearchRepresenter)
     end
 
     ##########
@@ -166,7 +166,7 @@ module Api::V1
     protected
 
     def get_vocab_term
-      @vocab_term = VocabTerm.visible_for(current_api_user).with_uid(params[:id]).first || \
+      @vocab_term = VocabTerm.visible_for(current_api_user).with_id(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound, "Couldn't find VocabTerm with 'uid'=#{params[:id]}")
     end
 
@@ -177,11 +177,11 @@ module Api::V1
 
         # If a draft has been requested, lock the latest published vocab_term first
         # so we don't create 2 drafts
-        published_vocab_term = VocabTerm.published.with_uid(@number).lock.first \
+        published_vocab_term = VocabTerm.published.with_id(@number).lock.first \
           if draft_requested
 
         # Attempt to find existing vocab_term
-        @vocab_term = VocabTerm.visible_for(current_api_user).with_uid(params[:id]).first
+        @vocab_term = VocabTerm.visible_for(current_api_user).with_id(params[:id]).first
         return unless @vocab_term.nil?
 
         # VocabTerm not found and either draft not requested or

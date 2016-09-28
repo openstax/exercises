@@ -6,6 +6,7 @@ class Exercise < ActiveRecord::Base
     :tags,
     {
       publication: [
+        :publication_group,
         :license,
         {
           derivations: :source_publication,
@@ -84,10 +85,11 @@ class Exercise < ActiveRecord::Base
     preload(:attachments,
             :logic,
             :tags,
-            publication: [:derivations,
-                          authors: :user,
-                          copyright_holders: :user,
-                          editors: :user],
+            publication: [:publication_group,
+                          :derivations,
+                          {authors: :user},
+                          {copyright_holders: :user},
+                          {editors: :user}],
             questions: [
               :hints,
               :collaborator_solutions,
@@ -111,7 +113,7 @@ class Exercise < ActiveRecord::Base
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
-    nv.publication.version += 1
+    nv.publication.version = nil
     nv.publication.published_at = nil
     nv.publication.yanked_at = nil
     nv.publication.embargoed_until = nil

@@ -175,33 +175,63 @@ module Api::V1
         @vocab_term_2.save!
       end
 
+      it "returns the VocabTerm requested by uuid and version" do
+        api_get :show, user_token, parameters: { id: "#{@vocab_term.uuid}@#{@vocab_term.version}" }
+        expect(response).to have_http_status(:success)
+
+        expected_response = \
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term).to_json(user_options: { user: user })
+        expect(response.body).to eq(expected_response)
+      end
+
       it "returns the VocabTerm requested by uid" do
         api_get :show, user_token, parameters: { id: @vocab_term.uid }
         expect(response).to have_http_status(:success)
 
         expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term)
-                                                                    .to_json(user: user)
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term).to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest published VocabTerm if no version is specified" do
+      it "returns the latest published VocabTerm if only the uuid is specified" do
+        api_get :show, user_token, parameters: { id: @vocab_term.uuid }
+        expect(response).to have_http_status(:success)
+
+        expected_response = \
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term).to_json(user_options: { user: user })
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the latest published VocabTerm if only the number is specified" do
         api_get :show, user_token, parameters: { id: @vocab_term.number }
         expect(response).to have_http_status(:success)
 
         expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term)
-                                                                    .to_json(user: user)
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term).to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest draft VocabTerm if \"@draft\" is requested" do
+      it "returns the latest draft VocabTerm if \"uuid@draft\" is requested" do
+        api_get :show, user_token, parameters: { id: "#{@vocab_term.uuid}@draft" }
+        expect(response).to have_http_status(:success)
+
+        expected_response = \
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term_2).to_json(user_options: { user: user })
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the latest draft VocabTerm if \"number@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@vocab_term.number}@draft" }
         expect(response).to have_http_status(:success)
 
         expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2.reload)
-                                                                    .to_json(user: user)
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term_2).to_json(user_options: { user: user })
         expect(response.body).to eq(expected_response)
       end
 
@@ -297,7 +327,7 @@ module Api::V1
         expect(@vocab_term.attributes).to eq @old_attributes
 
         uid = JSON.parse(response.body)['uid']
-        new_vocab_term = VocabTerm.with_uid(uid).first
+        new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
         expect(new_vocab_term.name).to eq "Ipsum lorem"
@@ -319,7 +349,7 @@ module Api::V1
         expect(@vocab_term.attributes).to eq @old_attributes
 
         uid = JSON.parse(response.body)['uid']
-        new_vocab_term = VocabTerm.with_uid(uid).first
+        new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
         expect(new_vocab_term.id).not_to eq @vocab_term.id

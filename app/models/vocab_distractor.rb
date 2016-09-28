@@ -7,7 +7,7 @@ class VocabDistractor < ActiveRecord::Base
 
   before_save :save_distractor_term
 
-  delegate :tags, :uid, :version, :published_at, :license, :editors, :authors,
+  delegate :tags, :uuid, :version, :uid, :published_at, :license, :editors, :authors,
            :copyright_holders, :derivations, :name, :definition, to: :distractor_term
 
   def reload
@@ -27,8 +27,9 @@ class VocabDistractor < ActiveRecord::Base
   def distractor_term
     return @distractor_term unless @distractor_term.nil?
 
-    distractor_publications ||= Publication.where(publishable_type: 'VocabTerm',
-                                                  number: distractor_term_number)
+    distractor_publications ||= Publication
+      .joins(:publication_group)
+      .where(publishable_type: 'VocabTerm', publication_group: {number: distractor_term_number})
     published_publications = distractor_publications.select(&:is_published?)
     publication_pool = published_publications.any? ? published_publications :
                                                      distractor_publications
