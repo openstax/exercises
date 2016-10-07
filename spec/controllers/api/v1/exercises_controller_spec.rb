@@ -196,8 +196,19 @@ module Api::V1
         @exercise_2.save!
       end
 
-      it "returns the Exercise requested by uuid and version" do
-        api_get :show, user_token, parameters: { id: "#{@exercise.uuid}@#{@exercise.version}" }
+      it "returns the Exercise requested by group_uuid and version" do
+        api_get :show, user_token, parameters: {
+          id: "#{@exercise.group_uuid}@#{@exercise.version}"
+        }
+        expect(response).to have_http_status(:success)
+
+        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
+                                                        .to_json(user_options: { user: user })
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the Exercise requested by uuid" do
+        api_get :show, user_token, parameters: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
@@ -214,8 +225,8 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest published Exercise if only the uuid is specified" do
-        api_get :show, user_token, parameters: { id: @exercise.uuid }
+      it "returns the latest published Exercise if only the group_uuid is specified" do
+        api_get :show, user_token, parameters: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
@@ -232,9 +243,9 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest draft Exercise if \"uuid@draft\" is requested" do
+      it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
 
-        api_get :show, user_token, parameters: { id: "#{@exercise.uuid}@draft" }
+        api_get :show, user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
 
         expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload)
@@ -276,8 +287,8 @@ module Api::V1
         expect(new_exercise.number).to eq @exercise.number
         expect(new_exercise.version).to eq @exercise.version + 1
 
-        expect(new_exercise.attributes.except('id', 'uid', 'created_at', 'updated_at'))
-          .to eq(@exercise.attributes.except('id', 'uid', 'created_at', 'updated_at'))
+        expect(new_exercise.attributes.except('id', 'created_at', 'updated_at'))
+          .to eq(@exercise.attributes.except('id', 'created_at', 'updated_at'))
       end
 
       context 'with solutions' do
@@ -454,8 +465,8 @@ module Api::V1
         expect(new_exercise.number).to eq @exercise.number
         expect(new_exercise.version).to eq @exercise.version + 1
         expect(new_exercise.title).to eq "Ipsum lorem"
-        expect(new_attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
-          .to eq(@old_attributes.except('id', 'uid', 'title', 'created_at', 'updated_at'))
+        expect(new_attributes.except('id', 'title', 'created_at', 'updated_at'))
+          .to eq(@old_attributes.except('id', 'title', 'created_at', 'updated_at'))
       end
 
     end

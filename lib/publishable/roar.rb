@@ -8,6 +8,11 @@ module Publishable
                  writeable: false,
                  readable: true
 
+        property :group_uuid,
+                 type: String,
+                 writeable: false,
+                 readable: true
+
         property :number,
                  type: Integer,
                  writeable: false,

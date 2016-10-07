@@ -3,12 +3,14 @@ class PublicationGroup < ActiveRecord::Base
   has_many :publications, dependent: :destroy, inverse_of: :publication_group
 
   validates :publishable_type, presence: true
-  validates :number, presence: true, uniqueness: { scope: :publishable_type }
   validates :uuid, presence: true, uniqueness: true
+  validates :number, presence: true, uniqueness: { scope: :publishable_type }
 
-  before_validation :assign_number_and_uuid, on: :create
+  before_validation :assign_uuid_and_number, on: :create
 
   default_scope { order(:number) }
+
+  alias_attribute :group_uuid, :uuid
 
   def readonly?
     !new_record?
@@ -16,10 +18,10 @@ class PublicationGroup < ActiveRecord::Base
 
   protected
 
-  def assign_number_and_uuid
+  def assign_uuid_and_number
+    self.uuid ||= SecureRandom.uuid
     self.number ||= (PublicationGroup.where(publishable_type: publishable_type)
                                      .maximum(:number) || 0) + 1
-    self.uuid ||= SecureRandom.uuid
   end
 
 end

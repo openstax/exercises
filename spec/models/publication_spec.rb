@@ -17,7 +17,12 @@ RSpec.describe Publication, type: :model do
 
   it { is_expected.to validate_presence_of(:publication_group) }
   it { is_expected.to validate_presence_of(:publishable) }
+
+  it { is_expected.to validate_presence_of(:uuid) }
   it { is_expected.to validate_presence_of(:version) }
+
+  it { is_expected.to validate_uniqueness_of(:uuid) }
+  it { is_expected.to validate_uniqueness_of(:version).scoped_to(:publication_group_id) }
 
   it 'requires a unique publishable' do
     publication_2 = FactoryGirl.build :publication, publishable: publication.publishable
@@ -39,15 +44,20 @@ RSpec.describe Publication, type: :model do
     expect(publication).to be_valid
   end
 
-  it 'automatically assigns number and version on creation' do
+  it 'automatically assigns uuid, group_uuid, number and version on creation' do
     p = Exercise.create.publication
     expect(p).to be_valid
+    expect(p.uuid).to be_a String
+    expect(p.group_uuid).to be_a String
     expect(p.number).to be > 0
     expect(p.version).to eq 1
     expect(p.uid).to eq "#{p.number}@1"
 
+
     p_2 = FactoryGirl.create :publication, number: p.number
     expect(p_2).to be_valid
+    expect(p.uuid).to be_a String
+    expect(p.group_uuid).to be_a String
     expect(p_2.number).to eq p.number
     expect(p_2.version).to eq 2
     expect(p_2.uid).to eq "#{p.number}@2"

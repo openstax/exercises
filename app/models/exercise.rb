@@ -28,7 +28,7 @@ class Exercise < ActiveRecord::Base
     }
   ]
 
-  EQUALITY_EXCLUDED_FIELDS = ['id', 'created_at', 'updated_at', 'version',
+  EQUALITY_EXCLUDED_FIELDS = ['id', 'uuid', 'created_at', 'updated_at', 'version',
                               'published_at', 'yanked_at', 'embargoed_until']
 
   # deep_clone does not iterate through hashes, so each hash must have only 1 key
@@ -113,6 +113,7 @@ class Exercise < ActiveRecord::Base
 
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
+    nv.publication.uuid = nil
     nv.publication.version = nil
     nv.publication.published_at = nil
     nv.publication.yanked_at = nil

@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160922231345) do
+ActiveRecord::Schema.define(version: 20161006223624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
   create_table "administrators", force: :cascade do |t|
     t.integer  "user_id",    null: false
@@ -516,6 +517,7 @@ ActiveRecord::Schema.define(version: 20160922231345) do
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.integer  "publication_group_id",                  null: false
+    t.uuid     "uuid",                                  null: false
   end
 
   add_index "publications", ["embargoed_until"], name: "index_publications_on_embargoed_until", using: :btree
@@ -523,6 +525,7 @@ ActiveRecord::Schema.define(version: 20160922231345) do
   add_index "publications", ["publication_group_id"], name: "index_publications_on_publication_group_id", using: :btree
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true, using: :btree
   add_index "publications", ["published_at"], name: "index_publications_on_published_at", using: :btree
+  add_index "publications", ["uuid"], name: "index_publications_on_uuid", unique: true, using: :btree
   add_index "publications", ["yanked_at"], name: "index_publications_on_yanked_at", using: :btree
 
   create_table "question_dependencies", force: :cascade do |t|

@@ -15,6 +15,14 @@ module Api::V1
 
     collection :derivations, inherit: true, writeable: false
 
+    property :group_uuid,
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+               required: true
+             }
+
     property :distractor_term_number,
              as: :number,
              type: Integer,

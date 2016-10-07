@@ -43,8 +43,11 @@ class SearchVocabTerms
           if sanitized_numbers.empty?
             @items = @items.where(publication: {version: sanitized_versions})
           elsif sanitized_versions.empty?
-            @items = @items.where{publication.publication_group.number.in(sanitized_numbers) |
-                                  publication.publication_group.uuid.in(sanitized_numbers)}
+            @items = @items.where do
+              publication.uuid.in(sanitized_numbers) |
+              publication.publication_group.number.in(sanitized_numbers) |
+              publication.publication_group.uuid.in(sanitized_numbers)
+            end
           else
             # Combine the id's one at a time using Squeel
             @items = @items.where do
@@ -52,15 +55,16 @@ class SearchVocabTerms
               only_versions = sanitized_ids.select{ |sid| sid.first.blank? }.map(&:second)
               full_ids = sanitized_ids.reject{ |sid| sid.first.blank? || sid.second.blank? }
 
-              cumulative_query = publication.publication_group.number.in(only_numbers) | \
+              cumulative_query = publication.uuid.in(only_numbers) |
+                                 publication.publication_group.number.in(only_numbers) | \
                                  publication.publication_group.uuid.in(only_numbers) | \
                                  publication.version.in(only_versions)
 
               full_ids.each do |full_id|
                 sanitized_number = full_id.first
                 sanitized_version = full_id.second
-                query = ((publication.publication_group.number == sanitized_number) |
-                         (publication.publication_group.uuid == sanitized_number)) & \
+                query = ((publication.publication_group.uuid == sanitized_number) |
+                         (publication.publication_group.number == sanitized_number)) & \
                         (publication.version == sanitized_version)
                 cumulative_query = cumulative_query | query
               end
@@ -95,7 +99,10 @@ class SearchVocabTerms
           sanitized_uuids = to_string_array(uuids)
           next @items = @items.none if sanitized_uuids.empty?
 
-          @items = @items.where(publication: {publication_group: {uuid: sanitized_uuids}})
+          @items = @items.where do
+            publication.uuid.in(sanitized_uuids) |
+            publication.publication_group.uuid.in(sanitized_uuids)
+          end
         end
       end
 
