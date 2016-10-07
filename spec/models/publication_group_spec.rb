@@ -7,11 +7,11 @@ RSpec.describe PublicationGroup, type: :model do
   it { is_expected.to have_many(:publications).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:publishable_type) }
-  it { is_expected.to validate_presence_of(:number) }
   it { is_expected.to validate_presence_of(:uuid) }
+  it { is_expected.to validate_presence_of(:number) }
 
-  it { is_expected.to validate_uniqueness_of(:number).scoped_to(:publishable_type) }
   it { is_expected.to validate_uniqueness_of(:uuid) }
+  it { is_expected.to validate_uniqueness_of(:number).scoped_to(:publishable_type) }
 
   it 'automatically assigns number and uuid on creation' do
     pg = Exercise.create.publication.publication_group

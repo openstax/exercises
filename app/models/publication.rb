@@ -16,11 +16,11 @@ class Publication < ActiveRecord::Base
                          dependent: :destroy,
                          inverse_of: :source_publication
 
-  delegate :number, :uuid, to: :publication_group
+  delegate :group_uuid, :number, to: :publication_group
 
-  validates :publication_group, presence: true
-  validates :publishable, presence: true
+  validates :publication_group, :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }
+  validates :uuid, presence: true, uniqueness: true
   validates :version, presence: true, uniqueness: { scope: :publication_group_id }
   validate  :valid_license, :valid_publication_group
 
@@ -28,7 +28,7 @@ class Publication < ActiveRecord::Base
   after_save :after_publication
 
   after_initialize :build_publication_group, unless: [:persisted?, :publication_group]
-  before_validation :assign_version, on: :create
+  before_validation :assign_uuid_and_version, on: :create
 
   default_scope do
     joins(:publication_group).eager_load(:publication_group)
@@ -87,7 +87,8 @@ class Publication < ActiveRecord::Base
 
   protected
 
-  def assign_version
+  def assign_uuid_and_version
+    self.uuid ||= SecureRandom.uuid
     self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
   end
 

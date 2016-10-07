@@ -175,8 +175,20 @@ module Api::V1
         @vocab_term_2.save!
       end
 
-      it "returns the VocabTerm requested by uuid and version" do
-        api_get :show, user_token, parameters: { id: "#{@vocab_term.uuid}@#{@vocab_term.version}" }
+      it "returns the VocabTerm requested by group_uuid and version" do
+        api_get :show, user_token, parameters: {
+          id: "#{@vocab_term.group_uuid}@#{@vocab_term.version}"
+        }
+        expect(response).to have_http_status(:success)
+
+        expected_response = \
+          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
+            .new(@vocab_term).to_json(user_options: { user: user })
+        expect(response.body).to eq(expected_response)
+      end
+
+      it "returns the VocabTerm requested by uuid" do
+        api_get :show, user_token, parameters: { id: @vocab_term.uuid }
         expect(response).to have_http_status(:success)
 
         expected_response = \
@@ -195,8 +207,8 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest published VocabTerm if only the uuid is specified" do
-        api_get :show, user_token, parameters: { id: @vocab_term.uuid }
+      it "returns the latest published VocabTerm if only the group_uuid is specified" do
+        api_get :show, user_token, parameters: { id: @vocab_term.group_uuid }
         expect(response).to have_http_status(:success)
 
         expected_response = \
@@ -215,8 +227,8 @@ module Api::V1
         expect(response.body).to eq(expected_response)
       end
 
-      it "returns the latest draft VocabTerm if \"uuid@draft\" is requested" do
-        api_get :show, user_token, parameters: { id: "#{@vocab_term.uuid}@draft" }
+      it "returns the latest draft VocabTerm if \"group_uuid@draft\" is requested" do
+        api_get :show, user_token, parameters: { id: "#{@vocab_term.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
 
         expected_response = \
@@ -248,8 +260,8 @@ module Api::V1
         expect(new_vocab_term.number).to eq @vocab_term.number
         expect(new_vocab_term.version).to eq @vocab_term.version + 1
 
-        expect(new_vocab_term.attributes.except('id', 'uid', 'created_at', 'updated_at'))
-          .to eq(@vocab_term.attributes.except('id', 'uid', 'created_at', 'updated_at'))
+        expect(new_vocab_term.attributes.except('id', 'created_at', 'updated_at'))
+          .to eq(@vocab_term.attributes.except('id', 'created_at', 'updated_at'))
       end
 
     end
@@ -356,8 +368,8 @@ module Api::V1
         expect(new_vocab_term.number).to eq @vocab_term.number
         expect(new_vocab_term.version).to eq @vocab_term.version + 1
         expect(new_vocab_term.name).to eq "Ipsum lorem"
-        expect(new_attributes.except('id', 'uid', 'name', 'created_at', 'updated_at'))
-          .to eq(@old_attributes.except('id', 'uid', 'name', 'created_at', 'updated_at'))
+        expect(new_attributes.except('id', 'name', 'created_at', 'updated_at'))
+          .to eq(@old_attributes.except('id', 'name', 'created_at', 'updated_at'))
       end
 
     end

@@ -7,11 +7,12 @@ class VocabDistractor < ActiveRecord::Base
 
   before_save :save_distractor_term
 
-  delegate :tags, :uuid, :version, :uid, :published_at, :license, :editors, :authors,
-           :copyright_holders, :derivations, :name, :definition, to: :distractor_term
+  delegate :tags, :uuid, :group_uuid, :number, :version, :uid, :published_at, :license, :editors,
+           :authors, :copyright_holders, :derivations, :name, :definition, to: :distractor_term
 
   def reload
     @distractor_term = nil
+
     super
   end
 

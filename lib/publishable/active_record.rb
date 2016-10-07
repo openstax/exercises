@@ -13,7 +13,7 @@ module Publishable
           has_many :sources, through: :publication
           has_many :derivations, through: :publication
 
-          delegate :uid, :uuid, :number, :version, :published_at, :license,
+          delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
                    :editors, :authors, :copyright_holders, :derivations,
                    :is_yanked?, :is_published?, :is_embargoed?, :is_public?,
                    :has_collaborator?, :license=, :editors=,
@@ -27,21 +27,21 @@ module Publishable
           scope :with_id, ->(id) {
             number, version = id.to_s.split('@')
 
-            relation = joins(publication: :publication_group)
-                         .where{ (publication.publication_group.uuid == number) |
-                                 (publication.publication_group.number == number) }
-                         .order{[publication.publication_group.number.asc,
-                                 publication.version.desc]}
+            joins(publication: :publication_group).where do
+              wheres = (publication.publication_group.uuid == number) |
+                       (publication.publication_group.number == number)
 
-            if version.nil?
-              relation = relation.where{ publication.published_at != nil }
-            elsif version == 'draft' || version == 'd'
-              relation = relation.where{ publication.published_at == nil }
-            elsif version != 'latest'
-              relation = relation.where{ publication.version == version }
-            end
-
-            relation
+              case version
+              when NilClass
+                (wheres | (publication.uuid == number)) & (publication.published_at != nil)
+              when 'draft', 'd'
+                wheres & (publication.published_at == nil)
+              when 'latest'
+                wheres
+              else
+                wheres & (publication.version == version)
+              end
+            end.order{[publication.publication_group.number.asc, publication.version.desc]}
           }
 
           # http://stackoverflow.com/a/7745635
