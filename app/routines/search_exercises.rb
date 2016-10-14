@@ -25,7 +25,7 @@ class SearchExercises
     # By default, only return the latest exercises visible to the user.
     # If either versions, uids or a publication date are specified,
     # this "latest" condition is disabled.
-    latest_scope = relation
+    latest_scope = relation.published
 
     run(:search, relation: relation.preloaded,
                  sortable_fields: SORTABLE_FIELDS,

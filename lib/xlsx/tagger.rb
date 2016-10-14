@@ -24,7 +24,7 @@ module Xlsx
           exercises = Exercise.joins(publication: :publication_group)
                               .where(publication: {publication_group: {number: exercise_numbers}})
                               .preload([:tags, publication: :publication_group])
-                              .latest(published: false)
+                              .latest(scope: Exercise.all)
 
           not_found_numbers = exercise_numbers - exercises.map(&:number)
 
