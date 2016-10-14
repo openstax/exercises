@@ -225,5 +225,43 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.total_count).to eq 2
       expect(outputs.items).to eq [@vocab_term_2, @vocab_term_1]
     end
+
+    it "displays the latest versions but no drafts for an anonymous user" do
+      new_vocab_term_2 = @vocab_term_2.new_version
+      new_vocab_term_2.save!
+      new_vocab_term_2.publication.publish.save!
+
+      new_vocab_term_2_draft = new_vocab_term_2.new_version
+      new_vocab_term_2_draft.save!
+
+      result = described_class.call(q: 'content:"lOrEm IpSuM"')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@vocab_term_1, new_vocab_term_2]
+    end
+
+    it "displays the latest versions and drafts for an author" do
+      new_vocab_term_2 = @vocab_term_2.new_version
+      new_vocab_term_2.save!
+      new_vocab_term_2.publication.publish.save!
+
+      new_vocab_term_2_draft = new_vocab_term_2.new_version
+      new_vocab_term_2_draft.save!
+
+      user = FactoryGirl.create :user
+
+      [@vocab_term_1, new_vocab_term_2, new_vocab_term_2_draft].each do |vocab_term|
+        vocab_term.authors << Author.new(user: user)
+      end
+
+      result = described_class.call({ q: 'content:"lOrEm IpSuM"' }, { user: user })
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 3
+      expect(outputs.items).to eq [@vocab_term_1, new_vocab_term_2_draft, new_vocab_term_2]
+    end
   end
 end

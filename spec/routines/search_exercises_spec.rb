@@ -27,8 +27,7 @@ RSpec.describe SearchExercises, type: :routine do
       }]
     }.to_json)
     @exercise_1.save!
-    @exercise_1.publication.publish
-    @exercise_1.publication.save!
+    @exercise_1.publication.publish.save!
 
     @exercise_2 = Exercise.new
     Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
@@ -44,8 +43,7 @@ RSpec.describe SearchExercises, type: :routine do
       }]
     }.to_json)
     @exercise_2.save!
-    @exercise_2.publication.publish
-    @exercise_2.publication.save!
+    @exercise_2.publication.publish.save!
 
     @exercise_draft = FactoryGirl.build(:exercise)
     Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
@@ -221,6 +219,44 @@ RSpec.describe SearchExercises, type: :routine do
       outputs = result.outputs
       expect(outputs.total_count).to eq 2
       expect(outputs.items).to eq [@exercise_2, @exercise_1]
+    end
+
+    it "displays the latest versions but no drafts for an anonymous user" do
+      new_exercise_2 = @exercise_2.new_version
+      new_exercise_2.save!
+      new_exercise_2.publication.publish.save!
+
+      new_exercise_2_draft = new_exercise_2.new_version
+      new_exercise_2_draft.save!
+
+      result = described_class.call(q: 'content:aDiPiScI')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, new_exercise_2]
+    end
+
+    it "displays the latest versions and drafts for an author" do
+      new_exercise_2 = @exercise_2.new_version
+      new_exercise_2.save!
+      new_exercise_2.publication.publish.save!
+
+      new_exercise_2_draft = new_exercise_2.new_version
+      new_exercise_2_draft.save!
+
+      user = FactoryGirl.create :user
+
+      [@exercise_1, new_exercise_2, new_exercise_2_draft].each do |exercise|
+        exercise.authors << Author.new(user: user)
+      end
+
+      result = described_class.call({ q: 'content:aDiPiScI' }, { user: user })
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 3
+      expect(outputs.items).to eq [@exercise_1, new_exercise_2_draft, new_exercise_2]
     end
   end
 end
