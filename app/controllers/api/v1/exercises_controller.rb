@@ -115,7 +115,12 @@ module Api::V1
       #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}
     EOS
     def show
-      standard_read(@exercise, nil, false, user: current_api_user)
+      render json: Api::V1::ExerciseRepresenter.new(@exercise).to_hash(
+               user_options: {
+                 user: current_api_user,
+                 versions: Exercise.versions_for_number(@exercise.number)
+               }
+             )
     end
 
     ##########

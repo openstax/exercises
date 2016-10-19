@@ -196,81 +196,64 @@ module Api::V1
         @exercise_2.save!
       end
 
+      let(:exercise_representation) {
+         -> (exercise) {
+          Api::V1::ExerciseRepresenter.new(exercise)
+            .to_json(user_options: { user: user,
+                                     versions: Exercise.versions_for_number(exercise.number)
+                                   })
+        }
+      }
+
       it "returns the Exercise requested by group_uuid and version" do
         api_get :show, user_token, parameters: {
           id: "#{@exercise.group_uuid}@#{@exercise.version}"
         }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise])
       end
 
       it "returns the Exercise requested by uuid" do
         api_get :show, user_token, parameters: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise])
       end
 
       it "returns the Exercise requested by uid" do
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise])
       end
 
       it "returns the latest published Exercise if only the group_uuid is specified" do
         api_get :show, user_token, parameters: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise])
       end
 
       it "returns the latest published Exercise if only the number is specified" do
         api_get :show, user_token, parameters: { id: @exercise.number }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise])
       end
 
       it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
-
         api_get :show, user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise_2.reload])
       end
 
       it "returns the latest draft Exercise if \"number@draft\" is requested" do
-
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_2.reload)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise_2.reload])
       end
 
       it "returns the latest version of a Exercise if \"@latest\" is requested" do
         @exercise_1.publication.update_attributes(version: 1000)
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@latest" }
         expect(response).to have_http_status(:success)
-
-        expected_response = Api::V1::ExerciseRepresenter.new(@exercise_1.reload)
-                                                        .to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body).to eq(exercise_representation[@exercise_1.reload])
       end
 
       it "creates a new draft version if no draft and \"@draft\" is requested" do
@@ -333,6 +316,13 @@ module Api::V1
             expect(answer['correctness']).to be_nil
             expect(answer['feedback_html']).to be_nil
           end
+        end
+
+        it "includes versions of exercise" do
+          api_get :show, user_token, parameters: { id: @exercise.uid }
+          expect(response).to have_http_status(:success)
+          response_hash = JSON.parse(response.body)
+          expect(response_hash['versions']).to eq([1, 2, 3])
         end
 
       end
