@@ -24,6 +24,10 @@ module Publishable
             joins(:publication).where{publication.published_at != nil}
           }
 
+          scope :unpublished, -> {
+            joins(:publication).where(publication: {published_at: nil})
+          }
+
           scope :with_id, ->(id) {
             number, version = id.to_s.split('@')
 
@@ -44,25 +48,52 @@ module Publishable
             end.order{[publication.publication_group.number.asc, publication.version.desc]}
           }
 
-          # http://stackoverflow.com/a/7745635
-          scope :latest, ->(scope: nil, published: true) {
+          # The scope option determines how we limit the search for more recent versions
+          # Default scope: Klass.published
+          #
+          # Examples:
+          #
+          # Klass.all.latest or Klass.all.latest(scope: Klass.published)
+          # will return both the latest published versions and drafts made after them
+          #
+          # Klass.published.latest or Klass.published.latest(scope: Klass.published)
+          # will return only the latest published versions (no drafts)
+          #
+          # Klass.unpublished.latest or Klass.unpublished.latest(scope: Klass.published)
+          # will return only drafts made after the latest published versions
+          # (could return more than 1, but the draft code makes it so there's always only 1 draft)
+          #
+          # Klass.all.latest(scope: Klass.all)
+          # will return any drafts made after the latest published version if they exist,
+          # or the latest published version if there are no drafts (but not both)
+          #
+          # Klass.published.latest(scope: Klass.all)
+          # will return only latest published versions that don't have drafts made after them
+          #
+          # Klass.unpublished.latest(scope: Klass.all)
+          # will return only drafts made after the latest published versions
+          # (guaranteed to return only the latest draft)
+          scope :latest, ->(scope: nil) {
             publishable_class_name = name
-            scope ||= all
-            publication_scope = Publication.unscoped
-            publication_scope = publication_scope.published if published
+            scope ||= published
 
-            joins(:publication).joins{
-              publication_scope
-                .joins{
+            joins(:publication).joins do
+              Publication
+                .unscoped
+                .where(publishable_type: publishable_class_name)
+                .joins do
                   scope
                     .reorder(nil).limit(nil).offset(nil)
                     .as(:newer_publishable)
                     .on{ newer_publishable.id == ~publishable_id }
-                }.as(:newer_publication)
-                 .on{ (newer_publication.publication_group_id == publication_group_id) &
-                      (newer_publication.version > ~publication.version) }
-                 .outer
-            }.where{ newer_publication.id == nil }
+                end
+                .as(:newer_publication)
+                .on do
+                  (newer_publication.publication_group_id == ~publication.publication_group_id) &
+                  (newer_publication.version > ~publication.version)
+                end
+                .outer
+            end.where{ newer_publication.id == nil }
           }
 
           scope :visible_for, ->(user) {
@@ -74,10 +105,12 @@ module Publishable
             joins{publication.authors.outer}
               .joins{publication.copyright_holders.outer}
               .joins{publication.editors.outer}
-              .where{ (publication.published_at != nil) | \
-                      (authors.user_id == user_id) | \
-                      (copyright_holders.user_id == user_id) | \
-                      (editors.user_id == user_id) }
+              .where do
+                (publication.published_at != nil) | \
+                (authors.user_id == user_id) | \
+                (copyright_holders.user_id == user_id) | \
+                (editors.user_id == user_id)
+              end
           }
 
           after_initialize :build_publication, unless: [:persisted?, :publication]
