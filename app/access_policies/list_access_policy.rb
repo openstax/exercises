@@ -6,11 +6,9 @@ class ListAccessPolicy
     when :index
       true
     when :read
-      list.has_collaborator?(requestor) ||\
-        list.is_published?
+      list.has_collaborator?(requestor) || list.is_published?
     when :create
-      list.has_collaborator?(requestor) && \
-        !list.is_persisted?
+      list.has_collaborator?(requestor) && !list.is_persisted?
     when :update, :destroy
       list.has_collaborator?(requestor)
     else

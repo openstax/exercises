@@ -2,13 +2,11 @@ FactoryGirl.define do
   factory :list do
     name { Faker::Lorem.words.join(' ').capitalize }
 
-    transient do
-      list_exercises_count { list_exercises.empty? ? 5 : 0 }
-    end
+    transient { list_publication_groups_count { list_publication_groups.empty? ? 5 : 0 } }
 
     after(:build) do |list, evaluator|
-      evaluator.list_exercises_count.times do
-        list.list_exercises << build(:list_exercise, list: list)
+      evaluator.list_publication_groups_count.times do
+        list.list_publication_groups << build(:list_publication_group, list: list)
       end
     end
   end

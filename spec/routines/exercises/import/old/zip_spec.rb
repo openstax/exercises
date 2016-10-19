@@ -20,7 +20,8 @@ module Exercises::Import
         expect(exercise.authors.first.user).to eq author
         expect(exercise.copyright_holders.first.user).to eq ch
 
-        expect(exercise.list_exercises.first.list.name).not_to be_blank
+        list = exercise.publication.publication_group.list_publication_groups.first.list
+        expect(list.name).not_to be_blank
 
         expect(exercise.tags).not_to be_blank
 

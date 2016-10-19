@@ -7,8 +7,6 @@ RSpec.describe VocabTerm, type: :model do
 
   it { is_expected.to have_many(:exercises).dependent(:destroy) }
 
-  it { is_expected.to have_many(:list_vocab_terms).dependent(:destroy) }
-
   it { is_expected.to validate_presence_of(:name) }
 
   it 'saves even if the definition is blank' do

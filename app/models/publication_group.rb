@@ -2,6 +2,8 @@ class PublicationGroup < ActiveRecord::Base
 
   has_many :publications, dependent: :destroy, inverse_of: :publication_group
 
+  has_many :list_publication_groups, dependent: :destroy
+
   validates :publishable_type, presence: true
   validates :uuid, presence: true, uniqueness: true
   validates :number, presence: true, uniqueness: { scope: :publishable_type }

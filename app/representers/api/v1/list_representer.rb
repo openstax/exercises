@@ -17,10 +17,10 @@ module Api::V1
                writeable: true,
                readable: true
 
-    collection :list_exercises,
-               as: :exercises,
-               class: ListExercise,
-               extend: ListExerciseRepresenter,
+    collection :list_publication_groups,
+               as: :publication_groups,
+               class: ListPublicationGroup,
+               extend: ListPublicationGroupRepresenter,
                writeable: true,
                readable: true
 

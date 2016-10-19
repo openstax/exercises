@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161006223624) do
+ActiveRecord::Schema.define(version: 20161019223527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -326,6 +326,17 @@ ActiveRecord::Schema.define(version: 20161006223624) do
 
   add_index "list_owners", ["list_id"], name: "index_list_owners_on_list_id", using: :btree
   add_index "list_owners", ["owner_id", "owner_type", "list_id"], name: "index_list_owners_on_owner_id_and_owner_type_and_list_id", unique: true, using: :btree
+
+  create_table "list_publication_groups", force: :cascade do |t|
+    t.integer  "sort_position",        null: false
+    t.integer  "list_id",              null: false
+    t.integer  "publication_group_id", null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "list_publication_groups", ["list_id", "sort_position"], name: "index_list_publication_groups_on_list_id_and_sort_position", unique: true, using: :btree
+  add_index "list_publication_groups", ["publication_group_id", "list_id"], name: "index_list_publication_groups_on_p_g_id_and_l_id", unique: true, using: :btree
 
   create_table "list_readers", force: :cascade do |t|
     t.integer  "reader_id",   null: false
@@ -660,6 +671,8 @@ ActiveRecord::Schema.define(version: 20161006223624) do
 
   add_foreign_key "exercise_tags", "exercises", on_update: :cascade, on_delete: :cascade
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "list_publication_groups", "lists"
+  add_foreign_key "list_publication_groups", "publication_groups"
   add_foreign_key "list_vocab_terms", "lists"
   add_foreign_key "list_vocab_terms", "vocab_terms"
   add_foreign_key "vocab_term_tags", "tags", on_update: :cascade, on_delete: :cascade

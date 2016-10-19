@@ -54,6 +54,9 @@ module Exercises
 
         list_name = (hash['lists'] || []).first
 
+        exercise.save!
+        exercise.publication.publish.save!
+
         if list_name.present?
           list = List.find_by(name: list_name)
           if list.nil?
@@ -71,21 +74,14 @@ module Exercises
             Rails.logger.info "Created new list: #{list_name}"
           end
 
-          le = ListExercise.new
-          le.exercise = exercise
-          le.list = list
-          exercise.list_exercises << le
-          list.list_exercises << le
+          lpg = ListPublicationGroup.new(
+            list: list, publication_group: exercise.publication.publication_group
+          )
+          exercise.publication.publication_group.list_publication_groups << lpg
+          list.list_publication_groups << lpg
         end
 
-        exercise.save!
-
-        if exercise.content_equals?(latest_exercise)
-          exercise.destroy
-          skipped = true
-        else
-          skipped = false
-        end
+        skipped = exercise.content_equals?(latest_exercise) ? exercise.destroy : false
 
         ex = "Imported Exercise #{hash['id']}"
         uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{exercise.uid}"

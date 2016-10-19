@@ -77,8 +77,6 @@ class Exercise < ActiveRecord::Base
 
   sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
-  has_many :list_exercises, dependent: :destroy
-
   belongs_to :vocab_term
 
   scope :preloaded, -> {

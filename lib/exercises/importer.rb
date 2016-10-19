@@ -101,6 +101,9 @@ module Exercises
         qq.collaborator_solutions << sol
       end
 
+      ex.save!
+      ex.publication.publish.save!
+
       if ex.content_equals?(latest_exercise)
         ex.destroy!
 
@@ -117,11 +120,11 @@ module Exercises
         end
         list = @lists[list_name]
 
-        le = ListExercise.new(list: list, exercise: ex)
-        ex.list_exercises << le
-        list.list_exercises << le
-        ex.save!
-        ex.publication.publish.save!
+        lpg = ListPublicationGroup.new(
+          list: list, publication_group: ex.publication.publication_group
+        )
+        ex.publication.publication_group.list_publication_groups << lpg
+        list.list_publication_groups << lpg
 
         skipped = false
       end

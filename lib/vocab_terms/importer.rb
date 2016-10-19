@@ -98,7 +98,8 @@ module VocabTerms
       vt.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder) \
         if copyright_holder
 
-      vt.save! # Save before comparing with existing records
+      vt.save!
+      vt.publication.publish.save!
 
       if vt.content_equals?(@latest_term_map[chapter][term])
         vt.destroy!
@@ -118,11 +119,11 @@ module VocabTerms
         end
         list = @lists[list_name]
 
-        lvt = ListVocabTerm.new(list: list, vocab_term: vt)
-        vt.list_vocab_terms << lvt
-        list.list_vocab_terms << lvt
-        vt.save!
-        vt.publication.publish.save!
+        lpg = ListPublicationGroup.new(
+          list: list, publication_group: vt.publication.publication_group
+        )
+        vt.publication.publication_group.list_publication_groups << lpg
+        list.list_publication_groups << lpg
 
         skipped = false
       end

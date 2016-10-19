@@ -9,8 +9,7 @@ RSpec.describe List, type: :model do
   it { is_expected.to have_many(:list_editors).dependent(:destroy) }
   it { is_expected.to have_many(:list_readers).dependent(:destroy) }
 
-  it { is_expected.to have_many(:list_exercises).dependent(:destroy) }
-  it { is_expected.to have_many(:list_vocab_terms).dependent(:destroy) }
+  it { is_expected.to have_many(:list_publication_groups).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:name) }
 
