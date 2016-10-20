@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Author, type: :model do
 
-  subject!(:author) { FactoryGirl.create(:author) }
+  subject(:author) { FactoryGirl.create(:author) }
 
   it { is_expected.to belong_to(:publication) }
   it { is_expected.to belong_to(:user) }

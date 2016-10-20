@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe VocabTerm, type: :model do
-  subject!(:vocab_term) { FactoryGirl.create :vocab_term }
+  subject(:vocab_term) { FactoryGirl.create :vocab_term }
 
   it { is_expected.to have_many(:vocab_distractors) }
 

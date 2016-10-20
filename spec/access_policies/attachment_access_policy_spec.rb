@@ -10,7 +10,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
   context 'an attachment on an exercise' do
 
-    subject!(:attachment) { FactoryGirl.build :attachment, parent: exercise }
+    subject(:attachment) { FactoryGirl.build :attachment, parent: exercise }
 
     it 'cannot be accessed by anonymous users or applications' do
       expect(AttachmentAccessPolicy.action_allowed?(:create, anon, attachment)).to eq false

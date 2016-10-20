@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe License, type: :model do
 
-  subject!(:license) { FactoryGirl.create(:license) }
+  subject(:license) { FactoryGirl.create(:license) }
 
   it { is_expected.to have_many(:publications).dependent(:destroy) }
   it { is_expected.to have_many(:class_licenses).dependent(:destroy) }

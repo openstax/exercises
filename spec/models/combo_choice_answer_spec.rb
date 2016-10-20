@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ComboChoiceAnswer, type: :model do
 
-  subject!(:combo_choice_answer) { FactoryGirl.create :combo_choice_answer }
+  subject(:combo_choice_answer) { FactoryGirl.create :combo_choice_answer }
 
   it { is_expected.to belong_to(:combo_choice) }
   it { is_expected.to belong_to(:answer) }
