@@ -126,6 +126,14 @@ module Publishable
             raise ::ActiveRecord::RecordInvalid, publication unless publication.persisted?
           end
 
+          # retrieve all versions for number, regardless of published status
+          def self.versions_for_number(number)
+            joins(publication: :publication_group).where {
+              (publication.publication_group.uuid == number) |
+                (publication.publication_group.number == number)
+            }.pluck(:version)
+          end
+
         end
       end
     end
