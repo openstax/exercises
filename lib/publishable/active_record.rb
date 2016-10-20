@@ -15,8 +15,8 @@ module Publishable
           delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
                    :authors, :copyright_holders, :derivations,
                    :is_yanked?, :is_published?, :is_embargoed?, :is_public?,
-                   :has_collaborator?, :license=,
-                   :authors=, :copyright_holders=, :derivations=,
+                   :has_collaborator?, :has_read_permission?, :has_write_permission?,
+                   :license=, :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
           scope :published, -> {
@@ -110,7 +110,7 @@ module Publishable
               end
           }
 
-          after_initialize :build_publication, unless: [:persisted?, :publication]
+          after_initialize :build_publication, if: :new_record?, unless: :publication
           after_create :ensure_publication!
 
           def before_publication

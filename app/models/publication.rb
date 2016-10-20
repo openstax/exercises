@@ -26,7 +26,7 @@ class Publication < ActiveRecord::Base
   before_save :before_publication
   after_save :after_publication
 
-  after_initialize :build_publication_group, unless: [:persisted?, :publication_group]
+  after_initialize :build_publication_group, if: :new_record?, unless: :publication_group
   before_validation :assign_uuid_and_version, on: :create
 
   default_scope do
@@ -69,8 +69,28 @@ class Publication < ActiveRecord::Base
     is_published? && !is_embargoed? && !is_yanked?
   end
 
+  def collaborators
+    authors.map(&:user) + copyright_holders.map(&:user)
+  end
+
   def has_collaborator?(user)
-    authors.any?{|a| a.user == user} || copyright_holders.any?{|ch| ch.user == user}
+    collaborators.include? user
+  end
+
+  def has_read_permission?(user)
+    has_collaborator?(user) || collaborators.any? do |collaborator|
+      collaborator.list_owners.any? do |list_owner|
+        list_owner.list.has_member?(user)
+      end
+    end
+  end
+
+  def has_write_permission?(user)
+    has_collaborator?(user) || collaborators.any? do |collaborator|
+      collaborator.list_owners.any? do |list_owner|
+        list_owner.list.has_owner?(user) || list_owner.list.has_editor?(user)
+      end
+    end
   end
 
   def publish

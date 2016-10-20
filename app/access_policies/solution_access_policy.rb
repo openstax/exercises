@@ -6,13 +6,13 @@ class SolutionAccessPolicy
     when :index
       true
     when :read
-      solution.has_collaborator?(requestor) ||\
-        solution.is_published?
+      solution.is_published? ||
+      solution.has_read_permission?(requestor)
     when :create
-      solution.has_collaborator?(requestor) && \
-        !solution.is_persisted?
+      !solution.is_persisted? &&
+      solution.has_write_permission?(requestor)
     when :update, :destroy
-      solution.has_collaborator?(requestor)
+      solution.has_write_permission?(requestor)
     else
       false
     end

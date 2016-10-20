@@ -15,4 +15,28 @@ class List < ActiveRecord::Base
 
   validates :name, presence: true
 
+  def has_owner?(user)
+    list_owners.any?{ |lo| lo.owner == user }
+  end
+
+  def has_editor?(user)
+    list_editors.any?{ |le| le.editor == user }
+  end
+
+  def has_reader?(user)
+    list_readers.any?{ |lr| lr.reader == user }
+  end
+
+  def has_member?(user)
+    has_owner?(user) || has_editor?(user) || has_reader?(user)
+  end
+
+  def has_read_permission?(user)
+    has_member?(user) || publication.has_read_permission?(user)
+  end
+
+  def has_write_permission?(user)
+    has_owner?(user) || publication.has_write_permission?(user)
+  end
+
 end

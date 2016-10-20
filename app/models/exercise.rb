@@ -118,12 +118,12 @@ class Exercise < ActiveRecord::Base
   end
 
   def can_view_solutions?(user)
-    return false if user.nil? # Not given
-    return true if new_record? # In process of being created
+    return false if user.nil?          # Not given
+    return true if new_record?         # In process of being created
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
-    return true if user.nil? # Application user
+    return true if user.nil?           # Application user
     return false if user.is_anonymous? # Anonymous user
-    has_collaborator?(user) # Regular user
+    has_read_permission?(user)         # Regular user
   end
 
   def is_vocab?

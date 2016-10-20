@@ -8,13 +8,13 @@ class VocabTermAccessPolicy
     when :create
       !requestor.is_anonymous? && requestor.is_human? && !vocab_term.persisted?
     when :read
-      vocab_term.has_collaborator?(requestor) || requestor.is_administrator?
+      vocab_term.has_read_permission?(requestor)
     when :update, :destroy
       !vocab_term.is_published? &&
-      (vocab_term.has_collaborator?(requestor) || requestor.is_administrator?)
+      vocab_term.has_write_permission?(requestor)
     when :new_version
       vocab_term.is_published? &&
-      (vocab_term.has_collaborator?(requestor) || requestor.is_administrator?)
+      vocab_term.has_write_permission?(requestor)
     else
       false
     end

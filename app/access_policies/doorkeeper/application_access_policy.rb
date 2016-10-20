@@ -4,8 +4,9 @@ module Doorkeeper
     def self.action_allowed?(action, requestor, application)
       case action
       when :read, :update
-        requestor.is_human? && !requestor.is_anonymous? && \
-        application.owner.has_member?(requestor.account) || \
+        requestor.is_human? &&
+        !requestor.is_anonymous? &&
+        application.owner.has_member?(requestor.account) ||
         requestor.is_administrator?
       when :create, :destroy
         requestor.is_administrator?
