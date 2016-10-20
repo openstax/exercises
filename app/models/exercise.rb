@@ -11,8 +11,7 @@ class Exercise < ActiveRecord::Base
         {
           derivations: :source_publication,
           authors: :user,
-          copyright_holders: :user,
-          editors: :user
+          copyright_holders: :user
         }
       ],
       questions: [
@@ -40,8 +39,7 @@ class Exercise < ActiveRecord::Base
       publication: [
         :derivations,
         :authors,
-        :copyright_holders,
-        :editors
+        :copyright_holders
       ]
     },
     {
@@ -86,8 +84,7 @@ class Exercise < ActiveRecord::Base
             publication: [:publication_group,
                           :derivations,
                           {authors: :user},
-                          {copyright_holders: :user},
-                          {editors: :user}],
+                          {copyright_holders: :user}],
             questions: [
               :hints,
               :collaborator_solutions,

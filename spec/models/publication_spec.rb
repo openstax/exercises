@@ -10,7 +10,6 @@ RSpec.describe Publication, type: :model do
 
   it { is_expected.to have_many(:authors).dependent(:destroy) }
   it { is_expected.to have_many(:copyright_holders).dependent(:destroy) }
-  it { is_expected.to have_many(:editors).dependent(:destroy) }
 
   it { is_expected.to have_many(:sources).dependent(:destroy) }
   it { is_expected.to have_many(:derivations).dependent(:destroy) }

@@ -13,7 +13,6 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to have_many(:authors).dependent(:destroy) }
   it { is_expected.to have_many(:copyright_holders).dependent(:destroy) }
-  it { is_expected.to have_many(:editors).dependent(:destroy) }
 
   it { is_expected.to have_many(:child_deputizations).dependent(:destroy) }
   it { is_expected.to have_many(:direct_deputizations).dependent(:destroy) }

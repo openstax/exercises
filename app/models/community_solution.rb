@@ -10,9 +10,6 @@ class CommunitySolution < ActiveRecord::Base
 
     joins{publication.authors.outer}
       .joins{publication.copyright_holders.outer}
-      .joins{publication.editors.outer}
-      .where{ (authors.user_id == user_id) | \
-              (copyright_holders.user_id == user_id) | \
-              (editors.user_id == user_id) }
+      .where{ (authors.user_id == user_id) | (copyright_holders.user_id == user_id) }
   }
 end

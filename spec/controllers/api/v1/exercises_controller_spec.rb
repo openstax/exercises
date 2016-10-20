@@ -19,8 +19,8 @@ module Api::V1
 
     before(:each) do
       @exercise = FactoryGirl.build(:exercise)
-      @exercise.publication.editors << FactoryGirl.build(
-        :editor, user: user, publication: @exercise.publication
+      @exercise.publication.authors << FactoryGirl.build(
+        :author, user: user, publication: @exercise.publication
       )
     end
 
@@ -305,7 +305,7 @@ module Api::V1
         end
 
         it "hides solutions for published exercises if the requestor is not allowed to edit it" do
-          @exercise.publication.editors.destroy_all
+          @exercise.publication.authors.destroy_all
 
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
@@ -363,8 +363,8 @@ module Api::V1
 
       it "creates the exercise with a collaborator solution" do
         exercise = FactoryGirl.build(:exercise, collaborator_solutions_count: 1)
-        exercise.publication.editors << FactoryGirl.build(
-          :editor, user: user, publication: @exercise.publication
+        exercise.publication.authors << FactoryGirl.build(
+          :author, user: user, publication: @exercise.publication
         )
 
         expect { api_post :create, user_token,

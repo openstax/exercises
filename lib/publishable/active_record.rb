@@ -9,14 +9,13 @@ module Publishable
 
           has_many :authors, through: :publication
           has_many :copyright_holders, through: :publication
-          has_many :editors, through: :publication
           has_many :sources, through: :publication
           has_many :derivations, through: :publication
 
           delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
-                   :editors, :authors, :copyright_holders, :derivations,
+                   :authors, :copyright_holders, :derivations,
                    :is_yanked?, :is_published?, :is_embargoed?, :is_public?,
-                   :has_collaborator?, :license=, :editors=,
+                   :has_collaborator?, :license=,
                    :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
@@ -104,12 +103,10 @@ module Publishable
 
             joins{publication.authors.outer}
               .joins{publication.copyright_holders.outer}
-              .joins{publication.editors.outer}
               .where do
                 (publication.published_at != nil) | \
                 (authors.user_id == user_id) | \
-                (copyright_holders.user_id == user_id) | \
-                (editors.user_id == user_id)
+                (copyright_holders.user_id == user_id)
               end
           }
 

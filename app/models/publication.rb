@@ -6,7 +6,6 @@ class Publication < ActiveRecord::Base
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
   sortable_has_many :copyright_holders, dependent: :destroy, inverse_of: :publication
-  sortable_has_many :editors, dependent: :destroy, inverse_of: :publication
 
   sortable_has_many :sources, class_name: 'Derivation',
                               foreign_key: :derived_publication_id,
@@ -71,9 +70,7 @@ class Publication < ActiveRecord::Base
   end
 
   def has_collaborator?(user)
-    authors.any?{|a| a.user == user} || \
-    copyright_holders.any?{|ch| ch.user == user} || \
-    editors.any?{|e| e.user == user}
+    authors.any?{|a| a.user == user} || copyright_holders.any?{|ch| ch.user == user}
   end
 
   def publish

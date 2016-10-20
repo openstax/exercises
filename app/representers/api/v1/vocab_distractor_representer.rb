@@ -7,8 +7,6 @@ module Api::V1
 
     property :license, inherit: true, writeable: false
 
-    collection :editors, inherit: true, writeable: false
-
     collection :authors, inherit: true, writeable: false
 
     collection :copyright_holders, inherit: true, writeable: false

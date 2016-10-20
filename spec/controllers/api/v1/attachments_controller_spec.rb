@@ -19,8 +19,8 @@ module Api::V1
 
     let(:exercise) {
             exercise = FactoryGirl.build(:exercise)
-            exercise.publication.editors << FactoryGirl.build(
-              :editor, user: user, publication: exercise.publication
+            exercise.publication.authors << FactoryGirl.build(
+              :author, user: user, publication: exercise.publication
             )
             exercise.save!
             exercise

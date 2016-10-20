@@ -30,11 +30,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:read, user, exercise)).to eq false
       end
 
-      it 'can be accessed by humans editors, authors and copyright holders' do
-        editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-        expect(described_class.action_allowed?(:read, user, exercise.reload)).to eq true
-        editor.destroy
-
+      it 'can be accessed by humans authors and copyright holders' do
         author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
         expect(described_class.action_allowed?(:read, user, exercise.reload)).to eq true
         author.destroy
@@ -92,7 +88,6 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
       context 'created' do
         it 'cannot be accessed by anyone' do
           exercise.save!
-          FactoryGirl.create(:editor, publication: exercise.publication, user: user)
           FactoryGirl.create(:author, publication: exercise.publication, user: user)
           FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
 
@@ -138,12 +133,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:destroy, user, exercise)).to eq false
         end
 
-        it 'can be accessed by humans editors, authors and copyright holders' do
-          editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:update, user, exercise.reload)).to eq true
-          expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
-          editor.destroy
-
+        it 'can be accessed by humans authors and copyright holders' do
           author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
           expect(described_class.action_allowed?(:update, user, exercise.reload)).to eq true
           expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
@@ -162,7 +152,6 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
     context 'published' do
       it 'cannot be accessed by anyone' do
-        FactoryGirl.create(:editor, publication: exercise.publication, user: user)
         FactoryGirl.create(:author, publication: exercise.publication, user: user)
         FactoryGirl.create(:copyright_holder, publication: exercise.publication, user: user)
 
@@ -217,11 +206,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
         end
 
-        it 'can be accessed by humans editors, authors and copyright holders' do
-          editor = FactoryGirl.create(:editor, publication: exercise.publication, user: user)
-          expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq true
-          editor.destroy
-
+        it 'can be accessed by humans authors and copyright holders' do
           author = FactoryGirl.create(:author, publication: exercise.publication, user: user)
           expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq true
           author.destroy

@@ -40,12 +40,6 @@ module Publishable
                  readable: true,
                  setter: ->(input:, **) { self.license = License.find_by(name: input[:name]) }
 
-        collection :editors,
-                   class: Editor,
-                   extend: Api::V1::RoleRepresenter,
-                   writeable: true,
-                   readable: true
-
         collection :authors,
                    class: Author,
                    extend: Api::V1::RoleRepresenter,

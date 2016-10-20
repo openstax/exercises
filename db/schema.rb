@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161020175420) do
+ActiveRecord::Schema.define(version: 20161020212457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,17 +191,6 @@ ActiveRecord::Schema.define(version: 20161020175420) do
   add_index "derivations", ["derived_publication_id", "hidden_at"], name: "index_derivations_on_derived_publication_id_and_hidden_at", using: :btree
   add_index "derivations", ["derived_publication_id", "sort_position"], name: "index_derivations_on_derived_publication_id_and_sort_position", unique: true, using: :btree
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true, using: :btree
-
-  create_table "editors", force: :cascade do |t|
-    t.integer  "sort_position",  null: false
-    t.integer  "publication_id", null: false
-    t.integer  "user_id",        null: false
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-  end
-
-  add_index "editors", ["publication_id", "sort_position"], name: "index_editors_on_publication_id_and_sort_position", unique: true, using: :btree
-  add_index "editors", ["user_id", "publication_id"], name: "index_editors_on_user_id_and_publication_id", unique: true, using: :btree
 
   create_table "exercise_tags", force: :cascade do |t|
     t.integer  "exercise_id", null: false

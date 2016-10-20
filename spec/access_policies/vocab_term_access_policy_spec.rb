@@ -29,11 +29,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
       expect(described_class.action_allowed?(:read, user, vocab_term)).to eq false
     end
 
-    it 'can be accessed by humans editors, authors and copyright holders' do
-      editor = FactoryGirl.create(:editor, publication: vocab_term.publication, user: user)
-      expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
-      editor.destroy
-
+    it 'can be accessed by humans authors and copyright holders' do
       author = FactoryGirl.create(:author, publication: vocab_term.publication, user: user)
       expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
       author.destroy
@@ -62,7 +58,6 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
     context 'created' do
       it 'cannot be accessed by anyone' do
         vocab_term.save!
-        FactoryGirl.create(:editor, publication: vocab_term.publication, user: user)
         FactoryGirl.create(:author, publication: vocab_term.publication, user: user)
         FactoryGirl.create(:copyright_holder, publication: vocab_term.publication, user: user)
 
@@ -92,12 +87,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq false
       end
 
-    it 'can be accessed by humans editors, authors and copyright holders' do
-      editor = FactoryGirl.create(:editor, publication: vocab_term.publication, user: user)
-      expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq true
-      expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
-      editor.destroy
-
+    it 'can be accessed by humans authors and copyright holders' do
       author = FactoryGirl.create(:author, publication: vocab_term.publication, user: user)
       expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq true
       expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
@@ -114,7 +104,6 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
 
     context 'published' do
       it 'cannot be accessed by anyone' do
-        FactoryGirl.create(:editor, publication: vocab_term.publication, user: user)
         FactoryGirl.create(:author, publication: vocab_term.publication, user: user)
         FactoryGirl.create(:copyright_holder, publication: vocab_term.publication, user: user)
 
@@ -152,11 +141,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq false
       end
 
-      it 'can be accessed by humans editors, authors and copyright holders' do
-        editor = FactoryGirl.create(:editor, publication: vocab_term.publication, user: user)
-        expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq true
-        editor.destroy
-
+      it 'can be accessed by humans authors and copyright holders' do
         author = FactoryGirl.create(:author, publication: vocab_term.publication, user: user)
         expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq true
         author.destroy

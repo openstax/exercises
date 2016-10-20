@@ -19,8 +19,8 @@ module Api::V1
 
     before(:each) do
       @vocab_term = FactoryGirl.build(:vocab_term)
-      @vocab_term.publication.editors << FactoryGirl.build(
-        :editor, user: user, publication: @vocab_term.publication
+      @vocab_term.publication.authors << FactoryGirl.build(
+        :author, user: user, publication: @vocab_term.publication
       )
     end
 

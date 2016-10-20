@@ -9,8 +9,7 @@ class VocabTerm < ActiveRecord::Base
         {
           derivations: :source_publication,
           authors: :user,
-          copyright_holders: :user,
-          editors: :user
+          copyright_holders: :user
         }
       ]
     }
@@ -27,8 +26,7 @@ class VocabTerm < ActiveRecord::Base
       publication: [
         :derivations,
         :authors,
-        :copyright_holders,
-        :editors
+        :copyright_holders
       ]
     }
   ]
@@ -38,7 +36,7 @@ class VocabTerm < ActiveRecord::Base
   ]
 
   EXERCISE_PUBLICATION_COLLABORATORS = [
-    :authors, :copyright_holders, :editors
+    :authors, :copyright_holders
   ]
 
   publishable
@@ -59,8 +57,7 @@ class VocabTerm < ActiveRecord::Base
             publication: [
               :publication_group,
               {authors: :user},
-              {copyright_holders: :user},
-              {editors: :user}
+              {copyright_holders: :user}
             ])
   }
 
