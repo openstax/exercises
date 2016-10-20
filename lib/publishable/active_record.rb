@@ -5,8 +5,8 @@ module Publishable
         class_exec do
 
           has_one :publication, as: :publishable, dependent: :destroy, inverse_of: :publishable
-
           has_one :publication_group, through: :publication
+
           has_many :authors, through: :publication
           has_many :copyright_holders, through: :publication
           has_many :editors, through: :publication

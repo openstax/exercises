@@ -74,7 +74,8 @@ class VocabTerm < ActiveRecord::Base
     other_attrs = other_vocab_term.association_attributes(*association_attributes_arguments)
 
     attrs == other_attrs &&
-    Set.new(distractor_term_numbers) == Set.new(other_vocab_term.distractor_term_numbers)
+    Set.new(distractor_publication_group_ids) ==
+      Set.new(other_vocab_term.distractor_publication_group_ids)
   end
 
   def new_version
@@ -93,12 +94,8 @@ class VocabTerm < ActiveRecord::Base
     exercises.group_by(&:number).map{ |number, exercises| exercises.max_by(&:version) }
   end
 
-  def latest_exercise_uids
-    latest_exercises.map(&:uid)
-  end
-
-  def distractor_term_numbers
-    vocab_distractors.map(&:distractor_term_number)
+  def distractor_publication_group_ids
+    vocab_distractors.map(&:distractor_publication_group_id)
   end
 
   def distractor_terms
@@ -137,8 +134,9 @@ class VocabTerm < ActiveRecord::Base
                         .limit(1).pluck(:definition)
 
     # Update distracted term exercises if the definition changed
+    pg_id = publication.publication_group_id
     VocabTerm.joins(:vocab_distractors)
-             .where(vocab_distractors: { distractor_term_number: publication.number })
+             .where(vocab_distractors: { distractor_publication_group_id: pg_id })
              .each{ |vt| vt.build_or_update_vocab_exercises(published_at) } \
       if definition != last_def
   end

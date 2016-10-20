@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161020001239) do
+ActiveRecord::Schema.define(version: 20161020175420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -602,14 +602,14 @@ ActiveRecord::Schema.define(version: 20161020001239) do
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
 
   create_table "vocab_distractors", force: :cascade do |t|
-    t.integer  "vocab_term_id",          null: false
-    t.integer  "distractor_term_number", null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "vocab_term_id",                   null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "distractor_publication_group_id", null: false
   end
 
-  add_index "vocab_distractors", ["distractor_term_number"], name: "index_vocab_distractors_on_distractor_term_number", using: :btree
-  add_index "vocab_distractors", ["vocab_term_id", "distractor_term_number"], name: "index_vocab_distractors_on_v_t_id_and_d_t_number", unique: true, using: :btree
+  add_index "vocab_distractors", ["distractor_publication_group_id"], name: "index_vocab_distractors_on_distractor_publication_group_id", using: :btree
+  add_index "vocab_distractors", ["vocab_term_id", "distractor_publication_group_id"], name: "index_vocab_distractors_on_v_t_id_and_d_p_g_id", unique: true, using: :btree
 
   create_table "vocab_term_tags", force: :cascade do |t|
     t.integer  "vocab_term_id"

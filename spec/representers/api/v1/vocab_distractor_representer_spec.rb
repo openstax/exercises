@@ -25,15 +25,29 @@ module Api::V1
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_distractor).as_json }
 
-    context 'number' do
+    context 'group_uuid' do
       it 'can be read' do
-        allow(vocab_distractor).to receive(:distractor_term_number).and_return(42)
-        expect(representation).to include('number' => 42)
+        uuid = SecureRandom.uuid
+        allow(vocab_distractor).to receive(:group_uuid).and_return(uuid)
+        expect(representation).to include('group_uuid' => uuid)
       end
 
       it 'can be written' do
+        uuid = SecureRandom.uuid
+        described_class.new(vocab_distractor).from_json({'group_uuid' => uuid}.to_json)
+        expect(vocab_distractor).to have_received(:group_uuid=).with(uuid)
+      end
+    end
+
+    context 'number' do
+      it 'can be read' do
+        allow(vocab_distractor).to receive(:number).and_return(42)
+        expect(representation).to include('number' => 42)
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
         described_class.new(vocab_distractor).from_json({'number' => 84}.to_json)
-        expect(vocab_distractor).to have_received(:distractor_term_number=).with(84)
+        expect(vocab_distractor).not_to have_received(:number=)
       end
     end
 

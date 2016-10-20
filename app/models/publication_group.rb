@@ -4,6 +4,8 @@ class PublicationGroup < ActiveRecord::Base
 
   has_many :list_publication_groups, dependent: :destroy
 
+  has_many :vocab_distractors, dependent: :destroy
+
   validates :publishable_type, presence: true
   validates :uuid, presence: true, uniqueness: true
   validates :number, presence: true, uniqueness: { scope: :publishable_type }

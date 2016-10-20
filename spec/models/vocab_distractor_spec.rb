@@ -1,19 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe VocabDistractor, type: :model do
-  subject!(:vocab_distractor) { FactoryGirl.create :vocab_distractor }
+  subject(:vocab_distractor) { FactoryGirl.create :vocab_distractor }
 
   it { is_expected.to belong_to(:vocab_term) }
 
   it { is_expected.to validate_presence_of(:vocab_term) }
+  it { is_expected.to validate_presence_of(:distractor_publication_group) }
   it { is_expected.to validate_presence_of(:distractor_term) }
 
-  it { is_expected.to validate_uniqueness_of(:distractor_term_number).scoped_to(:vocab_term_id) }
+  it do
+    is_expected.to validate_uniqueness_of(:distractor_publication_group).scoped_to(:vocab_term_id)
+  end
 
   it 'finds the latest distractor terms' do
     distractor_term = FactoryGirl.create :vocab_term
 
-    vocab_distractor.update_attribute :distractor_term_number, distractor_term.number
+    vocab_distractor.update_attribute :distractor_publication_group,
+                                      distractor_term.publication.publication_group
     expect(vocab_distractor.distractor_term).to eq distractor_term
 
     distractor_term.publication.publish.save!
@@ -27,10 +31,14 @@ RSpec.describe VocabDistractor, type: :model do
     distractor_term_3 = FactoryGirl.create :vocab_term
     vocab_distractor.distractor_term = distractor_term_3
     expect(vocab_distractor.distractor_term).to eq distractor_term_3
-    expect(vocab_distractor.distractor_term_number).to eq distractor_term_3.number
+    expect(vocab_distractor.distractor_publication_group).to(
+      eq distractor_term_3.publication.publication_group
+    )
 
     vocab_distractor.save!
-    expect(vocab_distractor.distractor_term_number).to eq distractor_term_3.number
+    expect(vocab_distractor.distractor_publication_group).to(
+      eq distractor_term_3.publication.publication_group
+    )
     expect(vocab_distractor.distractor_term).to eq distractor_term_3
   end
 end

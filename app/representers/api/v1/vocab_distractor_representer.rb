@@ -18,16 +18,15 @@ module Api::V1
     property :group_uuid,
              type: String,
              readable: true,
-             writeable: false,
+             writeable: true,
              schema_info: {
                required: true
              }
 
-    property :distractor_term_number,
-             as: :number,
+    property :number,
              type: Integer,
              readable: true,
-             writeable: true,
+             writeable: false,
              schema_info: {
                required: true
              }

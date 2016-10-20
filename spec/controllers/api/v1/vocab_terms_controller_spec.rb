@@ -268,14 +268,9 @@ module Api::V1
 
     describe "POST create" do
 
-      before(:each) do
-        @vocab_term.vocab_distractors.each do |vd|
-          vd.distractor_term.save!
-          vd.distractor_term_number = vd.distractor_term.publication.number
-        end
-      end
-
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
+        @vocab_term.distractor_terms.each(&:save!)
+
         expect {
           api_post :create, user_token,
                    raw_post_data: Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(
