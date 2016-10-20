@@ -50,7 +50,7 @@ module Api::V1
                }
 
     collection :versions,
-             type: Integer,
+             type: Array,
              writeable: false,
              readable: true,
              getter: ->(user_options:, **) { user_options[:versions] }
