@@ -80,7 +80,8 @@ class Publication < ActiveRecord::Base
   def has_read_permission?(user)
     has_collaborator?(user) || collaborators.any? do |collaborator|
       collaborator.list_owners.any? do |list_owner|
-        list_owner.list.has_member?(user)
+        list = list_owner.list
+        list.has_publication_group?(publication_group) && list.has_member?(user)
       end
     end
   end
@@ -88,7 +89,10 @@ class Publication < ActiveRecord::Base
   def has_write_permission?(user)
     has_collaborator?(user) || collaborators.any? do |collaborator|
       collaborator.list_owners.any? do |list_owner|
-        list_owner.list.has_owner?(user) || list_owner.list.has_editor?(user)
+        list = list_owner.list
+
+        list.has_publication_group?(publication_group) &&
+        ( list.has_owner?(user) || list.has_editor?(user) )
       end
     end
   end

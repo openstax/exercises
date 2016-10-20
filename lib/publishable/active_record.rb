@@ -101,13 +101,22 @@ module Publishable
             next self if user.administrator
             user_id = user.id
 
-            joins{publication.authors.outer}
-              .joins{publication.copyright_holders.outer}
-              .where do
-                (publication.published_at != nil) | \
-                (authors.user_id == user_id) | \
-                (copyright_holders.user_id == user_id)
-              end
+            joins do
+              list = publication.publication_group.list_publication_groups.outer.list.outer
+
+              [ publication.authors,
+                publication.copyright_holders,
+                list.dup.list_owners,
+                list.dup.list_editors,
+                list.list_readers ].map(&:outer)
+            end.where do
+              (publication.published_at != nil) |
+              (authors.user_id == user_id) |
+              (copyright_holders.user_id == user_id) |
+              ((list_owners.owner_id == user_id) & (list_owners.owner_type == 'User')) |
+              ((list_editors.editor_id == user_id) & (list_editors.editor_type == 'User')) |
+              ((list_readers.reader_id == user_id) & (list_readers.reader_type == 'User'))
+            end
           }
 
           after_initialize :build_publication, if: :new_record?, unless: :publication

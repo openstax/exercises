@@ -15,6 +15,10 @@ class List < ActiveRecord::Base
 
   validates :name, presence: true
 
+  def has_publication_group?(publication_group)
+    list_publication_groups.any?{ |lpg| lpg.publication_group == publication_group }
+  end
+
   def has_owner?(user)
     list_owners.any?{ |lo| lo.owner == user }
   end
