@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019223527) do
+ActiveRecord::Schema.define(version: 20161020001239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -295,17 +295,6 @@ ActiveRecord::Schema.define(version: 20161019223527) do
   add_index "list_editors", ["editor_id", "editor_type", "list_id"], name: "index_list_editors_on_editor_id_and_editor_type_and_list_id", unique: true, using: :btree
   add_index "list_editors", ["list_id"], name: "index_list_editors_on_list_id", using: :btree
 
-  create_table "list_exercises", force: :cascade do |t|
-    t.integer  "sort_position", null: false
-    t.integer  "list_id",       null: false
-    t.integer  "exercise_id",   null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  add_index "list_exercises", ["exercise_id", "list_id"], name: "index_list_exercises_on_exercise_id_and_list_id", unique: true, using: :btree
-  add_index "list_exercises", ["list_id", "sort_position"], name: "index_list_exercises_on_list_id_and_sort_position", unique: true, using: :btree
-
   create_table "list_nestings", force: :cascade do |t|
     t.integer  "parent_list_id", null: false
     t.integer  "child_list_id",  null: false
@@ -348,17 +337,6 @@ ActiveRecord::Schema.define(version: 20161019223527) do
 
   add_index "list_readers", ["list_id"], name: "index_list_readers_on_list_id", using: :btree
   add_index "list_readers", ["reader_id", "reader_type", "list_id"], name: "index_list_readers_on_reader_id_and_reader_type_and_list_id", unique: true, using: :btree
-
-  create_table "list_vocab_terms", force: :cascade do |t|
-    t.integer  "sort_position", null: false
-    t.integer  "list_id",       null: false
-    t.integer  "vocab_term_id", null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  add_index "list_vocab_terms", ["list_id", "sort_position"], name: "index_list_vocab_terms_on_list_id_and_sort_position", unique: true, using: :btree
-  add_index "list_vocab_terms", ["vocab_term_id", "list_id"], name: "index_list_vocab_terms_on_vocab_term_id_and_list_id", unique: true, using: :btree
 
   create_table "lists", force: :cascade do |t|
     t.string   "name",       null: false
@@ -673,8 +651,6 @@ ActiveRecord::Schema.define(version: 20161019223527) do
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
   add_foreign_key "list_publication_groups", "lists"
   add_foreign_key "list_publication_groups", "publication_groups"
-  add_foreign_key "list_vocab_terms", "lists"
-  add_foreign_key "list_vocab_terms", "vocab_terms"
   add_foreign_key "vocab_term_tags", "tags", on_update: :cascade, on_delete: :cascade
   add_foreign_key "vocab_term_tags", "vocab_terms", on_update: :cascade, on_delete: :cascade
 end
