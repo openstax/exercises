@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabTermWithDistractorsAndExerciseIdsRepresenter, type: :representer do
 
-    let!(:vocab_term) {
+    let(:vocab_term) {
       dbl = instance_spy(VocabTerm)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:vocab_distractors).and_return([])

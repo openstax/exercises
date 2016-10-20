@@ -3,17 +3,17 @@ require "rails_helper"
 module Api::V1
   describe AttachmentsController, type: :controller, api: true, version: :v1 do
 
-    let!(:application) { FactoryGirl.create :doorkeeper_application }
-    let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application) { FactoryGirl.create :doorkeeper_application }
+    let(:user)        { FactoryGirl.create :user, :agreed_to_terms }
+    let(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
-    let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+    let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: user.id }
-    let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+    let(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: admin.id }
-    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+    let(:application_token) { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: nil }
 

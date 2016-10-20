@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe ExerciseAccessPolicy, type: :access_policy do
-  let!(:anon)     { AnonymousUser.instance }
-  let!(:user)     { FactoryGirl.create(:user) }
-  let!(:app)      { FactoryGirl.create(:doorkeeper_application) }
-  let!(:exercise) { FactoryGirl.build(:exercise) }
+  let(:anon)     { AnonymousUser.instance }
+  let(:user)     { FactoryGirl.create(:user) }
+  let(:app)      { FactoryGirl.create(:doorkeeper_application) }
+  let(:exercise) { FactoryGirl.build(:exercise) }
 
   context 'search' do
     it 'can be accessed by everyone' do

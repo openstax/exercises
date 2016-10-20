@@ -3,13 +3,13 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabDistractorRepresenter, type: :representer do
 
-    let!(:distractor_term) {
+    let(:distractor_term) {
       instance_spy(VocabTerm).tap do |dbl|
         allow(dbl).to receive(:as_json).and_return(dbl)
       end
     }
 
-    let!(:vocab_distractor) {
+    let(:vocab_distractor) {
       instance_spy(VocabDistractor).tap do |dbl|
         allow(dbl).to receive(:as_json).and_return(dbl)
         allow(dbl).to receive(:tags).and_return([])

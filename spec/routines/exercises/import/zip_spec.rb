@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Exercises::Import::Zip, type: :routine do
   let(:fixture_path) { 'spec/fixtures/sample_exercises.zip' }
 
-  let!(:author) { FactoryGirl.create :user }
-  let!(:ch)     { FactoryGirl.create :user }
+  let(:author) { FactoryGirl.create :user }
+  let(:ch)     { FactoryGirl.create :user }
 
   it 'imports the sample zip file' do
     attachment_count = Attachment.count

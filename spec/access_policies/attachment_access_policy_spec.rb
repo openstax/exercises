@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
-  let!(:anon)     { AnonymousUser.instance }
-  let!(:user)     { FactoryGirl.create(:user) }
-  let!(:app)      { FactoryGirl.create(:doorkeeper_application) }
+  let(:anon)     { AnonymousUser.instance }
+  let(:user)     { FactoryGirl.create(:user) }
+  let(:app)      { FactoryGirl.create(:doorkeeper_application) }
 
   context 'an attachment on an exercise' do
 

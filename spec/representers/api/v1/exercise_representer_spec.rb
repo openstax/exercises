@@ -3,7 +3,7 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe ExerciseRepresenter, type: :representer do
 
-    let!(:exercise) {
+    let(:exercise) {
       dbl = instance_spy(Exercise)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:questions).and_return([])

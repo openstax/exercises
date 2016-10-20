@@ -3,29 +3,29 @@ require "rails_helper"
 module Api::V1
   RSpec.describe PublicationsController, type: :controller, api: true, version: :v1 do
 
-    let!(:exercise)        { FactoryGirl.create :exercise }
-    let!(:vocab_term)      { FactoryGirl.create :vocab_term }
-    let!(:solution)        { FactoryGirl.create :community_solution }
+    let(:exercise)        { FactoryGirl.create :exercise }
+    let(:vocab_term)      { FactoryGirl.create :vocab_term }
+    let(:solution)        { FactoryGirl.create :community_solution }
 
-    let!(:exercise_author) {
+    let(:exercise_author) {
       FactoryGirl.create :author, publication: exercise.publication
     }
-    let!(:vocab_term_author) {
+    let(:vocab_term_author) {
       FactoryGirl.create :author, publication: vocab_term.publication
     }
-    let!(:solution_author) {
+    let(:solution_author) {
       FactoryGirl.create :author, publication: solution.publication
     }
 
-    let!(:exercise_author_token) {
+    let(:exercise_author_token) {
       FactoryGirl.create :doorkeeper_access_token,
                          resource_owner_id: exercise_author.user_id
     }
-    let!(:vocab_term_author_token) {
+    let(:vocab_term_author_token) {
       FactoryGirl.create :doorkeeper_access_token,
                          resource_owner_id: vocab_term_author.user_id
     }
-    let!(:solution_author_token) {
+    let(:solution_author_token) {
       FactoryGirl.create :doorkeeper_access_token,
                          resource_owner_id: solution_author.user_id
     }

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe VocabTermAccessPolicy, type: :access_policy do
-  let!(:anon)       { AnonymousUser.instance }
-  let!(:user)       { FactoryGirl.create(:user) }
-  let!(:app)        { FactoryGirl.create(:doorkeeper_application) }
-  let!(:vocab_term) { FactoryGirl.build(:vocab_term) }
+  let(:anon)       { AnonymousUser.instance }
+  let(:user)       { FactoryGirl.create(:user) }
+  let(:app)        { FactoryGirl.create(:doorkeeper_application) }
+  let(:vocab_term) { FactoryGirl.build(:vocab_term) }
 
   context 'search' do
     it 'can be accessed by everyone' do
