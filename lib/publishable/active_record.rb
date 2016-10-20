@@ -48,14 +48,6 @@ module Publishable
             end.order{[publication.publication_group.number.asc, publication.version.desc]}
           }
 
-          # retrieve all versions for number, regardless of published status
-          scope :versions_for_number, ->(number) {
-            joins(publication: :publication_group).where {
-              (publication.publication_group.uuid == number) |
-                (publication.publication_group.number == number)
-            }.pluck(:version)
-          }
-
           # The scope option determines how we limit the search for more recent versions
           # Default scope: Klass.published
           #
@@ -132,6 +124,14 @@ module Publishable
 
           def ensure_publication!
             raise ::ActiveRecord::RecordInvalid, publication unless publication.persisted?
+          end
+
+          # retrieve all versions for number, regardless of published status
+          def self.versions_for_number(number)
+            joins(publication: :publication_group).where {
+              (publication.publication_group.uuid == number) |
+                (publication.publication_group.number == number)
+            }.pluck(:version)
           end
 
         end
