@@ -4,8 +4,8 @@ module Exercises::Import
   RSpec.describe Old::Zip, type: :routine do
     let(:fixture_path) { 'spec/fixtures/old/sample_exercises.zip' }
 
-    let!(:author) { FactoryGirl.create :user }
-    let!(:ch)     { FactoryGirl.create :user }
+    let(:author) { FactoryGirl.create :user }
+    let(:ch)     { FactoryGirl.create :user }
 
     it 'imports the sample zip file' do
       attachment_count = Attachment.count
@@ -20,7 +20,8 @@ module Exercises::Import
         expect(exercise.authors.first.user).to eq author
         expect(exercise.copyright_holders.first.user).to eq ch
 
-        expect(exercise.list_exercises.first.list.name).not_to be_blank
+        list = exercise.publication.publication_group.list_publication_groups.first.list
+        expect(list.name).not_to be_blank
 
         expect(exercise.tags).not_to be_blank
 

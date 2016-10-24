@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161006223624) do
+ActiveRecord::Schema.define(version: 20161024224933) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -192,17 +192,6 @@ ActiveRecord::Schema.define(version: 20161006223624) do
   add_index "derivations", ["derived_publication_id", "sort_position"], name: "index_derivations_on_derived_publication_id_and_sort_position", unique: true, using: :btree
   add_index "derivations", ["source_publication_id", "derived_publication_id"], name: "index_derivations_on_source_p_id_and_derived_p_id", unique: true, using: :btree
 
-  create_table "editors", force: :cascade do |t|
-    t.integer  "sort_position",  null: false
-    t.integer  "publication_id", null: false
-    t.integer  "user_id",        null: false
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-  end
-
-  add_index "editors", ["publication_id", "sort_position"], name: "index_editors_on_publication_id_and_sort_position", unique: true, using: :btree
-  add_index "editors", ["user_id", "publication_id"], name: "index_editors_on_user_id_and_publication_id", unique: true, using: :btree
-
   create_table "exercise_tags", force: :cascade do |t|
     t.integer  "exercise_id", null: false
     t.integer  "tag_id",      null: false
@@ -295,17 +284,6 @@ ActiveRecord::Schema.define(version: 20161006223624) do
   add_index "list_editors", ["editor_id", "editor_type", "list_id"], name: "index_list_editors_on_editor_id_and_editor_type_and_list_id", unique: true, using: :btree
   add_index "list_editors", ["list_id"], name: "index_list_editors_on_list_id", using: :btree
 
-  create_table "list_exercises", force: :cascade do |t|
-    t.integer  "sort_position", null: false
-    t.integer  "list_id",       null: false
-    t.integer  "exercise_id",   null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  add_index "list_exercises", ["exercise_id", "list_id"], name: "index_list_exercises_on_exercise_id_and_list_id", unique: true, using: :btree
-  add_index "list_exercises", ["list_id", "sort_position"], name: "index_list_exercises_on_list_id_and_sort_position", unique: true, using: :btree
-
   create_table "list_nestings", force: :cascade do |t|
     t.integer  "parent_list_id", null: false
     t.integer  "child_list_id",  null: false
@@ -327,6 +305,17 @@ ActiveRecord::Schema.define(version: 20161006223624) do
   add_index "list_owners", ["list_id"], name: "index_list_owners_on_list_id", using: :btree
   add_index "list_owners", ["owner_id", "owner_type", "list_id"], name: "index_list_owners_on_owner_id_and_owner_type_and_list_id", unique: true, using: :btree
 
+  create_table "list_publication_groups", force: :cascade do |t|
+    t.integer  "sort_position",        null: false
+    t.integer  "list_id",              null: false
+    t.integer  "publication_group_id", null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "list_publication_groups", ["list_id", "sort_position"], name: "index_list_publication_groups_on_list_id_and_sort_position", unique: true, using: :btree
+  add_index "list_publication_groups", ["publication_group_id", "list_id"], name: "index_list_publication_groups_on_p_g_id_and_l_id", unique: true, using: :btree
+
   create_table "list_readers", force: :cascade do |t|
     t.integer  "reader_id",   null: false
     t.string   "reader_type", null: false
@@ -337,17 +326,6 @@ ActiveRecord::Schema.define(version: 20161006223624) do
 
   add_index "list_readers", ["list_id"], name: "index_list_readers_on_list_id", using: :btree
   add_index "list_readers", ["reader_id", "reader_type", "list_id"], name: "index_list_readers_on_reader_id_and_reader_type_and_list_id", unique: true, using: :btree
-
-  create_table "list_vocab_terms", force: :cascade do |t|
-    t.integer  "sort_position", null: false
-    t.integer  "list_id",       null: false
-    t.integer  "vocab_term_id", null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  add_index "list_vocab_terms", ["list_id", "sort_position"], name: "index_list_vocab_terms_on_list_id_and_sort_position", unique: true, using: :btree
-  add_index "list_vocab_terms", ["vocab_term_id", "list_id"], name: "index_list_vocab_terms_on_vocab_term_id_and_list_id", unique: true, using: :btree
 
   create_table "lists", force: :cascade do |t|
     t.string   "name",       null: false
@@ -431,22 +409,26 @@ ActiveRecord::Schema.define(version: 20161006223624) do
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
   create_table "openstax_accounts_accounts", force: :cascade do |t|
-    t.integer  "openstax_uid", null: false
-    t.string   "username",     null: false
+    t.integer  "openstax_uid",                      null: false
+    t.string   "username",                          null: false
     t.string   "access_token"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "full_name"
     t.string   "title"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "faculty_status",        default: 0, null: false
+    t.string   "salesforce_contact_id"
   end
 
   add_index "openstax_accounts_accounts", ["access_token"], name: "index_openstax_accounts_accounts_on_access_token", unique: true, using: :btree
+  add_index "openstax_accounts_accounts", ["faculty_status"], name: "index_openstax_accounts_accounts_on_faculty_status", using: :btree
   add_index "openstax_accounts_accounts", ["first_name"], name: "index_openstax_accounts_accounts_on_first_name", using: :btree
   add_index "openstax_accounts_accounts", ["full_name"], name: "index_openstax_accounts_accounts_on_full_name", using: :btree
   add_index "openstax_accounts_accounts", ["last_name"], name: "index_openstax_accounts_accounts_on_last_name", using: :btree
   add_index "openstax_accounts_accounts", ["openstax_uid"], name: "index_openstax_accounts_accounts_on_openstax_uid", unique: true, using: :btree
+  add_index "openstax_accounts_accounts", ["salesforce_contact_id"], name: "index_openstax_accounts_accounts_on_salesforce_contact_id", using: :btree
   add_index "openstax_accounts_accounts", ["username"], name: "index_openstax_accounts_accounts_on_username", unique: true, using: :btree
 
   create_table "openstax_accounts_group_members", force: :cascade do |t|
@@ -613,14 +595,14 @@ ActiveRecord::Schema.define(version: 20161006223624) do
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
 
   create_table "vocab_distractors", force: :cascade do |t|
-    t.integer  "vocab_term_id",          null: false
-    t.integer  "distractor_term_number", null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "vocab_term_id",                   null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "distractor_publication_group_id", null: false
   end
 
-  add_index "vocab_distractors", ["distractor_term_number"], name: "index_vocab_distractors_on_distractor_term_number", using: :btree
-  add_index "vocab_distractors", ["vocab_term_id", "distractor_term_number"], name: "index_vocab_distractors_on_v_t_id_and_d_t_number", unique: true, using: :btree
+  add_index "vocab_distractors", ["distractor_publication_group_id"], name: "index_vocab_distractors_on_distractor_publication_group_id", using: :btree
+  add_index "vocab_distractors", ["vocab_term_id", "distractor_publication_group_id"], name: "index_vocab_distractors_on_v_t_id_and_d_p_g_id", unique: true, using: :btree
 
   create_table "vocab_term_tags", force: :cascade do |t|
     t.integer  "vocab_term_id"
@@ -660,8 +642,8 @@ ActiveRecord::Schema.define(version: 20161006223624) do
 
   add_foreign_key "exercise_tags", "exercises", on_update: :cascade, on_delete: :cascade
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "list_vocab_terms", "lists"
-  add_foreign_key "list_vocab_terms", "vocab_terms"
+  add_foreign_key "list_publication_groups", "lists"
+  add_foreign_key "list_publication_groups", "publication_groups"
   add_foreign_key "vocab_term_tags", "tags", on_update: :cascade, on_delete: :cascade
   add_foreign_key "vocab_term_tags", "vocab_terms", on_update: :cascade, on_delete: :cascade
 end

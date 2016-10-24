@@ -27,14 +27,31 @@ module Api::V1
                  required: true
                }
 
-    collection :latest_exercise_uids,
-               as: :exercise_uids,
+    collection :exercise_uuids,
                type: String,
                writeable: false,
                readable: true,
+               getter: ->(*) { latest_exercises.map(&:uuid) },
+               exec_context: :decorator,
                schema_info: {
                  required: true
                }
+
+    collection :exercise_uids,
+               type: String,
+               writeable: false,
+               readable: true,
+               getter: ->(*) { latest_exercises.map(&:uid) },
+               exec_context: :decorator,
+               schema_info: {
+                 required: true
+               }
+
+    protected
+
+    def latest_exercises
+      @latest_exercises ||= represented.latest_exercises
+    end
 
   end
 end

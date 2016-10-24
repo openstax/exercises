@@ -194,21 +194,6 @@ class SearchExercises
         end
       end
 
-      with.keyword :editor do |names|
-        names.each do |name|
-          sn = to_string_array(name, append_wildcard: true)
-          next @items = @items.none if sn.empty?
-
-          @items = @items.joins(publication: {editors: {user: :account}})
-                         .where{
-                           (publication.editors.user.account.username.like_any sn) |\
-                           (publication.editors.user.account.first_name.like_any sn) |\
-                           (publication.editors.user.account.last_name.like_any sn) |\
-                           (publication.editors.user.account.full_name.like_any sn)
-                         }
-        end
-      end
-
       with.keyword :collaborator do |names|
         names.each do |name|
           sn = to_string_array(name, append_wildcard: true)
@@ -216,7 +201,6 @@ class SearchExercises
 
           @items = @items.joins{publication.authors.outer.user.outer.account.outer}
                          .joins{publication.copyright_holders.outer.user.outer.account.outer}
-                         .joins{publication.editors.outer.user.outer.account.outer}
                          .where{
                            (publication.authors.user.account.username.like_any sn) |\
                            (publication.authors.user.account.first_name.like_any sn) |\
@@ -225,11 +209,7 @@ class SearchExercises
                            (publication.copyright_holders.user.account.username.like_any sn) |\
                            (publication.copyright_holders.user.account.first_name.like_any sn) |\
                            (publication.copyright_holders.user.account.last_name.like_any sn) |\
-                           (publication.copyright_holders.user.account.full_name.like_any sn) |\
-                           (publication.editors.user.account.username.like_any sn) |\
-                           (publication.editors.user.account.first_name.like_any sn) |\
-                           (publication.editors.user.account.last_name.like_any sn) |\
-                           (publication.editors.user.account.full_name.like_any sn)
+                           (publication.copyright_holders.user.account.full_name.like_any sn)
                          }
         end
       end

@@ -12,8 +12,8 @@ module Exercises::Import
         'k12phys-ch04-s04'
       ]
     }
-    let!(:author) { FactoryGirl.create :user }
-    let!(:ch)     { FactoryGirl.create :user }
+    let(:author) { FactoryGirl.create :user }
+    let(:ch)     { FactoryGirl.create :user }
 
     it 'imports the sample spreadsheet' do
       expect {
@@ -26,7 +26,8 @@ module Exercises::Import
         expect(exercise.authors.first.user).to eq author
         expect(exercise.copyright_holders.first.user).to eq ch
 
-        expect(exercise.list_exercises.first.list.name).to eq 'HS-Physics Chapter 04'
+        list = exercise.publication.publication_group.list_publication_groups.first.list
+        expect(list.name).to eq 'HS-Physics Chapter 04'
 
         tag_names = exercise.tags.map(&:name)
         expect(tag_names).to include 'blooms-none'

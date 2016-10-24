@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CopyrightHolder, type: :model do
 
-  subject!(:ch) { FactoryGirl.create :copyright_holder }
+  subject(:ch) { FactoryGirl.create :copyright_holder }
 
   it { is_expected.to belong_to(:publication) }
   it { is_expected.to belong_to(:user) }

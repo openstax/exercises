@@ -3,15 +3,14 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabTermWithDistractorsAndExerciseIdsRepresenter, type: :representer do
 
-    let!(:vocab_term) {
+    let(:vocab_term) {
       dbl = instance_spy(VocabTerm)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:vocab_distractors).and_return([])
       allow(dbl).to receive(:distractor_literals).and_return([])
-      allow(dbl).to receive(:latest_exercise_uids).and_return([])
+      allow(dbl).to receive(:latest_exercises).and_return([])
       allow(dbl).to receive(:tags).and_return([])
       allow(dbl).to receive(:license).and_return(nil)
-      allow(dbl).to receive(:editors).and_return([])
       allow(dbl).to receive(:authors).and_return([])
       allow(dbl).to receive(:copyright_holders).and_return([])
       allow(dbl).to receive(:derivations).and_return([])
@@ -49,17 +48,23 @@ module Api::V1
     context 'distractor_terms' do
       it 'can be read' do
         vocab_distractor_1 = instance_spy(VocabDistractor)
-        allow(vocab_distractor_1).to receive(:distractor_term_number).and_return(1)
+        allow(vocab_distractor_1).to receive(:distractor_publication_group_id).and_return(1)
+        allow(vocab_distractor_1).to receive(:group_uuid).and_return(SecureRandom.uuid)
+        allow(vocab_distractor_1).to receive(:number).and_return(1)
         allow(vocab_distractor_1).to receive(:name).and_return('VocabTerm 1')
         allow(vocab_distractor_1).to receive(:definition).and_return('Definition 1')
         vocab_distractor_2 = instance_spy(VocabDistractor)
-        allow(vocab_distractor_2).to receive(:distractor_term_number).and_return(2)
+        allow(vocab_distractor_2).to receive(:distractor_publication_group_id).and_return(2)
+        allow(vocab_distractor_2).to receive(:group_uuid).and_return(SecureRandom.uuid)
+        allow(vocab_distractor_2).to receive(:number).and_return(2)
         allow(vocab_distractor_2).to receive(:name).and_return('VocabTerm 2')
         allow(vocab_distractor_2).to receive(:definition).and_return('Definition 2')
         vocab_distractor_3 = instance_spy(VocabDistractor)
-        allow(vocab_distractor_3).to receive(:distractor_term_number).and_return(3)
+        allow(vocab_distractor_3).to receive(:distractor_publication_group_id).and_return(3)
+        allow(vocab_distractor_3).to receive(:group_uuid).and_return(SecureRandom.uuid)
+        allow(vocab_distractor_3).to receive(:number).and_return(3)
         allow(vocab_distractor_3).to receive(:name).and_return('VocabTerm 3')
-        allow(vocab_distractor_3).to receive(:definition).and_return('definition 3')
+        allow(vocab_distractor_3).to receive(:definition).and_return('Definition 3')
 
         vocab_distractors = [vocab_distractor_1, vocab_distractor_2, vocab_distractor_3]
 
@@ -67,7 +72,6 @@ module Api::V1
           allow(vocab_distractor).to receive(:as_json).and_return(vocab_distractor)
           allow(vocab_distractor).to receive(:tags).and_return([])
           allow(vocab_distractor).to receive(:license).and_return(nil)
-          allow(vocab_distractor).to receive(:editors).and_return([])
           allow(vocab_distractor).to receive(:authors).and_return([])
           allow(vocab_distractor).to receive(:copyright_holders).and_return([])
           allow(vocab_distractor).to receive(:derivations).and_return([])
@@ -84,17 +88,17 @@ module Api::V1
         expect(vocab_term).to(
           receive(:vocab_distractors=)
             .with(3.times.map{ a_kind_of(VocabDistractor) }) do |new_vocab_distractors|
-            expect(Set.new new_vocab_distractors.map(&:distractor_term)).to eq(
-              Set.new(vocab_distractors.map(&:distractor_term))
+            expect(new_vocab_distractors.map(&:distractor_term)).to match_array(
+              vocab_distractors.map(&:distractor_term)
             )
           end
         )
 
         distractor_term_hash = vocab_distractors.map do |vocab_distractor|
-          { 'number' => vocab_distractor.distractor_term_number }
+          { 'group_uuid' => vocab_distractor.distractor_publication_group.uuid }
         end
         described_class.new(vocab_term).from_json(
-          {'distractor_terms' => distractor_term_hash}.to_json
+          { 'distractor_terms' => distractor_term_hash }.to_json
         )
       end
     end
@@ -126,13 +130,30 @@ module Api::V1
       end
     end
 
+    context 'exercise_uuids' do
+      it 'can be read' do
+        exercises = [OpenStruct.new(uuid: SecureRandom.uuid)]
+
+        allow(vocab_term).to receive(:latest_exercises).and_return(exercises)
+
+        expect(representation).to include('exercise_uuids' => exercises.map(&:uuid))
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
+        expect(vocab_term).not_to receive(:exercises=)
+        expect(vocab_term).not_to receive(:exercise_ids=)
+
+        described_class.new(vocab_term).from_json({'exercise_uids' => [42, 4, 2]}.to_json)
+      end
+    end
+
     context 'exercise_uids' do
       it 'can be read' do
-        exercise_uids = [42, 4, 2]
+        exercises = [OpenStruct.new(uid: 42), OpenStruct.new(uid: 4), OpenStruct.new(uid: 2)]
 
-        allow(vocab_term).to receive(:latest_exercise_uids).and_return(exercise_uids)
+        allow(vocab_term).to receive(:latest_exercises).and_return(exercises)
 
-        expect(representation).to include('exercise_uids' => exercise_uids)
+        expect(representation).to include('exercise_uids' => exercises.map(&:uid))
       end
 
       it 'cannot be written (attempts are silently ignored)' do

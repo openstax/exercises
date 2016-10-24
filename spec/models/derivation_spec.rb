@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Derivation, type: :model do
 
-  subject!(:derivation) { FactoryGirl.create :derivation }
+  subject(:derivation) { FactoryGirl.create :derivation }
 
   it { is_expected.to belong_to(:derived_publication) }
   it { is_expected.to belong_to(:source_publication) }

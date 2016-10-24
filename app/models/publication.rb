@@ -1,12 +1,18 @@
 class Publication < ActiveRecord::Base
 
+  PERMISSION_PRELOADED_ASSOCIATIONS = [
+    :groups_as_member,
+    { direct_list_owners: {
+      list: { list_owners: :owner, list_editors: :editor, list_readers: :reader }
+    } }
+  ].freeze
+
   belongs_to :publication_group, inverse_of: :publications
   belongs_to :publishable, polymorphic: true, inverse_of: :publication
   belongs_to :license
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
   sortable_has_many :copyright_holders, dependent: :destroy, inverse_of: :publication
-  sortable_has_many :editors, dependent: :destroy, inverse_of: :publication
 
   sortable_has_many :sources, class_name: 'Derivation',
                               foreign_key: :derived_publication_id,
@@ -27,7 +33,7 @@ class Publication < ActiveRecord::Base
   before_save :before_publication
   after_save :after_publication
 
-  after_initialize :build_publication_group, unless: [:persisted?, :publication_group]
+  after_initialize :build_publication_group, if: :new_record?, unless: :publication_group
   before_validation :assign_uuid_and_version, on: :create
 
   default_scope do
@@ -70,10 +76,41 @@ class Publication < ActiveRecord::Base
     is_published? && !is_embargoed? && !is_yanked?
   end
 
+  def collaborators(preload: nil)
+    preload = preload.nil? ? :user : { user: preload }
+
+    # Don't preload if creating/deleting the publication
+    aa = persisted? ? authors.preload(preload) : authors
+    ch = persisted? ? copyright_holders.preload(preload) : copyright_holders
+
+    aa.map(&:user) + ch.map(&:user)
+  end
+
   def has_collaborator?(user)
-    authors.any?{|a| a.user == user} || \
-    copyright_holders.any?{|ch| ch.user == user} || \
-    editors.any?{|e| e.user == user}
+    collaborators.include? user
+  end
+
+  def has_read_permission?(user)
+    has_collaborator?(user) ||
+    collaborators(preload: PERMISSION_PRELOADED_ASSOCIATIONS).any? do |collaborator|
+      collaborator.list_owners.any? do |list_owner|
+        list = list_owner.list
+
+        list.has_publication_group?(publication_group) && list.has_member?(user)
+      end
+    end
+  end
+
+  def has_write_permission?(user)
+    has_collaborator?(user) ||
+    collaborators(preload: PERMISSION_PRELOADED_ASSOCIATIONS).any? do |collaborator|
+      collaborator.list_owners.any? do |list_owner|
+        list = list_owner.list
+
+        list.has_publication_group?(publication_group) &&
+        ( list.has_owner?(user) || list.has_editor?(user) )
+      end
+    end
   end
 
   def publish

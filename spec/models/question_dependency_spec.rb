@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe QuestionDependency, type: :model do
 
-  subject!(:question_dependency) { FactoryGirl.create(:question_dependency) }
+  subject(:question_dependency) { FactoryGirl.create(:question_dependency) }
 
   it { is_expected.to belong_to(:parent_question) }
   it { is_expected.to belong_to(:dependent_question) }

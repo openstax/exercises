@@ -3,30 +3,30 @@ require "rails_helper"
 module Api::V1
   describe ExercisesController, type: :controller, api: true, version: :v1 do
 
-    let!(:application) { FactoryGirl.create :doorkeeper_application }
-    let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application) { FactoryGirl.create :doorkeeper_application }
+    let(:user)        { FactoryGirl.create :user, :agreed_to_terms }
+    let(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
-    let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+    let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: user.id }
-    let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+    let(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: admin.id }
-    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+    let(:application_token) { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: nil }
 
-    before(:each) do
+    before do
       @exercise = FactoryGirl.build(:exercise)
-      @exercise.publication.editors << FactoryGirl.build(
-        :editor, user: user, publication: @exercise.publication
+      @exercise.publication.authors << FactoryGirl.build(
+        :author, user: user, publication: @exercise.publication
       )
     end
 
     describe "GET index" do
 
-      before(:each) do
+      before do
         10.times { FactoryGirl.create(:exercise, :published) }
 
         tested_strings = ["%adipisci%", "%draft%"]
@@ -186,7 +186,7 @@ module Api::V1
 
     describe "GET show" do
 
-      before(:each) do
+      before do
         @exercise.publication.publish
         @exercise.save!
         @exercise.reload
@@ -275,7 +275,7 @@ module Api::V1
       end
 
       context 'with solutions' do
-        before(:each) do
+        before do
           question = @exercise.questions.first
           question.collaborator_solutions << FactoryGirl.create(:collaborator_solution, question: question)
         end
@@ -305,7 +305,7 @@ module Api::V1
         end
 
         it "hides solutions for published exercises if the requestor is not allowed to edit it" do
-          @exercise.publication.editors.destroy_all
+          @exercise.publication.authors.destroy_all
 
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
@@ -363,8 +363,8 @@ module Api::V1
 
       it "creates the exercise with a collaborator solution" do
         exercise = FactoryGirl.build(:exercise, collaborator_solutions_count: 1)
-        exercise.publication.editors << FactoryGirl.build(
-          :editor, user: user, publication: @exercise.publication
+        exercise.publication.authors << FactoryGirl.build(
+          :author, user: user, publication: @exercise.publication
         )
 
         expect { api_post :create, user_token,
@@ -382,7 +382,7 @@ module Api::V1
 
     describe "PATCH update" do
 
-      before(:each) do
+      before do
         @exercise.save!
         @exercise.reload
         @old_attributes = @exercise.attributes

@@ -10,18 +10,18 @@
 
       <span class="<%= account_bar_classes %> welcome-message" data-test-user-welcome><%= salutation current_user %></span>
       <%= link_to "My Account", openstax_accounts.profile_path, :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
-      <%= vertical_bar(:id => "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
+      <%= vertical_bar(id: "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
       <%= link_to "Sign out", openstax_accounts.logout_path, :class => "#{account_bar_classes}", :'data-test-link-sign-out' => "", :method => :delete %>
     <% else %>
       <%= link_to "Join now", openstax_accounts.login_path, :class => "#{account_bar_classes}", :'data-test-link-join' => "" %>
-      <%= vertical_bar(:id => "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
+      <%= vertical_bar(id: "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
       <%= link_to "Sign in",  openstax_accounts.login_path, :class => "#{account_bar_classes}", :'data-test-link-sign-in' => "" %>
     <% end %>
 
-    <%= link_to "http://www.facebook.com/openstaxtutor", :id => "facebook-link" do %>
+    <%= link_to "http://www.facebook.com/openstaxtutor", id: "facebook-link" do %>
       <%= image_tag("facebook_icon.png", :class => "facebook-icon") %>
     <% end %>
-    <%= link_to "http://www.twitter.com/openstaxtutor", :id => "twitter-link" do %>
+    <%= link_to "http://www.twitter.com/openstaxtutor", id: "twitter-link" do %>
       <%= image_tag("twitter_icon.png", :class => "twitter-icon") %>
     <% end %>
   

@@ -11,8 +11,7 @@ class Exercise < ActiveRecord::Base
         {
           derivations: :source_publication,
           authors: :user,
-          copyright_holders: :user,
-          editors: :user
+          copyright_holders: :user
         }
       ],
       questions: [
@@ -40,8 +39,7 @@ class Exercise < ActiveRecord::Base
       publication: [
         :derivations,
         :authors,
-        :copyright_holders,
-        :editors
+        :copyright_holders
       ]
     },
     {
@@ -77,8 +75,6 @@ class Exercise < ActiveRecord::Base
 
   sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
-  has_many :list_exercises, dependent: :destroy
-
   belongs_to :vocab_term
 
   scope :preloaded, -> {
@@ -88,8 +84,7 @@ class Exercise < ActiveRecord::Base
             publication: [:publication_group,
                           :derivations,
                           {authors: :user},
-                          {copyright_holders: :user},
-                          {editors: :user}],
+                          {copyright_holders: :user}],
             questions: [
               :hints,
               :collaborator_solutions,
@@ -123,12 +118,13 @@ class Exercise < ActiveRecord::Base
   end
 
   def can_view_solutions?(user)
-    return false if user.nil? # Not given
-    return true if new_record? # In process of being created
+    return false if user.nil?          # Not given
+    return true if new_record?         # Create
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
-    return true if user.nil? # Application user
+    # Remove the entry below when apps are properly configured as ListReaders
+    return true if user.nil?           # Application user
     return false if user.is_anonymous? # Anonymous user
-    has_collaborator?(user) # Regular user
+    has_read_permission?(user)         # Regular user
   end
 
   def is_vocab?

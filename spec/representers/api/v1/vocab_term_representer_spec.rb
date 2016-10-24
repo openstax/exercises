@@ -3,14 +3,13 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabTermRepresenter, type: :representer do
 
-    let!(:vocab_term) {
+    let(:vocab_term) {
       dbl = instance_spy(VocabTerm)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:distractor_terms).and_return([])
       allow(dbl).to receive(:distractor_literals).and_return([])
       allow(dbl).to receive(:tags).and_return([])
       allow(dbl).to receive(:license).and_return(nil)
-      allow(dbl).to receive(:editors).and_return([])
       allow(dbl).to receive(:authors).and_return([])
       allow(dbl).to receive(:copyright_holders).and_return([])
       allow(dbl).to receive(:derivations).and_return([])

@@ -58,7 +58,7 @@ gem 'whenever'
 gem 'omniauth-oauth2', '~> 1.3.1'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 6.4.0'
+gem 'openstax_accounts', '~> 7.1.0'
 
 # Access control for API's
 gem 'doorkeeper', '~> 3.1.0'
@@ -138,10 +138,10 @@ gem 'roar', '1.0.3'
 
 group :development, :test do
   # Run specs in parallel
-  gem "parallel_tests"
+  gem 'parallel_tests'
 
   # Show failing specs instantly
-  gem "rspec-instafail"
+  gem 'rspec-instafail'
 
   # Thin webserver
   gem 'thin'

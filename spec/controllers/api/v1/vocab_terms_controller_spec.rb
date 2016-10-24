@@ -3,30 +3,30 @@ require "rails_helper"
 module Api::V1
   describe VocabTermsController, type: :controller, api: true, version: :v1 do
 
-    let!(:application) { FactoryGirl.create :doorkeeper_application }
-    let!(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let!(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application) { FactoryGirl.create :doorkeeper_application }
+    let(:user)        { FactoryGirl.create :user, :agreed_to_terms }
+    let(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
-    let!(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+    let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: user.id }
-    let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+    let(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: admin.id }
-    let!(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+    let(:application_token) { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: nil }
 
-    before(:each) do
+    before do
       @vocab_term = FactoryGirl.build(:vocab_term)
-      @vocab_term.publication.editors << FactoryGirl.build(
-        :editor, user: user, publication: @vocab_term.publication
+      @vocab_term.publication.authors << FactoryGirl.build(
+        :author, user: user, publication: @vocab_term.publication
       )
     end
 
     describe "GET index" do
 
-      before(:each) do
+      before do
         10.times do
           vt = FactoryGirl.create(:vocab_term, :published)
           vt.publication.authors << Author.new(publication: vt.publication, user: user)
@@ -166,7 +166,7 @@ module Api::V1
 
     describe "GET show" do
 
-      before(:each) do
+      before do
         @vocab_term.publication.publish
         @vocab_term.save!
         @vocab_term.reload
@@ -268,14 +268,9 @@ module Api::V1
 
     describe "POST create" do
 
-      before(:each) do
-        @vocab_term.vocab_distractors.each do |vd|
-          vd.distractor_term.save!
-          vd.distractor_term_number = vd.distractor_term.publication.number
-        end
-      end
-
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
+        @vocab_term.distractor_terms.each(&:save!)
+
         expect {
           api_post :create, user_token,
                    raw_post_data: Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(
@@ -295,7 +290,7 @@ module Api::V1
 
     describe "PATCH update" do
 
-      before(:each) do
+      before do
         @vocab_term.save!
         @vocab_term.reload
         @old_attributes = @vocab_term.attributes

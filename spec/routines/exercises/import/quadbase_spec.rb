@@ -27,7 +27,8 @@ RSpec.describe Exercises::Import::Quadbase, type: :routine do
       expect(exercise.authors.first.user).to eq author
       expect(exercise.copyright_holders.first.user).to eq ch
 
-      expect(exercise.list_exercises.first.list.name).to eq 'Concept Coach'
+      list = exercise.publication.publication_group.list_publication_groups.first.list
+      expect(list.name).to eq 'Concept Coach'
 
       expect(exercise.tags).not_to be_blank
       exercise.tags.map(&:name).each{ |tag_name| expect(expected_tags).to include(tag_name) }

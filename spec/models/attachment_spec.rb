@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe Attachment, type: :model do
 
-  subject!(:attachment) { FactoryGirl.create :attachment }
-  let!(:asset_path)     { attachment.asset.path }
+  subject(:attachment) { FactoryGirl.create :attachment }
+  let(:asset_path)     { attachment.asset.path }
 
   after(:each) { attachment.destroy }
 

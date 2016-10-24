@@ -3,18 +3,17 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabDistractorRepresenter, type: :representer do
 
-    let!(:distractor_term) {
+    let(:distractor_term) {
       instance_spy(VocabTerm).tap do |dbl|
         allow(dbl).to receive(:as_json).and_return(dbl)
       end
     }
 
-    let!(:vocab_distractor) {
+    let(:vocab_distractor) {
       instance_spy(VocabDistractor).tap do |dbl|
         allow(dbl).to receive(:as_json).and_return(dbl)
         allow(dbl).to receive(:tags).and_return([])
         allow(dbl).to receive(:license).and_return(nil)
-        allow(dbl).to receive(:editors).and_return([])
         allow(dbl).to receive(:authors).and_return([])
         allow(dbl).to receive(:copyright_holders).and_return([])
         allow(dbl).to receive(:derivations).and_return([])
@@ -25,15 +24,29 @@ module Api::V1
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_distractor).as_json }
 
-    context 'number' do
+    context 'group_uuid' do
       it 'can be read' do
-        allow(vocab_distractor).to receive(:distractor_term_number).and_return(42)
-        expect(representation).to include('number' => 42)
+        uuid = SecureRandom.uuid
+        allow(vocab_distractor).to receive(:group_uuid).and_return(uuid)
+        expect(representation).to include('group_uuid' => uuid)
       end
 
       it 'can be written' do
+        uuid = SecureRandom.uuid
+        described_class.new(vocab_distractor).from_json({'group_uuid' => uuid}.to_json)
+        expect(vocab_distractor).to have_received(:group_uuid=).with(uuid)
+      end
+    end
+
+    context 'number' do
+      it 'can be read' do
+        allow(vocab_distractor).to receive(:number).and_return(42)
+        expect(representation).to include('number' => 42)
+      end
+
+      it 'cannot be written (attempts are silently ignored)' do
         described_class.new(vocab_distractor).from_json({'number' => 84}.to_json)
-        expect(vocab_distractor).to have_received(:distractor_term_number=).with(84)
+        expect(vocab_distractor).not_to have_received(:number=)
       end
     end
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Doorkeeper
   RSpec.describe "applications/index", :type => :view do
-    before(:each) do
+    before do
       assign(:applications, [
         Application.create!(),
         Application.create!()

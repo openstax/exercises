@@ -3,8 +3,8 @@ require 'rails_helper'
 module Admin
   RSpec.describe AdministratorsController, type: :controller do
 
-    let!(:user)  { FactoryGirl.create(:user, :agreed_to_terms) }
-    let!(:admin) { FactoryGirl.create(:user, :administrator, :agreed_to_terms) }
+    let(:user)  { FactoryGirl.create(:user, :agreed_to_terms) }
+    let(:admin) { FactoryGirl.create(:user, :administrator, :agreed_to_terms) }
 
     describe 'GET index' do
       context 'for anonymous' do
@@ -31,7 +31,7 @@ module Admin
     end
 
     describe 'POST create' do
-      let!(:valid_params) { { administrator: { user_id: user.id } } }
+      let(:valid_params) { { administrator: { user_id: user.id } } }
 
       context 'for anonymous' do
         it 'redirects to the login page' do

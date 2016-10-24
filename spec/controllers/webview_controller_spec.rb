@@ -2,10 +2,14 @@ require 'rails_helper'
 
 RSpec.describe WebviewController, type: :controller do
 
-  let!(:contract)        { FinePrint::Contract.create!(name: 'general_terms_of_use', title: 'General Terms of Use',
-                           content: Faker::Lorem.paragraphs, version: 10) }
-  let!(:new_user)        { FactoryGirl.create(:user) }
-  let!(:registered_user) { FactoryGirl.create(:user, :agreed_to_terms) }
+  let!(:contract)       do
+    FinePrint::Contract.create!(name: 'general_terms_of_use',
+                                title: 'General Terms of Use',
+                                content: Faker::Lorem.paragraphs,
+                                version: 10)
+  end
+  let(:new_user)        { FactoryGirl.create(:user) }
+  let(:registered_user) { FactoryGirl.create(:user, :agreed_to_terms) }
 
   describe 'GET home' do
     it 'renders a static page for anonymous' do
@@ -40,7 +44,7 @@ RSpec.describe WebviewController, type: :controller do
     end
   end
 
-  context "as a signed in user" do
+  context 'as a signed in user' do
     render_views
 
     it 'sets boostrap data in script tag' do

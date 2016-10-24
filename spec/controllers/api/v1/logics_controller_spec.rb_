@@ -24,7 +24,7 @@ module Api::V1
     describe "GET show" do
       it "assigns the requested logic as @logic" do
         logic = Logic.create! valid_attributes
-        get :show, {:id => logic.to_param}, valid_session
+        get :show, {id: logic.to_param}, valid_session
         expect(assigns(:logic)).to eq(logic)
       end
     end
@@ -39,7 +39,7 @@ module Api::V1
     describe "GET edit" do
       it "assigns the requested logic as @logic" do
         logic = Logic.create! valid_attributes
-        get :edit, {:id => logic.to_param}, valid_session
+        get :edit, {id: logic.to_param}, valid_session
         expect(assigns(:logic)).to eq(logic)
       end
     end
@@ -90,18 +90,18 @@ module Api::V1
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
           expect(Logic.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
-          put :update, {:id => logic.to_param, :logic => { "number" => "1" }}, valid_session
+          put :update, {id: logic.to_param, :logic => { "number" => "1" }}, valid_session
         end
 
         it "assigns the requested logic as @logic" do
           logic = Logic.create! valid_attributes
-          put :update, {:id => logic.to_param, :logic => valid_attributes}, valid_session
+          put :update, {id: logic.to_param, :logic => valid_attributes}, valid_session
           expect(assigns(:logic)).to eq(logic)
         end
 
         it "redirects to the logic" do
           logic = Logic.create! valid_attributes
-          put :update, {:id => logic.to_param, :logic => valid_attributes}, valid_session
+          put :update, {id: logic.to_param, :logic => valid_attributes}, valid_session
           expect(response).to redirect_to(logic)
         end
       end
@@ -111,7 +111,7 @@ module Api::V1
           logic = Logic.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           Logic.any_instance.stub(:save).and_return(false)
-          put :update, {:id => logic.to_param, :logic => { "number" => "invalid value" }}, valid_session
+          put :update, {id: logic.to_param, :logic => { "number" => "invalid value" }}, valid_session
           expect(assigns(:logic)).to eq(logic)
         end
 
@@ -119,7 +119,7 @@ module Api::V1
           logic = Logic.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           Logic.any_instance.stub(:save).and_return(false)
-          put :update, {:id => logic.to_param, :logic => { "number" => "invalid value" }}, valid_session
+          put :update, {id: logic.to_param, :logic => { "number" => "invalid value" }}, valid_session
           expect(response).to render_template("edit")
         end
       end
@@ -129,13 +129,13 @@ module Api::V1
       it "destroys the requested logic" do
         logic = Logic.create! valid_attributes
         expect {
-          delete :destroy, {:id => logic.to_param}, valid_session
+          delete :destroy, {id: logic.to_param}, valid_session
         }.to change(Logic, :count).by(-1)
       end
 
       it "redirects to the logics list" do
         logic = Logic.create! valid_attributes
-        delete :destroy, {:id => logic.to_param}, valid_session
+        delete :destroy, {id: logic.to_param}, valid_session
         expect(response).to redirect_to(logics_url)
       end
     end

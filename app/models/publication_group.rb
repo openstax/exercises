@@ -2,6 +2,10 @@ class PublicationGroup < ActiveRecord::Base
 
   has_many :publications, dependent: :destroy, inverse_of: :publication_group
 
+  has_many :list_publication_groups, dependent: :destroy
+
+  has_many :vocab_distractors, dependent: :destroy
+
   validates :publishable_type, presence: true
   validates :uuid, presence: true, uniqueness: true
   validates :number, presence: true, uniqueness: { scope: :publishable_type }
@@ -10,6 +14,7 @@ class PublicationGroup < ActiveRecord::Base
 
   default_scope { order(:number) }
 
+  # The column in this record is called uuid, but everywhere else we refer to it as group_uuid
   alias_attribute :group_uuid, :uuid
 
   def readonly?

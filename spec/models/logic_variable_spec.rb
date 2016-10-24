@@ -5,7 +5,7 @@ RSpec.describe LogicVariable, type: :model do
   INVALID_VARIABLES = ["'hello'", '"hello"', 'hel lo', '$hello$', '<hello>',
                        'hello?', 'http://hello', '/hel/lo', 'hel; lo']
 
-  subject!(:logic_variable) { FactoryGirl.create(:logic_variable) }
+  subject(:logic_variable) { FactoryGirl.create(:logic_variable) }
 
   it { is_expected.to belong_to(:logic) }
 

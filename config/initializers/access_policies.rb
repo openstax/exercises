@@ -9,9 +9,9 @@ OSU::AccessPolicy.register(Exercise, ExerciseAccessPolicy)
 OSU::AccessPolicy.register(VocabTerm, VocabTermAccessPolicy)
 OSU::AccessPolicy.register(Attachment, AttachmentAccessPolicy)
 OSU::AccessPolicy.register(List, ListAccessPolicy)
-OSU::AccessPolicy.register(ListExercise, ListExerciseAccessPolicy)
+OSU::AccessPolicy.register(ListPublicationGroup, ListPublicationGroupAccessPolicy)
 OSU::AccessPolicy.register(Publication, PublicationAccessPolicy)
-OSU::AccessPolicy.register(Solution, SolutionAccessPolicy)
+OSU::AccessPolicy.register(CommunitySolution, CommunitySolutionAccessPolicy)
 
 # Doorkeeper
 OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

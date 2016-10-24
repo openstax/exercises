@@ -7,8 +7,6 @@ module Api::V1
 
     property :license, inherit: true, writeable: false
 
-    collection :editors, inherit: true, writeable: false
-
     collection :authors, inherit: true, writeable: false
 
     collection :copyright_holders, inherit: true, writeable: false
@@ -18,16 +16,15 @@ module Api::V1
     property :group_uuid,
              type: String,
              readable: true,
-             writeable: false,
+             writeable: true,
              schema_info: {
                required: true
              }
 
-    property :distractor_term_number,
-             as: :number,
+    property :number,
              type: Integer,
              readable: true,
-             writeable: true,
+             writeable: false,
              schema_info: {
                required: true
              }

@@ -159,18 +159,16 @@ module Exercises
           Rails.logger.info "Created new list: #{list_name}"
         end
 
-        le = ListExercise.new
-        le.exercise = ex
-        le.list = list
-        ex.list_exercises << le
         ex.save!
-        list.list_exercises << le
+        ex.publication.publish.save!
 
-        skipped = false
-        if ex.content_equals?(latest_exercise)
-          ex.destroy
-          skipped = true
-        end
+        lpg = ListPublicationGroup.new(
+          list: list, publication_group: ex.publication.publication_group
+        )
+        ex.publication.publication_group.list_publication_groups << lpg
+        list.list_publication_groups << lpg
+
+        skipped = ex.content_equals?(latest_exercise) ? ex.destroy : false
 
         row = "Imported row ##{index + 1}"
         uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"

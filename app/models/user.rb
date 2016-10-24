@@ -13,7 +13,6 @@ class User < ActiveRecord::Base
 
   has_many :authors, dependent: :destroy
   has_many :copyright_holders, dependent: :destroy
-  has_many :editors, dependent: :destroy
 
   has_many :child_deputizations, class_name: 'Deputization',
            foreign_key: :deputizer_id, dependent: :destroy,
@@ -47,7 +46,7 @@ class User < ActiveRecord::Base
   def is_human?
     true
   end
-  
+
   def is_application?
     false
   end

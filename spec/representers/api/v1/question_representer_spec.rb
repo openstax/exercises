@@ -3,13 +3,13 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe QuestionRepresenter, type: :representer do
 
-    let!(:exercise) {
+    let(:exercise) {
       dbl = instance_spy(Exercise)
       allow(dbl).to receive(:as_json).and_return(dbl)
       dbl
     }
 
-    let!(:question) {
+    let(:question) {
       dbl = instance_spy(Question)
       allow(dbl).to receive(:as_json).and_return(dbl)
       allow(dbl).to receive(:stems).and_return([])
@@ -21,7 +21,7 @@ module Api::V1
       dbl
     }
 
-    before(:each) do
+    before do
       allow(exercise).to receive(:questions).and_return([question])
       allow(question).to receive(:exercise).and_return(exercise)
     end

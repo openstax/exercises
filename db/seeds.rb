@@ -112,7 +112,7 @@ License.create do |license|
   license.publishing_contract   = 'publishing_contract placeholder'
   license.copyright_notice      = 'copyright_notice placeholder'
   license.class_licenses        << ClassLicense.new(class_name: 'Exercise')
-  license.class_licenses        << ClassLicense.new(class_name: 'Solution')
+  license.class_licenses        << ClassLicense.new(class_name: 'CommunitySolution')
   license.class_licenses        << ClassLicense.new(class_name: 'List')
   license.requires_attribution  = false
   license.requires_share_alike  = false

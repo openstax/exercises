@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Exercises::Import::Zip, type: :routine do
   let(:fixture_path) { 'spec/fixtures/sample_exercises.zip' }
 
-  let!(:author) { FactoryGirl.create :user }
-  let!(:ch)     { FactoryGirl.create :user }
+  let(:author) { FactoryGirl.create :user }
+  let(:ch)     { FactoryGirl.create :user }
 
   it 'imports the sample zip file' do
     attachment_count = Attachment.count
@@ -19,9 +19,8 @@ RSpec.describe Exercises::Import::Zip, type: :routine do
       expect(exercise.authors.first.user).to eq author
       expect(exercise.copyright_holders.first.user).to eq ch
 
-      expect(['HS-Physics Chapter 03', 'HS-Physics Chapter 04']).to include(
-        exercise.list_exercises.first.list.name
-      )
+      list = exercise.publication.publication_group.list_publication_groups.first.list
+      expect(['HS-Physics Chapter 03', 'HS-Physics Chapter 04']).to include list.name
 
       expect(exercise.tags).not_to be_blank
       expect(exercise.tags).to satisfy do |tags|

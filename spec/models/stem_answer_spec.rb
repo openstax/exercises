@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe StemAnswer, type: :model do
 
-  subject!(:stem_answer) { FactoryGirl.create(:stem_answer) }
+  subject(:stem_answer) { FactoryGirl.create(:stem_answer) }
 
   it { is_expected.to belong_to(:stem) }
   it { is_expected.to belong_to(:answer) }

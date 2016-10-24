@@ -5,19 +5,18 @@ module Publishable
         class_exec do
 
           has_one :publication, as: :publishable, dependent: :destroy, inverse_of: :publishable
-
           has_one :publication_group, through: :publication
+
           has_many :authors, through: :publication
           has_many :copyright_holders, through: :publication
-          has_many :editors, through: :publication
           has_many :sources, through: :publication
           has_many :derivations, through: :publication
 
           delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
-                   :editors, :authors, :copyright_holders, :derivations,
+                   :authors, :copyright_holders, :derivations,
                    :is_yanked?, :is_published?, :is_embargoed?, :is_public?,
-                   :has_collaborator?, :license=, :editors=,
-                   :authors=, :copyright_holders=, :derivations=,
+                   :has_collaborator?, :has_read_permission?, :has_write_permission?,
+                   :license=, :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
           scope :published, -> {
@@ -102,18 +101,25 @@ module Publishable
             next self if user.administrator
             user_id = user.id
 
-            joins{publication.authors.outer}
-              .joins{publication.copyright_holders.outer}
-              .joins{publication.editors.outer}
-              .where do
-                (publication.published_at != nil) | \
-                (authors.user_id == user_id) | \
-                (copyright_holders.user_id == user_id) | \
-                (editors.user_id == user_id)
-              end
+            joins do
+              [
+                publication.authors,
+                publication.copyright_holders,
+                publication.publication_group.list_publication_groups.outer.list.outer.list_owners,
+                publication.publication_group.list_publication_groups.outer.list.outer.list_editors,
+                publication.publication_group.list_publication_groups.outer.list.outer.list_readers
+              ].map(&:outer)
+            end.where do
+              (publication.published_at  != nil                                            ) |
+              (authors.user_id           == user_id                                        ) |
+              (copyright_holders.user_id == user_id                                        ) |
+              ((list_owners.owner_id     == user_id) & (list_owners.owner_type   == 'User')) |
+              ((list_editors.editor_id   == user_id) & (list_editors.editor_type == 'User')) |
+              ((list_readers.reader_id   == user_id) & (list_readers.reader_type == 'User'))
+            end
           }
 
-          after_initialize :build_publication, unless: [:persisted?, :publication]
+          after_initialize :build_publication, if: :new_record?, unless: :publication
           after_create :ensure_publication!
 
           def before_publication
