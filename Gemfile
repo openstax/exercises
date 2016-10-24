@@ -138,10 +138,10 @@ gem 'roar', '1.0.3'
 
 group :development, :test do
   # Run specs in parallel
-  gem "parallel_tests"
+  gem 'parallel_tests'
 
   # Show failing specs instantly
-  gem "rspec-instafail"
+  gem 'rspec-instafail'
 
   # Thin webserver
   gem 'thin'

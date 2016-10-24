@@ -3,8 +3,8 @@ module Api::V1
 
     PUBLISH_REPRESENTERS = {
       'CommunitySolution' => 'Api::V1::CommunitySolutionRepresenter',
-      'Exercise' => 'Api::V1::ExerciseRepresenter',
-      'VocabTerm' => 'Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter',
+      'Exercise'          => 'Api::V1::ExerciseRepresenter',
+      'VocabTerm'         => 'Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter',
     }
 
     before_filter :get_publishable
@@ -22,8 +22,7 @@ module Api::V1
     # publish #
     ###########
 
-    api :PUT, '/object/:object_uid/publish',
-               'Publishes the specified object'
+    api :PUT, '/object/:object_uid/publish', 'Publishes the specified object'
     description <<-EOS
       Publishes the specified object.
     EOS
@@ -46,20 +45,20 @@ module Api::V1
     protected
 
     def get_exercise
-      Exercise.visible_for(current_api_user).with_id(params[:exercise_id]).first || \
+      Exercise.visible_for(current_api_user).with_id(params[:exercise_id]).first ||
         raise(ActiveRecord::RecordNotFound,
               "Couldn't find Exercise with 'uid'=#{params[:exercise_id]}")
     end
 
     def get_vocab_term
-      VocabTerm.visible_for(current_api_user).with_id(params[:vocab_term_id]).first || \
+      VocabTerm.visible_for(current_api_user).with_id(params[:vocab_term_id]).first ||
         raise(ActiveRecord::RecordNotFound,
               "Couldn't find VocabTerm with 'uid'=#{params[:vocab_term_id]}")
     end
 
     def get_community_solution
       CommunitySolution.visible_for(current_api_user)
-                       .with_id(params[:community_solution_id]).first || \
+                       .with_id(params[:community_solution_id]).first ||
         raise(ActiveRecord::RecordNotFound,
               "Couldn't find Solution with 'uid'=#{params[:community_solution_id]}")
     end

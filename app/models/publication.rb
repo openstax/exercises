@@ -1,5 +1,14 @@
 class Publication < ActiveRecord::Base
 
+  PERMISSION_PRELOADED_ASSOCIATIONS = [
+    :groups_as_member,
+    {
+      direct_list_owners: {
+        list: { list_owners: :owner, list_editors: :editor, list_readers: :reader }
+      }
+    }
+  ].freeze
+
   belongs_to :publication_group, inverse_of: :publications
   belongs_to :publishable, polymorphic: true, inverse_of: :publication
   belongs_to :license
@@ -69,8 +78,14 @@ class Publication < ActiveRecord::Base
     is_published? && !is_embargoed? && !is_yanked?
   end
 
-  def collaborators
-    authors.map(&:user) + copyright_holders.map(&:user)
+  def collaborators(preload: nil)
+    preload = preload.nil? ? :user : { user: preload }
+
+    # Don't preload if creating/deleting the publication
+    aa = persisted? ? authors.preload(preload) : authors
+    ch = persisted? ? copyright_holders.preload(preload) : copyright_holders
+
+    aa.map(&:user) + ch.map(&:user)
   end
 
   def has_collaborator?(user)
@@ -78,7 +93,8 @@ class Publication < ActiveRecord::Base
   end
 
   def has_read_permission?(user)
-    has_collaborator?(user) || collaborators.any? do |collaborator|
+    has_collaborator?(user) ||
+    collaborators(preload: PERMISSION_PRELOADED_ASSOCIATIONS).any? do |collaborator|
       collaborator.list_owners.any? do |list_owner|
         list = list_owner.list
         list.has_publication_group?(publication_group) && list.has_member?(user)
@@ -87,7 +103,8 @@ class Publication < ActiveRecord::Base
   end
 
   def has_write_permission?(user)
-    has_collaborator?(user) || collaborators.any? do |collaborator|
+    has_collaborator?(user) ||
+    collaborators(preload: PERMISSION_PRELOADED_ASSOCIATIONS).any? do |collaborator|
       collaborator.list_owners.any? do |list_owner|
         list = list_owner.list
 

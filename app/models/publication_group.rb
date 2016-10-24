@@ -14,6 +14,7 @@ class PublicationGroup < ActiveRecord::Base
 
   default_scope { order(:number) }
 
+  # The column in this record is called uuid, but everywhere else we refer to it as group_uuid
   alias_attribute :group_uuid, :uuid
 
   def readonly?
