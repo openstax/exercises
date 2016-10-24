@@ -6,7 +6,7 @@ class ListAccessPolicy
     when :search
       true
     when :create
-      !requestor.is_anonymous? && requestor.is_human? && !list.persisted?
+      !requestor.is_anonymous? && requestor.is_human?
     when :read
       list.is_public? || list.has_read_permission?(requestor)
     when :update, :destroy

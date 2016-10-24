@@ -7,7 +7,7 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
   let(:list) { FactoryGirl.build(:list) }
 
   context 'search' do
-    it 'can be accessed by everyone' do
+    it 'can be accessed by anyone' do
       expect(described_class.action_allowed?(:search, anon, List)).to eq true
 
       expect(described_class.action_allowed?(:search, user, List)).to eq true
@@ -58,32 +58,14 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
   end
 
   context 'create' do
-    context 'not persisted' do
-      it 'cannot be accessed by anonymous users or applications' do
-        expect(described_class.action_allowed?(:create, anon, list)).to eq false
+    it 'cannot be accessed by anonymous users or applications' do
+      expect(described_class.action_allowed?(:create, anon, list)).to eq false
 
-        expect(described_class.action_allowed?(:create, app, list)).to eq false
-      end
-
-      it 'can be accessed by users' do
-        expect(described_class.action_allowed?(:create, user, list)).to eq true
-      end
+      expect(described_class.action_allowed?(:create, app, list)).to eq false
     end
 
-    context 'persisted' do
-      before do
-        list.save!
-        FactoryGirl.create(:author, publication: list.publication, user: user)
-        FactoryGirl.create(:copyright_holder, publication: list.publication, user: user)
-      end
-
-      it 'cannot be accessed by anyone' do
-        expect(described_class.action_allowed?(:create, anon, list)).to eq false
-
-        expect(described_class.action_allowed?(:create, user, list)).to eq false
-
-        expect(described_class.action_allowed?(:create, app, list)).to eq false
-      end
+    it 'can be accessed by users' do
+      expect(described_class.action_allowed?(:create, user, list)).to eq true
     end
   end
 

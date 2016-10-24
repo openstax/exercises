@@ -8,13 +8,14 @@ module Oauth
     end
 
     def new
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, Doorkeeper::Application)
+      @application = Doorkeeper::Application.new
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       super
     end
 
     def create
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, Doorkeeper::Application)
       @application = Doorkeeper::Application.new(application_params)
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       @application.owner = OpenStax::Accounts::CreateGroup[owner: current_user.account]
 
       if @application.save

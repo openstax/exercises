@@ -8,7 +8,6 @@ class CommunitySolutionAccessPolicy
     when :create
       !requestor.is_anonymous? &&
       requestor.is_human? &&
-      !community_solution.persisted? &&
       ( community_solution.question.exercise.is_public? ||
         community_solution.question.exercise.has_read_permission?(requestor) )
     when :read

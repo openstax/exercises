@@ -6,7 +6,7 @@ class VocabTermAccessPolicy
     when :search
       true
     when :create
-      !requestor.is_anonymous? && requestor.is_human? && !vocab_term.persisted?
+      !requestor.is_anonymous? && requestor.is_human?
     when :read
       vocab_term.has_read_permission?(requestor)
     when :update, :destroy

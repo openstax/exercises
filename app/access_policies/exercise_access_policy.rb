@@ -8,7 +8,6 @@ class ExerciseAccessPolicy
     when :create
       !requestor.is_anonymous? &&
       requestor.is_human? &&
-      !exercise.persisted? &&
       exercise.vocab_term_id.nil?
     when :read
       exercise.is_public? || exercise.has_read_permission?(requestor)

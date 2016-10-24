@@ -7,7 +7,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
   let(:vocab_term) { FactoryGirl.build(:vocab_term) }
 
   context 'search' do
-    it 'can be accessed by everyone' do
+    it 'can be accessed by anyone' do
       expect(described_class.action_allowed?(:search, anon, VocabTerm)).to eq true
 
       expect(described_class.action_allowed?(:search, user, VocabTerm)).to eq true
@@ -59,32 +59,14 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
   end
 
   context 'create' do
-    context 'not persisted' do
-      it 'cannot be accessed by anonymous users or applications' do
-        expect(described_class.action_allowed?(:create, anon, vocab_term)).to eq false
+    it 'cannot be accessed by anonymous users or applications' do
+      expect(described_class.action_allowed?(:create, anon, vocab_term)).to eq false
 
-        expect(described_class.action_allowed?(:create, app, vocab_term)).to eq false
-      end
-
-      it 'can be accessed by users' do
-        expect(described_class.action_allowed?(:create, user, vocab_term)).to eq true
-      end
+      expect(described_class.action_allowed?(:create, app, vocab_term)).to eq false
     end
 
-    context 'persisted' do
-      before do
-        vocab_term.save!
-        FactoryGirl.create(:author, publication: vocab_term.publication, user: user)
-        FactoryGirl.create(:copyright_holder, publication: vocab_term.publication, user: user)
-      end
-
-      it 'cannot be accessed by anyone' do
-        expect(described_class.action_allowed?(:create, anon, vocab_term)).to eq false
-
-        expect(described_class.action_allowed?(:create, user, vocab_term)).to eq false
-
-        expect(described_class.action_allowed?(:create, app, vocab_term)).to eq false
-      end
+    it 'can be accessed by users' do
+      expect(described_class.action_allowed?(:create, user, vocab_term)).to eq true
     end
   end
 

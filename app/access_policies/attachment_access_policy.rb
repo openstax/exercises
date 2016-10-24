@@ -9,7 +9,6 @@ class AttachmentAccessPolicy
       when :create
         !requestor.is_anonymous? &&
         requestor.is_human? &&
-        !attachment.persisted? && \
         attachment.parent.has_write_permission?(requestor)
       else
         # If attached to an exercise, then use its policy
