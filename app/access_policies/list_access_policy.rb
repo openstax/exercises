@@ -1,18 +1,18 @@
 class ListAccessPolicy
-  # Contains all the rules for which requestors can do what with which List objects.
+  # Contains all the rules for which requestors can do what with which Lists
 
   def self.action_allowed?(action, requestor, list)
     case action
-    when :index
+    when :search
       true
-    when :read
-      list.has_read_permission?(requestor) ||
-      list.is_published?
     when :create
-      list.has_write_permission?(requestor) &&
-      !list.is_persisted?
+      !requestor.is_anonymous? && requestor.is_human? && !list.persisted?
+    when :read
+      list.is_public? || list.has_read_permission?(requestor)
     when :update, :destroy
-      list.has_write_permission?(requestor)
+      !list.is_published? && list.has_write_permission?(requestor)
+    when :new_version
+      list.is_published? && list.has_write_permission?(requestor)
     else
       false
     end

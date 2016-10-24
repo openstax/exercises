@@ -3,7 +3,7 @@ require "rails_helper"
 module Api::V1
   RSpec.describe DeputizationsController, type: :controller, api: true, version: :v1 do
 
-    before(:each) do
+    before do
       # To be implemented
       skip
     end
@@ -57,13 +57,13 @@ module Api::V1
       it "destroys the requested deputization" do
         deputization = Deputization.create! valid_attributes
         expect {
-          delete :destroy, {:id => deputization.to_param}, valid_session
+          delete :destroy, {id: deputization.to_param}, valid_session
         }.to change(Deputization, :count).by(-1)
       end
 
       it "redirects to the deputizations list" do
         deputization = Deputization.create! valid_attributes
-        delete :destroy, {:id => deputization.to_param}, valid_session
+        delete :destroy, {id: deputization.to_param}, valid_session
         expect(response).to redirect_to(deputizations_url)
       end
     end

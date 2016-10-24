@@ -6,8 +6,13 @@ RSpec.describe ListPublicationGroupAccessPolicy, type: :access_policy do
   let(:admin)       { FactoryGirl.create(:user, :administrator) }
   let(:application) { FactoryGirl.create(:doorkeeper_application) }
 
-  context '' do
-    xit '' do
+  context 'create, destroy' do
+    it 'can be accessed by list collaborators and owners' do
+    end
+  end
+
+  context 'other actions' do
+    it 'cannot be accessed' do
     end
   end
 end

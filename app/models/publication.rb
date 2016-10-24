@@ -2,11 +2,9 @@ class Publication < ActiveRecord::Base
 
   PERMISSION_PRELOADED_ASSOCIATIONS = [
     :groups_as_member,
-    {
-      direct_list_owners: {
-        list: { list_owners: :owner, list_editors: :editor, list_readers: :reader }
-      }
-    }
+    { direct_list_owners: {
+      list: { list_owners: :owner, list_editors: :editor, list_readers: :reader }
+    } }
   ].freeze
 
   belongs_to :publication_group, inverse_of: :publications
@@ -97,6 +95,7 @@ class Publication < ActiveRecord::Base
     collaborators(preload: PERMISSION_PRELOADED_ASSOCIATIONS).any? do |collaborator|
       collaborator.list_owners.any? do |list_owner|
         list = list_owner.list
+
         list.has_publication_group?(publication_group) && list.has_member?(user)
       end
     end

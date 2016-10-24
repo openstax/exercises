@@ -21,7 +21,7 @@ RSpec.describe License, type: :model do
   it { is_expected.to validate_uniqueness_of(:url) }
 
   it 'should know if it is valid for a given publishable object' do
-    license = FactoryGirl.create :license, licensed_classes: ['Solution', 'List']
+    license = FactoryGirl.create :license, licensed_classes: ['CommunitySolution', 'List']
     expect(license.valid_for?(Exercise.name)).to eq false
 
     class_license = FactoryGirl.create :class_license, license: license, class_name: 'Exercise'

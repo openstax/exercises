@@ -17,7 +17,7 @@ module Api::V1
                                                   application: application,
                                                   resource_owner_id: nil }
 
-    before(:each) do
+    before do
       @vocab_term = FactoryGirl.build(:vocab_term)
       @vocab_term.publication.authors << FactoryGirl.build(
         :author, user: user, publication: @vocab_term.publication
@@ -26,7 +26,7 @@ module Api::V1
 
     describe "GET index" do
 
-      before(:each) do
+      before do
         10.times do
           vt = FactoryGirl.create(:vocab_term, :published)
           vt.publication.authors << Author.new(publication: vt.publication, user: user)
@@ -166,7 +166,7 @@ module Api::V1
 
     describe "GET show" do
 
-      before(:each) do
+      before do
         @vocab_term.publication.publish
         @vocab_term.save!
         @vocab_term.reload
@@ -290,7 +290,7 @@ module Api::V1
 
     describe "PATCH update" do
 
-      before(:each) do
+      before do
         @vocab_term.save!
         @vocab_term.reload
         @old_attributes = @vocab_term.attributes

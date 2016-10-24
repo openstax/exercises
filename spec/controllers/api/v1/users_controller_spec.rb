@@ -23,7 +23,7 @@ module Api::V1
 
     describe "GET index" do
 
-      before(:each) do
+      before do
         100.times { FactoryGirl.create(:user) }
 
         User.joins(:account).where{(account.first_name.like '%doe%') |

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe SearchExercises, type: :routine do
-  before(:each) do
+  before do
     10.times { FactoryGirl.create(:exercise, :published) }
 
     tested_strings = ["%adipisci%", "%draft%"]

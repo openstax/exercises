@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe SearchVocabTerms, type: :routine do
-  before(:each) do
+  before do
     10.times{ FactoryGirl.create(:vocab_term, :published) }
 
     tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]

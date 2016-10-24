@@ -1,10 +1,8 @@
 require 'rails_helper'
 
 module Doorkeeper
-  RSpec.describe "authorizations/new", :type => :view do
-    before(:each) do
-      assign(:authorization, Authorization.new())
-    end
+  RSpec.describe "authorizations/new", type: :view do
+    before { assign :authorization, Authorization.new }
 
     xit "renders new authorization form" do
       render

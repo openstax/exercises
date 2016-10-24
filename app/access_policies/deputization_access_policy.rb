@@ -1,5 +1,5 @@
 class DeputizationAccessPolicy
-  # Contains all the rules for which requestors can do what with which Deputization objects.
+  # Contains all the rules for which requestors can do what with which Deputizations
 
   def self.action_allowed?(action, requestor, deputization)
     case action

@@ -24,7 +24,7 @@ module Api::V1
     describe "GET show" do
       it "assigns the requested list as @list" do
         list = List.create! valid_attributes
-        get :show, {:id => list.to_param}, valid_session
+        get :show, {id: list.to_param}, valid_session
         expect(assigns(:list)).to eq(list)
       end
     end
@@ -39,7 +39,7 @@ module Api::V1
     describe "GET edit" do
       it "assigns the requested list as @list" do
         list = List.create! valid_attributes
-        get :edit, {:id => list.to_param}, valid_session
+        get :edit, {id: list.to_param}, valid_session
         expect(assigns(:list)).to eq(list)
       end
     end
@@ -90,18 +90,18 @@ module Api::V1
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
           expect(List.any_instance).to_receive(:update_attributes).with({ "name" => "MyString" })
-          put :update, {:id => list.to_param, :list => { "name" => "MyString" }}, valid_session
+          put :update, {id: list.to_param, :list => { "name" => "MyString" }}, valid_session
         end
 
         it "assigns the requested list as @list" do
           list = List.create! valid_attributes
-          put :update, {:id => list.to_param, :list => valid_attributes}, valid_session
+          put :update, {id: list.to_param, :list => valid_attributes}, valid_session
           expect(assigns(:list)).to eq(list)
         end
 
         it "redirects to the list" do
           list = List.create! valid_attributes
-          put :update, {:id => list.to_param, :list => valid_attributes}, valid_session
+          put :update, {id: list.to_param, :list => valid_attributes}, valid_session
           expect(response).to redirect_to(list)
         end
       end
@@ -111,7 +111,7 @@ module Api::V1
           list = List.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           List.any_instance.stub(:save).and_return(false)
-          put :update, {:id => list.to_param, :list => { "name" => "invalid value" }}, valid_session
+          put :update, {id: list.to_param, :list => { "name" => "invalid value" }}, valid_session
           expect(assigns(:list)).to eq(list)
         end
 
@@ -119,7 +119,7 @@ module Api::V1
           list = List.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           List.any_instance.stub(:save).and_return(false)
-          put :update, {:id => list.to_param, :list => { "name" => "invalid value" }}, valid_session
+          put :update, {id: list.to_param, :list => { "name" => "invalid value" }}, valid_session
           expect(response).to render_template("edit")
         end
       end
@@ -129,13 +129,13 @@ module Api::V1
       it "destroys the requested list" do
         list = List.create! valid_attributes
         expect {
-          delete :destroy, {:id => list.to_param}, valid_session
+          delete :destroy, {id: list.to_param}, valid_session
         }.to change(List, :count).by(-1)
       end
 
       it "redirects to the lists list" do
         list = List.create! valid_attributes
-        delete :destroy, {:id => list.to_param}, valid_session
+        delete :destroy, {id: list.to_param}, valid_session
         expect(response).to redirect_to(lists_url)
       end
     end

@@ -21,7 +21,7 @@ module Api::V1
       dbl
     }
 
-    before(:each) do
+    before do
       allow(exercise).to receive(:questions).and_return([question])
       allow(question).to receive(:exercise).and_return(exercise)
     end

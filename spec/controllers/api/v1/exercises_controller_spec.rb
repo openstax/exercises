@@ -17,7 +17,7 @@ module Api::V1
                                                   application: application,
                                                   resource_owner_id: nil }
 
-    before(:each) do
+    before do
       @exercise = FactoryGirl.build(:exercise)
       @exercise.publication.authors << FactoryGirl.build(
         :author, user: user, publication: @exercise.publication
@@ -26,7 +26,7 @@ module Api::V1
 
     describe "GET index" do
 
-      before(:each) do
+      before do
         10.times { FactoryGirl.create(:exercise, :published) }
 
         tested_strings = ["%adipisci%", "%draft%"]
@@ -186,7 +186,7 @@ module Api::V1
 
     describe "GET show" do
 
-      before(:each) do
+      before do
         @exercise.publication.publish
         @exercise.save!
         @exercise.reload
@@ -275,7 +275,7 @@ module Api::V1
       end
 
       context 'with solutions' do
-        before(:each) do
+        before do
           question = @exercise.questions.first
           question.collaborator_solutions << FactoryGirl.create(:collaborator_solution, question: question)
         end
@@ -382,7 +382,7 @@ module Api::V1
 
     describe "PATCH update" do
 
-      before(:each) do
+      before do
         @exercise.save!
         @exercise.reload
         @old_attributes = @exercise.attributes

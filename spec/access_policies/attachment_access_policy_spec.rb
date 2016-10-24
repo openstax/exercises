@@ -16,7 +16,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
       expect(AttachmentAccessPolicy.action_allowed?(:create, anon, attachment)).to eq false
     end
 
-    it 'cannot be created by humans users who are not part of the exercise' do
+    it 'cannot be created by users who are not part of the exercise' do
       # not a collaborator
       expect(AttachmentAccessPolicy.action_allowed?(:create, user, attachment)).to eq false
     end

@@ -1,5 +1,5 @@
 class ListPublicationGroupAccessPolicy
-  # Contains all the rules for which requestors can do what with which ListPublicationGroup objects.
+  # Contains all the rules for which requestors can do what with which ListPublicationGroups
 
   def self.action_allowed?(action, requestor, list_publication_group)
     case action

@@ -1,5 +1,5 @@
 class AttachmentAccessPolicy
-  # Contains all the rules for which requestors can do what with which Exercise objects.
+  # Contains all the rules for which requestors can do what with which Attachments
 
   def self.action_allowed?(action, requestor, attachment)
     return false if action == :search

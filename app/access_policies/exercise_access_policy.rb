@@ -1,5 +1,5 @@
 class ExerciseAccessPolicy
-  # Contains all the rules for which requestors can do what with which Exercise objects.
+  # Contains all the rules for which requestors can do what with which Exercises
 
   def self.action_allowed?(action, requestor, exercise)
     case action
@@ -11,8 +11,7 @@ class ExerciseAccessPolicy
       !exercise.persisted? &&
       exercise.vocab_term_id.nil?
     when :read
-      exercise.is_public? ||
-      exercise.has_read_permission?(requestor)
+      exercise.is_public? || exercise.has_read_permission?(requestor)
     when :update, :destroy
       !exercise.is_published? &&
       exercise.vocab_term_id.nil? &&
