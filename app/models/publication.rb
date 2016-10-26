@@ -1,11 +1,25 @@
 class Publication < ActiveRecord::Base
 
-  PERMISSION_PRELOADED_ASSOCIATIONS = [
-    :groups_as_member,
-    { direct_list_owners: {
-      list: { list_owners: :owner, list_editors: :editor, list_readers: :reader }
-    } }
-  ].freeze
+  PERMISSION_PRELOADED_ASSOCIATIONS = {
+    groups_as_member: {
+      list_owners: {
+        list: {
+          list_owners: :owner,
+          list_editors: :editor,
+          list_readers: :reader,
+          list_publication_groups: :publication_group
+        }
+      }
+    },
+    direct_list_owners: {
+      list: {
+        list_owners: :owner,
+        list_editors: :editor,
+        list_readers: :reader,
+        list_publication_groups: :publication_group
+      }
+    }
+  }.freeze
 
   belongs_to :publication_group, inverse_of: :publications
   belongs_to :publishable, polymorphic: true, inverse_of: :publication
