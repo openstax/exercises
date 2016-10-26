@@ -1,10 +1,20 @@
-ENV["RAILS_ENV"] ||= 'test'
+require 'simplecov'
+require 'coveralls'
+require 'parallel_tests'
 
-# Generates the secrets.yml file if not present
-unless File.exists?('config/secrets.yml')
-  require 'rails/generators'
-  Rails::Generators.invoke('secrets') 
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+] if ParallelTests.first_process?
+
+SimpleCov.at_exit do
+  ParallelTests.wait_for_other_processes_to_finish if ParallelTests.first_process?
+  SimpleCov.result.format!
 end
+
+SimpleCov.start 'rails'
+
+ENV["RAILS_ENV"] ||= 'test'
 
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
