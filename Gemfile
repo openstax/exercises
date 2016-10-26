@@ -136,6 +136,12 @@ gem 'openstax_rescue_from', '~> 1.5.0'
 # Also, do not use Roar::Hypermedia links
 gem 'roar', '1.0.3'
 
+# Fast JSON parsing
+gem 'oj'
+
+# Replace JSON with Oj
+gem 'oj_mimic_json'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'

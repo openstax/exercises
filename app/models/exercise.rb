@@ -124,6 +124,7 @@ class Exercise < ActiveRecord::Base
     # Remove the entry below when apps are properly configured as ListReaders
     return true if user.nil?           # Application user
     return false if user.is_anonymous? # Anonymous user
+
     has_read_permission?(user)         # Regular user
   end
 
