@@ -196,14 +196,13 @@ module Api::V1
         @exercise_2.save!
       end
 
-      let(:exercise_representation) {
-         -> (exercise) {
-          Api::V1::ExerciseRepresenter.new(exercise)
-            .to_json(user_options: { user: user,
-                                     versions: Exercise.versions_for_number(exercise.number)
-                                   })
+      let(:exercise_representation) do
+        -> (exercise) {
+          Api::V1::ExerciseRepresenter
+            .new(exercise)
+            .to_json(user_options: { user: user, versions: exercise.versions_visible_for(user) })
         }
-      }
+      end
 
       it "returns the Exercise requested by group_uuid and version" do
         api_get :show, user_token, parameters: {
@@ -322,7 +321,9 @@ module Api::V1
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
           response_hash = JSON.parse(response.body)
-          expect(response_hash['versions']).to eq([1, 2, 3])
+          expect(response_hash['versions']).to(
+            eq([@exercise_2.version, @exercise_1.version, @exercise.version])
+          )
         end
 
       end
