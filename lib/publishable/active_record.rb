@@ -19,32 +19,52 @@ module Publishable
                    :license=, :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
-          scope :published, -> {
-            joins(:publication).where{publication.published_at != nil}
-          }
+          scope :published, -> { joins(:publication).where{publication.published_at != nil} }
 
-          scope :unpublished, -> {
-            joins(:publication).where(publication: {published_at: nil})
-          }
+          scope :unpublished, -> { joins(:publication).where{publication.published_at == nil} }
 
           scope :with_id, ->(id) {
-            number, version = id.to_s.split('@')
+            nn, vv = id.to_s.split('@')
 
             joins(publication: :publication_group).where do
-              wheres = (publication.publication_group.uuid == number) |
-                       (publication.publication_group.number == number)
+              wheres = (publication.publication_group.uuid == nn) |
+                       (publication.publication_group.number == nn)
 
-              case version
+              case vv
               when NilClass
-                (wheres | (publication.uuid == number)) & (publication.published_at != nil)
+                (wheres | (publication.uuid == nn)) & (publication.published_at != nil)
               when 'draft', 'd'
                 wheres & (publication.published_at == nil)
               when 'latest'
                 wheres
               else
-                wheres & (publication.version == version)
+                wheres & (publication.version == vv)
               end
             end.order{[publication.publication_group.number.asc, publication.version.desc]}
+          }
+
+          scope :visible_for, ->(user) {
+            user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+            next published if !user.is_a?(User) || user.is_anonymous?
+            next self if user.administrator
+            user_id = user.id
+
+            joins do
+              [
+                publication.authors,
+                publication.copyright_holders,
+                publication.publication_group.list_publication_groups.outer.list.outer.list_owners,
+                publication.publication_group.list_publication_groups.outer.list.outer.list_editors,
+                publication.publication_group.list_publication_groups.outer.list.outer.list_readers
+              ].map(&:outer)
+            end.where do
+              (publication.published_at  != nil                                            ) |
+              (authors.user_id           == user_id                                        ) |
+              (copyright_holders.user_id == user_id                                        ) |
+              ((list_owners.owner_id     == user_id) & (list_owners.owner_type   == 'User')) |
+              ((list_editors.editor_id   == user_id) & (list_editors.editor_type == 'User')) |
+              ((list_readers.reader_id   == user_id) & (list_readers.reader_type == 'User'))
+            end
           }
 
           # The scope option determines how we limit the search for more recent versions
@@ -95,32 +115,13 @@ module Publishable
             end.where{ newer_publication.id == nil }
           }
 
-          scope :visible_for, ->(user) {
-            user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
-            next published if !user.is_a?(User) || user.is_anonymous?
-            next self if user.administrator
-            user_id = user.id
-
-            joins do
-              [
-                publication.authors,
-                publication.copyright_holders,
-                publication.publication_group.list_publication_groups.outer.list.outer.list_owners,
-                publication.publication_group.list_publication_groups.outer.list.outer.list_editors,
-                publication.publication_group.list_publication_groups.outer.list.outer.list_readers
-              ].map(&:outer)
-            end.where do
-              (publication.published_at  != nil                                            ) |
-              (authors.user_id           == user_id                                        ) |
-              (copyright_holders.user_id == user_id                                        ) |
-              ((list_owners.owner_id     == user_id) & (list_owners.owner_type   == 'User')) |
-              ((list_editors.editor_id   == user_id) & (list_editors.editor_type == 'User')) |
-              ((list_readers.reader_id   == user_id) & (list_readers.reader_type == 'User'))
-            end
-          }
-
           after_initialize :build_publication, if: :new_record?, unless: :publication
           after_create :ensure_publication!
+
+          # Retrieves all versions of this publishable visible for the given user
+          def versions_visible_for(user)
+            publication.publication_group.publications.visible_for(user).pluck(:version)
+          end
 
           def before_publication
           end
@@ -130,14 +131,6 @@ module Publishable
 
           def ensure_publication!
             raise ::ActiveRecord::RecordInvalid, publication unless publication.persisted?
-          end
-
-          # retrieve all versions for number, regardless of published status
-          def self.versions_for_number(number)
-            joins(publication: :publication_group).where {
-              (publication.publication_group.uuid == number) |
-                (publication.publication_group.number == number)
-            }.pluck(:version)
           end
 
         end

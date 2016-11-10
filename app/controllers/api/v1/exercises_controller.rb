@@ -118,7 +118,7 @@ module Api::V1
       render json: Api::V1::ExerciseRepresenter.new(@exercise).to_hash(
                user_options: {
                  user: current_api_user,
-                 versions: Exercise.versions_for_number(@exercise.number)
+                 versions: @exercise.versions_visible_for(current_api_user)
                }
              )
     end

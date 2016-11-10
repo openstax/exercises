@@ -57,17 +57,89 @@ class Publication < ActiveRecord::Base
 
   scope :published, -> { where{published_at != nil} }
 
-  scope :latest, ->(published: true) {
-    publication_scope = Publication.unscoped
-    publication_scope = publication_scope.published if published
+  scope :unpublished, -> { where{published_at == nil} }
 
-    joins{
-      publication_scope
+  scope :with_id, ->(id) {
+    nn, vv = id.to_s.split('@')
+
+    joins(:publication_group).where do
+      wheres = (publication_group.uuid == nn) | (publication_group.number == nn)
+
+      case vv
+      when NilClass
+        (wheres | (uuid == nn)) & (published_at != nil)
+      when 'draft', 'd'
+        wheres & (published_at == nil)
+      when 'latest'
+        wheres
+      else
+        wheres & (version == vv)
+      end
+    end.order{[publication_group.number.asc, version.desc]}
+  }
+
+  scope :visible_for, ->(user) {
+    user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+    next published if !user.is_a?(User) || user.is_anonymous?
+    next self if user.administrator
+    user_id = user.id
+
+    joins do
+      [
+        authors,
+        copyright_holders,
+        publication_group.list_publication_groups.outer.list.outer.list_owners,
+        publication_group.list_publication_groups.outer.list.outer.list_editors,
+        publication_group.list_publication_groups.outer.list.outer.list_readers
+      ].map(&:outer)
+    end.where do
+      (published_at  != nil                                                        ) |
+      (authors.user_id           == user_id                                        ) |
+      (copyright_holders.user_id == user_id                                        ) |
+      ((list_owners.owner_id     == user_id) & (list_owners.owner_type   == 'User')) |
+      ((list_editors.editor_id   == user_id) & (list_editors.editor_type == 'User')) |
+      ((list_readers.reader_id   == user_id) & (list_readers.reader_type == 'User'))
+    end
+  }
+
+  # The scope option determines how we limit the search for more recent versions
+  # Default scope: Publication.published
+  #
+  # Examples:
+  #
+  # Publication.all.latest or Publication.all.latest(scope: Publication.published)
+  # will return both the latest published versions and drafts made after them
+  #
+  # Publication.published.latest or Publication.published.latest(scope: Publication.published)
+  # will return only the latest published versions (no drafts)
+  #
+  # Publication.unpublished.latest or Publication.unpublished.latest(scope: Publication.published)
+  # will return only drafts made after the latest published versions
+  # (could return more than 1, but the draft code makes it so there's always only 1 draft)
+  #
+  # Publication.all.latest(scope: Publication.all)
+  # will return any drafts made after the latest published version if they exist,
+  # or the latest published version if there are no drafts (but not both)
+  #
+  # Publication.published.latest(scope: Publication.all)
+  # will return only latest published versions that don't have drafts made after them
+  #
+  # Publication.unpublished.latest(scope: Publication.all)
+  # will return only drafts made after the latest published versions
+  # (guaranteed to return only the latest draft)
+  scope :latest, ->(scope: nil) {
+    scope ||= published
+
+    joins do
+      scope
+        .reorder(nil).limit(nil).offset(nil)
         .as(:newer_publication)
-        .on{ (newer_publication.publication_group_id == ~publication_group_id) &
-             (newer_publication.version > ~version) }
+        .on do
+          (newer_publication.publication_group_id == ~publication_group_id) &
+          (newer_publication.version > ~version)
+        end
         .outer
-    }.where{ newer_publication.id == nil }
+    end.where{ newer_publication.id == nil }
   }
 
   def uid

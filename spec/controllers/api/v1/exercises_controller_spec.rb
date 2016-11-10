@@ -3,9 +3,9 @@ require "rails_helper"
 module Api::V1
   describe ExercisesController, type: :controller, api: true, version: :v1 do
 
-    let(:application) { FactoryGirl.create :doorkeeper_application }
-    let(:user)        { FactoryGirl.create :user, :agreed_to_terms }
-    let(:admin)       { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application)       { FactoryGirl.create :doorkeeper_application }
+    let(:user)              { FactoryGirl.create :user, :agreed_to_terms }
+    let(:admin)             { FactoryGirl.create :user, :administrator, :agreed_to_terms }
 
     let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
                                                   application: application,
@@ -92,9 +92,9 @@ module Api::V1
           expected_response = {
             total_count: 0,
             items: []
-          }.to_json
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
       end
 
@@ -108,11 +108,10 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_draft)
-                                                .to_hash(user_options: { user: user })]
-          }.to_json
+            items: [a_hash_including(uuid: @exercise_draft.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "returns an Exercise matching the content" do
@@ -121,10 +120,10 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_1)]
-          }.to_json
+            items: [a_hash_including(uuid: @exercise_1.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "returns an Exercise matching the tags" do
@@ -133,10 +132,10 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_1)]
-          }.to_json
+            items: [a_hash_including(uuid: @exercise_1.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
       end
 
@@ -147,11 +146,11 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_1),
-                    Api::V1::ExerciseRepresenter.new(@exercise_2)]
-          }.to_json
+            items: [a_hash_including(uuid: @exercise_1.uuid),
+                    a_hash_including(uuid: @exercise_2.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "returns Exercises matching the tags" do
@@ -160,11 +159,11 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_1),
-                    Api::V1::ExerciseRepresenter.new(@exercise_2)]
-          }.to_json
+            items: [a_hash_including(uuid: @exercise_1.uuid),
+                    a_hash_including(uuid: @exercise_2.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "sorts by multiple fields in different directions" do
@@ -174,11 +173,11 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::ExerciseRepresenter.new(@exercise_2),
-                    Api::V1::ExerciseRepresenter.new(@exercise_1)]
-          }.to_json
+            items: [a_hash_including(uuid: @exercise_2.uuid),
+                    a_hash_including(uuid: @exercise_1.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
       end
 
@@ -196,64 +195,63 @@ module Api::V1
         @exercise_2.save!
       end
 
-      let(:exercise_representation) {
-         -> (exercise) {
-          Api::V1::ExerciseRepresenter.new(exercise)
-            .to_json(user_options: { user: user,
-                                     versions: Exercise.versions_for_number(exercise.number)
-                                   })
-        }
-      }
-
       it "returns the Exercise requested by group_uuid and version" do
         api_get :show, user_token, parameters: {
           id: "#{@exercise.group_uuid}@#{@exercise.version}"
         }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
       end
 
       it "returns the Exercise requested by uuid" do
         api_get :show, user_token, parameters: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
       end
 
       it "returns the Exercise requested by uid" do
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
       end
 
       it "returns the latest published Exercise if only the group_uuid is specified" do
         api_get :show, user_token, parameters: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
       end
 
       it "returns the latest published Exercise if only the number is specified" do
         api_get :show, user_token, parameters: { id: @exercise.number }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
       end
 
       it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise_2.reload])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise_2.versions_visible_for(user)
       end
 
       it "returns the latest draft Exercise if \"number@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise_2.reload])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise_2.versions_visible_for(user)
       end
 
       it "returns the latest version of a Exercise if \"@latest\" is requested" do
         @exercise_1.publication.update_attributes(version: 1000)
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@latest" }
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq(exercise_representation[@exercise_1.reload])
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_1.uuid))
+        expect(response.body_as_hash[:versions]).to eq @exercise_1.versions_visible_for(user)
       end
 
       it "creates a new draft version if no draft and \"@draft\" is requested" do
@@ -277,18 +275,18 @@ module Api::V1
       context 'with solutions' do
         before do
           question = @exercise.questions.first
-          question.collaborator_solutions << FactoryGirl.create(:collaborator_solution, question: question)
+          question.collaborator_solutions << FactoryGirl.create(:collaborator_solution,
+                                                                question: question)
         end
 
         it "shows solutions for published exercises if the requestor is an app" do
           api_get :show, application_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
-          response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
-          response_hash['questions'].first['answers'].each do |answer|
-            expect(answer['correctness']).to be_present
-            expect(answer['feedback_html']).to be_present
+          expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
+          response.body_as_hash[:questions].first[:answers].each do |answer|
+            expect(answer[:correctness]).to be_present
+            expect(answer[:feedback_html]).to be_present
           end
         end
 
@@ -296,11 +294,10 @@ module Api::V1
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
-          response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['collaborator_solutions']).not_to be_empty
-          response_hash['questions'].first['answers'].each do |answer|
-            expect(answer['correctness']).to be_present
-            expect(answer['feedback_html']).to be_present
+          expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
+          response.body_as_hash[:questions].first[:answers].each do |answer|
+            expect(answer[:correctness]).to be_present
+            expect(answer[:feedback_html]).to be_present
           end
         end
 
@@ -310,19 +307,19 @@ module Api::V1
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
-          response_hash = JSON.parse(response.body)
-          expect(response_hash['questions'].first['collaborator_solutions']).to be_nil
-          response_hash['questions'].first['answers'].each do |answer|
-            expect(answer['correctness']).to be_nil
-            expect(answer['feedback_html']).to be_nil
+          expect(response.body_as_hash[:questions].first['collaborator_solutions']).to be_nil
+          response.body_as_hash[:questions].first[:answers].each do |answer|
+            expect(answer[:correctness]).to be_nil
+            expect(answer[:feedback_html]).to be_nil
           end
         end
 
         it "includes versions of exercise" do
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
-          response_hash = JSON.parse(response.body)
-          expect(response_hash['versions']).to eq([1, 2, 3])
+          expect(response.body_as_hash[:versions]).to(
+            eq([@exercise_2.version, @exercise_1.version, @exercise.version])
+          )
         end
 
       end
@@ -425,7 +422,7 @@ module Api::V1
 
         expect(@exercise.attributes).to eq @old_attributes
 
-        uid = JSON.parse(response.body)['uid']
+        uid = response.body_as_hash[:uid]
         new_exercise = Exercise.with_id(uid).first
         new_attributes = new_exercise.attributes
 
@@ -447,7 +444,7 @@ module Api::V1
 
         expect(@exercise.attributes).to eq @old_attributes
 
-        uid = JSON.parse(response.body)['uid']
+        uid = response.body_as_hash[:uid]
         new_exercise = Exercise.with_id(uid).first
         new_attributes = new_exercise.attributes
 
