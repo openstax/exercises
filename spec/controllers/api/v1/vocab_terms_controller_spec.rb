@@ -73,9 +73,9 @@ module Api::V1
           expected_response = {
             total_count: 0,
             items: []
-          }.to_json
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
       end
 
@@ -89,10 +89,10 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_draft).to_hash(user: user)]
-          }.to_json
+            items: [a_hash_including(uuid: @vocab_term_draft.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "returns a VocabTerm matching the content" do
@@ -101,10 +101,10 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_2)]
-          }.to_json
+            items: [a_hash_including(uuid: @vocab_term_2.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "returns a VocabTerm matching the tags" do
@@ -113,10 +113,10 @@ module Api::V1
 
           expected_response = {
             total_count: 1,
-            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_1)]
-          }.to_json
+            items: [a_hash_including(uuid: @vocab_term_1.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
       end
 
@@ -127,11 +127,11 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_1),
-                    Api::V1::VocabTermRepresenter.new(@vocab_term_2)]
-          }.to_json
+            items: [a_hash_including(uuid: @vocab_term_1.uuid),
+                    a_hash_including(uuid: @vocab_term_2.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "returns VocabTerms matching the tags" do
@@ -140,11 +140,11 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_1),
-                    Api::V1::VocabTermRepresenter.new(@vocab_term_2)]
-          }.to_json
+            items: [a_hash_including(uuid: @vocab_term_1.uuid),
+                    a_hash_including(uuid: @vocab_term_2.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
 
         it "sorts by multiple fields in different directions" do
@@ -154,11 +154,11 @@ module Api::V1
 
           expected_response = {
             total_count: 2,
-            items: [Api::V1::VocabTermRepresenter.new(@vocab_term_2),
-                    Api::V1::VocabTermRepresenter.new(@vocab_term_1)]
-          }.to_json
+            items: [a_hash_including(uuid: @vocab_term_2.uuid),
+                    a_hash_including(uuid: @vocab_term_1.uuid)]
+          }
 
-          expect(response.body).to eq(expected_response)
+          expect(response.body_as_hash).to match(expected_response)
         end
       end
 
@@ -180,71 +180,43 @@ module Api::V1
           id: "#{@vocab_term.group_uuid}@#{@vocab_term.version}"
         }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the VocabTerm requested by uuid" do
         api_get :show, user_token, parameters: { id: @vocab_term.uuid }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the VocabTerm requested by uid" do
         api_get :show, user_token, parameters: { id: @vocab_term.uid }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest published VocabTerm if only the group_uuid is specified" do
         api_get :show, user_token, parameters: { id: @vocab_term.group_uuid }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest published VocabTerm if only the number is specified" do
         api_get :show, user_token, parameters: { id: @vocab_term.number }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest draft VocabTerm if \"group_uuid@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@vocab_term.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term_2).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term_2.uuid))
       end
 
       it "returns the latest draft VocabTerm if \"number@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@vocab_term.number}@draft" }
         expect(response).to have_http_status(:success)
-
-        expected_response = \
-          Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter
-            .new(@vocab_term_2).to_json(user_options: { user: user })
-        expect(response.body).to eq(expected_response)
+        expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term_2.uuid))
       end
 
       it "creates a new draft version if no draft and \"@draft\" is requested" do
@@ -333,7 +305,7 @@ module Api::V1
 
         expect(@vocab_term.attributes).to eq @old_attributes
 
-        uid = JSON.parse(response.body)['uid']
+        uid = response.body_as_hash[:uid]
         new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
@@ -355,7 +327,7 @@ module Api::V1
 
         expect(@vocab_term.attributes).to eq @old_attributes
 
-        uid = JSON.parse(response.body)['uid']
+        uid = response.body_as_hash[:uid]
         new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
