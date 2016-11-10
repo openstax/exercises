@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'vocab_terms import' do
+RSpec.describe 'vocab_terms import', type: :rake do
   before :all do
     Rake.application.rake_require "tasks/vocab_terms/import"
     Rake::Task.define_task(:environment)

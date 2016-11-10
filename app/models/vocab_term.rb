@@ -187,4 +187,10 @@ class VocabTerm < ActiveRecord::Base
     self.exercises = (exercises + vocab_exercises).uniq
   end
 
+  def unlink
+    self.distractor_literals += distractor_term_definitions
+    self.vocab_distractors = []
+    self
+  end
+
 end

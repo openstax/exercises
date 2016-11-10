@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'exercises untag' do
+RSpec.describe 'exercises untag', type: :rake do
   before :all do
     Rake.application.rake_require "tasks/exercises/untag"
     Rake::Task.define_task(:environment)
