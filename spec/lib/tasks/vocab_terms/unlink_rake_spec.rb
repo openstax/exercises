@@ -12,21 +12,63 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
     Rake.application.invoke_task 'vocab_terms:unlink'
   end
 
-  let!(:linked_vocab_term)   { FactoryGirl.create :vocab_term }
-  let!(:unlinked_vocab_term) { FactoryGirl.create :vocab_term, vocab_distractors_count: 0 }
+  let!(:published_unlinked_vocab_term) do
+    FactoryGirl.create :vocab_term, :published, vocab_distractors_count: 0,
+                                                distractor_literals: ['test']
+  end
+  let!(:draft_unlinked_vocab_term)     do
+    published_unlinked_vocab_term.new_version.tap{ |vocab_term| vocab_term.save! }
+  end
 
-  it 'calls #unlink on all linked vocab_terms' do
-    expect(linked_vocab_term.vocab_distractors).not_to be_empty
+  context 'for linked vocab terms' do
+    let!(:published_linked_vocab_term)   { FactoryGirl.create :vocab_term, :published }
 
-    original_unlink = VocabTerm.instance_method(:unlink)
-    expect_any_instance_of(VocabTerm).to receive(:unlink) do |vocab_term|
-      expect(vocab_term).to eq linked_vocab_term
+    context 'where the latest version is a draft' do
+      let!(:draft_linked_vocab_term)       do
+        published_linked_vocab_term.new_version.tap{ |vocab_term| vocab_term.save! }
+      end
 
-      original_unlink.bind(vocab_term).call
+      it 'calls #unlink on the latest version draft of the linked vocab_term' do
+        expect(draft_linked_vocab_term.vocab_distractors).not_to be_empty
+        expect(draft_linked_vocab_term.distractor_literals).to be_empty
+
+        original_unlink = VocabTerm.instance_method(:unlink)
+        expect_any_instance_of(VocabTerm).to receive(:unlink) do |vocab_term|
+          expect(vocab_term).to eq draft_linked_vocab_term
+
+          original_unlink.bind(vocab_term).call
+        end
+
+        run_rake_task
+
+        expect(draft_linked_vocab_term.reload.vocab_distractors).to be_empty
+        expect(draft_linked_vocab_term.distractor_literals).not_to be_empty
+      end
     end
 
-    run_rake_task
+    context 'where the latest version is not a draft' do
+      it 'calls #unlink on a new draft for the linked vocab_term' do
+        expect(published_linked_vocab_term.vocab_distractors).not_to be_empty
+        expect(published_linked_vocab_term.distractor_literals).to be_empty
 
-    expect(linked_vocab_term.reload.vocab_distractors).to be_empty
+        original_unlink = VocabTerm.instance_method(:unlink)
+        expect_any_instance_of(VocabTerm).to receive(:unlink) do |vocab_term|
+          expect(vocab_term.number).to eq published_linked_vocab_term.number
+          expect(vocab_term.version).to be_nil
+
+          original_unlink.bind(vocab_term).call
+        end
+
+        expect{ run_rake_task }.to change{ VocabTerm.count }.by(1)
+
+        expect(published_linked_vocab_term.reload.vocab_distractors).not_to be_empty
+        expect(published_linked_vocab_term.distractor_literals).to be_empty
+
+        new_vocab_term = VocabTerm.order(:created_at).last
+
+        expect(new_vocab_term.vocab_distractors).to be_empty
+        expect(new_vocab_term.distractor_literals).not_to be_empty
+      end
+    end
   end
 end
