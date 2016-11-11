@@ -138,4 +138,15 @@ RSpec.describe VocabTerm, type: :model do
     expect(all_answers).to include('Something')
     expect(all_answers).to include('Something else')
   end
+
+  it 'can unlink itself from other vocab terms' do
+    expect(vocab_term.vocab_distractors).not_to be_empty
+    old_distractors = vocab_term.distractors
+
+    vocab_term.unlink
+
+    expect(vocab_term).to be_valid
+    expect(vocab_term.vocab_distractors).to be_empty
+    expect(vocab_term.distractors).to match_array(old_distractors)
+  end
 end

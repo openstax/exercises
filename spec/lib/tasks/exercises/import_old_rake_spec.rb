@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'exercises import old' do
+RSpec.describe 'exercises import old', type: :rake do
   before :all do
     Rake.application.rake_require "tasks/exercises/import_old"
     Rake::Task.define_task(:environment)
