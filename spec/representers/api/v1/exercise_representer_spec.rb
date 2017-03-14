@@ -114,5 +114,16 @@ module Api::V1
       end
     end
 
+    context "too many can_view_solutions? queries" do
+      let!(:real_exercise) { FactoryGirl.create(:exercise, questions_count: 1)}
+      let!(:user) { FactoryGirl.create :user }
+
+      it 'only calls can_view_solutions? one time' do
+        expect_any_instance_of(Exercise).to receive(:can_view_solutions?).once.and_call_original
+        described_class.new(real_exercise).to_hash(user_options: {user: user})
+      end
+
+    end
+
   end
 end
