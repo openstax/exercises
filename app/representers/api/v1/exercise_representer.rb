@@ -3,7 +3,12 @@ module Api::V1
 
     include Roar::JSON
 
-    can_view_solutions_proc = ->(user_options:, **) { can_view_solutions?(user_options[:user]) }
+    can_view_solutions_proc = ->(user_options:, **) do
+      user_options[:can_view_solutions] ||=
+        user_options.has_key?(:can_view_solutions) ?
+          user_options[:can_view_solutions] :
+          can_view_solutions?(user_options[:user])
+    end
 
     # Attachments may (for a while) contain collaborator solution attachments, so
     # only show them to those who can see solutions

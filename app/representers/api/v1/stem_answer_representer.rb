@@ -4,7 +4,10 @@ module Api::V1
     include Roar::JSON
 
     can_view_solutions_proc = ->(user_options:, **) do
-      stem.question.exercise.can_view_solutions?(user_options[:user])
+      user_options[:can_view_solutions] ||=
+        user_options.has_key?(:can_view_solutions) ?
+          user_options[:can_view_solutions] :
+          stem.question.exercise.can_view_solutions?(user_options[:user])
     end
 
     property :answer_id,
