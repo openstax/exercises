@@ -29,12 +29,12 @@ module Api::V1
     # destroy #
     ###########
 
-    api :DELETE, '/exercises/:exercise_id/attachment/:id', 'Deletes the specified Attachment'
+    api :DELETE, '/exercises/:exercise_id/attachment/:filename', 'Deletes the specified Attachment'
     description <<-EOS
       Deletes an attachment belonging to exercise
     EOS
     def destroy
-      attachment = @exercise.attachments.find(params[:id])
+      attachment = @exercise.attachments.find_by! asset: params[:id]
       standard_destroy(attachment)
     end
 
