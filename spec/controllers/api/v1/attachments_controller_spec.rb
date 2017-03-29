@@ -38,12 +38,12 @@ module Api::V1
 
         it 'attaches a file to an exercise' do
             image = ActionDispatch::Http::UploadedFile.new({
-              :filename => 'test_photo_1.jpg',
-              :type => 'image/jpeg',
-              :tempfile => File.new("#{Rails.root}/spec/fixtures/rails.png")
+              filename: 'test_photo_1.jpg',
+              type: 'image/jpeg',
+              tempfile: File.new("#{Rails.root}/spec/fixtures/rails.png")
             })
             expect do
-              api_post :create, user_token, parameters: { exercise_id: exercise_id, image: image }
+              api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
             end.to change{ exercise.attachments.count }.by(1)
             expect(response).to have_http_status(:success)
         end
@@ -57,8 +57,9 @@ module Api::V1
         ).outputs[:attachment]
 
         expect do
-          api_delete :destroy, user_token,
-                     parameters: { exercise_id: exercise_id, id: attachment.read_attribute(:asset) }
+          api_delete :destroy, user_token, parameters: {
+            exercise_id: exercise_id, filename: attachment.read_attribute(:asset)
+          }
         end.to change(Attachment, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(exercise.attachments.find_by(id: attachment.id)).to be_nil
