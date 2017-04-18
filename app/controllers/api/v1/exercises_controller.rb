@@ -95,6 +95,14 @@ module Api::V1
     def create
       user = current_human_user
       standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
+        exercise.questions.each do |question|
+          question.stems.each do |stem|
+            stem.stylings = Style.default.map do |style|
+              Styling.new(stylable: stem, style: style)
+            end if stem.stylings.empty?
+          end
+        end
+
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user
         ) unless exercise.publication.authors.any?{ |au| au.user = user }

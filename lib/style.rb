@@ -16,4 +16,8 @@ module Style
      POINT_AND_CLICK, MATCHING, SORTING, FREE_RESPONSE, DRAWING, TRUE_FALSE]
   end
 
+  def self.default
+    [MULTIPLE_CHOICE, FREE_RESPONSE]
+  end
+
 end
