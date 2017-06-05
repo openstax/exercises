@@ -78,6 +78,6 @@ class AssetUploader < CarrierWave::Uploader::Base
     # Don't try to hash uncached files
     return super unless cached?
 
-    "#{content_hash}.png"
+    is_image? ? "#{content_hash}.png" : "#{content_hash}.pdf"
   end
 end

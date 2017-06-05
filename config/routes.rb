@@ -21,7 +21,7 @@ Exercises::Application.routes.draw do
 
   api :v1, default: true do
     resources :exercises do
-      resources :attachments, only: [:create, :destroy]
+      resource :attachments, only: [:create, :destroy]
 
       publishable
       # Not in V1

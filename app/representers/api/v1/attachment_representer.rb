@@ -12,7 +12,9 @@ module Api::V1
              type: String,
              readable: true,
              writeable: false,
-             getter: ->(*) { asset.as_json[:asset] },
+             getter: ->(*) do
+               { filename: read_attribute(:asset) }.merge asset.as_json[:asset]
+             end,
              schema_info: {
                required: true
              }

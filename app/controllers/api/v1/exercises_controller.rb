@@ -2,7 +2,7 @@ module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
     before_filter :get_exercise_or_create_draft, only: [:show, :update]
-    before_filter :get_exercise, only: [:save_image, :destroy]
+    before_filter :get_exercise, only: [:destroy]
 
     resource_description do
       api_versions "v1"
