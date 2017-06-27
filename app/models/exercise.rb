@@ -4,27 +4,22 @@ class Exercise < ActiveRecord::Base
     :attachments,
     :logic,
     :tags,
-    {
-      publication: [
-        :publication_group,
-        :license,
-        {
-          derivations: :source_publication,
-          authors: :user,
-          copyright_holders: :user
-        }
-      ],
-      questions: [
-        :collaborator_solutions,
-        :hints,
-        {
-          answers: :stem_answers,
-          stems: [
-            :stylings, :combo_choices
-          ]
-        }
+    publication: [
+      :publication_group,
+      :license,
+      derivations: :source_publication,
+      authors: :user,
+      copyright_holders: :user
+    ],
+    questions: [
+      :collaborator_solutions,
+      :hints,
+      answers: :stem_answers,
+      stems: [
+        :stylings,
+        :combo_choices
       ]
-    }
+    ]
   ]
 
   EQUALITY_EXCLUDED_FIELDS = ['id', 'uuid', 'created_at', 'updated_at', 'version',
@@ -57,9 +52,7 @@ class Exercise < ActiveRecord::Base
           stems: [
             :stylings,
             :combo_choices,
-            {
-              stem_answers: :answer
-            }
+            stem_answers: :answer
           ]
         }
       ]
@@ -78,20 +71,24 @@ class Exercise < ActiveRecord::Base
   belongs_to :vocab_term
 
   scope :preloaded, -> {
-    preload(:attachments,
-            :logic,
-            :tags,
-            publication: [:publication_group,
-                          :derivations,
-                          {authors: :user},
-                          {copyright_holders: :user}],
-            questions: [
-              :hints,
-              :collaborator_solutions,
-              :community_solutions,
-              answers: :stem_answers,
-              stems: [:stylings, :combo_choices]
-            ])
+    preload(
+      :attachments,
+      :logic,
+      :tags,
+      publication: [
+        :publication_group,
+        :derivations,
+        authors: { user: :account },
+        copyright_holders: { user: :account }
+      ],
+      questions: [
+        :hints,
+        :collaborator_solutions,
+        :community_solutions,
+        answers: :stem_answers,
+        stems: [ :stylings, :combo_choices ]
+      ]
+    )
   }
 
   def content_equals?(other_exercise)
