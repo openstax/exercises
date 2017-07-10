@@ -81,7 +81,7 @@ class Publication < ActiveRecord::Base
   scope :visible_for, ->(user) {
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
-    next self if user.administrator
+    next all if user.administrator
     user_id = user.id
 
     joins do
