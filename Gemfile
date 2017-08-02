@@ -202,8 +202,8 @@ group :test do
   # Code Climate integration
   gem "codeclimate-test-reporter", require: false
 
-  # Coveralls integration
-  gem 'coveralls', require: false
+  # Codecov integration
+  gem 'codecov', require: false
 
   # Test after-commit hooks
   gem 'test_after_commit'
