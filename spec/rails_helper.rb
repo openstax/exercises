@@ -2,12 +2,7 @@ require 'simplecov'
 require 'codecov'
 require 'parallel_tests'
 
-SimpleCov.formatter = SimpleCov::Formatter::Codecov
-
-SimpleCov.at_exit do
-  ParallelTests.wait_for_other_processes_to_finish if ParallelTests.first_process?
-  SimpleCov.result.format!
-end
+SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 
 SimpleCov.start 'rails'
 
