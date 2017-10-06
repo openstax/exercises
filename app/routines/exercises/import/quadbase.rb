@@ -328,9 +328,9 @@ module Exercises
       def map_collection_book_locations_to_uuids(hash, cnx_book_hash, chapter_number = 0)
         contents = hash['contents']
 
-        if contents.any?{ |entry| entry['id'] == 'subcol' } # Book/Unit (internal node)
+        if contents.any?{ |entry| entry.has_key? 'contents' } # Book/Unit (internal node)
           contents.each do |entry|
-            next if entry['id'] != 'subcol' # Skip anything not in a chapter (preface/appendix)
+            next unless entry.has_key? 'contents' # Skip preface/appendix
 
             chapter_number = map_collection_book_locations_to_uuids(
               entry, cnx_book_hash, chapter_number
@@ -354,9 +354,9 @@ module Exercises
       def map_collection_uuids_to_book_locations(hash, cnx_book_hash, chapter_number = 0)
         contents = hash['contents']
 
-        if contents.any?{ |entry| entry['id'] == 'subcol' } # Book/Unit (internal node)
+        if contents.any?{ |entry| entry.has_key? 'contents' } # Book/Unit (internal node)
           contents.each do |entry|
-            next if entry['id'] != 'subcol' # Skip anything not in a chapter (preface/appendix)
+            next unless entry.has_key? 'contents' # Skip preface/appendix
 
             chapter_number = map_collection_uuids_to_book_locations(
               entry, cnx_book_hash, chapter_number
