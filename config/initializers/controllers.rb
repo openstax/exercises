@@ -1,5 +1,4 @@
 ActionController::Base.class_exec do
-  use_openstax_exception_rescue
 
   protect_from_forgery
 
@@ -19,6 +18,7 @@ ActionController::Base.class_exec do
   def authenticate_administrator!
     current_administrator || raise(SecurityTransgression)
   end
+
 end
 
 FinePrint::ApplicationController.send :layout, "application_body_only"
