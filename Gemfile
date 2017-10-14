@@ -129,7 +129,7 @@ gem 'pg'
 gem 'httparty'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from'
+gem 'openstax_rescue_from', '~> 2.1.0'
 
 # API JSON rendering/parsing
 # Do not use Roar 1.0.4
