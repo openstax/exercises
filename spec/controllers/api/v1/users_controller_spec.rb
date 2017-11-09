@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  describe UsersController, type: :controller, api: true, version: :v1 do
+  RSpec.describe UsersController, type: :controller, api: true, version: :v1 do
 
     let!(:application)      { FactoryGirl.create :doorkeeper_application }
 
@@ -21,7 +21,9 @@ module Api::V1
                                                  application: application,
                                                  resource_owner_id: nil }
 
-    describe "GET index" do
+    let(:response_hash)     { JSON.parse(response.body).deep_symbolize_keys }
+
+    context "GET index" do
 
       before do
         100.times { FactoryGirl.create(:user) }
@@ -47,9 +49,9 @@ module Api::V1
         expected_response = {
           total_count: OpenStax::Accounts::Account.count,
           items: []
-        }.to_json
+        }
 
-        expect(response.body).to eq(expected_response)
+        expect(response_hash).to match(expected_response)
       end
 
       it "returns single results" do
@@ -65,12 +67,15 @@ module Api::V1
               first_name: @john_doe.first_name,
               last_name: @john_doe.last_name,
               full_name: @john_doe.full_name,
-              title: @john_doe.title
+              title: @john_doe.title,
+              faculty_status: @john_doe.faculty_status,
+              self_reported_role: @john_doe.role,
+              uuid: @john_doe.uuid
             }
           ]
-        }.to_json
+        }
 
-        expect(response.body).to eq(expected_response)
+        expect(response_hash).to match(expected_response)
       end
 
       it "returns multiple results" do
@@ -86,7 +91,10 @@ module Api::V1
               first_name: @jane_doe.first_name,
               last_name: @jane_doe.last_name,
               full_name: @jane_doe.full_name,
-              title: @jane_doe.title
+              title: @jane_doe.title,
+              faculty_status: @jane_doe.faculty_status,
+              self_reported_role: @jane_doe.role,
+              uuid: @jane_doe.uuid
             },
             {
               id: @john_doe.account.openstax_uid,
@@ -94,12 +102,15 @@ module Api::V1
               first_name: @john_doe.first_name,
               last_name: @john_doe.last_name,
               full_name: @john_doe.full_name,
-              title: @john_doe.title
+              title: @john_doe.title,
+              faculty_status: @john_doe.faculty_status,
+              self_reported_role: @john_doe.role,
+              uuid: @john_doe.uuid
             }
           ]
-        }.to_json
+        }
 
-        expect(response.body).to eq(expected_response)
+        expect(response_hash).to match(expected_response)
       end
 
       it "sorts by multiple fields in different directions" do
@@ -116,7 +127,10 @@ module Api::V1
               first_name: @john_doe.first_name,
               last_name: @john_doe.last_name,
               full_name: @john_doe.full_name,
-              title: @john_doe.title
+              title: @john_doe.title,
+              faculty_status: @john_doe.faculty_status,
+              self_reported_role: @john_doe.role,
+              uuid: @john_doe.uuid
             },
             {
               id: @jane_doe.account.openstax_uid,
@@ -124,17 +138,20 @@ module Api::V1
               first_name: @jane_doe.first_name,
               last_name: @jane_doe.last_name,
               full_name: @jane_doe.full_name,
-              title: @jane_doe.title
+              title: @jane_doe.title,
+              faculty_status: @jane_doe.faculty_status,
+              self_reported_role: @jane_doe.role,
+              uuid: @jane_doe.uuid
             }
           ]
-        }.to_json
+        }
 
-        expect(response.body).to eq(expected_response)
+        expect(response_hash).to match(expected_response)
       end
 
     end
 
-    describe "GET show" do
+    context "GET show" do
 
       it "returns the current User's info" do
         api_get :show, user_token
@@ -146,10 +163,13 @@ module Api::V1
           first_name: user.first_name,
           last_name: user.last_name,
           full_name: user.full_name,
-          title: user.title
-        }.to_json
+          title: user.title,
+          faculty_status: user.faculty_status,
+          self_reported_role: user.role,
+          uuid: user.uuid
+        }
 
-        expect(response.body).to eq(expected_response)
+        expect(response_hash).to match(expected_response)
       end
 
       it "ignores id parameters" do
@@ -162,15 +182,18 @@ module Api::V1
           first_name: user.first_name,
           last_name: user.last_name,
           full_name: user.full_name,
-          title: user.title
-        }.to_json
+          title: user.title,
+          faculty_status: user.faculty_status,
+          self_reported_role: user.role,
+          uuid: user.uuid
+        }
 
-        expect(response.body).to eq(expected_response)
+        expect(response_hash).to match(expected_response)
       end
 
     end
 
-    describe "PATCH update" do
+    context "PATCH update" do
 
       it "updates the current User's profile" do
         api_patch :update, user_token, raw_post_data: {
@@ -197,7 +220,7 @@ module Api::V1
 
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
 
       it "deactivates the current User's account" do
         api_delete :destroy, user_token
