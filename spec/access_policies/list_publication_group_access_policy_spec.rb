@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe ListPublicationGroupAccessPolicy, type: :access_policy do
   let(:anon)                   { AnonymousUser.instance }
-  let(:user)                   { FactoryGirl.create(:user) }
-  let(:app)                    { FactoryGirl.create(:doorkeeper_application) }
-  let(:list)                   { FactoryGirl.create(:list) }
-  let(:list_publication_group) { FactoryGirl.build(:list_publication_group, list: list) }
+  let(:user)                   { FactoryBot.create(:user) }
+  let(:app)                    { FactoryBot.create(:doorkeeper_application) }
+  let(:list)                   { FactoryBot.create(:list) }
+  let(:list_publication_group) { FactoryBot.build(:list_publication_group, list: list) }
 
   context 'create, destroy' do
     it 'cannot be accessed by anonymous users, applications or users without roles' do
@@ -20,31 +20,31 @@ RSpec.describe ListPublicationGroupAccessPolicy, type: :access_policy do
     end
 
     it 'can be accessed by list collaborators and owners' do
-      author = FactoryGirl.create(:author, publication: list.publication, user: user)
+      author = FactoryBot.create(:author, publication: list.publication, user: user)
       list.reload
       expect(described_class.action_allowed?(:create, user, list_publication_group)).to eq true
       expect(described_class.action_allowed?(:destroy, user, list_publication_group)).to eq true
       author.destroy
 
-      ch = FactoryGirl.create(:copyright_holder, publication: list.publication, user: user)
+      ch = FactoryBot.create(:copyright_holder, publication: list.publication, user: user)
       list.reload
       expect(described_class.action_allowed?(:create, user, list_publication_group)).to eq true
       expect(described_class.action_allowed?(:destroy, user, list_publication_group)).to eq true
       ch.destroy
 
-      lo = FactoryGirl.create(:list_owner, list: list, owner: user)
+      lo = FactoryBot.create(:list_owner, list: list, owner: user)
       list.reload
       expect(described_class.action_allowed?(:create, user, list_publication_group)).to eq true
       expect(described_class.action_allowed?(:destroy, user, list_publication_group)).to eq true
       lo.destroy
 
-      le = FactoryGirl.create(:list_editor, list: list, editor: user)
+      le = FactoryBot.create(:list_editor, list: list, editor: user)
       list.reload
       expect(described_class.action_allowed?(:create, user, list_publication_group)).to eq false
       expect(described_class.action_allowed?(:destroy, user, list_publication_group)).to eq false
       le.destroy
 
-      lr = FactoryGirl.create(:list_reader, list: list, reader: user)
+      lr = FactoryBot.create(:list_reader, list: list, reader: user)
       list.reload
       expect(described_class.action_allowed?(:create, user, list_publication_group)).to eq false
       expect(described_class.action_allowed?(:destroy, user, list_publication_group)).to eq false

@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe DeputizationAccessPolicy, type: :access_policy do
   let(:anon) { AnonymousUser.instance }
-  let(:user) { FactoryGirl.create(:user) }
-  let(:app)  { FactoryGirl.create(:doorkeeper_application) }
-  let(:dp)   { FactoryGirl.create(:deputization) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:app)  { FactoryBot.create(:doorkeeper_application) }
+  let(:dp)   { FactoryBot.create(:deputization) }
 
   context 'create, destroy' do
     it 'cannot be accessed by anonymous, unauthorized users or apps' do

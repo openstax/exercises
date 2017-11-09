@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :styling do
     stylable { build :stem, styles: [] }
     style Style::FREE_RESPONSE

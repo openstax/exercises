@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :logic do
     association :parent, factory: :exercise
     language 'javascript'

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :vocab_term do
     name                { Faker::Lorem.words.join(' ').capitalize }
     definition          { Faker::Lorem.paragraph }

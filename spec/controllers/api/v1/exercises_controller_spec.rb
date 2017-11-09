@@ -3,23 +3,23 @@ require "rails_helper"
 module Api::V1
   describe ExercisesController, type: :controller, api: true, version: :v1 do
 
-    let(:application)       { FactoryGirl.create :doorkeeper_application }
-    let(:user)              { FactoryGirl.create :user, :agreed_to_terms }
-    let(:admin)             { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application)       { FactoryBot.create :doorkeeper_application }
+    let(:user)              { FactoryBot.create :user, :agreed_to_terms }
+    let(:admin)             { FactoryBot.create :user, :administrator, :agreed_to_terms }
 
-    let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+    let(:user_token)        { FactoryBot.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: user.id }
-    let(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+    let(:admin_token)       { FactoryBot.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: admin.id }
-    let(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+    let(:application_token) { FactoryBot.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: nil }
 
     before do
-      @exercise = FactoryGirl.build(:exercise)
-      @exercise.publication.authors << FactoryGirl.build(
+      @exercise = FactoryBot.build(:exercise)
+      @exercise.publication.authors << FactoryBot.build(
         :author, user: user, publication: @exercise.publication
       )
     end
@@ -27,7 +27,7 @@ module Api::V1
     describe "GET index" do
 
       before do
-        10.times { FactoryGirl.create(:exercise, :published) }
+        10.times { FactoryBot.create(:exercise, :published) }
 
         tested_strings = ["%adipisci%", "%draft%"]
         Exercise.joins{questions.outer.stems.outer}
@@ -38,7 +38,7 @@ module Api::V1
                        (stems.content.like_any tested_strings) |\
                        (answers.content.like_any tested_strings)}.delete_all
 
-        @exercise_1 = FactoryGirl.build(:exercise, :published)
+        @exercise_1 = FactoryBot.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
           tags: ['tag1', 'tag2'],
           title: "Lorem ipsum",
@@ -53,7 +53,7 @@ module Api::V1
         }.to_json)
         @exercise_1.save!
 
-        @exercise_2 = FactoryGirl.build(:exercise, :published)
+        @exercise_2 = FactoryBot.build(:exercise, :published)
         Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
           tags: ['tag2', 'tag3'],
           title: "Dolorem ipsum",
@@ -68,7 +68,7 @@ module Api::V1
         }.to_json)
         @exercise_2.save!
 
-        @exercise_draft = FactoryGirl.build(:exercise)
+        @exercise_draft = FactoryBot.build(:exercise)
         Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
           tags: ['all', 'the', 'tags'],
           title: "DRAFT",
@@ -275,7 +275,7 @@ module Api::V1
       context 'with solutions' do
         before do
           question = @exercise.questions.first
-          question.collaborator_solutions << FactoryGirl.create(:collaborator_solution,
+          question.collaborator_solutions << FactoryBot.create(:collaborator_solution,
                                                                 question: question)
         end
 
@@ -359,8 +359,8 @@ module Api::V1
       end
 
       it "creates the exercise with a collaborator solution" do
-        exercise = FactoryGirl.build(:exercise, collaborator_solutions_count: 1)
-        exercise.publication.authors << FactoryGirl.build(
+        exercise = FactoryBot.build(:exercise, collaborator_solutions_count: 1)
+        exercise.publication.authors << FactoryBot.build(
           :author, user: user, publication: @exercise.publication
         )
 

@@ -13,13 +13,13 @@ RSpec.describe Logic, type: :model do
   it { is_expected.to validate_inclusion_of(:language).in_array(Language.all) }
 
   it 'requires a unique parent' do
-    logic_1 = FactoryGirl.create :logic
-    logic_2 = FactoryGirl.build :logic, parent: logic_1.parent
+    logic_1 = FactoryBot.create :logic
+    logic_2 = FactoryBot.build :logic, parent: logic_1.parent
     expect(logic_2).not_to be_valid
     expect(logic_2.errors[:parent_id]).to(
       include('has already been taken'))
 
-    logic_2.parent = FactoryGirl.build :exercise
+    logic_2.parent = FactoryBot.build :exercise
     expect(logic_2).to be_valid
   end
 

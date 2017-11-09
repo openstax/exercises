@@ -3,30 +3,30 @@ require "rails_helper"
 module Oauth
   RSpec.describe ApplicationsController, type: :controller do
 
-    let(:user_1) { FactoryGirl.create :user }
-    let(:user_2) { FactoryGirl.create :user }
-    let(:admin)  { FactoryGirl.create(:administrator).user }
+    let(:user_1) { FactoryBot.create :user }
+    let(:user_2) { FactoryBot.create :user }
+    let(:admin)  { FactoryBot.create(:administrator).user }
 
     let(:user_group_1) {
-      ug = FactoryGirl.create :openstax_accounts_group
+      ug = FactoryBot.create :openstax_accounts_group
       ug.add_member(user_1.account)
       ug.add_member(user_2.account)
       ug
     }
 
     let(:user_group_2) {
-      ug = FactoryGirl.create :openstax_accounts_group
+      ug = FactoryBot.create :openstax_accounts_group
       ug.add_member(user_2.account)
       ug
     }
 
-    let!(:group_1_application_1) { FactoryGirl.create :doorkeeper_application,
+    let!(:group_1_application_1) { FactoryBot.create :doorkeeper_application,
                                                       owner: user_group_1 }
-    let!(:group_1_application_2) { FactoryGirl.create :doorkeeper_application,
+    let!(:group_1_application_2) { FactoryBot.create :doorkeeper_application,
                                                       owner: user_group_1 }
-    let!(:group_2_application_1) { FactoryGirl.create :doorkeeper_application,
+    let!(:group_2_application_1) { FactoryBot.create :doorkeeper_application,
                                                       owner: user_group_2 }
-    let!(:group_2_application_2) { FactoryGirl.create :doorkeeper_application,
+    let!(:group_2_application_2) { FactoryBot.create :doorkeeper_application,
                                                       owner: user_group_2 }
 
     let(:valid_session) { { "account_id" => user_1.account_id } }
@@ -75,7 +75,7 @@ module Oauth
 
     context "POST create" do
       context "with valid params" do
-        let(:valid_attributes) { FactoryGirl.build(:doorkeeper_application).attributes }
+        let(:valid_attributes) { FactoryBot.build(:doorkeeper_application).attributes }
 
         it "creates a new Application" do
           expect {

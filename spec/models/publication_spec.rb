@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Publication, type: :model do
 
-  subject(:publication) { FactoryGirl.create :publication }
+  subject(:publication) { FactoryBot.create :publication }
 
   it { is_expected.to belong_to(:publication_group) }
   it { is_expected.to belong_to(:publishable) }
@@ -24,18 +24,18 @@ RSpec.describe Publication, type: :model do
   it { is_expected.to validate_uniqueness_of(:version).scoped_to(:publication_group_id) }
 
   it 'requires a unique publishable' do
-    publication_2 = FactoryGirl.build :publication, publishable: publication.publishable
+    publication_2 = FactoryBot.build :publication, publishable: publication.publishable
     expect(publication_2).not_to be_valid
     expect(publication_2.errors[:publishable_id]).to include 'has already been taken'
 
-    publication_2.publishable = FactoryGirl.build :exercise
+    publication_2.publishable = FactoryBot.build :exercise
     expect(publication_2).to be_valid
   end
 
   it 'requires a valid license or nil' do
     expect(publication).to be_valid
 
-    publication.license = FactoryGirl.build :license, licensed_classes: []
+    publication.license = FactoryBot.build :license, licensed_classes: []
     expect(publication).not_to be_valid
     expect(publication.errors[:license]).to include 'is invalid for Exercise'
 
@@ -53,7 +53,7 @@ RSpec.describe Publication, type: :model do
     expect(p.uid).to eq "#{p.number}@1"
 
 
-    p_2 = FactoryGirl.create :publication, number: p.number
+    p_2 = FactoryBot.create :publication, number: p.number
     expect(p_2).to be_valid
     expect(p.uuid).to be_a String
     expect(p.group_uuid).to be_a String
@@ -63,13 +63,13 @@ RSpec.describe Publication, type: :model do
   end
 
   it 'defaults to ordering by number ASC and version DESC' do
-    publication_2 = FactoryGirl.create :publication,
+    publication_2 = FactoryBot.create :publication,
                                        number: publication.number,
                                        version: publication.version + 1
-    publication_3 = FactoryGirl.create :publication,
+    publication_3 = FactoryBot.create :publication,
                                        number: publication.number + 1,
                                        version: publication.version
-    publication_4 = FactoryGirl.create :publication,
+    publication_4 = FactoryBot.create :publication,
                                        number: publication.number + 1,
                                        version: publication.version + 1
     expect(Publication.all[-4..-1]).to(

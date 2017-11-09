@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe License, type: :model do
 
-  subject(:license) { FactoryGirl.create(:license) }
+  subject(:license) { FactoryBot.create(:license) }
 
   it { is_expected.to have_many(:publications).dependent(:destroy) }
   it { is_expected.to have_many(:class_licenses).dependent(:destroy) }
@@ -21,10 +21,10 @@ RSpec.describe License, type: :model do
   it { is_expected.to validate_uniqueness_of(:url) }
 
   it 'should know if it is valid for a given publishable object' do
-    license = FactoryGirl.create :license, licensed_classes: ['CommunitySolution', 'List']
+    license = FactoryBot.create :license, licensed_classes: ['CommunitySolution', 'List']
     expect(license.valid_for?(Exercise.name)).to eq false
 
-    class_license = FactoryGirl.create :class_license, license: license, class_name: 'Exercise'
+    class_license = FactoryBot.create :class_license, license: license, class_name: 'Exercise'
     expect(license.reload.valid_for?(Exercise.name)).to eq true
   end
 

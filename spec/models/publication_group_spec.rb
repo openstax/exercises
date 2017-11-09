@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PublicationGroup, type: :model do
 
-  subject(:publication_group) { FactoryGirl.create :publication_group }
+  subject(:publication_group) { FactoryBot.create :publication_group }
 
   it { is_expected.to have_many(:publications).dependent(:destroy) }
 
@@ -27,7 +27,7 @@ RSpec.describe PublicationGroup, type: :model do
   end
 
   it 'defaults to ordering by number ASC' do
-    publication_group_2 = FactoryGirl.create :publication_group,
+    publication_group_2 = FactoryBot.create :publication_group,
                                              number: publication_group.number + 1
 
     expect(PublicationGroup.all[-2..-1]).to(
@@ -36,7 +36,7 @@ RSpec.describe PublicationGroup, type: :model do
   end
 
   it 'is readonly after creation' do
-    publication_group = FactoryGirl.build :publication_group
+    publication_group = FactoryBot.build :publication_group
     expect(publication_group).not_to be_readonly
     publication_group.save!
     expect(publication_group).to be_readonly

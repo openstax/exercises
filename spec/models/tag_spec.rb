@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Tag, type: :model do
-  subject(:tag) { FactoryGirl.create :tag }
+  subject(:tag) { FactoryBot.create :tag }
 
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 

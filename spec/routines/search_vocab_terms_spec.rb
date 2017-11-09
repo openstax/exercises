@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe SearchVocabTerms, type: :routine do
   before do
-    10.times{ FactoryGirl.create(:vocab_term, :published) }
+    10.times{ FactoryBot.create(:vocab_term, :published) }
 
     tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
     VocabTerm.where{(name.like_any tested_strings) |
                     (definition.like_any tested_strings)}.delete_all
 
-    @vocab_term_1 = FactoryGirl.build(:vocab_term, :published)
+    @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
       tags: ['tag1', 'tag2'],
       term: "Lorem ipsum",
@@ -17,7 +17,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     }.to_json)
     @vocab_term_1.save!
 
-    @vocab_term_2 = FactoryGirl.build(:vocab_term, :published)
+    @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
       tags: ['tag2', 'tag3'],
       term: "Dolorem ipsum",
@@ -26,7 +26,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     }.to_json)
     @vocab_term_2.save!
 
-    @vocab_term_draft = FactoryGirl.build(:vocab_term)
+    @vocab_term_draft = FactoryBot.build(:vocab_term)
     Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_json({
       tags: ['all', 'the', 'tags'],
       term: "draft",
@@ -51,7 +51,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
 
   context "single match" do
     it "returns drafts that the user is allowed to see" do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       @vocab_term_draft.publication.authors << Author.new(user: user)
       @vocab_term_draft.reload
       result = described_class.call({q: 'content:draft'}, user: user)
@@ -250,7 +250,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       new_vocab_term_2_draft = new_vocab_term_2.new_version
       new_vocab_term_2_draft.save!
 
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
 
       [@vocab_term_1, new_vocab_term_2, new_vocab_term_2_draft].each do |vocab_term|
         vocab_term.authors << Author.new(user: user)

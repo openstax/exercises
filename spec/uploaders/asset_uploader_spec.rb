@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AssetUploader do
 
-  let(:exercise) { FactoryGirl.build(:exercise) }
+  let(:exercise) { FactoryBot.build(:exercise) }
   let(:png) { File.new("#{Rails.root}/spec/fixtures/rails.png") }
 
   def asset_file(name)

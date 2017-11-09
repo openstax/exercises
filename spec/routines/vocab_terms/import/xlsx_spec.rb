@@ -32,8 +32,8 @@ RSpec.describe VocabTerms::Import::Xlsx, type: :routine do
     ]
   }
 
-  let(:author) { FactoryGirl.create :user }
-  let(:ch)     { FactoryGirl.create :user }
+  let(:author) { FactoryBot.create :user }
+  let(:ch)     { FactoryBot.create :user }
 
   before { VocabTerms::Importer::BOOK_NAMES.merge!('Introduction to Programming' => 'prog') }
 

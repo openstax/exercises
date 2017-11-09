@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SearchExercises, type: :routine do
   before do
-    10.times { FactoryGirl.create(:exercise, :published) }
+    10.times { FactoryBot.create(:exercise, :published) }
 
     tested_strings = ["%adipisci%", "%draft%"]
     Exercise.joins{questions.outer.stems.outer}
@@ -45,7 +45,7 @@ RSpec.describe SearchExercises, type: :routine do
     @exercise_2.save!
     @exercise_2.publication.publish.save!
 
-    @exercise_draft = FactoryGirl.build(:exercise)
+    @exercise_draft = FactoryBot.build(:exercise)
     Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
       tags: ['all', 'the', 'tags'],
       title: "DRAFT",
@@ -76,7 +76,7 @@ RSpec.describe SearchExercises, type: :routine do
 
   context "single match" do
     it "returns drafts that the user is allowed to see" do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       @exercise_draft.publication.authors << Author.new(user: user)
       @exercise_draft.reload
       result = described_class.call({q: 'content:draft'}, user: user.reload)
@@ -245,7 +245,7 @@ RSpec.describe SearchExercises, type: :routine do
       new_exercise_2_draft = new_exercise_2.new_version
       new_exercise_2_draft.save!
 
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
 
       [@exercise_1, new_exercise_2, new_exercise_2_draft].each do |exercise|
         exercise.authors << Author.new(user: user)

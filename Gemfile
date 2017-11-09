@@ -165,7 +165,7 @@ group :development, :test do
   gem 'quiet_assets'
 
   # Fixture replacement
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
 
   # Lorem Ipsum
   gem 'faker'

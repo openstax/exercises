@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
   let(:anon)        { AnonymousUser.instance }
-  let(:user)        { FactoryGirl.create(:user) }
-  let(:admin)       { FactoryGirl.create(:user, :administrator) }
-  let(:app)         { FactoryGirl.build(:doorkeeper_application) }
-  let(:another_app) { FactoryGirl.create(:doorkeeper_application) }
+  let(:user)        { FactoryBot.create(:user) }
+  let(:admin)       { FactoryBot.create(:user, :administrator) }
+  let(:app)         { FactoryBot.build(:doorkeeper_application) }
+  let(:another_app) { FactoryBot.create(:doorkeeper_application) }
 
   context 'read, update' do
     it 'can be accessed by admins and members of the application owner group' do

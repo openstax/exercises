@@ -13,7 +13,7 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
   end
 
   let!(:published_unlinked_vocab_term) do
-    FactoryGirl.create :vocab_term, :published, vocab_distractors_count: 0,
+    FactoryBot.create :vocab_term, :published, vocab_distractors_count: 0,
                                                 distractor_literals: ['test']
   end
   let!(:draft_unlinked_vocab_term)     do
@@ -21,7 +21,7 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
   end
 
   context 'for linked vocab terms' do
-    let!(:published_linked_vocab_term)   { FactoryGirl.create :vocab_term, :published }
+    let!(:published_linked_vocab_term)   { FactoryBot.create :vocab_term, :published }
 
     context 'where the latest version is a draft' do
       let!(:draft_linked_vocab_term)       do

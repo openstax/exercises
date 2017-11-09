@@ -18,7 +18,7 @@ module Dev
     def handle
       outputs[:users] = []
       generate_params.count.times do 
-        outputs[:users] << FactoryGirl.create(:user, :agreed_to_terms)
+        outputs[:users] << FactoryBot.create(:user, :agreed_to_terms)
       end
       outputs[:count] = generate_params.count
     end

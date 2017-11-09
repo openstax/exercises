@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :community_solution do
     question
     solution_type SolutionType::EXAMPLE

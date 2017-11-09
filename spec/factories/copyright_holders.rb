@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :copyright_holder do
     publication
     user
