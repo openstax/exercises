@@ -97,7 +97,7 @@ module Api::V1
 
       it 'can be written' do
         # instance_spy doesn't work here because the Questions being created expect a real Exercise
-        real_ex = FactoryGirl.build :exercise
+        real_ex = FactoryBot.build :exercise
 
         expect(real_ex).to receive(:questions=)
                              .with(3.times.map{ a_kind_of(Question) }) do |questions|
@@ -115,8 +115,8 @@ module Api::V1
     end
 
     context "too many can_view_solutions? queries" do
-      let!(:real_exercise) { FactoryGirl.create(:exercise, questions_count: 1)}
-      let!(:user) { FactoryGirl.create :user }
+      let!(:real_exercise) { FactoryBot.create(:exercise, questions_count: 1)}
+      let!(:user) { FactoryBot.create :user }
 
       it 'only calls can_view_solutions? one time' do
         expect_any_instance_of(Exercise).to receive(:can_view_solutions?).once.and_call_original

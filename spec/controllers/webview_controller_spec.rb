@@ -8,8 +8,8 @@ RSpec.describe WebviewController, type: :controller do
                                 content: Faker::Lorem.paragraphs,
                                 version: 10)
   end
-  let(:new_user)        { FactoryGirl.create(:user) }
-  let(:registered_user) { FactoryGirl.create(:user, :agreed_to_terms) }
+  let(:new_user)        { FactoryBot.create(:user) }
+  let(:registered_user) { FactoryBot.create(:user, :agreed_to_terms) }
 
   describe 'GET home' do
     it 'renders a static page for anonymous' do

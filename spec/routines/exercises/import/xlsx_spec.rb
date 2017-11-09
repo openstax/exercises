@@ -20,8 +20,8 @@ RSpec.describe Exercises::Import::Xlsx, type: :routine do
     ]
   }
 
-  let(:author) { FactoryGirl.create :user }
-  let(:ch)     { FactoryGirl.create :user }
+  let(:author) { FactoryBot.create :user }
+  let(:ch)     { FactoryBot.create :user }
 
   it 'imports the sample spreadsheet' do
     expect {

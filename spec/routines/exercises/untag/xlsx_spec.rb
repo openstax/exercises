@@ -4,7 +4,7 @@ RSpec.describe Exercises::Untag::Xlsx, type: :routine do
   before(:all) do
     DatabaseCleaner.start
 
-    @exercises = (1..6).map{ |i| FactoryGirl.create(:publication, number: -i).publishable }
+    @exercises = (1..6).map{ |i| FactoryBot.create(:publication, number: -i).publishable }
 
     @fixture_path = 'spec/fixtures/sample_tags.xlsx'
 

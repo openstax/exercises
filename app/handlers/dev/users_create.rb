@@ -27,7 +27,7 @@ module Dev
       create_symbols << :agreed_to_terms if create_params.agreed_to_terms
       create_hash = create_params.as_hash(:username, :first_name, :last_name,
                                           :full_name, :title)
-      outputs[:user] = FactoryGirl.create(:user, *create_symbols, create_hash)
+      outputs[:user] = FactoryBot.create(:user, *create_symbols, create_hash)
     end
 
   end 

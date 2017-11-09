@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :publication do
     embargo_children_only false
     major_change false

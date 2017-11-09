@@ -58,7 +58,7 @@ gem 'whenever'
 gem 'omniauth-oauth2', '~> 1.3.1'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 7.8.0'
+gem 'openstax_accounts', '~> 7.9.0'
 
 # Access control for API's
 gem 'doorkeeper', '~> 3.1.0'
@@ -165,7 +165,7 @@ group :development, :test do
   gem 'quiet_assets'
 
   # Fixture replacement
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
 
   # Lorem Ipsum
   gem 'faker'

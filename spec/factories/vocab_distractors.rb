@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :vocab_distractor do
     after(:build) do |vocab_distractor, evaluator|
       vocab_distractor.vocab_term      ||= build(:vocab_term, vocab_distractors_count: 0)

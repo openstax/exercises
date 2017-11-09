@@ -14,8 +14,8 @@ module Admin
                   [NotYetImplemented],
                   [IllegalArgument]]
 
-    let(:user)  { FactoryGirl.create(:user, :agreed_to_terms) }
-    let(:admin) { FactoryGirl.create(:user, :administrator, :agreed_to_terms) }
+    let(:user)  { FactoryBot.create(:user, :agreed_to_terms) }
+    let(:admin) { FactoryBot.create(:user, :administrator, :agreed_to_terms) }
 
     describe 'GET show' do
       context 'for anonymous' do

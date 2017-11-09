@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ListAccessPolicy, type: :access_policy do
   let(:anon) { AnonymousUser.instance }
-  let(:user) { FactoryGirl.create(:user) }
-  let(:app)  { FactoryGirl.create(:doorkeeper_application) }
-  let(:list) { FactoryGirl.build(:list) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:app)  { FactoryBot.create(:doorkeeper_application) }
+  let(:list) { FactoryBot.build(:list) }
 
   context 'search' do
     it 'can be accessed by anyone' do
@@ -29,27 +29,27 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
 
     it 'can be accessed by collaborators and also ' +
        'list owners, editors and readers if a collaborator is a list owner' do
-      author = FactoryGirl.create(:author, publication: list.publication, user: user)
+      author = FactoryBot.create(:author, publication: list.publication, user: user)
       expect(described_class.action_allowed?(:read, user, list.reload)).to eq true
       author.destroy
 
-      ch = FactoryGirl.create(:copyright_holder, publication: list.publication, user: user)
+      ch = FactoryBot.create(:copyright_holder, publication: list.publication, user: user)
       expect(described_class.action_allowed?(:read, user, list.reload)).to eq true
       ch.destroy
 
-      another_author = FactoryGirl.create(:author, publication: list.publication)
-      lpg = FactoryGirl.create(:list_publication_group, publication_group: list.publication_group)
-      alo = FactoryGirl.create(:list_owner, list: lpg.list, owner: another_author.user)
+      another_author = FactoryBot.create(:author, publication: list.publication)
+      lpg = FactoryBot.create(:list_publication_group, publication_group: list.publication_group)
+      alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
 
-      lo = FactoryGirl.create(:list_owner, list: lpg.list, owner: user)
+      lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
       expect(described_class.action_allowed?(:read, user, list.reload)).to eq true
       lo.destroy
 
-      le = FactoryGirl.create(:list_editor, list: lpg.list, editor: user)
+      le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
       expect(described_class.action_allowed?(:read, user, list.reload)).to eq true
       le.destroy
 
-      lr = FactoryGirl.create(:list_reader, list: lpg.list, reader: user)
+      lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
       expect(described_class.action_allowed?(:read, user, list.reload)).to eq true
       lr.destroy
 
@@ -86,32 +86,32 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
 
       it 'can be accessed by collaborators and also ' +
          'list owners and editors if a collaborator is a list owner' do
-        author = FactoryGirl.create(:author, publication: list.publication, user: user)
+        author = FactoryBot.create(:author, publication: list.publication, user: user)
         expect(described_class.action_allowed?(:update, user, list.reload)).to eq true
         expect(described_class.action_allowed?(:destroy, user, list)).to eq true
         author.destroy
 
-        ch = FactoryGirl.create(:copyright_holder, publication: list.publication, user: user)
+        ch = FactoryBot.create(:copyright_holder, publication: list.publication, user: user)
         expect(described_class.action_allowed?(:update, user, list.reload)).to eq true
         expect(described_class.action_allowed?(:destroy, user, list)).to eq true
         ch.destroy
 
-        another_author = FactoryGirl.create(:author, publication: list.publication)
-        lpg = FactoryGirl.create(:list_publication_group,
+        another_author = FactoryBot.create(:author, publication: list.publication)
+        lpg = FactoryBot.create(:list_publication_group,
                                  publication_group: list.publication_group)
-        alo = FactoryGirl.create(:list_owner, list: lpg.list, owner: another_author.user)
+        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
 
-        lo = FactoryGirl.create(:list_owner, list: lpg.list, owner: user)
+        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
         expect(described_class.action_allowed?(:update, user, list.reload)).to eq true
         expect(described_class.action_allowed?(:destroy, user, list)).to eq true
         lo.destroy
 
-        le = FactoryGirl.create(:list_editor, list: lpg.list, editor: user)
+        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
         expect(described_class.action_allowed?(:update, user, list.reload)).to eq true
         expect(described_class.action_allowed?(:destroy, user, list)).to eq true
         le.destroy
 
-        lr = FactoryGirl.create(:list_reader, list: lpg.list, reader: user)
+        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
         expect(described_class.action_allowed?(:update, user, list.reload)).to eq false
         expect(described_class.action_allowed?(:destroy, user, list)).to eq false
         lr.destroy
@@ -122,8 +122,8 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
 
     context 'published' do
       it 'cannot be accessed by anyone' do
-        FactoryGirl.create(:author, publication: list.publication, user: user)
-        FactoryGirl.create(:copyright_holder, publication: list.publication, user: user)
+        FactoryBot.create(:author, publication: list.publication, user: user)
+        FactoryBot.create(:copyright_holder, publication: list.publication, user: user)
 
         list.publication.published_at = Time.now
         list.publication.save!
@@ -159,28 +159,28 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
 
       it 'can be accessed by collaborators and also ' +
          'list owners and editors if a collaborator is a list owner' do
-        author = FactoryGirl.create(:author, publication: list.publication, user: user)
+        author = FactoryBot.create(:author, publication: list.publication, user: user)
         expect(described_class.action_allowed?(:new_version, user, list.reload)).to eq true
         author.destroy
 
-        ch = FactoryGirl.create(:copyright_holder, publication: list.publication, user: user)
+        ch = FactoryBot.create(:copyright_holder, publication: list.publication, user: user)
         expect(described_class.action_allowed?(:new_version, user, list.reload)).to eq true
         ch.destroy
 
-        another_author = FactoryGirl.create(:author, publication: list.publication)
-        lpg = FactoryGirl.create(:list_publication_group,
+        another_author = FactoryBot.create(:author, publication: list.publication)
+        lpg = FactoryBot.create(:list_publication_group,
                                  publication_group: list.publication_group)
-        alo = FactoryGirl.create(:list_owner, list: lpg.list, owner: another_author.user)
+        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
 
-        lo = FactoryGirl.create(:list_owner, list: lpg.list, owner: user)
+        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
         expect(described_class.action_allowed?(:new_version, user, list.reload)).to eq true
         lo.destroy
 
-        le = FactoryGirl.create(:list_editor, list: lpg.list, editor: user)
+        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
         expect(described_class.action_allowed?(:new_version, user, list.reload)).to eq true
         le.destroy
 
-        lr = FactoryGirl.create(:list_reader, list: lpg.list, reader: user)
+        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
         expect(described_class.action_allowed?(:new_version, user, list.reload)).to eq false
         lr.destroy
 

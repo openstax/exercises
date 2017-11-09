@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :question do
     stimulus { Faker::Lorem.paragraph }
 

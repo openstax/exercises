@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe HasTags do
   context 'modifies exercises' do
-    subject(:exercise) { FactoryGirl.create :exercise }
+    subject(:exercise) { FactoryBot.create :exercise }
 
     it { is_expected.to have_many(:exercise_tags) }
 

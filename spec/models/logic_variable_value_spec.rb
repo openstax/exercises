@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe LogicVariableValue, type: :model do
 
-  subject(:logic_variable_value) { FactoryGirl.create(:logic_variable_value) }
+  subject(:logic_variable_value) { FactoryBot.create(:logic_variable_value) }
 
   it { is_expected.to belong_to(:logic_variable) }
 

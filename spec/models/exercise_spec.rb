@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Exercise, type: :model do
 
-  subject(:exercise) { FactoryGirl.create :exercise }
+  subject(:exercise) { FactoryBot.create :exercise }
 
   it { is_expected.to have_many(:questions).dependent(:destroy).autosave(true) }
 
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
   it 'can check for the presence of questions' do
-    exercise = FactoryGirl.create :exercise
+    exercise = FactoryBot.create :exercise
     exercise.send :has_questions
     expect(exercise.errors).to be_empty
 
@@ -19,7 +19,7 @@ RSpec.describe Exercise, type: :model do
   end
 
   it 'ensures that no questions have all incorrect answers before publication' do
-    exercise = FactoryGirl.create :exercise
+    exercise = FactoryBot.create :exercise
     exercise.before_publication
     expect(exercise.errors).to be_empty
 
@@ -33,11 +33,11 @@ RSpec.describe Exercise, type: :model do
   context 'can_view_solutions?' do
     let(:anonymous)        { AnonymousUser.instance                     }
 
-    let(:user)             { FactoryGirl.create :user                   }
-    let(:author)           { FactoryGirl.create :user                   }
-    let(:copyright_holder) { FactoryGirl.create :user                   }
+    let(:user)             { FactoryBot.create :user                   }
+    let(:author)           { FactoryBot.create :user                   }
+    let(:copyright_holder) { FactoryBot.create :user                   }
 
-    let(:application_token) { FactoryGirl.create :doorkeeper_access_token, resource_owner_id: nil }
+    let(:application_token) { FactoryBot.create :doorkeeper_access_token, resource_owner_id: nil }
     let(:application_user)  { OpenStax::Api::ApiUser.new(application_token, ->(*) { nil }) }
 
     before do
@@ -52,20 +52,20 @@ RSpec.describe Exercise, type: :model do
 
     it 'is true for list_readers, list_editors and list_owners if the list contains the ' +
        'publication_group and one of the collaborators is also an owner of the list' do
-      list = FactoryGirl.create :list
+      list = FactoryBot.create :list
 
       collaborator_list_owner = ListOwner.new(owner: copyright_holder)
       list.list_owners << collaborator_list_owner
       list.list_editors << ListEditor.new(editor: copyright_holder)
       list.list_readers << ListReader.new(reader: copyright_holder)
 
-      owner = FactoryGirl.create :user
+      owner = FactoryBot.create :user
       list.list_owners << ListOwner.new(owner: owner)
 
-      editor = FactoryGirl.create :user
+      editor = FactoryBot.create :user
       list.list_editors << ListEditor.new(editor: editor)
 
-      reader = FactoryGirl.create :user
+      reader = FactoryBot.create :user
       list.list_readers << ListReader.new(reader: reader)
 
       expect(exercise.can_view_solutions?(owner)).to eq false

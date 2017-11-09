@@ -3,29 +3,29 @@ require "rails_helper"
 module Api::V1
   describe AttachmentsController, type: :controller, api: true, version: :v1 do
 
-    let(:application)       { FactoryGirl.create :doorkeeper_application }
-    let(:user)              { FactoryGirl.create :user, :agreed_to_terms }
-    let(:admin)             { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application)       { FactoryBot.create :doorkeeper_application }
+    let(:user)              { FactoryBot.create :user, :agreed_to_terms }
+    let(:admin)             { FactoryBot.create :user, :administrator, :agreed_to_terms }
 
     let(:user_token)        do
-      FactoryGirl.create :doorkeeper_access_token,
+      FactoryBot.create :doorkeeper_access_token,
                          application: application,
                          resource_owner_id: user.id
     end
     let(:admin_token)       do
-      FactoryGirl.create :doorkeeper_access_token,
+      FactoryBot.create :doorkeeper_access_token,
                          application: application,
                          resource_owner_id: admin.id
     end
     let(:application_token) do
-      FactoryGirl.create :doorkeeper_access_token,
+      FactoryBot.create :doorkeeper_access_token,
                          application: application,
                          resource_owner_id: nil
     end
 
     let(:exercise)          do
-      exercise = FactoryGirl.build(:exercise)
-      exercise.publication.authors << FactoryGirl.build(
+      exercise = FactoryBot.build(:exercise)
+      exercise.publication.authors << FactoryBot.build(
         :author, user: user, publication: exercise.publication
       )
       exercise.save!

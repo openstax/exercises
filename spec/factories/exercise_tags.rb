@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :exercise_tag do
     exercise
     tag

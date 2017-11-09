@@ -3,23 +3,23 @@ require "rails_helper"
 module Api::V1
   describe VocabTermsController, type: :controller, api: true, version: :v1 do
 
-    let(:application)       { FactoryGirl.create :doorkeeper_application }
-    let(:user)              { FactoryGirl.create :user, :agreed_to_terms }
-    let(:admin)             { FactoryGirl.create :user, :administrator, :agreed_to_terms }
+    let(:application)       { FactoryBot.create :doorkeeper_application }
+    let(:user)              { FactoryBot.create :user, :agreed_to_terms }
+    let(:admin)             { FactoryBot.create :user, :administrator, :agreed_to_terms }
 
-    let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+    let(:user_token)        { FactoryBot.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: user.id }
-    let(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+    let(:admin_token)       { FactoryBot.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: admin.id }
-    let(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+    let(:application_token) { FactoryBot.create :doorkeeper_access_token,
                                                   application: application,
                                                   resource_owner_id: nil }
 
     before do
-      @vocab_term = FactoryGirl.build(:vocab_term)
-      @vocab_term.publication.authors << FactoryGirl.build(
+      @vocab_term = FactoryBot.build(:vocab_term)
+      @vocab_term.publication.authors << FactoryBot.build(
         :author, user: user, publication: @vocab_term.publication
       )
     end
@@ -28,7 +28,7 @@ module Api::V1
 
       before do
         10.times do
-          vt = FactoryGirl.create(:vocab_term, :published)
+          vt = FactoryBot.create(:vocab_term, :published)
           vt.publication.authors << Author.new(publication: vt.publication, user: user)
         end
 
@@ -36,7 +36,7 @@ module Api::V1
         VocabTerm.where{(name.like_any tested_strings) |
                         (definition.like_any tested_strings)}.delete_all
 
-        @vocab_term_1 = FactoryGirl.build(:vocab_term, :published)
+        @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
           tags: ['tag1', 'tag2'],
           term: "Lorem ipsum",
@@ -45,7 +45,7 @@ module Api::V1
         }.to_json)
         @vocab_term_1.save!
 
-        @vocab_term_2 = FactoryGirl.build(:vocab_term, :published)
+        @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
           tags: ['tag2', 'tag3'],
           term: "Dolorem ipsum",
@@ -54,7 +54,7 @@ module Api::V1
         }.to_json)
         @vocab_term_2.save!
 
-        @vocab_term_draft = FactoryGirl.build(:vocab_term)
+        @vocab_term_draft = FactoryBot.build(:vocab_term)
         Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
                                                                   .from_json({
           tags: ['all', 'the', 'tags'],

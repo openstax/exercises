@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Publishable, type: :lib do
   pending "add more examples to #{__FILE__}"
 
-  subject(:publishable) { FactoryGirl.create :exercise }
+  subject(:publishable) { FactoryBot.create :exercise }
 
-  let(:author) { FactoryGirl.create :user }
-  let(:user)   { FactoryGirl.create :user }
+  let(:author) { FactoryBot.create :user }
+  let(:user)   { FactoryBot.create :user }
 
   before { publishable.authors << Author.new(user: author) }
 

@@ -144,10 +144,10 @@ GEM
       activesupport (>= 4.0, < 6)
     excon (0.45.3)
     execjs (2.4.0)
-    factory_girl (4.5.0)
+    factory_bot (4.8.2)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.5.0)
-      factory_girl (~> 4.5.0)
+    factory_bot_rails (4.8.2)
+      factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
     faker (1.4.3)
       i18n (~> 0.5)
@@ -338,7 +338,7 @@ GEM
     omniauth-oauth2 (1.3.1)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    openstax_accounts (7.8.0)
+    openstax_accounts (7.9.0)
       action_interceptor (>= 1.0)
       keyword_search (>= 1.0.0)
       lev (>= 2.2.1)
@@ -347,10 +347,10 @@ GEM
       omniauth-oauth2 (>= 1.1)
       openstax_api (>= 3.1.0)
       openstax_utilities (>= 4.1.0)
+      pg
       rails (>= 4.1)
       representable (>= 2.0)
       roar (>= 1.0)
-      squeel (>= 0.5.0)
     openstax_api (8.0.0)
       doorkeeper (>= 2.0)
       exception_notification (>= 4.0)
@@ -592,7 +592,7 @@ DEPENDENCIES
   doorkeeper (~> 3.1.0)
   eco
   ejs
-  factory_girl_rails
+  factory_bot_rails
   faker
   fine_print
   fog
@@ -610,7 +610,7 @@ DEPENDENCIES
   oj
   oj_mimic_json
   omniauth-oauth2 (~> 1.3.1)
-  openstax_accounts (~> 7.8.0)
+  openstax_accounts (~> 7.9.0)
   openstax_api (~> 8.0.0)
   openstax_rescue_from (~> 2.1.0)
   openstax_utilities

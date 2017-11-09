@@ -3,21 +3,21 @@ require "rails_helper"
 module Api::V1
   RSpec.describe UsersController, type: :controller, api: true, version: :v1 do
 
-    let!(:application)      { FactoryGirl.create :doorkeeper_application }
+    let!(:application)      { FactoryBot.create :doorkeeper_application }
 
-    let!(:user)             { FactoryGirl.create :user, :agreed_to_terms, first_name: 'U',
+    let!(:user)             { FactoryBot.create :user, :agreed_to_terms, first_name: 'U',
                                                         last_name: 'ser', username: 'user' }
-    let!(:admin)            { FactoryGirl.create :user, :administrator,
+    let!(:admin)            { FactoryBot.create :user, :administrator,
                                                  :agreed_to_terms, first_name: 'Ad',
                                                  last_name: 'min', username: 'Admin'}
 
-    let(:user_token)        { FactoryGirl.create :doorkeeper_access_token,
+    let(:user_token)        { FactoryBot.create :doorkeeper_access_token,
                                                  application: application,
                                                  resource_owner_id: user.id }
-    let(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+    let(:admin_token)       { FactoryBot.create :doorkeeper_access_token,
                                                  application: application,
                                                  resource_owner_id: admin.id }
-    let(:application_token) { FactoryGirl.create :doorkeeper_access_token,
+    let(:application_token) { FactoryBot.create :doorkeeper_access_token,
                                                  application: application,
                                                  resource_owner_id: nil }
 
@@ -26,16 +26,16 @@ module Api::V1
     context "GET index" do
 
       before do
-        100.times { FactoryGirl.create(:user) }
+        100.times { FactoryBot.create(:user) }
 
         User.joins(:account).where{(account.first_name.like '%doe%') |
                                    (account.last_name.like '%doe%') |
                                    (account.username.like '%doe%')}.delete_all
 
-        @john_doe = FactoryGirl.create :user, first_name: "John",
+        @john_doe = FactoryBot.create :user, first_name: "John",
                                               last_name: "Doe",
                                               username: "doejohn"
-        @jane_doe = FactoryGirl.create :user, first_name: "Jane",
+        @jane_doe = FactoryBot.create :user, first_name: "Jane",
                                               last_name: "Doe",
                                               username: "doejane"
         @john_doe.account.reload

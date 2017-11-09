@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :license do
     name { Faker::Lorem.words.join('_') }
     title { Faker::Lorem.words.join(' ').capitalize }

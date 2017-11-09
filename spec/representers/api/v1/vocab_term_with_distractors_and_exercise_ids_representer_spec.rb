@@ -84,7 +84,7 @@ module Api::V1
       end
 
       it 'can be written' do
-        vocab_distractors = 3.times.map{ FactoryGirl.create(:vocab_distractor) }
+        vocab_distractors = 3.times.map{ FactoryBot.create(:vocab_distractor) }
         expect(vocab_term).to(
           receive(:vocab_distractors=)
             .with(3.times.map{ a_kind_of(VocabDistractor) }) do |new_vocab_distractors|

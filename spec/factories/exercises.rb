@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :exercise do
     title { Faker::Lorem.words.join(' ').capitalize }
     stimulus { Faker::Lorem.paragraph }

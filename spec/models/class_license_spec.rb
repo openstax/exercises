@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ClassLicense, type: :model do
 
-  subject(:class_license) { FactoryGirl.create :class_license }
+  subject(:class_license) { FactoryBot.create :class_license }
 
   it { is_expected.to belong_to(:license) }
 

@@ -118,7 +118,7 @@ module Api::V1
 
       it 'can be written' do
         # instance_spy doesn't work here because the Answers being created expect a real Question
-        real_q = FactoryGirl.build :question
+        real_q = FactoryBot.build :question
 
         expect(real_q).to receive(:answers=).with(3.times.map{ a_kind_of(Answer) }) do |answers|
           expect(answers.first.content).to eq 'Yes'
