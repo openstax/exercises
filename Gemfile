@@ -117,7 +117,7 @@ gem 'commontator'
 gem 'acts_as_votable'
 
 # Real time application monitoring
-gem 'newrelic_rpm'
+gem 'scout_apm', '~> 3.0.x'
 
 # Admin console
 gem 'rails_admin'

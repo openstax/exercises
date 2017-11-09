@@ -319,7 +319,6 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
-    newrelic_rpm (3.11.1.284)
     nifty-generators (0.4.6)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
@@ -495,6 +494,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
+    scout_apm (3.0.0.pre13)
     sexp_processor (4.5.0)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
@@ -606,7 +606,6 @@ DEPENDENCIES
   maruku
   mimemagic
   mini_magick
-  newrelic_rpm
   nifty-generators
   oj
   oj_mimic_json
@@ -632,6 +631,7 @@ DEPENDENCIES
   rspec-rails
   sanitize
   sass-rails (~> 5.0)
+  scout_apm (~> 3.0.x)
   shoulda-matchers
   sortability
   squeel
