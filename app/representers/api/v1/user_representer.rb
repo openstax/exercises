@@ -33,5 +33,21 @@ module Api::V1
              readable: true,
              writeable: true
 
+    property :faculty_status,
+             type: String,
+             readable: true,
+             writeable: false
+
+    property :role,
+             as: :self_reported_role,
+             type: String,
+             readable: true,
+             writeable: false
+
+    property :uuid,
+             type: String,
+             readable: true,
+             writeable: false
+
   end
 end
