@@ -10,7 +10,7 @@ ActiveRecord::Base.class_exec do
     attrs = attrs.except(*except) unless except.blank?
 
     if exclude_foreign_keys
-      foreign_keys = self.class.reflect_on_all_associations(:belongs_to).collect do |ar|
+      foreign_keys = self.class.reflect_on_all_associations(:belongs_to).map do |ar|
         ar.foreign_key
       end
       attrs = attrs.except(*foreign_keys)
@@ -24,7 +24,7 @@ ActiveRecord::Base.class_exec do
         next if objects.nil?
 
         if objects.respond_to?(:collect)
-          hash[name.to_s] = objects.collect do |object|
+          hash[name.to_s] = objects.map do |object|
             object.association_attributes(
               subtree,
               slice: slice,

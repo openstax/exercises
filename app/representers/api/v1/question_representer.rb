@@ -4,10 +4,10 @@ module Api::V1
     include Roar::JSON
 
     can_view_solutions_proc = ->(user_options:, **) do
-      user_options[:can_view_solutions] ||=
-        user_options.has_key?(:can_view_solutions) ?
-          user_options[:can_view_solutions] :
-          exercise.can_view_solutions?(user_options[:user])
+      user_options[:can_view_solutions] = exercise.can_view_solutions?(user_options[:user]) \
+        if user_options[:can_view_solutions].nil?
+
+      user_options[:can_view_solutions]
     end
 
     property :id,
@@ -35,6 +35,7 @@ module Api::V1
                extend: StemRepresenter,
                writeable: true,
                readable: true,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true
                }
@@ -44,6 +45,7 @@ module Api::V1
                extend: AnswerRepresenter,
                writeable: true,
                readable: true,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true
                }
@@ -53,7 +55,8 @@ module Api::V1
                extend: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
-               if: can_view_solutions_proc
+               if: can_view_solutions_proc,
+               setter: AR_COLLECTION_SETTER
 
     collection :community_solutions,
                class: CommunitySolution,
@@ -64,15 +67,14 @@ module Api::V1
 
     collection :hints,
                type: String,
-               writeable: true,
                readable: true,
-               getter: ->(*) { hints.map(&:content) },
-               setter: ->(input:, **) do
-                 input.each do |val|
-                   hint = hints.find_or_initialize_by(content: val)
-                   hints << hint unless hint.persisted?
-                 end
+               serialize: ->(input:, **) { input.content },
+               writeable: true,
+               class: Hint,
+               deserialize: ->(input:, fragment:, **) do
+                 input.tap { |input| input.content = fragment }
                end,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true,
                  description: 'Author-supplied hints for the question'
@@ -80,10 +82,11 @@ module Api::V1
 
     collection :parent_dependencies,
                as: :dependencies,
-               class: QuestionDependency,
+               instance: ->(*) { QuestionDependency.new(dependent_question: self) },
                extend: QuestionDependencyRepresenter,
                writeable: true,
                readable: true,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true
                }

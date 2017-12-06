@@ -7,8 +7,9 @@ module Api::V1
                as: :values,
                class: LogicVariableValue,
                extend: LogicVariableValueRepresenter,
-               readable: false,
-               writeable: true
+               readable: true,
+               writeable: true,
+               setter: AR_COLLECTION_SETTER
 
   end
 end

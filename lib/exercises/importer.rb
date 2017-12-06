@@ -32,18 +32,18 @@ module Exercises
       ex = Exercise.new
 
       books = split(row[0])
-      book_tags = books.map{ |book| "book:#{book}" }
+      book_tags = books.map { |book| "book:#{book}" }
 
       chapter = row[1]
       section = row[2]
 
-      lo_tags = split(row[3]).map{ |lo| "lo:#{books.first}:#{chapter}-#{section}-#{lo}" }
+      lo_tags = split(row[3]).map { |lo| "lo:#{books.first}:#{chapter}-#{section}-#{lo}" }
 
       id_tag = "exid:#{books.first}:#{row[4]}"
 
       cnxmod_tag = "context-cnxmod:#{row[5]}"
 
-      type_tags = split(row[6]).map{ |type| "type:#{type}" }
+      type_tags = split(row[6]).map { |type| "type:#{type}" }
       dok_tag = "dok:#{row[7]}"
       blooms_tag = "blooms:#{row[8]}"
       time_tag = "time:#{row[10]}"

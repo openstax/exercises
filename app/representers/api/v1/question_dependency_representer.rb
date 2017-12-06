@@ -9,11 +9,10 @@ module Api::V1
              readable: true,
              setter: ->(input:, **) do
                self.parent_question = dependent_question.exercise.questions
-                                        .find{ |ans| (ans.id || ans.temp_id) == input }
+                                        .find { |qq| (qq.id || qq.temp_id) == input }
              end
 
     property :is_optional,
-             as: :optional,
              writeable: true,
              readable: true,
              schema_info: {

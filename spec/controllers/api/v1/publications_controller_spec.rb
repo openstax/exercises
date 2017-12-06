@@ -42,7 +42,7 @@ module Api::V1
                                 .new(exercise.reload)
                                 .to_json(user_options: { user: exercise_author.user })
           expect(response).to have_http_status(:success)
-          expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
+          expect(response.body).to eq expected_response
           expect(exercise.is_published?).to eq true
         end
 

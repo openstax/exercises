@@ -22,7 +22,7 @@ class Tag < ActiveRecord::Base
     remaining_tags -= db_result.map(&:name)
 
     # Initialize remaining Tag objects
-    result + remaining_tags.map{ |tag| Tag.new(name: tag) }
+    result + remaining_tags.map { |tag| Tag.new(name: tag) }
   end
 
   def to_s

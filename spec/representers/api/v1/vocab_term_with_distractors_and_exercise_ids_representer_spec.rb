@@ -3,164 +3,109 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabTermWithDistractorsAndExerciseIdsRepresenter, type: :representer do
 
-    let(:vocab_term) {
-      dbl = instance_spy(VocabTerm)
-      allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:vocab_distractors).and_return([])
-      allow(dbl).to receive(:distractor_literals).and_return([])
-      allow(dbl).to receive(:latest_exercises).and_return([])
-      allow(dbl).to receive(:tags).and_return([])
-      allow(dbl).to receive(:license).and_return(nil)
-      allow(dbl).to receive(:authors).and_return([])
-      allow(dbl).to receive(:copyright_holders).and_return([])
-      allow(dbl).to receive(:derivations).and_return([])
-      dbl
-    }
+    let(:vocab_term) { FactoryBot.create :vocab_term }
 
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_term).as_json }
 
     context 'term' do
       it 'can be read' do
-        allow(vocab_term).to receive(:name).and_return('Question')
-        expect(representation).to include('term' => 'Question')
+        expect(representation).to include('term' => vocab_term.name)
       end
 
       it 'can be written' do
-        described_class.new(vocab_term).from_json({'term' => 'Exercise'}.to_json)
-        expect(vocab_term).to have_received(:name=).with('Exercise')
+        expect(vocab_term).to receive(:name=).with('Exercise')
+        described_class.new(vocab_term).from_hash('term' => 'Exercise')
       end
     end
 
     context 'definition' do
       it 'can be read' do
-        allow(vocab_term).to receive(:definition).and_return('This term is cool.')
-        expect(representation).to include('definition' => 'This term is cool.')
+        expect(representation).to include('definition' => vocab_term.definition)
       end
 
       it 'can be written' do
-        described_class.new(vocab_term)
-                       .from_json({'definition' => 'This term is cooler.'}.to_json)
-        expect(vocab_term).to have_received(:definition=).with('This term is cooler.')
+        expect(vocab_term).to receive(:definition=).with('This term is cool.')
+        described_class.new(vocab_term).from_hash('definition' => 'This term is cool.')
       end
     end
 
     context 'distractor_terms' do
       it 'can be read' do
-        vocab_distractor_1 = instance_spy(VocabDistractor)
-        allow(vocab_distractor_1).to receive(:distractor_publication_group_id).and_return(1)
-        allow(vocab_distractor_1).to receive(:group_uuid).and_return(SecureRandom.uuid)
-        allow(vocab_distractor_1).to receive(:number).and_return(1)
-        allow(vocab_distractor_1).to receive(:name).and_return('VocabTerm 1')
-        allow(vocab_distractor_1).to receive(:definition).and_return('Definition 1')
-        vocab_distractor_2 = instance_spy(VocabDistractor)
-        allow(vocab_distractor_2).to receive(:distractor_publication_group_id).and_return(2)
-        allow(vocab_distractor_2).to receive(:group_uuid).and_return(SecureRandom.uuid)
-        allow(vocab_distractor_2).to receive(:number).and_return(2)
-        allow(vocab_distractor_2).to receive(:name).and_return('VocabTerm 2')
-        allow(vocab_distractor_2).to receive(:definition).and_return('Definition 2')
-        vocab_distractor_3 = instance_spy(VocabDistractor)
-        allow(vocab_distractor_3).to receive(:distractor_publication_group_id).and_return(3)
-        allow(vocab_distractor_3).to receive(:group_uuid).and_return(SecureRandom.uuid)
-        allow(vocab_distractor_3).to receive(:number).and_return(3)
-        allow(vocab_distractor_3).to receive(:name).and_return('VocabTerm 3')
-        allow(vocab_distractor_3).to receive(:definition).and_return('Definition 3')
-
-        vocab_distractors = [vocab_distractor_1, vocab_distractor_2, vocab_distractor_3]
-
-        vocab_distractor_representations = vocab_distractors.map do |vocab_distractor|
-          allow(vocab_distractor).to receive(:as_json).and_return(vocab_distractor)
-          allow(vocab_distractor).to receive(:tags).and_return([])
-          allow(vocab_distractor).to receive(:license).and_return(nil)
-          allow(vocab_distractor).to receive(:authors).and_return([])
-          allow(vocab_distractor).to receive(:copyright_holders).and_return([])
-          allow(vocab_distractor).to receive(:derivations).and_return([])
-          VocabDistractorRepresenter.new(vocab_distractor).to_hash
+        3.times do
+          vocab_term.vocab_distractors << FactoryBot.build(
+            :vocab_distractor, vocab_term: vocab_term
+          )
         end
 
-        allow(vocab_term).to receive(:vocab_distractors).and_return(vocab_distractors)
+        vocab_distractor_representations = vocab_term.vocab_distractors.map do |vocab_distractor|
+          VocabDistractorRepresenter.new(vocab_distractor).as_json
+        end
 
         expect(representation).to include('distractor_terms' => vocab_distractor_representations)
       end
 
       it 'can be written' do
-        vocab_distractors = 3.times.map{ FactoryBot.create(:vocab_distractor) }
-        expect(vocab_term).to(
-          receive(:vocab_distractors=)
-            .with(3.times.map{ a_kind_of(VocabDistractor) }) do |new_vocab_distractors|
-            expect(new_vocab_distractors.map(&:distractor_term)).to match_array(
+        vocab_distractors = 3.times.map { FactoryBot.create :vocab_distractor }
+        distractor_term_hash = vocab_distractors.map do |vocab_distractor|
+          { 'group_uuid' => vocab_distractor.distractor_publication_group.uuid }
+        end
+
+        expect(vocab_term.vocab_distractors).to(
+          receive(:<<).with(kind_of(VocabDistractor)).exactly(3).times do |vocab_distractor|
+            expect(vocab_distractor.distractor_term).to be_in(
               vocab_distractors.map(&:distractor_term)
             )
           end
         )
 
-        distractor_term_hash = vocab_distractors.map do |vocab_distractor|
-          { 'group_uuid' => vocab_distractor.distractor_publication_group.uuid }
-        end
-        described_class.new(vocab_term).from_json(
-          { 'distractor_terms' => distractor_term_hash }.to_json
-        )
+        described_class.new(vocab_term).from_hash('distractor_terms' => distractor_term_hash)
       end
     end
 
     context 'distractor_literals' do
       it 'can be read' do
-        literal_1 = 'Literal 1'
-        literal_2 = 'Literal 2'
-        literal_3 = 'Literal 3'
-
-        distractor_literals = [literal_1, literal_2, literal_3]
-
-        allow(vocab_term).to receive(:distractor_literals).and_return(distractor_literals)
-
-        expect(representation).to include('distractor_literals' => distractor_literals)
+        expect(representation).to include('distractor_literals' => vocab_term.distractor_literals)
       end
 
       it 'can be written' do
-        expect(vocab_term).to receive(:distractor_literals=)
-                          .with(3.times.map{ a_kind_of(String) }) do |literals|
-          expect(literals.first).to  eq 'Literal 1'
-          expect(literals.second).to eq 'Literal 2'
-          expect(literals.third).to  eq 'Literal 3'
-        end
+        expect(vocab_term.distractor_literals).to(
+          receive(:<<).with(kind_of(String)).exactly(3).times do |literal|
+            expect(literal).to be_in [ 'Literal 1', 'Literal 2', 'Literal 3' ]
+          end
+        )
 
-        described_class.new(vocab_term).from_json({'distractor_literals' => [
-          'Literal 1', 'Literal 2', 'Literal 3'
-        ]}.to_json)
+        described_class.new(vocab_term).from_hash(
+          'distractor_literals' => [ 'Literal 1', 'Literal 2', 'Literal 3' ]
+        )
       end
     end
 
     context 'exercise_uuids' do
       it 'can be read' do
-        exercises = [OpenStruct.new(uuid: SecureRandom.uuid)]
-
-        allow(vocab_term).to receive(:latest_exercises).and_return(exercises)
-
-        expect(representation).to include('exercise_uuids' => exercises.map(&:uuid))
+        expect(representation).to(
+          include('exercise_uuids' => vocab_term.latest_exercises.map(&:uuid))
+        )
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        expect(vocab_term).not_to receive(:exercises=)
-        expect(vocab_term).not_to receive(:exercise_ids=)
+        expect(vocab_term.exercises).not_to receive(:<<)
+        expect(vocab_term.exercise_ids).not_to receive(:<<)
 
-        described_class.new(vocab_term).from_json({'exercise_uids' => [42, 4, 2]}.to_json)
+        described_class.new(vocab_term).from_hash('exercise_uuids' => [ SecureRandom.uuid ])
       end
     end
 
     context 'exercise_uids' do
       it 'can be read' do
-        exercises = [OpenStruct.new(uid: 42), OpenStruct.new(uid: 4), OpenStruct.new(uid: 2)]
-
-        allow(vocab_term).to receive(:latest_exercises).and_return(exercises)
-
-        expect(representation).to include('exercise_uids' => exercises.map(&:uid))
+        expect(representation).to include('exercise_uids' => vocab_term.latest_exercises.map(&:uid))
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        expect(vocab_term).not_to receive(:exercises=)
-        expect(vocab_term).not_to receive(:exercise_ids=)
+        expect(vocab_term.exercises).not_to receive(:<<)
+        expect(vocab_term.exercise_ids).not_to receive(:<<)
 
-        described_class.new(vocab_term).from_json({'exercise_uids' => [42, 4, 2]}.to_json)
+        described_class.new(vocab_term).from_hash('exercise_uids' => ['42@1', '4@2'])
       end
     end
 

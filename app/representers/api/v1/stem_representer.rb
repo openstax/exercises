@@ -18,13 +18,15 @@ module Api::V1
                class: StemAnswer,
                extend: StemAnswerRepresenter,
                writeable: true,
-               readable: true
+               readable: true,
+               setter: AR_COLLECTION_SETTER
 
     collection :combo_choices,
                class: ComboChoice,
                extend: ComboChoiceRepresenter,
                writeable: true,
-               readable: true
+               readable: true,
+               setter: AR_COLLECTION_SETTER
 
   end
 end

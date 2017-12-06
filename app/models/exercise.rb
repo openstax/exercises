@@ -115,9 +115,11 @@ class Exercise < ActiveRecord::Base
   end
 
   def can_view_solutions?(user)
-    return false if user.nil?          # Not given
-    return true if new_record?         # Create
+    return false if user.nil?          # User not given
+    return true if new_record?         # Exercise being created
+
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
+
     # Remove the entry below when apps are properly configured as ListReaders
     return true if user.nil?           # Application user
     return false if user.is_anonymous? # Anonymous user

@@ -4,10 +4,11 @@ module Api::V1
     include Roar::JSON
 
     can_view_solutions_proc = ->(user_options:, **) do
-      user_options[:can_view_solutions] ||=
-        user_options.has_key?(:can_view_solutions) ?
-          user_options[:can_view_solutions] :
-          question.exercise.can_view_solutions?(user_options[:user])
+      user_options[:can_view_solutions] = \
+        question.exercise.can_view_solutions?(user_options[:user]) \
+        if user_options[:can_view_solutions].nil?
+
+      user_options[:can_view_solutions]
     end
 
     property :id,
@@ -29,10 +30,16 @@ module Api::V1
              writeable: true,
              readable: true,
              if: can_view_solutions_proc,
-             getter: ->(*) { stem_answers.first.try(:correctness) },
+             getter: ->(*) do
+              stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
+                if stem_answers.empty?
+
+               stem_answers.first.correctness
+             end,
              setter: ->(input:, **) do
               stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                 if stem_answers.empty?
+
               stem_answers.first.correctness = input
              end,
              schema_info: {
@@ -45,11 +52,17 @@ module Api::V1
              writeable: true,
              readable: true,
              if: can_view_solutions_proc,
-             getter: ->(*) { stem_answers.first.try(:feedback) },
+             getter: ->(*) do
+               stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
+                 if stem_answers.empty?
+
+               stem_answers.first.feedback
+             end,
              setter: ->(input:, **) do
-              stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
-                if stem_answers.empty?
-              stem_answers.first.feedback = input
+               stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
+                 if stem_answers.empty?
+
+               stem_answers.first.feedback = input
              end
 
   end

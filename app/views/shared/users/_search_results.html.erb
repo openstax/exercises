@@ -6,7 +6,7 @@
 
 <% accounts = @handler_result.outputs[:items]
    return '' unless accounts
-   users = accounts.collect { |a| User.find_or_create_by(account: a) } %>
+   users = accounts.map { |a| User.find_or_create_by(account: a) } %>
 
 <%= render partial: 'shared/users/search_pagination' %>
 

@@ -4,10 +4,11 @@ module Api::V1
     include Roar::JSON
 
     can_view_solutions_proc = ->(user_options:, **) do
-      user_options[:can_view_solutions] ||=
-        user_options.has_key?(:can_view_solutions) ?
-          user_options[:can_view_solutions] :
-          stem.question.exercise.can_view_solutions?(user_options[:user])
+      user_options[:can_view_solutions] = \
+        stem.question.exercise.can_view_solutions?(user_options[:user]) \
+        if user_options[:can_view_solutions].nil?
+
+      user_options[:can_view_solutions]
     end
 
     property :answer_id,
@@ -15,7 +16,7 @@ module Api::V1
              writeable: true,
              readable: true,
              setter: ->(input:, **) do
-               self.answer = question.answers.find{ |ans| (ans.id || ans.temp_id) == input }
+               self.answer = question.answers.find { |ans| (ans.id || ans.temp_id) == input }
              end,
              schema_info: {
                required: true

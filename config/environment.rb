@@ -22,6 +22,8 @@ require 'solution'
 require 'stylable'
 require 'user_html'
 
+require 'ar_collection_setter'
+
 require 'active_record/calculations_patch'
 
 SITE_NAME = "OpenStax Exercises"

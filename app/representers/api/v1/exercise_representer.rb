@@ -4,10 +4,10 @@ module Api::V1
     include Roar::JSON
 
     can_view_solutions_proc = ->(user_options:, **) do
-      user_options[:can_view_solutions] ||=
-        user_options.has_key?(:can_view_solutions) ?
-          user_options[:can_view_solutions] :
-          can_view_solutions?(user_options[:user])
+      user_options[:can_view_solutions] = can_view_solutions?(user_options[:user]) \
+        if user_options[:can_view_solutions].nil?
+
+      user_options[:can_view_solutions]
     end
 
     # Attachments may (for a while) contain collaborator solution attachments, so
@@ -28,7 +28,7 @@ module Api::V1
              type: Integer,
              writeable: false,
              readable: true,
-             getter: ->(*) { vocab_term.try(:uid) },
+             getter: ->(*) { vocab_term.try!(:uid) },
              if: can_view_solutions_proc
 
     property :title,
@@ -50,6 +50,7 @@ module Api::V1
                },
                writeable: true,
                readable: true,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true
                }

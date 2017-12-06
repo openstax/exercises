@@ -28,6 +28,7 @@ module HasTags
         collection :tags,
                    writeable: true,
                    readable: true,
+                   setter: AR_COLLECTION_SETTER,
                    schema_info: {
                      items: {
                        type: "string"

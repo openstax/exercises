@@ -17,7 +17,7 @@ module Xlsx
       record_failures do |failures|
         book.each_row_streaming(offset: row_offset, pad_cells: true)
             .each_with_index do |row, row_index|
-          values = 0.upto(row.size - 1).map{ |index| row[index].try(:value).try(:to_s) }.compact
+          values = 0.upto(row.size - 1).map { |index| row[index].try!(:value).try!(:to_s) }.compact
           next if values.size < 2
 
           exercise_numbers = values.first.split(',').map(&:to_i)

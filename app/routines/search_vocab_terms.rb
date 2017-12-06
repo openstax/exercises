@@ -35,7 +35,7 @@ class SearchVocabTerms
       # Block to be used for searches by id or uid
       id_search_block = lambda do |ids|
         ids.each do |id|
-          sanitized_ids = to_string_array(id).map{|id| id.split('@')}
+          sanitized_ids = to_string_array(id).map { |id| id.split('@') }
           next @items = @items.none if sanitized_ids.empty?
 
           sanitized_numbers = sanitized_ids.map(&:first).compact
@@ -212,7 +212,7 @@ class SearchVocabTerms
       end
 
       with.keyword :published_before do |published_befores|
-        min_published_before = published_befores.flatten.collect do |str|
+        min_published_before = published_befores.flatten.map do |str|
           DateTime.parse(str) rescue nil
         end.compact.min
         next @items = @items.none if min_published_before.nil?

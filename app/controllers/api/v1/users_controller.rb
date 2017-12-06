@@ -70,7 +70,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{
-        OpenStax::Accounts::SearchLocalAccounts::SORTABLE_FIELDS.keys.map{|sf| "`"+sf+"`"}
+        OpenStax::Accounts::SearchLocalAccounts::SORTABLE_FIELDS.keys.map {|sf| "`"+sf+"`"}
                                                                      .join(', ')
       }.
       Sort directions can either be `ASC` for

@@ -3,44 +3,30 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabTermRepresenter, type: :representer do
 
-    let(:vocab_term) {
-      dbl = instance_spy(VocabTerm)
-      allow(dbl).to receive(:as_json).and_return(dbl)
-      allow(dbl).to receive(:distractor_terms).and_return([])
-      allow(dbl).to receive(:distractor_literals).and_return([])
-      allow(dbl).to receive(:tags).and_return([])
-      allow(dbl).to receive(:license).and_return(nil)
-      allow(dbl).to receive(:authors).and_return([])
-      allow(dbl).to receive(:copyright_holders).and_return([])
-      allow(dbl).to receive(:derivations).and_return([])
-      dbl
-    }
+    let(:vocab_term) { FactoryBot.create :vocab_term }
 
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_term).as_json }
 
     context 'term' do
       it 'can be read' do
-        allow(vocab_term).to receive(:name).and_return('Question')
-        expect(representation).to include('term' => 'Question')
+        expect(representation).to include('term' => vocab_term.name)
       end
 
       it 'can be written' do
-        described_class.new(vocab_term).from_json({'term' => 'Exercise'}.to_json)
-        expect(vocab_term).to have_received(:name=).with('Exercise')
+        expect(vocab_term).to receive(:name=).with('Exercise')
+        described_class.new(vocab_term).from_hash('term' => 'Exercise')
       end
     end
 
     context 'definition' do
       it 'can be read' do
-        allow(vocab_term).to receive(:definition).and_return('This term is cool.')
-        expect(representation).to include('definition' => 'This term is cool.')
+        expect(representation).to include('definition' => vocab_term.definition)
       end
 
       it 'can be written' do
-        described_class.new(vocab_term)
-                       .from_json({'definition' => 'This term is cooler.'}.to_json)
-        expect(vocab_term).to have_received(:definition=).with('This term is cooler.')
+        expect(vocab_term).to receive(:definition=).with('This term is cool.')
+        described_class.new(vocab_term).from_hash('definition' => 'This term is cool.')
       end
     end
 

@@ -66,7 +66,7 @@ module Api::V1
       The string is a comma-separated list of fields with an optional sort direction.
       The sort will be performed in the order the fields are given.
       The fields can be one of #{
-        SearchExercises::SORTABLE_FIELDS.keys.map{ |sf| "`"+sf+"`" }.join(', ')
+        SearchExercises::SORTABLE_FIELDS.keys.map { |sf| "`"+sf+"`" }.join(', ')
       }.
       Sort directions can either be `ASC` for an ascending sort, or `DESC` for a descending sort.
       If not provided, an ascending sort is assumed.

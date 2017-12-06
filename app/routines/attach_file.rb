@@ -20,7 +20,7 @@ class AttachFile
     end
 
     attachment = Attachment.new(parent: attachable, asset: file)
-    existing_attachment = attachable.attachments.find{ |att| att.filename == attachment.filename }
+    existing_attachment = attachable.attachments.find { |att| att.filename == attachment.filename }
     if existing_attachment.nil?
       # The attachment MUST be saved or else the URL's returned will be wrong (tmp folder)
       attachment.save!

@@ -8,7 +8,7 @@ module Api::V1
              writeable: true,
              readable: true,
              setter: ->(input:, **) do
-               self.answer = question.answers.find{ |ans| (ans.id || ans.temp_id) == input }
+               self.answer = question.answers.find { |ans| (ans.id || ans.temp_id) == input }
              end,
              schema_info: {
                required: true

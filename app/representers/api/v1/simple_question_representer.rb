@@ -4,10 +4,10 @@ module Api::V1
     include Roar::JSON
 
     can_view_solutions_proc = ->(user_options:, **) do
-      user_options[:can_view_solutions] ||=
-        user_options.has_key?(:can_view_solutions) ?
-          user_options[:can_view_solutions] :
-          exercise.can_view_solutions?(user_options[:user])
+      user_options[:can_view_solutions] = exercise.can_view_solutions?(user_options[:user]) \
+        if user_options[:can_view_solutions].nil?
+
+      user_options[:can_view_solutions]
     end
 
     property :id,
@@ -34,9 +34,14 @@ module Api::V1
              type: String,
              writeable: true,
              readable: true,
-             getter: ->(*) { stems.first.try(:content) || '' },
+             getter: ->(*) do
+               stems << Stem.new(question: self) if stems.empty?
+
+               stems.first.content
+             end,
              setter: ->(input:, **) do
                stems << Stem.new(question: self) if stems.empty?
+
                stems.first.content = input
              end,
              schema_info: {
@@ -48,6 +53,7 @@ module Api::V1
                extend: SimpleAnswerRepresenter,
                writeable: true,
                readable: true,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true
                }
@@ -57,6 +63,7 @@ module Api::V1
                extend: CollaboratorSolutionRepresenter,
                writeable: true,
                readable: true,
+               setter: AR_COLLECTION_SETTER,
                if: can_view_solutions_proc
 
     collection :community_solutions,
@@ -68,15 +75,14 @@ module Api::V1
 
     collection :hints,
                type: String,
-               writeable: true,
                readable: true,
-               getter: ->(*) { hints.map(&:content) },
-               setter: ->(input:, **) do
-                 input.each do |val|
-                   hint = hints.find_or_initialize_by(content: val)
-                   hints << hint unless hint.persisted?
-                 end
+               serialize: ->(input:, **) { input.content },
+               writeable: true,
+               class: Hint,
+               deserialize: ->(input:, fragment:, **) do
+                 input.tap { |input| input.content = fragment }
                end,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true,
                  description: 'Author-supplied hints for the question'
@@ -84,16 +90,19 @@ module Api::V1
 
     collection :formats,
                type: String,
-               writeable: true,
                readable: true,
-               getter: ->(*) { stems.first.try(:stylings).try(:map, &:style) },
-               setter: ->(input:, **) do
-                 input.each do |val|
-                   styling = stems.first.stylings.find_or_initialize_by(style: val)
-                   styling.stylable = stems.first
-                   stems.first.stylings << styling unless styling.persisted?
-                 end
+               getter: ->(*) do
+                 stems << Stem.new(question: self) if stems.empty?
+
+                 stems.first.stylings
                end,
+               serialize: ->(input:, **) { input.style },
+               writeable: true,
+               class: Styling,
+               deserialize: ->(input:, fragment:, **) do
+                 input.tap { |input| input.style = fragment }
+               end,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true,
                  description: 'The formats allowed for this object'
@@ -104,8 +113,12 @@ module Api::V1
                extend: ComboChoiceRepresenter,
                writeable: true,
                readable: true,
-               getter: ->(*) { stems.first.try(:combo_choices) },
-               setter: ->(input:, **) { stems.first.combo_choices = input }
+               getter: ->(*) do
+                 stems << Stem.new(question: self) if stems.empty?
+
+                 stems.first.combo_choices
+               end,
+               setter: AR_COLLECTION_SETTER
 
   end
 end

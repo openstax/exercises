@@ -47,7 +47,7 @@ class VocabTerm < ActiveRecord::Base
 
   has_many :exercises, dependent: :destroy, autosave: true
 
-  before_validation :build_or_update_vocab_exercises
+  before_validation :build_or_update_vocab_exercises_if_latest
 
   validates :name, :exercises, presence: true
 
@@ -88,7 +88,7 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def latest_exercises
-    exercises.group_by(&:number).map{ |number, exercises| exercises.max_by(&:version) }
+    exercises.group_by(&:number).map { |number, exercises| exercises.max_by(&:version) }
   end
 
   def distractor_publication_group_ids
@@ -128,17 +128,21 @@ class VocabTerm < ActiveRecord::Base
                         .where(publication: {publication_group: {number: number}})
                         .where{id != my{id}}
                         .order{publication.version.desc}
-                        .limit(1).pluck(:definition)
+                        .limit(1)
+                        .pluck(:definition)
+    return if definition == last_def
 
-    # Update distracted term exercises if the definition changed
+    # Update distracted_term exercises if the definition changed
     pg_id = publication.publication_group_id
     VocabTerm.joins(:vocab_distractors)
              .where(vocab_distractors: { distractor_publication_group_id: pg_id })
-             .each{ |vt| vt.build_or_update_vocab_exercises(published_at) } \
-      if definition != last_def
+             .latest(scope: VocabTerm.all)
+             .each{ |vt| vt.build_or_update_vocab_exercises_if_latest(published_at) }
   end
 
-  def build_or_update_vocab_exercises(publication_time = publication.published_at)
+  def build_or_update_vocab_exercises_if_latest(publication_time = publication.published_at)
+    return unless is_latest?
+
     vocab_exercises = latest_exercises.map do |exercise|
       exercise.is_published? ? exercise.new_version : exercise
     end
@@ -173,7 +177,7 @@ class VocabTerm < ActiveRecord::Base
       # but we don't support that yet. Instead, we rely on tutor-js to split this stem for us.
       stem.content = "Define <strong>#{name}</strong> in your own words."
       answers = distractors.reject(&:blank?)
-                           .map{ |distractor| Answer.new(question: question, content: distractor) }
+                           .map { |distractor| Answer.new(question: question, content: distractor) }
       stem_answers = answers.map do |answer|
         StemAnswer.new(stem: stem, answer: answer,
                        correctness: answer.content == definition ? 1.0 : 0.0).tap do |stem_answer|

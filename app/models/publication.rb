@@ -162,6 +162,14 @@ class Publication < ActiveRecord::Base
     is_published? && !is_embargoed? && !is_yanked?
   end
 
+  def is_latest?
+    klass = self.class
+
+    !klass.where(publication_group_id: publication_group_id)
+          .where(klass.arel_table[:version].gt version)
+          .exists?
+  end
+
   def collaborators(preload: nil)
     preload = preload.nil? ? :user : { user: preload }
 

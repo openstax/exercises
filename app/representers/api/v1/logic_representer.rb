@@ -3,7 +3,7 @@ module Api::V1
 
     include Roar::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              readable: true,
              writeable: false,
@@ -11,7 +11,7 @@ module Api::V1
                required: true
              }
 
-    property :language, 
+    property :language,
              type: String,
              writeable: true,
              readable: true,
@@ -32,7 +32,7 @@ module Api::V1
                extend: LogicVariableRepresenter,
                readable: true,
                writeable: true,
-               parse_strategy: :sync,
+               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true,
                  description: "The variables used in this Logic"
