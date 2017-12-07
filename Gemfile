@@ -92,9 +92,6 @@ gem 'mini_magick'
 # Markdown parsing
 gem 'kramdown'
 
-# Detect import encoding
-gem 'charlock_holmes'
-
 # Read Excel xlsx spreadsheet files
 gem 'roo'
 
