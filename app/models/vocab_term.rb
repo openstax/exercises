@@ -126,8 +126,8 @@ class VocabTerm < ActiveRecord::Base
   def after_publication
     last_def = VocabTerm.joins(publication: :publication_group)
                         .where(publication: {publication_group: {number: number}})
-                        .where{id != my{id}}
-                        .order{publication.version.desc}
+                        .where {id != my{id}}
+                        .order {publication.version.desc}
                         .limit(1)
                         .pluck(:definition)
     return if definition == last_def
@@ -137,7 +137,7 @@ class VocabTerm < ActiveRecord::Base
     VocabTerm.joins(:vocab_distractors)
              .where(vocab_distractors: { distractor_publication_group_id: pg_id })
              .latest(scope: VocabTerm.all)
-             .each{ |vt| vt.build_or_update_vocab_exercises_if_latest(published_at) }
+             .each { |vt| vt.build_or_update_vocab_exercises_if_latest(published_at) }
   end
 
   def build_or_update_vocab_exercises_if_latest(publication_time = publication.published_at)

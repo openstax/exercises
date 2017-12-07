@@ -4,10 +4,10 @@ RSpec.describe SearchExercises, type: :routine do
   before do
     10.times { FactoryBot.create(:exercise, :published) }
 
-    tested_strings = ["%adipisci%", "%draft%"]
-    Exercise.joins{questions.outer.stems.outer}
-            .joins{questions.outer.answers.outer}
-            .where{(title.like_any tested_strings) |\
+    tested_strings = [ "%adipisci%", "%draft%" ]
+    Exercise.joins {questions.outer.stems.outer}
+            .joins {questions.outer.answers.outer}
+            .where {(title.like_any tested_strings) |\
                    (stimulus.like_any tested_strings) |\
                    (questions.stimulus.like_any tested_strings) |\
                    (stems.content.like_any tested_strings) |\

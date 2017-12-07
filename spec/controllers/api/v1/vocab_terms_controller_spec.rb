@@ -33,7 +33,7 @@ module Api::V1
         end
 
         tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
-        VocabTerm.where{(name.like_any tested_strings) |
+        VocabTerm.where {(name.like_any tested_strings) |
                         (definition.like_any tested_strings)}.delete_all
 
         @vocab_term_1 = FactoryBot.build(:vocab_term, :published)

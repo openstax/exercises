@@ -27,7 +27,7 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
     exercises.each do |exercise|
       expect(exercise.tags).not_to be_blank
       expect(exercise.tags).to satisfy do |tags|
-        tags.all{ |tag| expected_tags.include?(tag.name) }
+        tags.all { |tag| expected_tags.include?(tag.name) }
       end
     end
   end

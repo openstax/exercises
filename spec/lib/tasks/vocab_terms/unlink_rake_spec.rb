@@ -17,7 +17,7 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
                                                 distractor_literals: ['test']
   end
   let!(:draft_unlinked_vocab_term)     do
-    published_unlinked_vocab_term.new_version.tap{ |vocab_term| vocab_term.save! }
+    published_unlinked_vocab_term.new_version.tap { |vocab_term| vocab_term.save! }
   end
 
   context 'for linked vocab terms' do
@@ -25,7 +25,7 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
 
     context 'where the latest version is a draft' do
       let!(:draft_linked_vocab_term)       do
-        published_linked_vocab_term.new_version.tap{ |vocab_term| vocab_term.save! }
+        published_linked_vocab_term.new_version.tap { |vocab_term| vocab_term.save! }
       end
 
       it 'calls #unlink on the latest version draft of the linked vocab_term' do

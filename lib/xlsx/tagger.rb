@@ -32,7 +32,7 @@ module Xlsx
             "WARNING: Couldn't find any Exercises with numbers #{not_found_numbers.join(', ')}"
           end unless not_found_numbers.empty?
 
-          tags = values.slice(1..-1).flat_map{ |value| value.split(',') }
+          tags = values.slice(1..-1).flat_map { |value| value.split(',') }
 
           row_number = row_index + row_offset + 1
 

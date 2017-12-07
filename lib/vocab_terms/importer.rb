@@ -57,8 +57,8 @@ module VocabTerms
           hash[name] = VocabTerm
             .joins([{publication: :publication_group}, {vocab_term_tags: :tag}])
             .where(name: name)
-            .where{vocab_term_tags.tag.name.like lo_like}
-            .order{[publication.publication_group.number.desc, publication.version.desc]}.first
+            .where {vocab_term_tags.tag.name.like lo_like}
+            .order {[publication.publication_group.number.desc, publication.version.desc]}.first
         end
       end
 
@@ -79,8 +79,8 @@ module VocabTerms
       vt.tags = [book_tag, lo_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag, type_tag]
 
       # http://stackoverflow.com/a/8922049
-      grouped_distractor_terms = distractor_terms.reject(&:blank?).group_by{ |elt| elt }
-      duplicate_distractor_terms = grouped_distractor_terms.select{ |k, v| v.size > 1}.map(&:first)
+      grouped_distractor_terms = distractor_terms.reject(&:blank?).group_by { |elt| elt }
+      duplicate_distractor_terms = grouped_distractor_terms.select { |k, v| v.size > 1}.map(&:first)
       uniq_distractor_terms = grouped_distractor_terms.keys
 
       duplicate_distractor_terms.each do |ddt|

@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.describe SearchVocabTerms, type: :routine do
   before do
-    10.times{ FactoryBot.create(:vocab_term, :published) }
+    10.times { FactoryBot.create(:vocab_term, :published) }
 
     tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
-    VocabTerm.where{(name.like_any tested_strings) |
+    VocabTerm.where {(name.like_any tested_strings) |
                     (definition.like_any tested_strings)}.delete_all
 
     @vocab_term_1 = FactoryBot.build(:vocab_term, :published)

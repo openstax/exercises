@@ -72,7 +72,7 @@ module Exercises
         latest_exercise = Exercise
           .joins([{publication: :publication_group}, {exercise_tags: :tag}])
           .where(exercise_tags: {tag: {name: exercise_id_tag}})
-          .order{[publication.publication_group.number.desc, publication.version.desc]}.first
+          .order {[publication.publication_group.number.desc, publication.version.desc]}.first
 
         unless latest_exercise.nil?
           ex.publication.publication_group = latest_exercise.publication.publication_group

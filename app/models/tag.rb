@@ -10,7 +10,7 @@ class Tag < ActiveRecord::Base
     remaining_tags = [tags].flatten.compact
 
     # Get Tag objects in the given array
-    result = remaining_tags.select{ |tag| tag.is_a?(Tag) }
+    result = remaining_tags.select { |tag| tag.is_a?(Tag) }
     remaining_tags = (remaining_tags - result).map do |tag|
       sanitized_name = tag.to_s.gsub(/[^\w:#]+/, '-').gsub(/(?:\A-|-\z)/, '')
       sanitized_name unless sanitized_name.blank?

@@ -39,7 +39,7 @@ module Exercises
         latest_exercise = Exercise
           .joins([{publication: :publication_group}, {exercise_tags: :tag}])
           .where(exercise_tags: {tag: {name: id_tag}})
-          .order{[publication.publication_group.number.desc, publication.version.desc]}.first
+          .order {[publication.publication_group.number.desc, publication.version.desc]}.first
 
         publication = import_metadata(exercise.publication, hash['attribution'])
 
@@ -96,7 +96,7 @@ module Exercises
         book_archive_url ||= original_book_archive_url
         book_archive_json_url = "#{book_archive_url.sub('.html', '')}.json"
         book_hash = HTTParty.get(book_archive_json_url).to_hash
-        @book_uuids = Hash.new{ |hash, key| hash[key] = {} }
+        @book_uuids = Hash.new { |hash, key| hash[key] = {} }
         map_collection_book_locations_to_uuids(book_hash['tree'], @book_uuids)
 
         original_book_archive_json_url = "#{original_book_archive_url}.json"

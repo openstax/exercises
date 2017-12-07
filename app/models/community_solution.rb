@@ -31,7 +31,7 @@ class CommunitySolution < ActiveRecord::Base
     user_id = user.id
 
     joins{publication.authors.outer}
-      .joins{publication.copyright_holders.outer}
-      .where{ (authors.user_id == user_id) | (copyright_holders.user_id == user_id) }
+      .joins {publication.copyright_holders.outer}
+      .where { (authors.user_id == user_id) | (copyright_holders.user_id == user_id) }
   }
 end
