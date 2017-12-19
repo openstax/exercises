@@ -75,7 +75,7 @@ class Publication < ActiveRecord::Base
       else
         wheres & (version == vv)
       end
-    end.order{[publication_group.number.asc, version.desc]}
+    end.order {[publication_group.number.asc, version.desc]}
   }
 
   scope :visible_for, ->(user) {
@@ -139,7 +139,7 @@ class Publication < ActiveRecord::Base
           (newer_publication.version > ~version)
         end
         .outer
-    end.where{ newer_publication.id == nil }
+    end.where { newer_publication.id == nil }
   }
 
   def uid
@@ -160,6 +160,14 @@ class Publication < ActiveRecord::Base
 
   def is_public?
     is_published? && !is_embargoed? && !is_yanked?
+  end
+
+  def is_latest?
+    klass = self.class
+
+    !klass.where(publication_group_id: publication_group_id)
+          .where(klass.arel_table[:version].gt version)
+          .exists?
   end
 
   def collaborators(preload: nil)

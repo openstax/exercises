@@ -28,7 +28,7 @@ module Api::V1
       before do
         100.times { FactoryBot.create(:user) }
 
-        User.joins(:account).where{(account.first_name.like '%doe%') |
+        User.joins(:account).where {(account.first_name.like '%doe%') |
                                    (account.last_name.like '%doe%') |
                                    (account.username.like '%doe%')}.delete_all
 

@@ -1,6 +1,6 @@
 <h4>Administrators</h4>
   <%= render partial: 'shared/users/index',
-             locals: {users: @administrators.collect{|a| a.user},
+             locals: {users: @administrators.map {|a| a.user},
                       action_partial: 'admin/administrators/destroy',
                       sign_in_as: true} %>
 

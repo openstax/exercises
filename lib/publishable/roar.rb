@@ -44,20 +44,23 @@ module Publishable
                    class: Author,
                    extend: Api::V1::RoleRepresenter,
                    writeable: true,
-                   readable: true
+                   readable: true,
+                   setter: AR_COLLECTION_SETTER
 
         collection :copyright_holders,
                    class: CopyrightHolder,
                    extend: Api::V1::RoleRepresenter,
                    writeable: true,
-                   readable: true
+                   readable: true,
+                   setter: AR_COLLECTION_SETTER
 
         collection :derivations,
                    as: :derived_from,
                    class: Publication,
                    extend: self,
                    writeable: true,
-                   readable: true
+                   readable: true,
+                   setter: AR_COLLECTION_SETTER
 
       end
     end

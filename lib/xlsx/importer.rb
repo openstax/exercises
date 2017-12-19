@@ -15,8 +15,8 @@ module Xlsx
             .each_with_index do |row, row_index|
           values = 0.upto(row.size - 1).map do |value_index|
             # Hack until Roo's new version with proper typecasting is released
-            val = row[value_index].try(:value)
-            Integer(val) rescue val.try(:to_s)
+            val = row[value_index].try!(:value)
+            Integer(val) rescue val.try!(:to_s)
           end
           next if values.compact.blank?
 

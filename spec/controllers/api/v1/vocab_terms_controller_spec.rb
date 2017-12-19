@@ -33,35 +33,34 @@ module Api::V1
         end
 
         tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
-        VocabTerm.where{(name.like_any tested_strings) |
+        VocabTerm.where {(name.like_any tested_strings) |
                         (definition.like_any tested_strings)}.delete_all
 
         @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
-        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_json({
-          tags: ['tag1', 'tag2'],
-          term: "Lorem ipsum",
-          definition: "Dolor sit amet",
-          distractor_literals: ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
-        }.to_json)
+        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
+          'tags' => ['tag1', 'tag2'],
+          'term' => "Lorem ipsum",
+          'definition' => "Dolor sit amet",
+          'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
+        )
         @vocab_term_1.save!
 
         @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
-        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_json({
-          tags: ['tag2', 'tag3'],
-          term: "Dolorem ipsum",
-          definition: "Quia dolor sit amet",
-          distractor_literals: ["Consectetur adipisci velit", "Sed quia non numquam"]
-        }.to_json)
+        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_hash(
+          'tags' => ['tag2', 'tag3'],
+          'term' => "Dolorem ipsum",
+          'definition' => "Quia dolor sit amet",
+          'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"]
+        )
         @vocab_term_2.save!
 
         @vocab_term_draft = FactoryBot.build(:vocab_term)
-        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
-                                                                  .from_json({
-          tags: ['all', 'the', 'tags'],
-          term: "draft",
-          definition: "Not ready for prime time",
-          distractor_literals: ["Release to production NOW"]
-        }.to_json)
+        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
+          'tags' => ['all', 'the', 'tags'],
+          'term' => "draft",
+          'definition' => "Not ready for prime time",
+          'distractor_literals' => ["Release to production NOW"]
+        )
         @vocab_term_draft.save!
       end
 
@@ -247,7 +246,7 @@ module Api::V1
           api_post :create, user_token,
                    raw_post_data: Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
-                   ).to_json(user: user)
+                   ).to_json(user_options: { user: user })
         }.to change(VocabTerm, :count).by(1)
         expect(response).to have_http_status(:success)
 

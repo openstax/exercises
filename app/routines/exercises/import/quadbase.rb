@@ -39,7 +39,7 @@ module Exercises
         latest_exercise = Exercise
           .joins([{publication: :publication_group}, {exercise_tags: :tag}])
           .where(exercise_tags: {tag: {name: id_tag}})
-          .order{[publication.publication_group.number.desc, publication.version.desc]}.first
+          .order {[publication.publication_group.number.desc, publication.version.desc]}.first
 
         publication = import_metadata(exercise.publication, hash['attribution'])
 
@@ -96,7 +96,7 @@ module Exercises
         book_archive_url ||= original_book_archive_url
         book_archive_json_url = "#{book_archive_url.sub('.html', '')}.json"
         book_hash = HTTParty.get(book_archive_json_url).to_hash
-        @book_uuids = Hash.new{ |hash, key| hash[key] = {} }
+        @book_uuids = Hash.new { |hash, key| hash[key] = {} }
         map_collection_book_locations_to_uuids(book_hash['tree'], @book_uuids)
 
         original_book_archive_json_url = "#{original_book_archive_url}.json"
@@ -254,8 +254,8 @@ module Exercises
           question = import_without_introduction(exercise, p['simple_question'])
           question.exercise = exercise
           id_map[p['simple_question']['id']] = question
-          prerequisites = (p['prerequisites'] || []).collect{|pre| pre['id']}
-          supports = (p['supported_by'] || []).collect{|pre| pre['id']}
+          prerequisites = (p['prerequisites'] || []).map {|pre| pre['id']}
+          supports = (p['supported_by'] || []).map {|pre| pre['id']}
           dependency_map[question] = {prerequisites: prerequisites, supports: supports}
           exercise.questions << question
         end
@@ -301,9 +301,9 @@ module Exercises
         tags = hash['tags'] || []
         filter_tag = "filter-type:import:qb"
 
-        module_tag = tags.find{ |tag| /\Am\d+\z/.match tag }
+        module_tag = tags.find { |tag| /\Am\d+\z/.match tag }
         if module_tag.nil?
-          book_location_tag = tags.find{ |tag| @book_location_regex.match tag }
+          book_location_tag = tags.find { |tag| @book_location_regex.match tag }
 
           if book_location_tag.nil?
             cnxmod_tag = nil
@@ -320,7 +320,7 @@ module Exercises
           cnxmod_tag = "context-cnxmod:#{uuid}"
         end
 
-        [filter_tag, cnxmod_tag].compact + tags.map{ |tag| "qb:#{tag}" }
+        [filter_tag, cnxmod_tag].compact + tags.map { |tag| "qb:#{tag}" }
       end
 
       # Creates a mapping from a CNX collection chapter and section numbers to their uuids

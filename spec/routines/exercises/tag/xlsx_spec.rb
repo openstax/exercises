@@ -17,7 +17,7 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
     ]
   end
 
-  let!(:exercises) { (1..6).map{ |i| FactoryBot.create(:publication, number: -i).publishable } }
+  let!(:exercises) { (1..6).map { |i| FactoryBot.create(:publication, number: -i).publishable } }
 
   it 'tags exercises with the sample spreadsheet' do
     expect { described_class.call(filename: fixture_path) }.to change{ ExerciseTag.count }.by(20)
@@ -27,7 +27,7 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
     exercises.each do |exercise|
       expect(exercise.tags).not_to be_blank
       expect(exercise.tags).to satisfy do |tags|
-        tags.all{ |tag| expected_tags.include?(tag.name) }
+        tags.all { |tag| expected_tags.include?(tag.name) }
       end
     end
   end

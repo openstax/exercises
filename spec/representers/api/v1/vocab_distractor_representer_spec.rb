@@ -3,75 +3,54 @@ require 'rails_helper'
 module Api::V1
   RSpec.describe VocabDistractorRepresenter, type: :representer do
 
-    let(:distractor_term) {
-      instance_spy(VocabTerm).tap do |dbl|
-        allow(dbl).to receive(:as_json).and_return(dbl)
-      end
-    }
-
-    let(:vocab_distractor) {
-      instance_spy(VocabDistractor).tap do |dbl|
-        allow(dbl).to receive(:as_json).and_return(dbl)
-        allow(dbl).to receive(:tags).and_return([])
-        allow(dbl).to receive(:license).and_return(nil)
-        allow(dbl).to receive(:authors).and_return([])
-        allow(dbl).to receive(:copyright_holders).and_return([])
-        allow(dbl).to receive(:derivations).and_return([])
-        allow(dbl).to receive(:distractor_term).and_return(distractor_term)
-      end
-    }
+    let(:vocab_distractor) { FactoryBot.create :vocab_distractor }
+    let(:distractor_term)  { vocab_distractor.distractor_term }
 
     # This is lazily-evaluated on purpose
     let(:representation) { described_class.new(vocab_distractor).as_json }
 
     context 'group_uuid' do
       it 'can be read' do
-        uuid = SecureRandom.uuid
-        allow(vocab_distractor).to receive(:group_uuid).and_return(uuid)
-        expect(representation).to include('group_uuid' => uuid)
+        expect(representation).to include('group_uuid' => vocab_distractor.group_uuid)
       end
 
       it 'can be written' do
         uuid = SecureRandom.uuid
-        described_class.new(vocab_distractor).from_json({'group_uuid' => uuid}.to_json)
-        expect(vocab_distractor).to have_received(:group_uuid=).with(uuid)
+        expect(vocab_distractor).to receive(:group_uuid=).with(uuid)
+        described_class.new(vocab_distractor).from_hash('group_uuid' => uuid)
       end
     end
 
     context 'number' do
       it 'can be read' do
-        allow(vocab_distractor).to receive(:number).and_return(42)
-        expect(representation).to include('number' => 42)
+        expect(representation).to include('number' => vocab_distractor.number)
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        described_class.new(vocab_distractor).from_json({'number' => 84}.to_json)
-        expect(vocab_distractor).not_to have_received(:number=)
+        expect(vocab_distractor).not_to receive(:number=)
+        described_class.new(vocab_distractor).from_hash('number' => 42)
       end
     end
 
     context 'term' do
       it 'can be read' do
-        allow(vocab_distractor).to receive(:name).and_return('Question')
-        expect(representation).to include('term' => 'Question')
+        expect(representation).to include('term' => vocab_distractor.name)
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        described_class.new(vocab_distractor).from_json({'term' => 'Exercise'}.to_json)
-        expect(distractor_term).not_to have_received(:name=)
+        expect(distractor_term).not_to receive(:name=)
+        described_class.new(vocab_distractor).from_hash('term' => 'Exercise')
       end
     end
 
     context 'definition' do
       it 'can be read' do
-        allow(vocab_distractor).to receive(:definition).and_return('This term is cool.')
-        expect(representation).to include('definition' => 'This term is cool.')
+        expect(representation).to include('definition' => vocab_distractor.definition)
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        described_class.new(vocab_distractor)
-                       .from_json({'definition' => 'This term is cooler.'}.to_json)
-        expect(distractor_term).not_to have_received(:definition=)
+        expect(distractor_term).not_to receive(:definition=)
+        described_class.new(vocab_distractor).from_hash('definition' => 'This term is cool.')
       end
     end
 

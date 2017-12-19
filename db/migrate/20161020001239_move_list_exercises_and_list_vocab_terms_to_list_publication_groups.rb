@@ -6,12 +6,12 @@ class MoveListExercisesAndListVocabTermsToListPublicationGroups < ActiveRecord::
     vocab_term_id_list_id_pairs = \
       ActiveRecord::Base.connection.execute('SELECT list_id, vocab_term_id FROM list_vocab_terms;')
 
-    all_list_ids = exercise_id_list_id_pairs.map{ |hash| hash['list_id'] } +
-                   vocab_term_id_list_id_pairs.map{ |hash| hash['list_id'] }
+    all_list_ids = exercise_id_list_id_pairs.map { |hash| hash['list_id'] } +
+                   vocab_term_id_list_id_pairs.map { |hash| hash['list_id'] }
 
     list_by_list_id = List.where(id: all_list_ids).index_by(&:id)
 
-    all_exercise_ids = exercise_id_list_id_pairs.map{ |hash| hash['exercise_id'] }
+    all_exercise_ids = exercise_id_list_id_pairs.map { |hash| hash['exercise_id'] }
 
     publication_group_by_exercise_id = {}
     PublicationGroup.joins(:publications)
@@ -29,7 +29,7 @@ class MoveListExercisesAndListVocabTermsToListPublicationGroups < ActiveRecord::
       ListPublicationGroup.create(list: list, publication_group: pg)
     end
 
-    all_vocab_term_ids = vocab_term_id_list_id_pairs.map{ |hash| hash['vocab_term_id'] }
+    all_vocab_term_ids = vocab_term_id_list_id_pairs.map { |hash| hash['vocab_term_id'] }
 
     publication_group_by_vocab_term_id = {}
     PublicationGroup.joins(:publications)

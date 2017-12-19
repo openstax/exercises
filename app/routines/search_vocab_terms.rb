@@ -23,6 +23,7 @@ class SearchVocabTerms
     params[:ob] ||= [{number: :asc}, {version: :desc}]
     relation = VocabTerm.visible_for(options[:user]).joins(publication: :publication_group)
 
+    distinct = false
     # By default, only return the latest exercises visible to the user.
     # If either versions, uids or a publication date are specified,
     # this "latest" condition is disabled.
@@ -35,7 +36,7 @@ class SearchVocabTerms
       # Block to be used for searches by id or uid
       id_search_block = lambda do |ids|
         ids.each do |id|
-          sanitized_ids = to_string_array(id).map{|id| id.split('@')}
+          sanitized_ids = to_string_array(id).map { |id| id.split('@') }
           next @items = @items.none if sanitized_ids.empty?
 
           sanitized_numbers = sanitized_ids.map(&:first).compact
@@ -51,9 +52,9 @@ class SearchVocabTerms
           else
             # Combine the id's one at a time using Squeel
             @items = @items.where do
-              only_numbers = sanitized_ids.select{ |sid| sid.second.blank? }.map(&:first)
-              only_versions = sanitized_ids.select{ |sid| sid.first.blank? }.map(&:second)
-              full_ids = sanitized_ids.reject{ |sid| sid.first.blank? || sid.second.blank? }
+              only_numbers = sanitized_ids.select { |sid| sid.second.blank? }.map(&:first)
+              only_versions = sanitized_ids.select { |sid| sid.first.blank? }.map(&:second)
+              full_ids = sanitized_ids.reject { |sid| sid.first.blank? || sid.second.blank? }
 
               cumulative_query = publication.uuid.in(only_numbers) |
                                  publication.publication_group.number.in(only_numbers) | \
@@ -84,7 +85,7 @@ class SearchVocabTerms
           sanitized_names = to_string_array(name, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_names.empty?
 
-          @items = @items.where{name.like_any sanitized_names}
+          @items = @items.where {name.like_any sanitized_names}
         end
       end
 
@@ -132,6 +133,7 @@ class SearchVocabTerms
           sanitized_tags = to_string_array(tag).map(&:downcase)
           next @items = @items.none if sanitized_tags.empty?
 
+          distinct = true
           @items = @items.joins(:tags).where(tags: {name: sanitized_tags})
         end
       end
@@ -146,7 +148,7 @@ class SearchVocabTerms
                                                               prepend_wildcard: true)
           next @items = @items.none if sanitized_definitions.empty?
 
-          @items = @items.where{definition.like_any sanitized_definitions}
+          @items = @items.where {definition.like_any sanitized_definitions}
         end
       end
 
@@ -156,7 +158,7 @@ class SearchVocabTerms
                                                         prepend_wildcard: true)
           next @items = @items.none if sanitized_contents.empty?
 
-          @items = @items.where{ (name.like_any sanitized_contents) |\
+          @items = @items.where { (name.like_any sanitized_contents) |\
                                  (definition.like_any sanitized_contents) }
         end
       end
@@ -166,8 +168,9 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
+          distinct = true
           @items = @items.joins(publication: {authors: {user: :account}})
-                         .where{
+                         .where {
                            (publication.authors.user.account.username.like_any sn) |\
                            (publication.authors.user.account.first_name.like_any sn) |\
                            (publication.authors.user.account.last_name.like_any sn) |\
@@ -181,8 +184,9 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
+          distinct = true
           @items = @items.joins(publication: {copyright_holders: {user: :account}})
-                         .where{
+                         .where {
                            (publication.copyright_holders.user.account.username.like_any sn) |\
                            (publication.copyright_holders.user.account.first_name.like_any sn) |\
                            (publication.copyright_holders.user.account.last_name.like_any sn) |\
@@ -196,9 +200,10 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins{publication.authors.outer.user.outer.account.outer}
-                         .joins{publication.copyright_holders.outer.user.outer.account.outer}
-                         .where{
+          distinct = true
+          @items = @items.joins {publication.authors.outer.user.outer.account.outer}
+                         .joins {publication.copyright_holders.outer.user.outer.account.outer}
+                         .where {
                            (publication.authors.user.account.username.like_any sn) |\
                            (publication.authors.user.account.first_name.like_any sn) |\
                            (publication.authors.user.account.last_name.like_any sn) |\
@@ -212,18 +217,33 @@ class SearchVocabTerms
       end
 
       with.keyword :published_before do |published_befores|
-        min_published_before = published_befores.flatten.collect do |str|
+        min_published_before = published_befores.flatten.map do |str|
           DateTime.parse(str) rescue nil
         end.compact.min
         next @items = @items.none if min_published_before.nil?
 
-        @items = @items.where{ publication.published_at < min_published_before }
+        @items = @items.where { publication.published_at < min_published_before }
 
         # Latest now refers to results that happened before min_published_before
-        latest_scope = latest_scope.where{ publication.published_at < min_published_before } \
+        latest_scope = latest_scope.where { publication.published_at < min_published_before } \
           unless latest_scope.nil?
       end
 
+    end
+
+    if distinct
+      pg = PublicationGroup.arel_table
+      pb = Publication.arel_table
+
+      outputs[:items] = outputs[:items].select(
+        [
+          VocabTerm.arel_table[ Arel.star ],
+          pg[:uuid],
+          pg[:number],
+          pb[:version],
+          pb[:published_at]
+        ]
+      ).distinct
     end
 
     return if latest_scope.nil?

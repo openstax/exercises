@@ -13,7 +13,7 @@ module RowParser
 
       failures.empty? ? Rails.logger.info('Success!') :
                         Rails.logger.error("Failed rows: #{failures.keys}")
-      failures.each{ |key, value| Rails.logger.error "Row #{key}: #{value}" }
+      failures.each { |key, value| Rails.logger.error "Row #{key}: #{value}" }
     end
   end
 

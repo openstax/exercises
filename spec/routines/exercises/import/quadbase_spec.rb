@@ -31,7 +31,7 @@ RSpec.describe Exercises::Import::Quadbase, type: :routine do
       expect(list.name).to eq 'Concept Coach'
 
       expect(exercise.tags).not_to be_blank
-      exercise.tags.map(&:name).each{ |tag_name| expect(expected_tags).to include(tag_name) }
+      exercise.tags.map(&:name).each { |tag_name| expect(expected_tags).to include(tag_name) }
 
       expect(exercise.stimulus).to be_in expected_exercise_stimuli
       expect(exercise.questions.length).to be > 0
@@ -43,7 +43,7 @@ RSpec.describe Exercises::Import::Quadbase, type: :routine do
         stem = question.stems.first
         expect(stem.content).not_to be_blank
         expect(stem.stem_answers).not_to be_blank
-        expect(Set.new(stem.stem_answers.map{ |sa| sa.answer })).to eq Set.new(question.answers)
+        expect(Set.new(stem.stem_answers.map { |sa| sa.answer })).to eq Set.new(question.answers)
         expect(stem.stem_answers.any?{ |answer| answer.correctness == 1.0 }).to eq true
 
         stem.stem_answers.each do |stem_answer|

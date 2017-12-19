@@ -12,15 +12,17 @@ module Stylable
   module Roar
     module Decorator
       def stylable
-        collection :formats,
+        collection :stylings,
+                   as: :formats,
                    type: String,
-                   writeable: true,
                    readable: true,
-                   getter: ->(*) { stylings.map(&:style) },
-                   setter: ->(input:, **) do
-                     styling = stylings.find_or_initialize_by(style: input)
-                     stylings << styling unless styling.persisted?
+                   serialize: ->(input:, **) { input.style },
+                   writeable: true,
+                   class: Styling,
+                   deserialize: ->(input:, fragment:, **) do
+                     input.tap { |input| input.style = fragment }
                    end,
+                   setter: AR_COLLECTION_SETTER,
                    schema_info: {
                      required: true,
                      description: 'The question formats allowed for this object'

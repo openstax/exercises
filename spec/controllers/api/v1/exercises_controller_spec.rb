@@ -8,14 +8,14 @@ module Api::V1
     let(:admin)             { FactoryBot.create :user, :administrator, :agreed_to_terms }
 
     let(:user_token)        { FactoryBot.create :doorkeeper_access_token,
-                                                  application: application,
-                                                  resource_owner_id: user.id }
+                                                application: application,
+                                                resource_owner_id: user.id }
     let(:admin_token)       { FactoryBot.create :doorkeeper_access_token,
-                                                  application: application,
-                                                  resource_owner_id: admin.id }
+                                                application: application,
+                                                resource_owner_id: admin.id }
     let(:application_token) { FactoryBot.create :doorkeeper_access_token,
-                                                  application: application,
-                                                  resource_owner_id: nil }
+                                                application: application,
+                                                resource_owner_id: nil }
 
     before do
       @exercise = FactoryBot.build(:exercise)
@@ -30,57 +30,57 @@ module Api::V1
         10.times { FactoryBot.create(:exercise, :published) }
 
         tested_strings = ["%adipisci%", "%draft%"]
-        Exercise.joins{questions.outer.stems.outer}
-                .joins{questions.outer.answers.outer}
-                .where{(title.like_any tested_strings) |\
+        Exercise.joins {questions.outer.stems.outer}
+                .joins {questions.outer.answers.outer}
+                .where {(title.like_any tested_strings) |\
                        (stimulus.like_any tested_strings) |\
                        (questions.stimulus.like_any tested_strings) |\
                        (stems.content.like_any tested_strings) |\
                        (answers.content.like_any tested_strings)}.delete_all
 
         @exercise_1 = FactoryBot.build(:exercise, :published)
-        Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
-          tags: ['tag1', 'tag2'],
-          title: "Lorem ipsum",
-          stimulus: "Dolor",
-          questions: [{
-            stimulus: "Sit amet",
-            stem_html: "Consectetur adipiscing elit",
-            answers: [{
-              content_html: "Sed do eiusmod tempor"
+        Api::V1::ExerciseRepresenter.new(@exercise_1).from_hash(
+          'tags' => ['tag1', 'tag2'],
+          'title' => "Lorem ipsum",
+          'stimulus' => "Dolor",
+          'questions' => [{
+            'stimulus' => "Sit amet",
+            'stem_html' => "Consectetur adipiscing elit",
+            'answers' => [{
+              'content_html' => "Sed do eiusmod tempor"
             }]
           }]
-        }.to_json)
+        )
         @exercise_1.save!
 
         @exercise_2 = FactoryBot.build(:exercise, :published)
-        Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
-          tags: ['tag2', 'tag3'],
-          title: "Dolorem ipsum",
-          stimulus: "Quia dolor",
-          questions: [{
-            stimulus: "Sit amet",
-            stem_html: "Consectetur adipisci velit",
-            answers: [{
-              content_html: "Sed quia non numquam"
+        Api::V1::ExerciseRepresenter.new(@exercise_2).from_hash(
+          'tags' => ['tag2', 'tag3'],
+          'title' => "Dolorem ipsum",
+          'stimulus' => "Quia dolor",
+          'questions' => [{
+            'stimulus' => "Sit amet",
+            'stem_html' => "Consectetur adipisci velit",
+            'answers' => [{
+              'content_html' => "Sed quia non numquam"
             }]
           }]
-        }.to_json)
+        )
         @exercise_2.save!
 
         @exercise_draft = FactoryBot.build(:exercise)
-        Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
-          tags: ['all', 'the', 'tags'],
-          title: "DRAFT",
-          stimulus: "This is a draft",
-          questions: [{
-            stimulus: "with no collaborators",
-            stem_html: "and should not appear",
-            answers: [{
-              content_html: "in most searches"
+        Api::V1::ExerciseRepresenter.new(@exercise_draft).from_hash(
+          'tags' => ['all', 'the', 'tags'],
+          'title' => "DRAFT",
+          'stimulus' => "This is a draft",
+          'questions' => [{
+            'stimulus' => "with no collaborators",
+            'stem_html' => "and should not appear",
+            'answers' => [{
+              'content_html' => "in most searches"
             }]
           }]
-        }.to_json)
+        )
         @exercise_draft.save!
       end
 

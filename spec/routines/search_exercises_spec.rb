@@ -4,60 +4,60 @@ RSpec.describe SearchExercises, type: :routine do
   before do
     10.times { FactoryBot.create(:exercise, :published) }
 
-    tested_strings = ["%adipisci%", "%draft%"]
-    Exercise.joins{questions.outer.stems.outer}
-            .joins{questions.outer.answers.outer}
-            .where{(title.like_any tested_strings) |\
+    tested_strings = [ "%adipisci%", "%draft%" ]
+    Exercise.joins {questions.outer.stems.outer}
+            .joins {questions.outer.answers.outer}
+            .where {(title.like_any tested_strings) |\
                    (stimulus.like_any tested_strings) |\
                    (questions.stimulus.like_any tested_strings) |\
                    (stems.content.like_any tested_strings) |\
                    (answers.content.like_any tested_strings)}.delete_all
 
     @exercise_1 = Exercise.new
-    Api::V1::ExerciseRepresenter.new(@exercise_1).from_json({
-      tags: ['tag1', 'tag2'],
-      title: "Lorem ipsum",
-      stimulus: "Dolor",
-      questions: [{
-        stimulus: "Sit amet",
-        stem_html: "Consectetur adipiscing elit",
-        answers: [{
-          content_html: "Sed do eiusmod tempor"
+    Api::V1::ExerciseRepresenter.new(@exercise_1).from_hash(
+      'tags' => ['tag1', 'tag2'],
+      'title' => "Lorem ipsum",
+      'stimulus' => "Dolor",
+      'questions' => [{
+        'stimulus' => "Sit amet",
+        'stem_html' => "Consectetur adipiscing elit",
+        'answers' => [{
+          'content_html' => "Sed do eiusmod tempor"
         }]
       }]
-    }.to_json)
+    )
     @exercise_1.save!
     @exercise_1.publication.publish.save!
 
     @exercise_2 = Exercise.new
-    Api::V1::ExerciseRepresenter.new(@exercise_2).from_json({
-      tags: ['tag2', 'tag3'],
-      title: "Dolorem ipsum",
-      stimulus: "Quia dolor",
-      questions: [{
-        stimulus: "Sit amet",
-        stem_html: "Consectetur adipisci velit",
-        answers: [{
-          content_html: "Sed quia non numquam"
+    Api::V1::ExerciseRepresenter.new(@exercise_2).from_hash(
+      'tags' => ['tag2', 'tag3'],
+      'title' => "Dolorem ipsum",
+      'stimulus' => "Quia dolor",
+      'questions' => [{
+        'stimulus' => "Sit amet",
+        'stem_html' => "Consectetur adipisci velit",
+        'answers' => [{
+          'content_html' => "Sed quia non numquam"
         }]
       }]
-    }.to_json)
+    )
     @exercise_2.save!
     @exercise_2.publication.publish.save!
 
     @exercise_draft = FactoryBot.build(:exercise)
-    Api::V1::ExerciseRepresenter.new(@exercise_draft).from_json({
-      tags: ['all', 'the', 'tags'],
-      title: "DRAFT",
-      stimulus: "This is a draft",
-      questions: [{
-        stimulus: "with no collaborators",
-        stem_html: "and should not appear",
-        answers: [{
-          content_html: "in most searches"
+    Api::V1::ExerciseRepresenter.new(@exercise_draft).from_hash(
+      'tags' => ['all', 'the', 'tags'],
+      'title' => "DRAFT",
+      'stimulus' => "This is a draft",
+      'questions' => [{
+        'stimulus' => "with no collaborators",
+        'stem_html' => "and should not appear",
+        'answers' => [{
+          'content_html' => "in most searches"
         }]
       }]
-    }.to_json)
+    )
     @exercise_draft.save!
 
     @exercises_count = Exercise.count

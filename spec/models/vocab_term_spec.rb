@@ -65,9 +65,9 @@ RSpec.describe VocabTerm, type: :model do
 
   it 'automatically publishes vocab exercises when published' do
     expect(vocab_term.exercises).not_to be_empty
-    vocab_term.exercises.each{ |exercise| expect(exercise).not_to be_is_published }
+    vocab_term.exercises.each { |exercise| expect(exercise).not_to be_is_published }
     vocab_term.publication.publish.save!
-    vocab_term.exercises.each{ |exercise| expect(exercise).to be_is_published }
+    vocab_term.exercises.each { |exercise| expect(exercise).to be_is_published }
   end
 
   it 'does not create extra versions of exercises when creating a new version' do
@@ -75,7 +75,7 @@ RSpec.describe VocabTerm, type: :model do
     vocab_term.exercises << vocab_term.exercises.first.new_version
     expect(vocab_term.exercises.size).to eq 2
     vocab_term.publication.publish.save!
-    vocab_term.exercises.each{ |exercise| expect(exercise).to be_is_published }
+    vocab_term.exercises.each { |exercise| expect(exercise).to be_is_published }
     new_version = vocab_term.new_version
     expect(new_version.exercises.size).to eq 1
   end

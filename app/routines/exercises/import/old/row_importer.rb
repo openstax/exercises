@@ -8,7 +8,7 @@ module Exercises
       attr_reader :skip_first_row, :author, :copyright_holder
 
       def split(text, on: ',')
-        text.split(on).collect{|t| t.strip}
+        text.split(on).map {|t| t.strip}
       end
 
       # Parses the text using Markdown
@@ -56,7 +56,7 @@ module Exercises
         grouping_tags =  [book, [book, chapter].join('-'), [book, chapter, section].join('-')]
 
         los = split(row[3])
-        lo_tags = los.collect{|lo| [book, chapter, lo].join('-')}
+        lo_tags = los.map {|lo| [book, chapter, lo].join('-')}
         exercise_id_tag = row[4]
         type_tags = split(row[5])
         location_tag = row[6]
@@ -72,7 +72,7 @@ module Exercises
         latest_exercise = Exercise
           .joins([{publication: :publication_group}, {exercise_tags: :tag}])
           .where(exercise_tags: {tag: {name: exercise_id_tag}})
-          .order{[publication.publication_group.number.desc, publication.version.desc]}.first
+          .order {[publication.publication_group.number.desc, publication.version.desc]}.first
 
         unless latest_exercise.nil?
           ex.publication.publication_group = latest_exercise.publication.publication_group

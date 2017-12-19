@@ -14,14 +14,14 @@ module Publishable
 
           delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
                    :authors, :copyright_holders, :derivations,
-                   :is_yanked?, :is_published?, :is_embargoed?, :is_public?,
+                   :is_yanked?, :is_published?, :is_embargoed?, :is_public?, :is_latest?,
                    :has_collaborator?, :has_read_permission?, :has_write_permission?,
                    :license=, :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
-          scope :published, -> { joins(:publication).where{publication.published_at != nil} }
+          scope :published, -> { joins(:publication).where {publication.published_at != nil} }
 
-          scope :unpublished, -> { joins(:publication).where{publication.published_at == nil} }
+          scope :unpublished, -> { joins(:publication).where {publication.published_at == nil} }
 
           scope :with_id, ->(id) {
             nn, vv = id.to_s.split('@')
@@ -40,7 +40,7 @@ module Publishable
               else
                 wheres & (publication.version == vv)
               end
-            end.order{[publication.publication_group.number.asc, publication.version.desc]}
+            end.order {[publication.publication_group.number.asc, publication.version.desc]}
           }
 
           scope :visible_for, ->(user) {
@@ -104,7 +104,7 @@ module Publishable
                   scope
                     .reorder(nil).limit(nil).offset(nil)
                     .as(:newer_publishable)
-                    .on{ newer_publishable.id == ~publishable_id }
+                    .on { newer_publishable.id == ~publishable_id }
                 end
                 .as(:newer_publication)
                 .on do
@@ -112,7 +112,7 @@ module Publishable
                   (newer_publication.version > ~publication.version)
                 end
                 .outer
-            end.where{ newer_publication.id == nil }
+            end.where { newer_publication.id == nil }
           }
 
           after_initialize :build_publication, if: :new_record?, unless: :publication
