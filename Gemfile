@@ -4,7 +4,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.7.1'
 
 # Bootstrap
 gem 'bootstrap-sass', '~> 3.2.0'
@@ -61,7 +61,7 @@ gem 'omniauth-oauth2', '~> 1.3.1'
 gem 'openstax_accounts', '~> 7.9.0'
 
 # Access control for API's
-gem 'doorkeeper', '~> 3.1.0'
+gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
@@ -153,7 +153,7 @@ group :development, :test do
   gem 'byebug'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
+  gem 'web-console'
 
   # Use RSpec for tests
   gem 'rspec-rails'
