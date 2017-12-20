@@ -55,7 +55,7 @@ module Api::V1
       end
 
       it "returns single results" do
-        api_get :index, application_token, parameters: {q: 'first_name:jOhN last_name:dOe'}
+        api_get :index, application_token, parameters: { q: 'first_name:jOhN last_name:dOe' }
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -70,7 +70,8 @@ module Api::V1
               title: @john_doe.title,
               faculty_status: @john_doe.faculty_status,
               self_reported_role: @john_doe.role,
-              uuid: @john_doe.uuid
+              uuid: @john_doe.uuid,
+              support_identifier: @john_doe.support_identifier
             }
           ]
         }
@@ -94,7 +95,8 @@ module Api::V1
               title: @jane_doe.title,
               faculty_status: @jane_doe.faculty_status,
               self_reported_role: @jane_doe.role,
-              uuid: @jane_doe.uuid
+              uuid: @jane_doe.uuid,
+              support_identifier: @jane_doe.support_identifier
             },
             {
               id: @john_doe.account.openstax_uid,
@@ -105,7 +107,8 @@ module Api::V1
               title: @john_doe.title,
               faculty_status: @john_doe.faculty_status,
               self_reported_role: @john_doe.role,
-              uuid: @john_doe.uuid
+              uuid: @john_doe.uuid,
+              support_identifier: @john_doe.support_identifier
             }
           ]
         }
@@ -130,7 +133,8 @@ module Api::V1
               title: @john_doe.title,
               faculty_status: @john_doe.faculty_status,
               self_reported_role: @john_doe.role,
-              uuid: @john_doe.uuid
+              uuid: @john_doe.uuid,
+              support_identifier: @john_doe.support_identifier
             },
             {
               id: @jane_doe.account.openstax_uid,
@@ -141,7 +145,8 @@ module Api::V1
               title: @jane_doe.title,
               faculty_status: @jane_doe.faculty_status,
               self_reported_role: @jane_doe.role,
-              uuid: @jane_doe.uuid
+              uuid: @jane_doe.uuid,
+              support_identifier: @jane_doe.support_identifier
             }
           ]
         }
@@ -166,7 +171,8 @@ module Api::V1
           title: user.title,
           faculty_status: user.faculty_status,
           self_reported_role: user.role,
-          uuid: user.uuid
+          uuid: user.uuid,
+          support_identifier: user.support_identifier
         }
 
         expect(response_hash).to match(expected_response)
@@ -185,7 +191,8 @@ module Api::V1
           title: user.title,
           faculty_status: user.faculty_status,
           self_reported_role: user.role,
-          uuid: user.uuid
+          uuid: user.uuid,
+          support_identifier: user.support_identifier
         }
 
         expect(response_hash).to match(expected_response)
