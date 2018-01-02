@@ -71,7 +71,8 @@ module Api::V1
               faculty_status: @john_doe.faculty_status,
               self_reported_role: @john_doe.role,
               uuid: @john_doe.uuid,
-              support_identifier: @john_doe.support_identifier
+              support_identifier: @john_doe.support_identifier,
+              is_test: true
             }
           ]
         }
@@ -96,7 +97,8 @@ module Api::V1
               faculty_status: @jane_doe.faculty_status,
               self_reported_role: @jane_doe.role,
               uuid: @jane_doe.uuid,
-              support_identifier: @jane_doe.support_identifier
+              support_identifier: @jane_doe.support_identifier,
+              is_test: true
             },
             {
               id: @john_doe.account.openstax_uid,
@@ -108,7 +110,8 @@ module Api::V1
               faculty_status: @john_doe.faculty_status,
               self_reported_role: @john_doe.role,
               uuid: @john_doe.uuid,
-              support_identifier: @john_doe.support_identifier
+              support_identifier: @john_doe.support_identifier,
+              is_test: true
             }
           ]
         }
@@ -134,7 +137,8 @@ module Api::V1
               faculty_status: @john_doe.faculty_status,
               self_reported_role: @john_doe.role,
               uuid: @john_doe.uuid,
-              support_identifier: @john_doe.support_identifier
+              support_identifier: @john_doe.support_identifier,
+              is_test: true
             },
             {
               id: @jane_doe.account.openstax_uid,
@@ -146,7 +150,8 @@ module Api::V1
               faculty_status: @jane_doe.faculty_status,
               self_reported_role: @jane_doe.role,
               uuid: @jane_doe.uuid,
-              support_identifier: @jane_doe.support_identifier
+              support_identifier: @jane_doe.support_identifier,
+              is_test: true
             }
           ]
         }
