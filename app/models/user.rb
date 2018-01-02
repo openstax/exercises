@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
 
   delegate :username, :first_name, :last_name, :full_name, :title,
            :name, :casual_name, :first_name=, :last_name=, :full_name=,
-           :title=, :faculty_status, :role, :uuid, to: :account
+           :title=, :faculty_status, :role, :uuid, :support_identifier, to: :account
 
   def self.anonymous
     AnonymousUser.instance

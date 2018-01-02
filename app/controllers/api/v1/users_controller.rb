@@ -27,8 +27,7 @@ module Api::V1
       filtered out depending on the caller's status and privileges in
       the system. The schema for the returned JSON result is shown below.
 
-      #{json_schema(OpenStax::Accounts::Api::V1::AccountSearchRepresenter,
-                    include: :readable)}
+      #{json_schema(OpenStax::Accounts::Api::V1::AccountSearchRepresenter, include: :readable)}
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://users.openstax.org/api/users',
