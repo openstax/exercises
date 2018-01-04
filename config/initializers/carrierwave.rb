@@ -20,7 +20,7 @@ CarrierWave.configure do |config|
   end
 
   # Upload to AWS only in the production environment
-  config.storage = Rails.env.production? ? :fog : :file
+  config.storage = Rails.env.production? ? 'fog/aws' : :file
 
   # Image processing is nondeterministic
   config.enable_processing = !Rails.env.test?
