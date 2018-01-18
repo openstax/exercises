@@ -127,20 +127,22 @@ class Publication < ActiveRecord::Base
   # Publication.unpublished.latest(scope: Publication.all)
   # will return only drafts made after the latest published versions
   # (guaranteed to return only the latest draft)
-  scope :latest, ->(scope: nil) {
+  scope :latest, ->(scope: nil) do
     scope ||= published
 
-    joins do
+    where.not(
       scope
         .reorder(nil).limit(nil).offset(nil)
-        .as(:newer_publication)
-        .on do
-          (newer_publication.publication_group_id == ~publication_group_id) &
-          (newer_publication.version > ~version)
-        end
-        .outer
-    end.where { newer_publication.id == nil }
-  }
+        .from('"publications" "newer_pub"')
+        .where(
+          <<-WHERE_SQL.strip_heredoc
+            "newer_pub"."publication_group_id" = "publications"."publication_group_id"
+            AND "newer_pub"."version" > "publications"."version"
+          WHERE_SQL
+        )
+        .exists
+    )
+  end
 
   def uid
     "#{number}@#{version}"
