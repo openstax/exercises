@@ -92,28 +92,31 @@ module Publishable
           # Klass.unpublished.latest(scope: Klass.all)
           # will return only drafts made after the latest published versions
           # (guaranteed to return only the latest draft)
-          scope :latest, ->(scope: nil) {
+          scope :latest, ->(scope: nil) do
             publishable_class_name = name
             scope ||= published
 
-            joins(:publication).joins do
+            joins(:publication).where.not(
               Publication
-                .unscoped
-                .where(publishable_type: publishable_class_name)
-                .joins do
-                  scope
-                    .reorder(nil).limit(nil).offset(nil)
-                    .as(:newer_publishable)
-                    .on { newer_publishable.id == ~publishable_id }
-                end
-                .as(:newer_publication)
-                .on do
-                  (newer_publication.publication_group_id == ~publication.publication_group_id) &
-                  (newer_publication.version > ~publication.version)
-                end
-                .outer
-            end.where { newer_publication.id == nil }
-          }
+                .from(
+                  <<-FROM_SQL.strip_heredoc
+                    (
+                      #{
+                        scope.select('"publications".*').joins(:publication)
+                             .reorder(nil).limit(nil).offset(nil).to_sql
+                      }
+                    ) "newer_pub"
+                  FROM_SQL
+                )
+                .where(
+                  <<-WHERE_SQL.strip_heredoc
+                    "newer_pub"."publication_group_id" = "publications"."publication_group_id"
+                    AND "newer_pub"."version" > "publications"."version"
+                  WHERE_SQL
+                )
+                .exists
+            )
+          end
 
           after_initialize :build_publication, if: :new_record?, unless: :publication
           after_create :ensure_publication!
