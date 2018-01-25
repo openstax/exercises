@@ -24,7 +24,6 @@ module Api::V1
                type: String,
                writeable: true,
                readable: true,
-               setter: AR_COLLECTION_SETTER,
                schema_info: {
                  required: true
                }
