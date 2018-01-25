@@ -69,9 +69,9 @@ module Api::V1
       end
 
       it 'can be written' do
-        expect(vocab_term.distractor_literals).to(
-          receive(:<<).with(kind_of(String)).exactly(3).times do |literal|
-            expect(literal).to be_in [ 'Literal 1', 'Literal 2', 'Literal 3' ]
+        expect(vocab_term).to(
+          receive(:distractor_literals=).with([ kind_of(String) ] * 3).once do |literals|
+            expect(literals).to eq [ 'Literal 1', 'Literal 2', 'Literal 3' ]
           end
         )
 
