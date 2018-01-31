@@ -46,8 +46,6 @@ module Api::V1
       * `number` &ndash; Matches the vocab term number exactly.
       * `version` &ndash; Matches the vocab term version exactly.
       * `id` &ndash; Matches the vocab term ID or UID exactly.
-      * `published_before` &ndash; Matches vocab terms published before the given date.
-                                   Enclose date in quotes to avoid parsing errors.
 
       You can also add search terms without prefixes, separated by spaces.
       These terms will be searched for in all of the prefix categories.

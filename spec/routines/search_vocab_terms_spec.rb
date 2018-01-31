@@ -162,39 +162,6 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [new_vocab_term_2]
     end
-
-    it 'changes the definition of "latest" if published_before is specified' do
-      new_vocab_term = @vocab_term_1.new_version
-      new_vocab_term.tags = ['tag2', 'tag3']
-      new_vocab_term.save!
-
-      result = described_class.call(q: 'tag:tAg1')
-      expect(result.errors).to be_empty
-
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@vocab_term_1]
-
-      new_vocab_term.publication.publish
-      new_vocab_term.publication.save!
-
-      result = described_class.call(q: 'tag:tAg1')
-      expect(result.errors).to be_empty
-
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 0
-      expect(outputs.items).to be_empty
-
-      result = described_class.call(
-        q: "tag:tAg1 published_before:\"#{new_vocab_term.published_at.as_json}\""
-      )
-
-      expect(result.errors).to be_empty
-
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@vocab_term_1]
-    end
   end
 
   context "multiple matches" do

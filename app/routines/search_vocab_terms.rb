@@ -26,8 +26,8 @@ class SearchVocabTerms
     distinct = false
     # By default, only return the latest exercises visible to the user.
     # If either versions, uids or a publication date are specified,
-    # this "latest" condition is disabled.
-    latest_scope = relation.published
+    # this "latest_visible" condition is disabled.
+    latest_visible = true
 
     run(:search, relation: relation.preloaded,
                  sortable_fields: SORTABLE_FIELDS,
@@ -42,7 +42,7 @@ class SearchVocabTerms
           sanitized_numbers = sanitized_ids.map(&:first).compact
           sanitized_versions = sanitized_ids.map(&:second).compact
           if sanitized_numbers.empty?
-            @items = @items.where(publication: {version: sanitized_versions})
+            @items = @items.where(publications: { version: sanitized_versions })
           elsif sanitized_versions.empty?
             @items = @items.where do
               publication.uuid.in(sanitized_numbers) |
@@ -75,8 +75,8 @@ class SearchVocabTerms
           end
         end
 
-        # Since we are returning specific uids, disable "latest"
-        latest_scope = nil
+        # Since we are returning specific uids, disable "latest_visible"
+        latest_visible = false
       end
 
       # Block to be used for searches by name or term
@@ -112,7 +112,7 @@ class SearchVocabTerms
           sanitized_numbers = to_string_array(numbers)
           next @items = @items.none if sanitized_numbers.empty?
 
-          @items = @items.where(publication: {publication_group: {number: sanitized_numbers}})
+          @items = @items.where(publication_groups: { number: sanitized_numbers })
         end
       end
 
@@ -121,11 +121,11 @@ class SearchVocabTerms
           sanitized_versions = to_string_array(version)
           next @items = @items.none if sanitized_versions.empty?
 
-          @items = @items.where(publication: {version: sanitized_versions})
+          @items = @items.where(publications: { version: sanitized_versions })
         end
 
-        # Since we are returning specific versions, disable "latest"
-        latest_scope = nil
+        # Since we are returning specific versions, disable "latest_visible"
+        latest_visible = false
       end
 
       with.keyword :tag do |tags|
@@ -134,7 +134,7 @@ class SearchVocabTerms
           next @items = @items.none if sanitized_tags.empty?
 
           distinct = true
-          @items = @items.joins(:tags).where(tags: {name: sanitized_tags})
+          @items = @items.joins(:tags).where(tags: { name: sanitized_tags })
         end
       end
 
@@ -216,19 +216,6 @@ class SearchVocabTerms
         end
       end
 
-      with.keyword :published_before do |published_befores|
-        min_published_before = published_befores.flatten.map do |str|
-          DateTime.parse(str) rescue nil
-        end.compact.min
-        next @items = @items.none if min_published_before.nil?
-
-        @items = @items.where { publication.published_at < min_published_before }
-
-        # Latest now refers to results that happened before min_published_before
-        latest_scope = latest_scope.where { publication.published_at < min_published_before } \
-          unless latest_scope.nil?
-      end
-
     end
 
     if distinct
@@ -246,9 +233,9 @@ class SearchVocabTerms
       ).distinct
     end
 
-    return if latest_scope.nil?
+    return unless latest_visible
 
-    outputs[:items] = outputs[:items].latest(scope: latest_scope)
+    outputs[:items] = outputs[:items].chainable_latest
     outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil).count
   end
 end

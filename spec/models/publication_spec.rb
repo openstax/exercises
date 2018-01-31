@@ -17,11 +17,10 @@ RSpec.describe Publication, type: :model do
   it { is_expected.to validate_presence_of(:publication_group) }
   it { is_expected.to validate_presence_of(:publishable) }
 
-  it { is_expected.to validate_presence_of(:uuid) }
-  it { is_expected.to validate_presence_of(:version) }
-
-  it { is_expected.to validate_uniqueness_of(:uuid) }
+  it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:version).scoped_to(:publication_group_id) }
+
+  it { is_expected.to validate_numericality_of(:version).only_integer.is_greater_than(0) }
 
   it 'requires a unique publishable' do
     publication_2 = FactoryBot.build :publication, publishable: publication.publishable
@@ -60,22 +59,6 @@ RSpec.describe Publication, type: :model do
     expect(p_2.number).to eq p.number
     expect(p_2.version).to eq 2
     expect(p_2.uid).to eq "#{p.number}@2"
-  end
-
-  it 'defaults to ordering by number ASC and version DESC' do
-    publication_2 = FactoryBot.create :publication,
-                                       number: publication.number,
-                                       version: publication.version + 1
-    publication_3 = FactoryBot.create :publication,
-                                       number: publication.number + 1,
-                                       version: publication.version
-    publication_4 = FactoryBot.create :publication,
-                                       number: publication.number + 1,
-                                       version: publication.version + 1
-    expect(Publication.all[-4..-1]).to(
-      eq [publication_2.reload, publication.reload,
-          publication_4.reload, publication_3.reload]
-    )
   end
 
   it 'knows its own status' do
@@ -120,6 +103,19 @@ RSpec.describe Publication, type: :model do
 
     expect(publication.reload.publishable).to receive(:before_publication)
     expect(publication.publish.save).to eq true
+  end
+
+  it 'updates the publication_group\'s latest_version after creation' +
+     ' and latest_published_version after publication' do
+    expect(publication.publication_group.latest_version).to eq publication.version
+    expect(publication.publication_group.latest_published_version).to be_nil
+    publication.publish.save
+    expect(publication.publication_group.latest_version).to eq publication.version
+    expect(publication.publication_group.latest_published_version).to eq publication.version
+    new_version = publication.publishable.new_version.publication
+    new_version.save
+    expect(publication.publication_group.reload.latest_version).to eq new_version.version
+    expect(publication.publication_group.latest_published_version).to eq publication.version
   end
 
 end

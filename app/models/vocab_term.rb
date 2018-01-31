@@ -136,7 +136,7 @@ class VocabTerm < ActiveRecord::Base
     pg_id = publication.publication_group_id
     VocabTerm.joins(:vocab_distractors)
              .where(vocab_distractors: { distractor_publication_group_id: pg_id })
-             .latest(scope: VocabTerm.all)
+             .latest
              .each { |vt| vt.build_or_update_vocab_exercises_if_latest(published_at) }
   end
 

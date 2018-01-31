@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171222002015) do
+ActiveRecord::Schema.define(version: 20180131161240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -484,13 +484,17 @@ ActiveRecord::Schema.define(version: 20171222002015) do
   add_index "openstax_accounts_groups", ["openstax_uid"], name: "index_openstax_accounts_groups_on_openstax_uid", unique: true, using: :btree
 
   create_table "publication_groups", force: :cascade do |t|
-    t.string   "publishable_type", null: false
-    t.integer  "number",           null: false
-    t.uuid     "uuid",             null: false
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.string   "publishable_type",         null: false
+    t.integer  "number",                   null: false
+    t.uuid     "uuid",                     null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "latest_version",           null: false
+    t.integer  "latest_published_version"
   end
 
+  add_index "publication_groups", ["id", "latest_published_version"], name: "index_publication_groups_on_id_and_latest_published_version", using: :btree
+  add_index "publication_groups", ["id", "latest_version"], name: "index_publication_groups_on_id_and_latest_version", using: :btree
   add_index "publication_groups", ["number", "publishable_type"], name: "index_publication_groups_on_number_and_publishable_type", unique: true, using: :btree
   add_index "publication_groups", ["publishable_type"], name: "index_publication_groups_on_publishable_type", using: :btree
   add_index "publication_groups", ["uuid"], name: "index_publication_groups_on_uuid", unique: true, using: :btree
@@ -513,7 +517,7 @@ ActiveRecord::Schema.define(version: 20171222002015) do
 
   add_index "publications", ["embargoed_until"], name: "index_publications_on_embargoed_until", using: :btree
   add_index "publications", ["license_id"], name: "index_publications_on_license_id", using: :btree
-  add_index "publications", ["publication_group_id"], name: "index_publications_on_publication_group_id", using: :btree
+  add_index "publications", ["publication_group_id", "version"], name: "index_publications_on_publication_group_id_and_version", using: :btree
   add_index "publications", ["publishable_id", "publishable_type"], name: "index_publications_on_publishable_id_and_publishable_type", unique: true, using: :btree
   add_index "publications", ["published_at"], name: "index_publications_on_published_at", using: :btree
   add_index "publications", ["uuid"], name: "index_publications_on_uuid", unique: true, using: :btree

@@ -14,7 +14,8 @@ module Exercises
         published_uids = []
         new_uids = []
 
-        exercises.each do |exercise|
+        exercises.group_by(&:number).each do |_, exs|
+          exercise = exs.max_by(&:version)
           current_tags = exercise.tags.map(&:name)
           final_tags = current_tags - removed_tags
           if final_tags == current_tags

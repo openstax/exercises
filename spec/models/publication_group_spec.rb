@@ -9,9 +9,19 @@ RSpec.describe PublicationGroup, type: :model do
   it { is_expected.to validate_presence_of(:publishable_type) }
   it { is_expected.to validate_presence_of(:uuid) }
   it { is_expected.to validate_presence_of(:number) }
+  it { is_expected.to validate_presence_of(:latest_version) }
 
-  it { is_expected.to validate_uniqueness_of(:uuid) }
+  it { is_expected.to validate_numericality_of(:latest_version).only_integer.is_greater_than(0) }
+  it do
+    is_expected.to(
+      validate_numericality_of(:latest_published_version).only_integer.is_greater_than(0).allow_nil
+    )
+  end
+
+  it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:number).scoped_to(:publishable_type) }
+
+  it { is_expected.to validate_numericality_of(:number).only_integer.is_greater_than(0) }
 
   it 'automatically assigns number and uuid on creation' do
     pg = Exercise.create.publication.publication_group
@@ -33,13 +43,6 @@ RSpec.describe PublicationGroup, type: :model do
     expect(PublicationGroup.all[-2..-1]).to(
       eq [publication_group.reload, publication_group_2.reload]
     )
-  end
-
-  it 'is readonly after creation' do
-    publication_group = FactoryBot.build :publication_group
-    expect(publication_group).not_to be_readonly
-    publication_group.save!
-    expect(publication_group).to be_readonly
   end
 
 end

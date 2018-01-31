@@ -78,9 +78,8 @@ class VocabDistractor < ActiveRecord::Base
     false
   end
 
-
   def save_distractor_term
     @distractor_term.save unless @distractor_term.nil? || @distractor_term.persisted?
-    self.distractor_publication_group_id ||= @distractor_term.publication_group_id
+    self.distractor_publication_group_id ||= @distractor_term.publication.publication_group_id
   end
 end
