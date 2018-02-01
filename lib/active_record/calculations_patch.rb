@@ -8,7 +8,8 @@ ActiveRecord::Calculations.class_exec do
   def perform_calculation(operation, column_name, options = {})
     operation = operation.to_s.downcase
 
-    # If #count is used with #distinct / #uniq it is considered distinct. (eg. relation.distinct.count)
+    # If #count is used with #distinct / #uniq it is considered distinct.
+    # (eg. relation.distinct.count)
     distinct = self.distinct_value
 
     if operation == "count"

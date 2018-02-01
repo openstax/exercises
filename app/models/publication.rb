@@ -20,25 +20,23 @@ class Publication < ActiveRecord::Base
   validates :publication_group, :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :uuid, presence: true, uniqueness: true
-  validates :version, presence: true, uniqueness: { scope: :publication_group_id }
+  validates :version, presence: true, uniqueness: { scope: :publication_group_id },
+                      numericality: { only_integer: true, greater_than: 0 }
   validate  :valid_license, :valid_publication_group
 
   before_save :before_publication
   after_save :after_publication
 
   after_initialize :build_publication_group, if: :new_record?, unless: :publication_group
-  before_validation :assign_uuid_and_version, on: :create
+  before_validation :assign_uuid_and_version
 
-  default_scope do
-    joins(:publication_group).eager_load(:publication_group)
-      .order([PublicationGroup.arel_table[:number].asc, arel_table[:version].desc])
-  end
+  default_scope { order(version: :desc) }
 
-  scope :published, -> { where{published_at != nil} }
+  scope :published,   -> { where.not(published_at: nil) }
 
-  scope :unpublished, -> { where{published_at == nil} }
+  scope :unpublished, -> { where(published_at: nil) }
 
-  scope :with_id, ->(id) {
+  scope :with_id, ->(id) do
     nn, vv = id.to_s.split('@')
 
     joins(:publication_group).where do
@@ -55,9 +53,9 @@ class Publication < ActiveRecord::Base
         wheres & (version == vv)
       end
     end.order {[publication_group.number.asc, version.desc]}
-  }
+  end
 
-  scope :visible_for, ->(user) {
+  scope :visible_for, ->(user) do
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
     next all if user.administrator
@@ -79,47 +77,27 @@ class Publication < ActiveRecord::Base
       ((list_editors.editor_id   == user_id) & (list_editors.editor_type == 'User')) |
       ((list_readers.reader_id   == user_id) & (list_readers.reader_type == 'User'))
     end
-  }
+  end
 
-  # The scope option determines how we limit the search for more recent versions
-  # Default scope: Publication.published
-  #
-  # Examples:
-  #
-  # Publication.all.latest or Publication.all.latest(scope: Publication.published)
-  # will return both the latest published versions and drafts made after them
-  #
-  # Publication.published.latest or Publication.published.latest(scope: Publication.published)
-  # will return only the latest published versions (no drafts)
-  #
-  # Publication.unpublished.latest or Publication.unpublished.latest(scope: Publication.published)
-  # will return only drafts made after the latest published versions
-  # (could return more than 1, but the draft code makes it so there's always only 1 draft)
-  #
-  # Publication.all.latest(scope: Publication.all)
-  # will return any drafts made after the latest published version if they exist,
-  # or the latest published version if there are no drafts (but not both)
-  #
-  # Publication.published.latest(scope: Publication.all)
-  # will return only latest published versions that don't have drafts made after them
-  #
-  # Publication.unpublished.latest(scope: Publication.all)
-  # will return only drafts made after the latest published versions
-  # (guaranteed to return only the latest draft)
-  scope :latest, ->(scope: nil) do
-    scope ||= published
+  # By default, returns both the latest published version and the latest draft, if any
+  # Chain to the published, unpublished or visible_for scopes
+  scope :chainable_latest, -> do
+    joins(:publication_group).where(
+      <<-WHERE_SQL.strip_heredoc
+        "publication_groups"."latest_published_version" IS NULL
+          OR "publications"."version" >= "publication_groups"."latest_published_version"
+      WHERE_SQL
+    )
+  end
 
-    where.not(
-      scope
-        .reorder(nil).limit(nil).offset(nil)
-        .from('"publications" "newer_pub"')
-        .where(
-          <<-WHERE_SQL.strip_heredoc
-            "newer_pub"."publication_group_id" = "publications"."publication_group_id"
-            AND "newer_pub"."version" > "publications"."version"
-          WHERE_SQL
-        )
-        .exists
+  # Returns only the latest version (published or draft) for each PublicationGroup
+  # Do not chain to published, unpublished or visible_for scopes
+  scope :latest, -> do
+    joins(:publication_group).where(
+      <<-WHERE_SQL.strip_heredoc
+        "publication_groups"."latest_version" IS NULL
+          OR "publications"."version" = "publication_groups"."latest_version"
+      WHERE_SQL
     )
   end
 
@@ -143,12 +121,12 @@ class Publication < ActiveRecord::Base
     is_published? && !is_embargoed? && !is_yanked?
   end
 
-  def is_latest?
-    klass = self.class
+  def is_chainable_latest?
+    version.nil? || version >= publication_group.latest_published_version
+  end
 
-    !klass.where(publication_group_id: publication_group_id)
-          .where(klass.arel_table[:version].gt version)
-          .exists?
+  def is_latest?
+    version.nil? || version == publication_group.latest_version
   end
 
   def collaborators(preload: nil)
@@ -203,47 +181,69 @@ class Publication < ActiveRecord::Base
   end
 
   def build_publication_group
+    return if publishable_type.nil?
+
     self.publication_group = PublicationGroup.new(publishable_type: publishable_type)
+  end
+
+  def assign_uuid_and_version
+    self.uuid ||= SecureRandom.uuid
+    return if publication_group.nil?
+
+    self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
+
+    publication_group.assign_uuid_and_number
+    publication_group.update_attribute :latest_version, version
   end
 
   protected
 
-  def assign_uuid_and_version
-    self.uuid ||= SecureRandom.uuid
-    self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
-  end
-
   def valid_license
     return if license.nil? || license.valid_for?(publishable_type)
+
     errors.add(:license, "is invalid for #{publishable_type}")
     false
   end
 
   def valid_publication_group
     return if publication_group.nil?
+
     publication_group.publishable_type ||= publishable_type
     return if publication_group.publishable_type == publishable_type
+
     errors.add(:publication_group, "is invalid for #{publishable_type}")
     false
   end
 
   def before_publication
     return if published_at.nil? || publishable.nil?
+
     publishable.before_publication
     return if publishable.errors.empty?
+
     publishable.errors.full_messages.each do |message|
       errors.add(publishable_type.underscore.to_sym, message)
     end
+
     false
   end
 
   def after_publication
     return if published_at.nil? || publishable.nil?
+
     publishable.after_publication
-    return if publishable.errors.empty?
+    if publishable.errors.empty?
+      publication_group.update_attribute(:latest_published_version, version) \
+        if publication_group.latest_published_version.nil? ||
+           publication_group.latest_published_version < version
+
+      return
+    end
+
     publishable.errors.full_messages.each do |message|
       errors.add(publishable_type.underscore.to_sym, message)
     end
+
     false
   end
 

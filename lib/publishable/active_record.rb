@@ -13,17 +13,19 @@ module Publishable
           has_many :derivations, through: :publication
 
           delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
-                   :authors, :copyright_holders, :derivations,
-                   :is_yanked?, :is_published?, :is_embargoed?, :is_public?, :is_latest?,
+                   :authors, :copyright_holders, :derivations, :is_yanked?, :is_published?,
+                   :is_embargoed?, :is_public?, :is_chainable_latest?, :is_latest?,
                    :has_collaborator?, :has_read_permission?, :has_write_permission?,
                    :license=, :authors=, :copyright_holders=, :derivations=,
                    to: :publication
 
-          scope :published, -> { joins(:publication).where {publication.published_at != nil} }
+          scope :published,   -> do
+            joins(:publication).where.not(publications: { published_at: nil })
+          end
 
-          scope :unpublished, -> { joins(:publication).where {publication.published_at == nil} }
+          scope :unpublished, -> { joins(:publication).where(publications: { published_at: nil }) }
 
-          scope :with_id, ->(id) {
+          scope :with_id, ->(id) do
             nn, vv = id.to_s.split('@')
 
             joins(publication: :publication_group).where do
@@ -40,10 +42,10 @@ module Publishable
               else
                 wheres & (publication.version == vv)
               end
-            end.order {[publication.publication_group.number.asc, publication.version.desc]}
-          }
+            end.order { [publication.publication_group.number.asc, publication.version.desc] }
+          end
 
-          scope :visible_for, ->(user) {
+          scope :visible_for, ->(user) do
             user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
             next published if !user.is_a?(User) || user.is_anonymous?
             next all if user.administrator
@@ -65,56 +67,27 @@ module Publishable
               ((list_editors.editor_id   == user_id) & (list_editors.editor_type == 'User')) |
               ((list_readers.reader_id   == user_id) & (list_readers.reader_type == 'User'))
             end
-          }
+          end
 
-          # The scope option determines how we limit the search for more recent versions
-          # Default scope: Klass.published
-          #
-          # Examples:
-          #
-          # Klass.all.latest or Klass.all.latest(scope: Klass.published)
-          # will return both the latest published versions and drafts made after them
-          #
-          # Klass.published.latest or Klass.published.latest(scope: Klass.published)
-          # will return only the latest published versions (no drafts)
-          #
-          # Klass.unpublished.latest or Klass.unpublished.latest(scope: Klass.published)
-          # will return only drafts made after the latest published versions
-          # (could return more than 1, but the draft code makes it so there's always only 1 draft)
-          #
-          # Klass.all.latest(scope: Klass.all)
-          # will return any drafts made after the latest published version if they exist,
-          # or the latest published version if there are no drafts (but not both)
-          #
-          # Klass.published.latest(scope: Klass.all)
-          # will return only latest published versions that don't have drafts made after them
-          #
-          # Klass.unpublished.latest(scope: Klass.all)
-          # will return only drafts made after the latest published versions
-          # (guaranteed to return only the latest draft)
-          scope :latest, ->(scope: nil) do
-            publishable_class_name = name
-            scope ||= published
+          # By default, returns both the latest published version and the latest draft, if any
+          # Chain to the published, unpublished or visible_for scopes
+          scope :chainable_latest, -> do
+            joins(publication: :publication_group).where(
+              <<-WHERE_SQL.strip_heredoc
+                "publication_groups"."latest_published_version" IS NULL
+                  OR "publications"."version" >= "publication_groups"."latest_published_version"
+              WHERE_SQL
+            )
+          end
 
-            joins(:publication).where.not(
-              Publication
-                .from(
-                  <<-FROM_SQL.strip_heredoc
-                    (
-                      #{
-                        scope.select('"publications".*').joins(:publication)
-                             .reorder(nil).limit(nil).offset(nil).to_sql
-                      }
-                    ) "newer_pub"
-                  FROM_SQL
-                )
-                .where(
-                  <<-WHERE_SQL.strip_heredoc
-                    "newer_pub"."publication_group_id" = "publications"."publication_group_id"
-                    AND "newer_pub"."version" > "publications"."version"
-                  WHERE_SQL
-                )
-                .exists
+          # Returns only the latest version (published or draft) for each PublicationGroup
+          # Do not chain to published, unpublished or visible_for scopes
+          scope :latest, -> do
+            joins(publication: :publication_group).where(
+              <<-WHERE_SQL.strip_heredoc
+                "publication_groups"."latest_version" IS NULL
+                  OR "publications"."version" = "publication_groups"."latest_version"
+              WHERE_SQL
             )
           end
 

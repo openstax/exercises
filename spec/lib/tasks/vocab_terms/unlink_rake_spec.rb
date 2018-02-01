@@ -14,18 +14,18 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
 
   let!(:published_unlinked_vocab_term) do
     FactoryBot.create :vocab_term, :published, vocab_distractors_count: 0,
-                                                distractor_literals: ['test']
+                                               distractor_literals: ['test']
   end
-  let!(:draft_unlinked_vocab_term)     do
-    published_unlinked_vocab_term.new_version.tap { |vocab_term| vocab_term.save! }
+  let!(:draft_unlinked_vocab_term) do
+    published_unlinked_vocab_term.new_version.tap(&:save!)
   end
 
   context 'for linked vocab terms' do
-    let!(:published_linked_vocab_term)   { FactoryBot.create :vocab_term, :published }
+    let!(:published_linked_vocab_term) { FactoryBot.create :vocab_term, :published }
 
     context 'where the latest version is a draft' do
-      let!(:draft_linked_vocab_term)       do
-        published_linked_vocab_term.new_version.tap { |vocab_term| vocab_term.save! }
+      let!(:draft_linked_vocab_term) do
+        published_linked_vocab_term.new_version.tap(&:save!)
       end
 
       it 'calls #unlink on the latest version draft of the linked vocab_term' do
@@ -59,7 +59,7 @@ RSpec.describe 'vocab_terms unlink', type: :rake do
           original_unlink.bind(vocab_term).call
         end
 
-        expect{ run_rake_task }.to change{ VocabTerm.count }.by(1)
+        expect{ run_rake_task }.to change { VocabTerm.count }.by(1)
 
         expect(published_linked_vocab_term.reload.vocab_distractors).not_to be_empty
         expect(published_linked_vocab_term.distractor_literals).to be_empty
