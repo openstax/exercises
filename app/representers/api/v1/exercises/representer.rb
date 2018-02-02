@@ -77,14 +77,18 @@ module Api::V1::Exercises
     def to_hash(options = {})
       user_options = options.fetch(:user_options, {})
 
-      no_solutions = Rails.cache.fetch("#{represented.cache_key}/no_solutions") do
+      no_solutions = Rails.cache.fetch(
+        "#{represented.cache_key}/no_solutions", expires_in: NEVER_EXPIRES
+      ) do
         super(options.merge(user_options: user_options.merge(no_solutions: true)))
       end
 
       return no_solutions unless user_options[:can_view_solutions] ||
                                  represented.can_view_solutions?(user_options[:user])
 
-      solutions_only = Rails.cache.fetch("#{represented.cache_key}/solutions_only") do
+      solutions_only = Rails.cache.fetch(
+        "#{represented.cache_key}/solutions_only", expires_in: NEVER_EXPIRES
+      ) do
         super(options.merge(user_options: user_options.merge(solutions_only: true)))
       end
 

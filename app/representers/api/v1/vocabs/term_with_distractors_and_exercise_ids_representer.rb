@@ -49,7 +49,9 @@ module Api::V1::Vocabs
                }
 
     def to_hash(*)
-      Rails.cache.fetch("#{represented.cache_key}/with_distractors_and_exercise_ids") { super }
+      Rails.cache.fetch(
+        "#{represented.cache_key}/with_distractors_and_exercise_ids", expires_in: NEVER_EXPIRES
+      ) { super }
     end
 
     protected
