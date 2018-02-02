@@ -22,7 +22,7 @@ module Api::V1
       of the matching VocabTerms. Only VocabTerms visible to the caller will be
       returned. The schema for the returned JSON result is shown below.
 
-      #{json_schema(Api::V1::VocabTermSearchRepresenter, include: :readable)}
+      #{json_schema(Api::V1::Vocabs::TermSearchRepresenter, include: :readable)}
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/vocab_terms',
@@ -83,12 +83,13 @@ module Api::V1
       user = current_api_user
       OSU::AccessPolicy.require_action_allowed!(:search, user, VocabTerm)
 
-      options = {user: user}
+      options = { user: user }
       result = SearchVocabTerms.call(params, options)
       return render_api_errors(result.errors) if result.errors.any?
 
-      respond_with result.outputs,
-                   { user_options: options }.merge(represent_with: VocabTermSearchRepresenter)
+      respond_with result.outputs, { user_options: options }.merge(
+        represent_with: Api::V1::Vocabs::TermSearchRepresenter
+      )
     end
 
     ##########
@@ -99,12 +100,12 @@ module Api::V1
     description <<-EOS
       Creates a VocabTerm with the given attributes.
 
-      #{json_schema(Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
+      #{json_schema(Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
                     include: :writeable)}
     EOS
     def create
       user = current_human_user
-      standard_create(VocabTerm.new, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
+      standard_create(VocabTerm.new, Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
                       user: current_api_user) do |vocab_term|
         vocab_term.publication.authors << Author.new(
           publication: vocab_term.publication, user: user
@@ -123,11 +124,11 @@ module Api::V1
     description <<-EOS
       Gets the VocabTerm that matches the provided UID.
 
-      #{json_schema(Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
+      #{json_schema(Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
                     include: :readable)}
     EOS
     def show
-      standard_read(@vocab_term, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
+      standard_read(@vocab_term, Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
                     false, user: current_api_user)
     end
 
@@ -139,15 +140,13 @@ module Api::V1
     description <<-EOS
       Updates the VocabTerm that matches the provided UID with the given attributes.
 
-      #{json_schema(Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
+      #{json_schema(Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
                     include: :writeable)}
     EOS
     def update
-      standard_update(@vocab_term, Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter,
-                      user_options: { user: current_api_user })
+      standard_update(@vocab_term, Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
+                      user: current_api_user)
     end
-
-
 
     ###########
     # destroy #
@@ -158,7 +157,8 @@ module Api::V1
       Deletes the VocabTerm that matches the provided UID.
     EOS
     def destroy
-      standard_destroy(@vocab_term)
+      standard_destroy(@vocab_term, Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
+                       user: current_api_user)
     end
 
     protected

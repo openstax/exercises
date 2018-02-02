@@ -22,5 +22,14 @@ module Exercises
     ActiveSupport.escape_html_entities_in_json = false
 
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Set the default cache store to Redis
+    # This setting cannot be set from an initializer
+    # See https://github.com/rails/rails/issues/10908
+    redis_secrets = secrets['redis']
+    config.cache_store = :redis_store, {
+      url: redis_secrets['url'],
+      namespace: redis_secrets['namespaces']['cache']
+    }
   end
 end

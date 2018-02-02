@@ -8,7 +8,7 @@ module Api::V1
       skip
     end
 
-    describe "GET index" do
+    context "GET index" do
       it "assigns all solutions as @solutions" do
         solution = CommunitySolution.create! valid_attributes
         get :index, {}, valid_session
@@ -16,7 +16,7 @@ module Api::V1
       end
     end
 
-    describe "GET show" do
+    context "GET show" do
       it "assigns the requested solution as @solution" do
         solution = CommunitySolution.create! valid_attributes
         get :show, {id: solution.to_param}, valid_session
@@ -24,8 +24,8 @@ module Api::V1
       end
     end
 
-    describe "POST create" do
-      describe "with valid params" do
+    context "POST create" do
+      context "with valid params" do
         it "creates a new CommunitySolution" do
           expect {
             post :create, {solution: valid_attributes}, valid_session
@@ -44,7 +44,7 @@ module Api::V1
         end
       end
 
-      describe "with invalid params" do
+      context "with invalid params" do
         it "assigns a newly created but unsaved solution as @solution" do
           # Trigger the behavior that occurs when invalid params are submitted
           CommunitySolution.any_instance.stub(:save).and_return(false)
@@ -61,8 +61,8 @@ module Api::V1
       end
     end
 
-    describe "PUT update" do
-      describe "with valid params" do
+    context "PUT update" do
+      context "with valid params" do
         it "updates the requested solution" do
           solution = CommunitySolution.create! valid_attributes
           # Assuming there are no other solutions in the database, this
@@ -86,7 +86,7 @@ module Api::V1
         end
       end
 
-      describe "with invalid params" do
+      context "with invalid params" do
         it "assigns the solution as @solution" do
           solution = CommunitySolution.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
@@ -105,7 +105,7 @@ module Api::V1
       end
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
       it "destroys the requested solution" do
         solution = CommunitySolution.create! valid_attributes
         expect {

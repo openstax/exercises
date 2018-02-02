@@ -22,7 +22,7 @@ module Api::V1
       of the matching Exercises. Only Exercises visible to the caller will be
       returned. The schema for the returned JSON result is shown below.
 
-      #{json_schema(Api::V1::ExerciseSearchRepresenter, include: :readable)}
+      #{json_schema(Api::V1::Exercises::SearchRepresenter, include: :readable)}
     EOS
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/exercises',
@@ -75,7 +75,9 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
-      standard_search(Exercise, SearchExercises, ExerciseSearchRepresenter, user: current_api_user)
+      standard_search(
+        Exercise, SearchExercises, Exercises::SearchRepresenter, user: current_api_user
+      )
     end
 
     ##########
@@ -86,17 +88,19 @@ module Api::V1
     description <<-EOS
       Creates an Exercise with the given attributes.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::Exercises::Representer, include: :writeable)}
     EOS
     def create
       user = current_human_user
-      standard_create(Exercise.new, nil, user: current_api_user) do |exercise|
+      standard_create(
+        Exercise.new, Api::V1::Exercises::Representer, user: current_api_user
+      ) do |exercise|
         exercise.publication.authors << Author.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.authors.any?{ |au| au.user = user }
+        ) unless exercise.publication.authors.any? { |au| au.user == user }
         exercise.publication.copyright_holders << CopyrightHolder.new(
           publication: exercise.publication, user: user
-        ) unless exercise.publication.copyright_holders.any?{ |ch| ch.user = user }
+        ) unless exercise.publication.copyright_holders.any? { |ch| ch.user == user }
       end
     end
 
@@ -108,15 +112,10 @@ module Api::V1
     description <<-EOS
       Gets the Exercise that matches the provided UID.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :readable)}
+      #{json_schema(Api::V1::Exercises::Representer, include: :readable)}
     EOS
     def show
-      render json: Api::V1::ExerciseRepresenter.new(@exercise).to_hash(
-               user_options: {
-                 user: current_api_user,
-                 versions: @exercise.versions_visible_for(current_api_user)
-               }
-             )
+      standard_read(@exercise, Api::V1::Exercises::Representer, false, user: current_api_user)
     end
 
     ##########
@@ -127,13 +126,11 @@ module Api::V1
     description <<-EOS
       Updates the Exercise that matches the provided UID with the given attributes.
 
-      #{json_schema(Api::V1::ExerciseRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::Exercises::Representer, include: :writeable)}
     EOS
     def update
-      standard_update(@exercise, nil, user: current_api_user)
+      standard_update(@exercise, Api::V1::Exercises::Representer, user: current_api_user)
     end
-
-
 
     ###########
     # destroy #
@@ -144,7 +141,7 @@ module Api::V1
       Deletes the Exercise that matches the provided UID.
     EOS
     def destroy
-      standard_destroy(@exercise, nil, user: current_api_user)
+      standard_destroy(@exercise, Api::V1::Exercises::Representer, user: current_api_user)
     end
 
     protected

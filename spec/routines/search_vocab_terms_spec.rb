@@ -9,7 +9,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
                     (definition.like_any tested_strings)}.delete_all
 
     @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
-    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
+    Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
       'tags' => ['tag1', 'tag2'],
       'term' => "Lorem ipsum",
       'definition' => "Dolor sit amet",
@@ -18,7 +18,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     @vocab_term_1.save!
 
     @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
-    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_hash(
+    Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_hash(
       'tags' => ['tag2', 'tag3'],
       'term' => "Dolorem ipsum",
       'definition' => "Quia dolor sit amet",
@@ -27,7 +27,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     @vocab_term_2.save!
 
     @vocab_term_draft = FactoryBot.build(:vocab_term)
-    Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
+    Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
       'tags' => ['all', 'the', 'tags'],
       'term' => "draft",
       'definition' => "Not ready for prime time",

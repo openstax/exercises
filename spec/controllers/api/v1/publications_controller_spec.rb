@@ -38,7 +38,7 @@ module Api::V1
           api_put :publish, exercise_author_token,
                             parameters: { exercise_id: exercise.uid.to_s }
 
-          expected_response = Api::V1::ExerciseRepresenter
+          expected_response = Api::V1::Exercises::Representer
                                 .new(exercise.reload)
                                 .to_json(user_options: { user: exercise_author.user })
           expect(response).to have_http_status(:success)
@@ -75,7 +75,7 @@ module Api::V1
                             parameters: { vocab_term_id: vocab_term.uid.to_s }
 
           expected_response = \
-            Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(vocab_term.reload)
+            Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(vocab_term.reload)
                                                                       .to_json
           expect(response).to have_http_status(:success)
           expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
@@ -109,7 +109,7 @@ module Api::V1
             community_solution_id: solution.uid.to_s
           }
 
-          expected_response = Api::V1::CommunitySolutionRepresenter.new(solution.reload).to_json
+          expected_response = Api::V1::Exercises::CommunitySolutionRepresenter.new(solution.reload).to_json
           expect(response).to have_http_status(:success)
           expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
           expect(solution.is_published?).to eq true

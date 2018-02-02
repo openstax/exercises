@@ -68,7 +68,7 @@ class Exercise < ActiveRecord::Base
 
   sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
-  belongs_to :vocab_term
+  belongs_to :vocab_term, touch: true
 
   scope :preloaded, -> {
     preload(

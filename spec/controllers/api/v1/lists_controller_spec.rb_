@@ -13,7 +13,7 @@ module Api::V1
     # ListsController. Be sure to keep this updated too.
     let(:valid_session) { {} }
 
-    describe "GET index" do
+    context "GET index" do
       it "assigns all lists as @lists" do
         list = List.create! valid_attributes
         get :index, {}, valid_session
@@ -21,7 +21,7 @@ module Api::V1
       end
     end
 
-    describe "GET show" do
+    context "GET show" do
       it "assigns the requested list as @list" do
         list = List.create! valid_attributes
         get :show, {id: list.to_param}, valid_session
@@ -29,14 +29,14 @@ module Api::V1
       end
     end
 
-    describe "GET new" do
+    context "GET new" do
       it "assigns a new list as @list" do
         get :new, {}, valid_session
         expect(assigns(:list)).to be_a_new(List)
       end
     end
 
-    describe "GET edit" do
+    context "GET edit" do
       it "assigns the requested list as @list" do
         list = List.create! valid_attributes
         get :edit, {id: list.to_param}, valid_session
@@ -44,8 +44,8 @@ module Api::V1
       end
     end
 
-    describe "POST create" do
-      describe "with valid params" do
+    context "POST create" do
+      context "with valid params" do
         it "creates a new List" do
           expect {
             post :create, {:list => valid_attributes}, valid_session
@@ -64,7 +64,7 @@ module Api::V1
         end
       end
 
-      describe "with invalid params" do
+      context "with invalid params" do
         it "assigns a newly created but unsaved list as @list" do
           # Trigger the behavior that occurs when invalid params are submitted
           List.any_instance.stub(:save).and_return(false)
@@ -81,8 +81,8 @@ module Api::V1
       end
     end
 
-    describe "PUT update" do
-      describe "with valid params" do
+    context "PUT update" do
+      context "with valid params" do
         it "updates the requested list" do
           list = List.create! valid_attributes
           # Assuming there are no other lists in the database, this
@@ -106,7 +106,7 @@ module Api::V1
         end
       end
 
-      describe "with invalid params" do
+      context "with invalid params" do
         it "assigns the list as @list" do
           list = List.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
@@ -125,7 +125,7 @@ module Api::V1
       end
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
       it "destroys the requested list" do
         list = List.create! valid_attributes
         expect {

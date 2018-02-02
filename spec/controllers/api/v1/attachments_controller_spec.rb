@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  describe AttachmentsController, type: :controller, api: true, version: :v1 do
+  RSpec.describe AttachmentsController, type: :controller, api: true, version: :v1 do
 
     let(:application)       { FactoryBot.create :doorkeeper_application }
     let(:user)              { FactoryBot.create :user, :agreed_to_terms }
@@ -34,7 +34,7 @@ module Api::V1
 
     let(:exercise_id)       { "#{exercise.number}@draft" }
 
-    describe "POST create" do
+    context "POST create" do
 
         it 'attaches a file to an exercise' do
             image = ActionDispatch::Http::UploadedFile.new({
@@ -50,7 +50,7 @@ module Api::V1
 
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
       it 'removes the attachment when called' do
         attachment = AttachFile.call(
           attachable: exercise, file: 'spec/fixtures/os_exercises_logo.png'

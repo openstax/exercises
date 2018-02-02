@@ -22,7 +22,7 @@ module Api::V1
 
       The user must have permission to view it.
 
-      #{json_schema(Api::V1::CommunitySolutionRepresenter, include: :readable)}
+      #{json_schema(Api::V1::Exercises::CommunitySolutionRepresenter, include: :readable)}
     EOS
     def show
       standard_read(@community_solution)
@@ -39,7 +39,7 @@ module Api::V1
 
       The user is set as its author and copyright holder.
 
-      #{json_schema(Api::V1::CommunitySolutionRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::Exercises::CommunitySolutionRepresenter, include: :writeable)}
     EOS
     def create
       standard_create(CommunitySolution) do |community_solution|
@@ -59,7 +59,7 @@ module Api::V1
 
       The user must have permission to edit it.
 
-      #{json_schema(Api::V1::CommunitySolutionRepresenter, include: :writeable)}
+      #{json_schema(Api::V1::Exercises::CommunitySolutionRepresenter, include: :writeable)}
     EOS
     def update
       standard_update(@community_solution)
