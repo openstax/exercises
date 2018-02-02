@@ -70,27 +70,6 @@ class Exercise < ActiveRecord::Base
 
   belongs_to :vocab_term, touch: true
 
-  scope :preloaded, -> {
-    preload(
-      :attachments,
-      :logic,
-      :tags,
-      publication: [
-        :publication_group,
-        :derivations,
-        authors: { user: :account },
-        copyright_holders: { user: :account }
-      ],
-      questions: [
-        :hints,
-        :collaborator_solutions,
-        :community_solutions,
-        answers: :stem_answers,
-        stems: [ :stylings, :combo_choices ]
-      ]
-    )
-  }
-
   def content_equals?(other_exercise)
     return false unless other_exercise.is_a? ActiveRecord::Base
 
