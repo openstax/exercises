@@ -2,9 +2,9 @@ module Api::V1
   class PublicationsController < OpenStax::Api::V1::ApiController
 
     PUBLISH_REPRESENTERS = {
-      'CommunitySolution' => 'Api::V1::CommunitySolutionRepresenter',
-      'Exercise'          => 'Api::V1::ExerciseRepresenter',
-      'VocabTerm'         => 'Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter',
+      'CommunitySolution' => 'Api::V1::Exercises::CommunitySolutionRepresenter',
+      'Exercise'          => 'Api::V1::Exercises::Representer',
+      'VocabTerm'         => 'Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter',
     }
 
     before_filter :get_publishable

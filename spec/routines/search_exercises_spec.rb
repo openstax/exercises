@@ -14,7 +14,7 @@ RSpec.describe SearchExercises, type: :routine do
                    (answers.content.like_any tested_strings)}.delete_all
 
     @exercise_1 = Exercise.new
-    Api::V1::ExerciseRepresenter.new(@exercise_1).from_hash(
+    Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
       'tags' => ['tag1', 'tag2'],
       'title' => "Lorem ipsum",
       'stimulus' => "Dolor",
@@ -30,7 +30,7 @@ RSpec.describe SearchExercises, type: :routine do
     @exercise_1.publication.publish.save!
 
     @exercise_2 = Exercise.new
-    Api::V1::ExerciseRepresenter.new(@exercise_2).from_hash(
+    Api::V1::Exercises::Representer.new(@exercise_2).from_hash(
       'tags' => ['tag2', 'tag3'],
       'title' => "Dolorem ipsum",
       'stimulus' => "Quia dolor",
@@ -46,7 +46,7 @@ RSpec.describe SearchExercises, type: :routine do
     @exercise_2.publication.publish.save!
 
     @exercise_draft = FactoryBot.build(:exercise)
-    Api::V1::ExerciseRepresenter.new(@exercise_draft).from_hash(
+    Api::V1::Exercises::Representer.new(@exercise_draft).from_hash(
       'tags' => ['all', 'the', 'tags'],
       'title' => "DRAFT",
       'stimulus' => "This is a draft",

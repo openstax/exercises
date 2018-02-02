@@ -8,7 +8,7 @@ module Api::V1
       skip
     end
 
-    describe "GET index" do
+    context "GET index" do
       it "assigns all deputizations as @deputizations" do
         deputization = Deputization.create! valid_attributes
         get :index, {}, valid_session
@@ -16,8 +16,8 @@ module Api::V1
       end
     end
 
-    describe "POST create" do
-      describe "with valid params" do
+    context "POST create" do
+      context "with valid params" do
         it "creates a new Deputization" do
           expect {
             post :create, {:deputization => valid_attributes}, valid_session
@@ -36,7 +36,7 @@ module Api::V1
         end
       end
 
-      describe "with invalid params" do
+      context "with invalid params" do
         it "assigns a newly created but unsaved deputization as @deputization" do
           # Trigger the behavior that occurs when invalid params are submitted
           Deputization.any_instance.stub(:save).and_return(false)
@@ -53,7 +53,7 @@ module Api::V1
       end
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
       it "destroys the requested deputization" do
         deputization = Deputization.create! valid_attributes
         expect {

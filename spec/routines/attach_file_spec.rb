@@ -37,16 +37,16 @@ RSpec.describe AttachFile, type: :routine do
     expect(attachable).to be_persisted
     attachment = attachable.attachments.last
     expect(output.as_json).to match(
-                                'attachment' => a_hash_including(
-                                  "id"          => attachment.id,
-                                  "parent_id"   => attachment.parent.id,
-                                  "parent_type" => "Exercise"
-                                ),
-                                'large_url'  => a_string_starting_with("/attachments/large_"),
-                                'medium_url' => a_string_starting_with("/attachments/medium_"),
-                                'small_url'  => a_string_starting_with("/attachments/small_"),
-                                'url'        => a_string_starting_with("/attachments/")
-                              )
+      'attachment' => a_hash_including(
+        "id"          => attachment.id,
+        "parent_id"   => attachment.parent.id,
+        "parent_type" => "Exercise"
+      ),
+      'large_url'  => a_string_starting_with("/attachments/large_"),
+      'medium_url' => a_string_starting_with("/attachments/medium_"),
+      'small_url'  => a_string_starting_with("/attachments/small_"),
+      'url'        => a_string_starting_with("/attachments/")
+    )
 
   end
 end

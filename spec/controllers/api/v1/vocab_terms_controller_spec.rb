@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  describe VocabTermsController, type: :controller, api: true, version: :v1 do
+  RSpec.describe VocabTermsController, type: :controller, api: true, version: :v1 do
 
     let(:application)       { FactoryBot.create :doorkeeper_application }
     let(:user)              { FactoryBot.create :user, :agreed_to_terms }
@@ -24,7 +24,7 @@ module Api::V1
       )
     end
 
-    describe "GET index" do
+    context "GET index" do
 
       before do
         10.times do
@@ -37,7 +37,7 @@ module Api::V1
                         (definition.like_any tested_strings)}.delete_all
 
         @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
-        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
+        Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
           'tags' => ['tag1', 'tag2'],
           'term' => "Lorem ipsum",
           'definition' => "Dolor sit amet",
@@ -46,7 +46,7 @@ module Api::V1
         @vocab_term_1.save!
 
         @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
-        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_hash(
+        Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_hash(
           'tags' => ['tag2', 'tag3'],
           'term' => "Dolorem ipsum",
           'definition' => "Quia dolor sit amet",
@@ -55,7 +55,7 @@ module Api::V1
         @vocab_term_2.save!
 
         @vocab_term_draft = FactoryBot.build(:vocab_term)
-        Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
+        Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
           'tags' => ['all', 'the', 'tags'],
           'term' => "draft",
           'definition' => "Not ready for prime time",
@@ -163,7 +163,7 @@ module Api::V1
 
     end
 
-    describe "GET show" do
+    context "GET show" do
 
       before do
         @vocab_term.publication.publish
@@ -237,14 +237,14 @@ module Api::V1
 
     end
 
-    describe "POST create" do
+    context "POST create" do
 
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
         @vocab_term.distractor_terms.each(&:save!)
 
         expect {
           api_post :create, user_token,
-                   raw_post_data: Api::V1::VocabTermWithDistractorsAndExerciseIdsRepresenter.new(
+                   raw_post_data: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
                    ).to_json(user_options: { user: user })
         }.to change(VocabTerm, :count).by(1)
@@ -259,7 +259,7 @@ module Api::V1
       end
     end
 
-    describe "PATCH update" do
+    context "PATCH update" do
 
       before do
         @vocab_term.save!
@@ -340,7 +340,7 @@ module Api::V1
 
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
 
       it "deletes the requested draft VocabTerm" do
         @vocab_term.save!

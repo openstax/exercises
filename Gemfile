@@ -139,6 +139,9 @@ gem 'oj'
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
+# Key-value store for caching
+gem 'redis-rails'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'

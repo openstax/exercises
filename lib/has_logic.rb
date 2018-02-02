@@ -23,12 +23,14 @@ module HasLogic
 
   module Roar
     module Decorator
-      def has_logic
+      def has_logic(options={})
         property :logic,
-                 class: Logic,
-                 extend: Api::V1::LogicRepresenter,
-                 writeable: true,
-                 readable: true
+                 {
+                   class: Logic,
+                   extend: Api::V1::Exercises::LogicRepresenter,
+                   writeable: true,
+                   readable: true
+                 }.merge(options)
       end
     end
   end

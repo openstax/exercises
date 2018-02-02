@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Api::V1
-  describe ExercisesController, type: :controller, api: true, version: :v1 do
+  RSpec.describe ExercisesController, type: :controller, api: true, version: :v1 do
 
     let(:application)       { FactoryBot.create :doorkeeper_application }
     let(:user)              { FactoryBot.create :user, :agreed_to_terms }
@@ -24,7 +24,7 @@ module Api::V1
       )
     end
 
-    describe "GET index" do
+    context "GET index" do
 
       before do
         10.times { FactoryBot.create(:exercise, :published) }
@@ -39,7 +39,7 @@ module Api::V1
                        (answers.content.like_any tested_strings)}.delete_all
 
         @exercise_1 = FactoryBot.build(:exercise, :published)
-        Api::V1::ExerciseRepresenter.new(@exercise_1).from_hash(
+        Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
           'tags' => ['tag1', 'tag2'],
           'title' => "Lorem ipsum",
           'stimulus' => "Dolor",
@@ -54,7 +54,7 @@ module Api::V1
         @exercise_1.save!
 
         @exercise_2 = FactoryBot.build(:exercise, :published)
-        Api::V1::ExerciseRepresenter.new(@exercise_2).from_hash(
+        Api::V1::Exercises::Representer.new(@exercise_2).from_hash(
           'tags' => ['tag2', 'tag3'],
           'title' => "Dolorem ipsum",
           'stimulus' => "Quia dolor",
@@ -69,7 +69,7 @@ module Api::V1
         @exercise_2.save!
 
         @exercise_draft = FactoryBot.build(:exercise)
-        Api::V1::ExerciseRepresenter.new(@exercise_draft).from_hash(
+        Api::V1::Exercises::Representer.new(@exercise_draft).from_hash(
           'tags' => ['all', 'the', 'tags'],
           'title' => "DRAFT",
           'stimulus' => "This is a draft",
@@ -183,7 +183,7 @@ module Api::V1
 
     end
 
-    describe "GET show" do
+    context "GET show" do
 
       before do
         @exercise.publication.publish
@@ -326,11 +326,12 @@ module Api::V1
 
     end
 
-    describe "POST create" do
+    context "POST create" do
+      before { Rails.cache.clear }
 
       it "creates the requested Exercise and assigns the user as author and CR holder" do
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter
+                          raw_post_data: Api::V1::Exercises::Representer
                                            .new(@exercise).to_json(user_options: { user: user })
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
@@ -365,7 +366,7 @@ module Api::V1
         )
 
         expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::ExerciseRepresenter
+                          raw_post_data: Api::V1::Exercises::Representer
                                            .new(exercise).to_json(user_options: { user: user })
         }.to change(Exercise, :count).by(1)
         expect(response).to have_http_status(:success)
@@ -377,7 +378,7 @@ module Api::V1
 
     end
 
-    describe "PATCH update" do
+    context "PATCH update" do
 
       before do
         @exercise.save!
@@ -458,7 +459,7 @@ module Api::V1
 
     end
 
-    describe "DELETE destroy" do
+    context "DELETE destroy" do
 
       it "deletes the requested draft Exercise" do
         @exercise.save!

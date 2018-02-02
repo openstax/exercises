@@ -24,16 +24,18 @@ module HasTags
 
   module Roar
     module Decorator
-      def has_tags
+      def has_tags(options = {})
         collection :tags,
-                   writeable: true,
-                   readable: true,
-                   setter: AR_COLLECTION_SETTER,
-                   schema_info: {
-                     items: {
-                       type: "string"
+                   {
+                     writeable: true,
+                     readable: true,
+                     setter: AR_COLLECTION_SETTER,
+                     schema_info: {
+                       items: {
+                         type: "string"
+                       }
                      }
-                   }
+                   }.merge(options)
       end
     end
   end

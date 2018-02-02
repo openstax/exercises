@@ -11,22 +11,24 @@ module Stylable
 
   module Roar
     module Decorator
-      def stylable
+      def stylable(options = {})
         collection :stylings,
-                   as: :formats,
-                   type: String,
-                   readable: true,
-                   serialize: ->(input:, **) { input.style },
-                   writeable: true,
-                   class: Styling,
-                   deserialize: ->(input:, fragment:, **) do
-                     input.tap { |input| input.style = fragment }
-                   end,
-                   setter: AR_COLLECTION_SETTER,
-                   schema_info: {
-                     required: true,
-                     description: 'The question formats allowed for this object'
-                   }
+                   {
+                     as: :formats,
+                     type: String,
+                     readable: true,
+                     serialize: ->(input:, **) { input.style },
+                     writeable: true,
+                     class: Styling,
+                     deserialize: ->(input:, fragment:, **) do
+                       input.tap { |input| input.style = fragment }
+                     end,
+                     setter: AR_COLLECTION_SETTER,
+                     schema_info: {
+                       required: true,
+                       description: 'The question formats allowed for this object'
+                     }
+                   }.merge(options)
       end
     end
   end
