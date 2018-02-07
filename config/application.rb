@@ -6,6 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# For cache entries that should never expire but that we still want to evict if Redis is OOM
+NEVER_EXPIRES = 68.years
+
 module Exercises
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -29,7 +32,9 @@ module Exercises
     redis_secrets = secrets['redis']
     config.cache_store = :redis_store, {
       url: redis_secrets['url'],
-      namespace: redis_secrets['namespaces']['cache']
+      namespace: redis_secrets['namespaces']['cache'],
+      expires_in: 1.day,
+      compress: true
     }
   end
 end
