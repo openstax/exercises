@@ -51,16 +51,6 @@ class VocabTerm < ActiveRecord::Base
 
   validates :name, :exercises, presence: true
 
-  scope :preloaded, -> {
-    preload(:tags,
-            :vocab_distractors,
-            publication: [
-              :publication_group,
-              {authors: :user},
-              {copyright_holders: :user}
-            ])
-  }
-
   def content_equals?(other_vocab_term)
     return false unless other_vocab_term.is_a? ActiveRecord::Base
 

@@ -29,7 +29,7 @@ class SearchVocabTerms
     # this "latest_visible" condition is disabled.
     latest_visible = true
 
-    run(:search, relation: relation.preloaded,
+    run(:search, relation: relation,
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
 
