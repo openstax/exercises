@@ -1,4 +1,4 @@
-# Imports an xlsx file
+# Imports Exercises from an xlsx file
 module Xlsx
   module Importer
 

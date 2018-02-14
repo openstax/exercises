@@ -1,9 +1,9 @@
-# Tags Exercises based on an xlsx file
+# Maps Exercises between CNX modules (updating cnxmod tags) using an xlsx file
 # Row format:
-# - Exercise UID
-# - Tags...
+# - CNX UUID
+# - CNX UUID
 module Exercises
-  module Tag
+  module Map
     class Xlsx
 
       lev_routine
@@ -20,29 +20,30 @@ module Exercises
         record_failures do |failures|
           book.each_row_streaming(offset: row_offset, pad_cells: true)
               .each_with_index do |row, row_index|
-            values = 0.upto(row.size - 1).map do |index|
-              row[index].try!(:value).try!(:to_s)
-            end.compact
-            next if values.size < 2
+            values = (0..1).map { |index| row[index].try!(:value).try!(:to_s) }
+            next if values.any?(&:nil?)
 
-            exercise_numbers = values.first.split(',').map(&:to_i)
-            exercises = Exercise.joins(publication: :publication_group)
-                                .where(publication: {publication_group: {number: exercise_numbers}})
+            src_uuids = values.first.split(',')
+            src_tags = src_uuids.map { |uuid| "context-cnxmod:#{uuid}" }
+
+            exercises = Exercise.joins(:tags)
+                                .where(tags: { name: src_tags })
                                 .preload(:tags, publication: :publication_group)
                                 .latest
 
-            not_found_numbers = exercise_numbers - exercises.map(&:number)
+            not_found_tags = src_tags - exercises.flat_map(&:tags).map(&:name)
 
             Rails.logger.warn do
-              "WARNING: Couldn't find any Exercises with numbers #{not_found_numbers.join(', ')}"
-            end unless not_found_numbers.empty?
+              "WARNING: Couldn't find any Exercises with tag(s) #{not_found_tags.join(', ')}"
+            end unless not_found_tags.empty?
 
-            tags = values.slice(1..-1).flat_map { |value| value.split(',') }
+            dest_uuids = values.second.split(',')
+            dest_tags = dest_uuids.map { |uuid| "context-cnxmod:#{uuid}" }
 
             row_number = row_index + row_offset + 1
 
             begin
-              tag(exercises, tags, row_number)
+              tag(exercises, dest_tags, row_number)
             rescue StandardError => se
               Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
               failures[row_number] = se.to_s

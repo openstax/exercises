@@ -32,7 +32,7 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
     end
   end
 
-  it 'skips exercises with no changes' do
+  it 'skips exercises with no changes (idempotence)' do
     expect { described_class.call(filename: fixture_path) }.to change{ ExerciseTag.count }.by(20)
 
     expect { described_class.call(filename: fixture_path) }.not_to change{ ExerciseTag.count }
