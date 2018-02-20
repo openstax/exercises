@@ -91,16 +91,34 @@ module Api::V1
       #{json_schema(Api::V1::Exercises::Representer, include: :writeable)}
     EOS
     def create
+      exercise = Exercise.new
       user = current_human_user
-      standard_create(
-        Exercise.new, Api::V1::Exercises::Representer, user: current_api_user
-      ) do |exercise|
-        exercise.publication.authors << Author.new(
-          publication: exercise.publication, user: user
-        ) unless exercise.publication.authors.any? { |au| au.user == user }
-        exercise.publication.copyright_holders << CopyrightHolder.new(
-          publication: exercise.publication, user: user
-        ) unless exercise.publication.copyright_holders.any? { |ch| ch.user == user }
+
+      create_options = { status: :created, location: nil }
+      represent_with_options = {
+        user_options: { user: current_api_user }, represent_with: Api::V1::Exercises::Representer
+      }
+
+      Exercise.transaction do
+        consume!(exercise, represent_with_options.dup)
+
+        publication = exercise.publication
+        publication.authors << Author.new(
+          publication: publication, user: user
+        ) unless publication.authors.any? { |au| au.user = user }
+        publication.copyright_holders << CopyrightHolder.new(
+          publication: publication, user: user
+        ) unless publication.copyright_holders.any? { |ch| ch.user = user }
+        publication_group = publication.publication_group
+
+        OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, exercise)
+
+        if exercise.save && publication_group.save
+          respond_with exercise, create_options.merge(represent_with_options)
+        else
+          render_api_errors(publication_group.errors) || render_api_errors(exercise.errors)
+          raise ActiveRecord::Rollback
+        end
       end
     end
 
@@ -129,7 +147,24 @@ module Api::V1
       #{json_schema(Api::V1::Exercises::Representer, include: :writeable)}
     EOS
     def update
-      standard_update(@exercise, Api::V1::Exercises::Representer, user: current_api_user)
+      OSU::AccessPolicy.require_action_allowed!(:update, current_api_user, @exercise)
+
+      represent_with_options = {
+        user_options: { user: current_api_user }, represent_with: Api::V1::Exercises::Representer
+      }
+
+      @exercise.with_lock do
+        consume!(@exercise, represent_with_options.dup)
+
+        publication_group = @exercise.publication.publication_group
+        if @exercise.save && publication_group.save
+          respond_with @exercise,
+                       represent_with_options.merge(responder: ResponderWithPutPatchDeleteContent)
+        else
+          render_api_errors(publication_group.errors) || render_api_errors(@exercise.errors)
+          raise ActiveRecord::Rollback
+        end
+      end
     end
 
     ###########

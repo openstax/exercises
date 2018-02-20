@@ -16,7 +16,7 @@ module Publishable
                    :authors, :copyright_holders, :derivations, :is_yanked?, :is_published?,
                    :is_embargoed?, :is_public?, :is_chainable_latest?, :is_latest?,
                    :has_collaborator?, :has_read_permission?, :has_write_permission?,
-                   :license=, :authors=, :copyright_holders=, :derivations=,
+                   :license=, :authors=, :copyright_holders=, :derivations=, :nickname, :nickname=,
                    to: :publication
 
           scope :published,   -> do
@@ -92,6 +92,8 @@ module Publishable
           end
 
           after_initialize :build_publication, if: :new_record?, unless: :publication
+
+          validates :publication, presence: true
           after_create :ensure_publication!
 
           # Retrieves all versions of this publishable visible for the given user
@@ -105,6 +107,10 @@ module Publishable
           def after_publication
           end
 
+          # A publication is not valid without a number and version
+          # But if we add the number and version too early they may be used by someone else
+          # So we don't validate the publication and instead check if it was saved afterwards
+          # Will probably have to add better error handling/retry when we have more users
           def ensure_publication!
             raise ::ActiveRecord::RecordInvalid, publication unless publication.persisted?
           end

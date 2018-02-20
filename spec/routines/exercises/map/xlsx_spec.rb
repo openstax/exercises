@@ -22,7 +22,7 @@ RSpec.describe Exercises::Map::Xlsx, type: :routine do
 
   let!(:exercises) do
     (1..4).map do |ii|
-      FactoryBot.create(:publication, number: -ii).publishable.tap do |exercise|
+      FactoryBot.create(:publication, number: ii).publishable.tap do |exercise|
         exercise.tags << source_tags[ii - 1]
       end
     end

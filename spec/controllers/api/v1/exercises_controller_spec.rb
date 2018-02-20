@@ -22,6 +22,7 @@ module Api::V1
       @exercise.publication.authors << FactoryBot.build(
         :author, user: user, publication: @exercise.publication
       )
+      @exercise.nickname = 'MyExercise'
     end
 
     context "GET index" do
@@ -330,13 +331,15 @@ module Api::V1
       before { Rails.cache.clear }
 
       it "creates the requested Exercise and assigns the user as author and CR holder" do
-        expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::Exercises::Representer
-                                           .new(@exercise).to_json(user_options: { user: user })
-        }.to change(Exercise, :count).by(1)
+        expect do
+          api_post :create, user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+            @exercise
+          ).to_hash(user_options: { user: user })
+        end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
         new_exercise = Exercise.last
+        expect(new_exercise.nickname).to eq 'MyExercise'
         expect(new_exercise.title).to eq @exercise.title
         expect(new_exercise.stimulus).to eq @exercise.stimulus
 
@@ -365,15 +368,29 @@ module Api::V1
           :author, user: user, publication: @exercise.publication
         )
 
-        expect { api_post :create, user_token,
-                          raw_post_data: Api::V1::Exercises::Representer
-                                           .new(exercise).to_json(user_options: { user: user })
-        }.to change(Exercise, :count).by(1)
+        expect do
+          api_post :create, user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+            exercise
+          ).to_hash(user_options: { user: user })
+        end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
         new_exercise = Exercise.last
 
         expect(new_exercise.questions.first.collaborator_solutions).not_to be_empty
+      end
+
+      it "fails if the nickname has already been taken" do
+        FactoryBot.create :publication_group, nickname: 'MyExercise'
+
+        expect do
+          api_post :create, user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+            @exercise
+          ).to_hash(user_options: { user: user })
+        end.not_to change { Exercise.count }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body_as_hash[:errors].first[:code]).to eq 'nickname_has_already_been_taken'
       end
 
     end
@@ -387,12 +404,14 @@ module Api::V1
       end
 
       it "updates the requested Exercise" do
-        api_patch :update, user_token, parameters: { id: @exercise.uid },
-                                       raw_post_data: { title: "Ipsum lorem" }
+        api_patch :update, user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+          nickname: 'MyExercise', title: "Ipsum lorem"
+        }
         expect(response).to have_http_status(:success)
         @exercise.reload
         new_attributes = @exercise.attributes
 
+        expect(@exercise.nickname).to eq 'MyExercise'
         expect(@exercise.title).to eq "Ipsum lorem"
         expect(new_attributes.except('title', 'updated_at'))
           .to eq(@old_attributes.except('title', 'updated_at'))
@@ -401,12 +420,27 @@ module Api::V1
       it "fails if the exercise is published and \"@draft\" was not requested" do
         @exercise.publication.publish.save!
 
-        expect{ api_patch :update, user_token, parameters: { id: @exercise.uid },
-                                               raw_post_data: { title: "Ipsum lorem" } }.to(
-          raise_error(SecurityTransgression)
-        )
+        expect do
+          api_patch :update, user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+            nickname: 'MyExercise', title: "Ipsum lorem"
+          }
+        end.to raise_error(SecurityTransgression)
         @exercise.reload
 
+        expect(@exercise.attributes).to eq @old_attributes
+      end
+
+      it "fails if the nickname has already been taken" do
+        FactoryBot.create :publication_group, nickname: 'MyExercise2'
+
+        api_patch :update, user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+          nickname: 'MyExercise2', title: "Ipsum lorem"
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body_as_hash[:errors].first[:code]).to eq 'nickname_has_already_been_taken'
+
+        @exercise.reload
         expect(@exercise.attributes).to eq @old_attributes
       end
 
@@ -416,8 +450,10 @@ module Api::V1
         exercise_2.save!
         exercise_2.reload
 
-        api_patch :update, user_token, parameters: { id: "#{@exercise.number}@draft" },
-                                       raw_post_data: { title: "Ipsum lorem" }
+        id = "#{@exercise.number}@draft"
+        api_patch :update, user_token, parameters: { id: id }, raw_post_data: {
+          nickname: 'MyExercise', title: "Ipsum lorem"
+        }
         expect(response).to have_http_status(:success)
         @exercise.reload
 
@@ -427,6 +463,7 @@ module Api::V1
         new_exercise = Exercise.with_id(uid).first
         new_attributes = new_exercise.attributes
 
+        expect(new_exercise.nickname).to eq 'MyExercise'
         expect(new_exercise.title).to eq "Ipsum lorem"
         expect(new_attributes.except('title', 'updated_at'))
           .to eq(exercise_2.attributes.except('title', 'updated_at'))
@@ -435,11 +472,12 @@ module Api::V1
       it "creates a new draft version if no draft and \"@draft\" is requested" do
         @exercise.publication.publish.save!
 
-        expect{
-          api_patch :update, user_token, parameters: { id: "#{@exercise.number}@draft" },
-                                         raw_post_data: { title: "Ipsum lorem" } }.to(
-          change{ Exercise.count }.by(1)
-        )
+        id = "#{@exercise.number}@draft"
+        expect do
+          api_patch :update, user_token, parameters: { id: id }, raw_post_data: {
+            nickname: 'MyExercise', title: "Ipsum lorem"
+          }
+        end.to change{ Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
         @exercise.reload
 
@@ -452,6 +490,7 @@ module Api::V1
         expect(new_exercise.id).not_to eq @exercise.id
         expect(new_exercise.number).to eq @exercise.number
         expect(new_exercise.version).to eq @exercise.version + 1
+        expect(new_exercise.nickname).to eq 'MyExercise'
         expect(new_exercise.title).to eq "Ipsum lorem"
         expect(new_attributes.except('id', 'title', 'created_at', 'updated_at'))
           .to eq(@old_attributes.except('id', 'title', 'created_at', 'updated_at'))

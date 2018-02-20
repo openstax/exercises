@@ -13,7 +13,7 @@ class VocabDistractor < ActiveRecord::Base
 
   delegate :group_uuid, :number, to: :distractor_publication_group, allow_nil: true
   delegate :tags, :uuid, :version, :uid, :published_at, :license, :authors, :copyright_holders,
-           :derivations, :name, :definition, to: :distractor_term
+           :derivations, :nickname, :name, :definition, to: :distractor_term
 
   def reload
     @distractor_term = nil
@@ -36,7 +36,9 @@ class VocabDistractor < ActiveRecord::Base
   def group_uuid=(new_group_uuid)
     @distractor_term = nil if new_group_uuid != group_uuid
 
-    self.distractor_publication_group = PublicationGroup.find_by(uuid: new_group_uuid)
+    self.distractor_publication_group = PublicationGroup.find_by(
+      uuid: new_group_uuid, publishable_type: 'VocabTerm'
+    )
   end
 
   def number=(new_number)

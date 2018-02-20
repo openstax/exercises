@@ -22,6 +22,7 @@ module Api::V1
       @vocab_term.publication.authors << FactoryBot.build(
         :author, user: user, publication: @vocab_term.publication
       )
+      @vocab_term.nickname = 'MyVocab'
     end
 
     context "GET index" do
@@ -55,7 +56,8 @@ module Api::V1
         @vocab_term_2.save!
 
         @vocab_term_draft = FactoryBot.build(:vocab_term)
-        Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
+        Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft)
+                                                                     .from_hash(
           'tags' => ['all', 'the', 'tags'],
           'term' => "draft",
           'definition' => "Not ready for prime time",
@@ -222,7 +224,7 @@ module Api::V1
         @vocab_term_2.destroy
 
         expect{ api_get :show, user_token, parameters: { id: "#{@vocab_term.number}@draft" } }.to(
-          change{ VocabTerm.count }.by(1)
+          change { VocabTerm.count }.by(1)
         )
         expect(response).to have_http_status(:success)
 
@@ -238,24 +240,41 @@ module Api::V1
     end
 
     context "POST create" do
+      before do
+        @vocab_term.distractor_terms.each(&:save!)
+        Rails.cache.clear
+      end
 
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
-        @vocab_term.distractor_terms.each(&:save!)
-
-        expect {
+        expect do
           api_post :create, user_token,
                    raw_post_data: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
-                   ).to_json(user_options: { user: user })
-        }.to change(VocabTerm, :count).by(1)
+                   ).to_hash(user_options: { user: user })
+        end.to change { VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
 
         new_vocab_term = VocabTerm.last
+        expect(new_vocab_term.nickname).to eq 'MyVocab'
         expect(new_vocab_term.name).to eq @vocab_term.name
         expect(new_vocab_term.definition).to eq @vocab_term.definition
 
         expect(new_vocab_term.authors.first.user).to eq user
         expect(new_vocab_term.copyright_holders.first.user).to eq user
+      end
+
+      it "fails if the nickname has already been taken" do
+        FactoryBot.create :publication_group, nickname: 'MyVocab'
+
+        expect do
+          api_post :create, user_token,
+                   raw_post_data: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
+                     @vocab_term
+                   ).to_hash(user_options: { user: user })
+        end.not_to change { VocabTerm.count }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body_as_hash[:errors].first[:code]).to eq 'nickname_has_already_been_taken'
       end
     end
 
@@ -269,11 +288,12 @@ module Api::V1
 
       it "updates the requested VocabTerm" do
         api_patch :update, user_token, parameters: { id: @vocab_term.uid },
-                                       raw_post_data: { term: "Ipsum lorem" }
+                                       raw_post_data: { nickname: 'MyVocab', term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
         new_attributes = @vocab_term.attributes
 
+        expect(@vocab_term.nickname).to eq 'MyVocab'
         expect(@vocab_term.name).to eq "Ipsum lorem"
         expect(new_attributes.except('name', 'updated_at'))
           .to eq(@old_attributes.except('name', 'updated_at'))
@@ -282,12 +302,26 @@ module Api::V1
       it "fails if the vocab_term is published and \"@draft\" was not requested" do
         @vocab_term.publication.publish.save!
 
-        expect{ api_patch :update, user_token, parameters: { id: @vocab_term.uid },
-                                               raw_post_data: { term: "Ipsum lorem" } }.to(
-          raise_error(SecurityTransgression)
-        )
-        @vocab_term.reload
+        expect do
+          api_patch :update, user_token, parameters: { id: @vocab_term.uid },
+                                         raw_post_data: { nickname: 'MyVocab', term: "Ipsum lorem" }
+        end.to raise_error(SecurityTransgression)
 
+        @vocab_term.reload
+        expect(@vocab_term.attributes).to eq @old_attributes
+      end
+
+      it "fails if the nickname has already been taken" do
+        FactoryBot.create :publication_group, nickname: 'MyVocab2'
+
+        api_patch :update, user_token, parameters: { id: @vocab_term.uid }, raw_post_data: {
+          nickname: 'MyVocab2', title: "Ipsum lorem"
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body_as_hash[:errors].first[:code]).to eq 'nickname_has_already_been_taken'
+
+        @vocab_term.reload
         expect(@vocab_term.attributes).to eq @old_attributes
       end
 
@@ -298,7 +332,7 @@ module Api::V1
         vocab_term_2.reload
 
         api_patch :update, user_token, parameters: { id: "#{@vocab_term.number}@draft" },
-                                       raw_post_data: { term: "Ipsum lorem" }
+                                       raw_post_data: { nickname: 'MyVocab', term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
@@ -308,6 +342,7 @@ module Api::V1
         new_vocab_term = VocabTerm.with_id(uid).first
         new_attributes = new_vocab_term.attributes
 
+        expect(new_vocab_term.nickname).to eq 'MyVocab'
         expect(new_vocab_term.name).to eq "Ipsum lorem"
         expect(new_attributes.except('name', 'updated_at'))
           .to eq(vocab_term_2.attributes.except('name', 'updated_at'))
@@ -316,11 +351,10 @@ module Api::V1
       it "creates a new draft version if no draft and \"@draft\" is requested" do
         @vocab_term.publication.publish.save!
 
-        expect{
+        expect do
           api_patch :update, user_token, parameters: { id: "#{@vocab_term.number}@draft" },
-                                         raw_post_data: { term: "Ipsum lorem" } }.to(
-          change{ VocabTerm.count }.by(1)
-        )
+                                         raw_post_data: { nickname: 'MyVocab', term: "Ipsum lorem" }
+        end.to change{ VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
@@ -333,6 +367,7 @@ module Api::V1
         expect(new_vocab_term.id).not_to eq @vocab_term.id
         expect(new_vocab_term.number).to eq @vocab_term.number
         expect(new_vocab_term.version).to eq @vocab_term.version + 1
+        expect(new_vocab_term.nickname).to eq "MyVocab"
         expect(new_vocab_term.name).to eq "Ipsum lorem"
         expect(new_attributes.except('id', 'name', 'created_at', 'updated_at'))
           .to eq(@old_attributes.except('id', 'name', 'created_at', 'updated_at'))

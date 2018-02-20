@@ -15,7 +15,7 @@ class Publication < ActiveRecord::Base
                          dependent: :destroy,
                          inverse_of: :source_publication
 
-  delegate :group_uuid, :number, to: :publication_group
+  delegate :group_uuid, :number, :nickname, :nickname=, to: :publication_group
 
   validates :publication_group, :publishable, presence: true
   validates :publishable_id, uniqueness: { scope: :publishable_type }
@@ -193,7 +193,8 @@ class Publication < ActiveRecord::Base
     self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
 
     publication_group.assign_uuid_and_number
-    publication_group.update_attribute :latest_version, version
+    publication_group.new_record? ? publication_group.latest_version = version :
+                                    publication_group.update_attribute(:latest_version, version)
   end
 
   protected
@@ -209,9 +210,12 @@ class Publication < ActiveRecord::Base
     return if publication_group.nil?
 
     publication_group.publishable_type ||= publishable_type
-    return if publication_group.publishable_type == publishable_type
 
-    errors.add(:publication_group, "is invalid for #{publishable_type}")
+    return if publication_group.publishable_type == publishable_type && publication_group.valid?
+
+    errors.add(:publication_group, "is invalid for #{publishable_type}") \
+      if publication_group.publishable_type != publishable_type
+    publication_group.errors.each { |attribute, error| errors.add attribute, error }
     false
   end
 
