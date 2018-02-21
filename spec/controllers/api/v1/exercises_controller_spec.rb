@@ -201,49 +201,63 @@ module Api::V1
         }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the Exercise requested by uuid" do
         api_get :show, user_token, parameters: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the Exercise requested by uid" do
         api_get :show, user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the latest published Exercise if only the group_uuid is specified" do
         api_get :show, user_token, parameters: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the latest published Exercise if only the number is specified" do
         api_get :show, user_token, parameters: { id: @exercise.number }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise_2.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise_2.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the latest draft Exercise if \"number@draft\" is requested" do
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise_2.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise_2.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "returns the latest version of a Exercise if \"@latest\" is requested" do
@@ -251,7 +265,9 @@ module Api::V1
         api_get :show, user_token, parameters: { id: "#{@exercise.number}@latest" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_1.uuid))
-        expect(response.body_as_hash[:versions]).to eq @exercise_1.versions_visible_for(user)
+        expect(response.body_as_hash[:versions]).to(
+          eq @exercise_1.visible_versions(can_view_solutions: true)
+        )
       end
 
       it "creates a new draft version if no draft and \"@draft\" is requested" do
@@ -314,7 +330,7 @@ module Api::V1
           end
         end
 
-        it "includes versions of exercise" do
+        it "includes versions of the exercise" do
           api_get :show, user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
           expect(response.body_as_hash[:versions]).to(

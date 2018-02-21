@@ -53,8 +53,9 @@ module Api::V1::Exercises
              type: Array,
              writeable: false,
              readable: true,
-             getter: ->(user_options:, **) { versions_visible_for(user_options[:user]) },
-             if: NOT_SOLUTIONS_ONLY
+             getter: ->(user_options:, **) do
+               visible_versions(can_view_solutions: SOLUTIONS.call(user_options: user_options))
+             end
 
     # Like Hash#deep_merge but also handles arrays
     def recursive_merge(enum1, enum2)
@@ -92,7 +93,7 @@ module Api::V1::Exercises
         super(options.merge(user_options: user_options.merge(solutions_only: true)))
       end
 
-      recursive_merge(no_solutions, solutions_only)
+      recursive_merge(no_solutions.except(:versions), solutions_only)
     end
 
   end

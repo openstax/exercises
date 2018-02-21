@@ -45,7 +45,10 @@ module Publishable
             end.order { [publication.publication_group.number.asc, publication.version.desc] }
           end
 
-          scope :visible_for, ->(user) do
+          scope :visible_for, ->(options) do
+            next all if options[:can_view_solutions]
+
+            user = options[:user]
             user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
             next published if !user.is_a?(User) || user.is_anonymous?
             next all if user.administrator
@@ -95,8 +98,11 @@ module Publishable
           after_create :ensure_publication!
 
           # Retrieves all versions of this publishable visible for the given user
-          def versions_visible_for(user)
-            publication.publication_group.publications.visible_for(user).pluck(:version)
+          def visible_versions(can_view_solutions:)
+            publication.publication_group
+                       .publications
+                       .visible_for(can_view_solutions: can_view_solutions)
+                       .pluck(:version)
           end
 
           def before_publication

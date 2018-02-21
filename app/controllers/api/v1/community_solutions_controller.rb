@@ -82,7 +82,7 @@ module Api::V1
     protected
 
     def get_community_solution
-      @community_solution = CommunitySolution.visible_for(current_api_user)
+      @community_solution = CommunitySolution.visible_for(user: current_api_user)
                                              .with_id(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound,
               "Couldn't find CommunitySolution with 'uid'=#{params[:id]}")

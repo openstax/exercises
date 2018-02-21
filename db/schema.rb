@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131161240) do
+ActiveRecord::Schema.define(version: 20180220213530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -491,10 +491,12 @@ ActiveRecord::Schema.define(version: 20180131161240) do
     t.datetime "updated_at",               null: false
     t.integer  "latest_version",           null: false
     t.integer  "latest_published_version"
+    t.string   "nickname"
   end
 
   add_index "publication_groups", ["id", "latest_published_version"], name: "index_publication_groups_on_id_and_latest_published_version", using: :btree
   add_index "publication_groups", ["id", "latest_version"], name: "index_publication_groups_on_id_and_latest_version", using: :btree
+  add_index "publication_groups", ["nickname"], name: "index_publication_groups_on_nickname", unique: true, using: :btree
   add_index "publication_groups", ["number", "publishable_type"], name: "index_publication_groups_on_number_and_publishable_type", unique: true, using: :btree
   add_index "publication_groups", ["publishable_type"], name: "index_publication_groups_on_publishable_type", using: :btree
   add_index "publication_groups", ["uuid"], name: "index_publication_groups_on_uuid", unique: true, using: :btree
