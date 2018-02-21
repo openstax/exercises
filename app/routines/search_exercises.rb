@@ -98,7 +98,7 @@ class SearchExercises
 
       with.keyword :group_uuid do |uuids|
         uuids.each do |uuid|
-          sanitized_uuids = to_string_array(uuids)
+          sanitized_uuids = to_string_array(uuid)
           next @items = @items.none if sanitized_uuids.empty?
 
           @items = @items.where { publication.publication_group.uuid.in(sanitized_uuids) }
@@ -107,7 +107,7 @@ class SearchExercises
 
       with.keyword :number do |numbers|
         numbers.each do |number|
-          sanitized_numbers = to_string_array(numbers)
+          sanitized_numbers = to_string_array(number)
           next @items = @items.none if sanitized_numbers.empty?
 
           @items = @items.where(publication_groups: { number: sanitized_numbers })
@@ -124,6 +124,15 @@ class SearchExercises
 
         # Since we are returning specific versions, disable "latest_visible"
         latest_visible = false
+      end
+
+      with.keyword :nickname do |nicknames|
+        nicknames.each do |nickname|
+          sanitized_nicknames = to_string_array(nickname)
+          next @items = @items.none if sanitized_nicknames.empty?
+
+          @items = @items.where { publication.publication_group.nickname.in(sanitized_nicknames) }
+        end
       end
 
       with.keyword :tag do |tags|

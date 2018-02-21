@@ -158,6 +158,16 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [new_exercise_2]
     end
+
+    it "returns an Exercise matching a nickname" do
+      @exercise_2.publication.publication_group.update_attribute :nickname, 'MyExercise'
+      result = described_class.call(q: 'nickname:MyExercise')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_2]
+    end
   end
 
   context "multiple matches" do
