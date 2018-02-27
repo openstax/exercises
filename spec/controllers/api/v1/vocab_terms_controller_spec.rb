@@ -223,9 +223,9 @@ module Api::V1
       it "creates a new draft version if no draft and \"@draft\" is requested" do
         @vocab_term_2.destroy
 
-        expect{ api_get :show, user_token, parameters: { id: "#{@vocab_term.number}@draft" } }.to(
-          change { VocabTerm.count }.by(1)
-        )
+        expect do
+          api_get :show, user_token, parameters: { id: "#{@vocab_term.number}@draft" }
+        end.to change{ VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
 
         new_vocab_term = VocabTerm.order(:created_at).last
@@ -308,7 +308,9 @@ module Api::V1
         end.to raise_error(SecurityTransgression)
 
         @vocab_term.reload
-        expect(@vocab_term.attributes).to eq @old_attributes
+        expect(@vocab_term.attributes.except('updated_at')).to(
+          eq @old_attributes.except('updated_at')
+        )
       end
 
       it "fails if the nickname has already been taken" do
@@ -322,7 +324,9 @@ module Api::V1
         expect(response.body_as_hash[:errors].first[:code]).to eq 'nickname_has_already_been_taken'
 
         @vocab_term.reload
-        expect(@vocab_term.attributes).to eq @old_attributes
+        expect(@vocab_term.attributes.except('updated_at')).to(
+          eq @old_attributes.except('updated_at')
+        )
       end
 
       it "updates the latest draft VocabTerm if \"@draft\" is requested" do
@@ -336,7 +340,9 @@ module Api::V1
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
-        expect(@vocab_term.attributes).to eq @old_attributes
+        expect(@vocab_term.attributes.except('updated_at')).to(
+          eq @old_attributes.except('updated_at')
+        )
 
         uid = response.body_as_hash[:uid]
         new_vocab_term = VocabTerm.with_id(uid).first
@@ -358,7 +364,9 @@ module Api::V1
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
-        expect(@vocab_term.attributes).to eq @old_attributes
+        expect(@vocab_term.attributes.except('updated_at')).to(
+          eq @old_attributes.except('updated_at')
+        )
 
         uid = response.body_as_hash[:uid]
         new_vocab_term = VocabTerm.with_id(uid).first
@@ -379,8 +387,9 @@ module Api::V1
 
       it "deletes the requested draft VocabTerm" do
         @vocab_term.save!
-        expect{ api_delete :destroy, user_token, parameters: { id: @vocab_term.uid }
-        }.to change(VocabTerm, :count).by(-1)
+        expect do
+          api_delete :destroy, user_token, parameters: { id: @vocab_term.uid }
+        end.to change(VocabTerm, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(VocabTerm.where(id: @vocab_term.id)).not_to exist
       end
