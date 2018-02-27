@@ -104,15 +104,35 @@ module Api::V1
                     include: :writeable)}
     EOS
     def create
+      vocab_term = VocabTerm.new
       user = current_human_user
-      standard_create(VocabTerm.new, Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
-                      user: current_api_user) do |vocab_term|
-        vocab_term.publication.authors << Author.new(
-          publication: vocab_term.publication, user: user
-        ) unless vocab_term.publication.authors.any?{ |au| au.user = user }
-        vocab_term.publication.copyright_holders << CopyrightHolder.new(
-          publication: vocab_term.publication, user: user
-        ) unless vocab_term.publication.copyright_holders.any?{ |ch| ch.user = user }
+
+      create_options = { status: :created, location: nil }
+      represent_with_options = {
+        user_options: { user: current_api_user },
+        represent_with: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter
+      }
+
+      VocabTerm.transaction do
+        consume!(vocab_term, represent_with_options.dup)
+
+        publication = vocab_term.publication
+        publication.authors << Author.new(
+          publication: publication, user: user
+        ) unless publication.authors.any? { |au| au.user = user }
+        publication.copyright_holders << CopyrightHolder.new(
+          publication: publication, user: user
+        ) unless publication.copyright_holders.any? { |ch| ch.user = user }
+        publication_group = publication.publication_group
+
+        OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, vocab_term)
+
+        if vocab_term.save && publication_group.save
+          respond_with vocab_term, create_options.merge(represent_with_options)
+        else
+          render_api_errors(publication_group.errors) || render_api_errors(vocab_term.errors)
+          raise ActiveRecord::Rollback
+        end
       end
     end
 
@@ -144,8 +164,25 @@ module Api::V1
                     include: :writeable)}
     EOS
     def update
-      standard_update(@vocab_term, Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter,
-                      user: current_api_user)
+      OSU::AccessPolicy.require_action_allowed!(:update, current_api_user, @vocab_term)
+
+      represent_with_options = {
+        user_options: { user: current_api_user },
+        represent_with: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter
+      }
+
+      @vocab_term.with_lock do
+        consume!(@vocab_term, represent_with_options.dup)
+
+        publication_group = @vocab_term.publication.publication_group
+        if @vocab_term.save && publication_group.save
+          respond_with @vocab_term,
+                       represent_with_options.merge(responder: ResponderWithPutPatchDeleteContent)
+        else
+          render_api_errors(publication_group.errors) || render_api_errors(@vocab_term.errors)
+          raise ActiveRecord::Rollback
+        end
+      end
     end
 
     ###########

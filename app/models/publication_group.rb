@@ -13,6 +13,7 @@ class PublicationGroup < ActiveRecord::Base
   validates :latest_version, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :latest_published_version,
             numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+  validates :nickname, uniqueness: { allow_nil: true }
 
   before_validation :assign_uuid_and_number, on: :create
 

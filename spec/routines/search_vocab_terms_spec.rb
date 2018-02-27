@@ -162,6 +162,16 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [new_vocab_term_2]
     end
+
+    it "returns a VocabTerm matching a nickname" do
+      @vocab_term_2.publication.publication_group.update_attribute :nickname, 'MyVocab'
+      result = described_class.call(q: 'nickname:MyVocab')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_2]
+    end
   end
 
   context "multiple matches" do

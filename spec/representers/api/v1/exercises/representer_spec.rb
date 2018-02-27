@@ -17,6 +17,41 @@ module Api::V1::Exercises
       described_class.new(exercise).to_hash(user_options: { can_view_solutions: true })
     end
 
+    context 'nickname' do
+      it 'can be read' do
+        exercise.publication.publication_group.nickname = 'MyExercise'
+        exercise.publication.publication_group.save!
+        expect(representation).to include('nickname' => 'MyExercise')
+      end
+
+      it 'can be written' do
+        expect(exercise.publication.publication_group).to receive(:nickname=).with('MyExercise')
+        described_class.new(exercise).from_hash('nickname' => 'MyExercise')
+      end
+    end
+
+    context 'license' do
+      let!(:license) { FactoryBot.create :license, name: 'AGPLv3' }
+
+      it 'can be read' do
+        exercise.license = license
+        exercise.save!
+        expect(representation).to(
+          include 'license' => Api::V1::LicenseRepresenter.new(license).to_hash
+        )
+      end
+
+      it 'can be written' do
+        expect(exercise).to receive(:license=).with(license)
+        described_class.new(exercise).from_hash('license' => { 'name' => 'AGPLv3' })
+      end
+
+      it 'does not create new licenses' do
+        expect(exercise).not_to receive(:license=)
+        described_class.new(exercise).from_hash('license' => { 'name' => 'BGPLv4' })
+      end
+    end
+
     context 'vocab_term_uid' do
       it 'can be read' do
         expect(representation).to include('vocab_term_uid' => vocab_term.uid)

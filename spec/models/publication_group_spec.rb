@@ -11,6 +11,8 @@ RSpec.describe PublicationGroup, type: :model do
   it { is_expected.to validate_presence_of(:number) }
   it { is_expected.to validate_presence_of(:latest_version) }
 
+  it { is_expected.to validate_uniqueness_of(:nickname).allow_nil }
+
   it { is_expected.to validate_numericality_of(:latest_version).only_integer.is_greater_than(0) }
   it do
     is_expected.to(

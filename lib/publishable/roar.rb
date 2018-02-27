@@ -45,13 +45,22 @@ module Publishable
                    readable: true
                  }.merge(options)
 
+        property :nickname,
+                 {
+                   type: String,
+                   writeable: true,
+                   readable: true
+                 }.merge(options)
+
         property :license,
                  {
-                   class: License,
+                   instance: ->(input:, **) do
+                     License.find_by(name: input['name']) || License.new(name: input['name'])
+                   end,
                    extend: Api::V1::LicenseRepresenter,
                    writeable: true,
                    readable: true,
-                   setter: ->(input:, **) { self.license = License.find_by(name: input[:name]) }
+                   setter: ->(input:, **) { self.license = input if input.persisted? }
                  }.merge(options)
 
         collection :authors,
