@@ -1,7 +1,7 @@
 class Publication < ActiveRecord::Base
 
   belongs_to :publication_group, inverse_of: :publications
-  belongs_to :publishable, polymorphic: true, inverse_of: :publication
+  belongs_to :publishable, polymorphic: true, inverse_of: :publication, touch: true
   belongs_to :license
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
