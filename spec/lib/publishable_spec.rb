@@ -19,7 +19,11 @@ RSpec.describe Publishable, type: :lib do
     draft = publishable.new_version
     draft.save!
 
-    expect(publishable.versions_visible_for(user)).to eq [p2.version, p1.version]
-    expect(publishable.versions_visible_for(author)).to eq [draft.version, p2.version, p1.version]
+    expect(publishable.visible_versions(can_view_solutions: false)).to(
+      eq [p2.version, p1.version]
+    )
+    expect(publishable.visible_versions(can_view_solutions: true)).to(
+      eq [draft.version, p2.version, p1.version]
+    )
   end
 end

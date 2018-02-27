@@ -182,7 +182,7 @@ module Api::V1
     protected
 
     def get_exercise
-      @exercise = Exercise.visible_for(current_api_user).with_id(params[:id]).first || \
+      @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
     end
 
@@ -197,7 +197,7 @@ module Api::V1
           if draft_requested
 
         # Attempt to find existing exercise
-        @exercise = Exercise.visible_for(current_api_user).with_id(params[:id]).first
+        @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:id]).first
         return unless @exercise.nil?
 
         # Exercise not found and either draft not requested or

@@ -55,7 +55,10 @@ class Publication < ActiveRecord::Base
     end.order {[publication_group.number.asc, version.desc]}
   end
 
-  scope :visible_for, ->(user) do
+  scope :visible_for, ->(options) do
+    next all if options[:can_view_solutions]
+
+    user = options[:user]
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
     next all if user.administrator

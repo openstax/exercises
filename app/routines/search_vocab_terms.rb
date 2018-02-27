@@ -21,7 +21,7 @@ class SearchVocabTerms
 
   def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
-    relation = VocabTerm.visible_for(options[:user]).joins(publication: :publication_group)
+    relation = VocabTerm.visible_for(options).joins(publication: :publication_group)
 
     distinct = false
     # By default, only return the latest exercises visible to the user.

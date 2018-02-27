@@ -201,7 +201,7 @@ module Api::V1
     protected
 
     def get_vocab_term
-      @vocab_term = VocabTerm.visible_for(current_api_user).with_id(params[:id]).first || \
+      @vocab_term = VocabTerm.visible_for(user: current_api_user).with_id(params[:id]).first || \
         raise(ActiveRecord::RecordNotFound, "Couldn't find VocabTerm with 'uid'=#{params[:id]}")
     end
 
@@ -216,7 +216,7 @@ module Api::V1
           if draft_requested
 
         # Attempt to find existing vocab_term
-        @vocab_term = VocabTerm.visible_for(current_api_user).with_id(params[:id]).first
+        @vocab_term = VocabTerm.visible_for(user: current_api_user).with_id(params[:id]).first
         return unless @vocab_term.nil?
 
         # VocabTerm not found and either draft not requested or

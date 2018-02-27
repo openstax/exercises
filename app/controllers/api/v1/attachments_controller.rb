@@ -46,7 +46,7 @@ module Api::V1
     protected
 
     def get_exercise
-      @exercise = Exercise.visible_for(current_api_user).with_id(params[:exercise_id]).first!
+      @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:exercise_id]).first!
     end
 
   end
