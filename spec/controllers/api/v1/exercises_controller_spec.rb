@@ -275,9 +275,9 @@ module Api::V1
         @exercise_1.destroy
         @exercise_2.destroy
 
-        expect{ api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" } }.to(
-          change{ Exercise.count }.by(1)
-        )
+        expect do
+          api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
+        end.to change{ Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
         new_exercise = Exercise.order(:created_at).last
@@ -443,7 +443,7 @@ module Api::V1
         end.to raise_error(SecurityTransgression)
         @exercise.reload
 
-        expect(@exercise.attributes).to eq @old_attributes
+        expect(@exercise.attributes.except('updated_at')).to eq @old_attributes.except('updated_at')
       end
 
       it "fails if the nickname has already been taken" do
@@ -473,7 +473,7 @@ module Api::V1
         expect(response).to have_http_status(:success)
         @exercise.reload
 
-        expect(@exercise.attributes).to eq @old_attributes
+        expect(@exercise.attributes.except('updated_at')).to eq @old_attributes.except('updated_at')
 
         uid = response.body_as_hash[:uid]
         new_exercise = Exercise.with_id(uid).first
@@ -497,7 +497,7 @@ module Api::V1
         expect(response).to have_http_status(:success)
         @exercise.reload
 
-        expect(@exercise.attributes).to eq @old_attributes
+        expect(@exercise.attributes.except('updated_at')).to eq @old_attributes.except('updated_at')
 
         uid = response.body_as_hash[:uid]
         new_exercise = Exercise.with_id(uid).first
@@ -518,8 +518,9 @@ module Api::V1
 
       it "deletes the requested draft Exercise" do
         @exercise.save!
-        expect{ api_delete :destroy, user_token, parameters: { id: @exercise.uid }
-        }.to change(Exercise, :count).by(-1)
+        expect do
+          api_delete :destroy, user_token, parameters: { id: @exercise.uid }
+        end.to change(Exercise, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(Exercise.where(id: @exercise.id)).not_to exist
       end
