@@ -279,8 +279,7 @@ GEM
       roar-rails (>= 1.0)
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
-    openstax_rescue_from (2.1.0)
-      exception_notification (>= 4.1, < 5.0)
+    openstax_rescue_from (3.0.0)
       rails (>= 3.1, < 6.0)
     openstax_utilities (4.2.3)
       keyword_search
@@ -412,6 +411,8 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
     scout_apm (3.0.0.pre16)
+    sentry-raven (2.7.2)
+      faraday (>= 0.7.6, < 1.0)
     sexp_processor (4.5.0)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
@@ -528,7 +529,7 @@ DEPENDENCIES
   openstax_accounts (~> 7.12.0)
   openstax_api (~> 8.0.0)
   openstax_healthcheck
-  openstax_rescue_from (~> 2.1.0)
+  openstax_rescue_from (~> 3.0.0)
   openstax_utilities
   parallel_tests
   pg
@@ -548,6 +549,7 @@ DEPENDENCIES
   sanitize
   sass-rails (~> 5.0)
   scout_apm (~> 3.0.x)
+  sentry-raven
   shoulda-matchers
   sortability
   squeel
