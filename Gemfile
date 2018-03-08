@@ -142,6 +142,9 @@ gem 'oj_mimic_json'
 # Key-value store for caching
 gem 'redis-rails'
 
+# Respond to ELB healthchecks in /ping and /ping/
+gem 'openstax_healthcheck'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'
