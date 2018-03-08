@@ -5,17 +5,18 @@
 <%= osu.action_list(
     records: licenses,
     list: {
-      headings: ['Name', 'Short Name', 'URL', 'Actions'],
+      headings: ['Name', 'Title', 'URL', 'Actions'],
       widths: ['40%', '20%', '30%', '10%'],
       data_procs:
         [
-          lambda { |license| license.name || '---' },
-          lambda { |license| license.short_name || '---' },
-          lambda { |license| license.url || '---' },
-          lambda { |license| "<span id=license-#{license.id}-actions>
-                                #{render partial: action_partial,
-                                         locals: {license: license}}
-                              </span>".html_safe }
+          ->(license) { license.name || '---' },
+          ->(license) { license.title || '---' },
+          ->(license) { license.url || '---' },
+          ->(license) do
+            "<span id=license-#{license.id}-actions>#{
+              render partial: action_partial, locals: { license: license }
+            }</span>".html_safe
+          end
         ]
     }
   ) %>

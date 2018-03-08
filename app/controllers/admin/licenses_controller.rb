@@ -58,7 +58,7 @@ module Admin
 
     # Only allow a trusted parameter "white list" through.
     def license_params
-      params.require(:license).permit(:name, :short_name, :url, :publishing_contract,
+      params.require(:license).permit(:name, :title, :url, :publishing_contract,
                                       :copyright_notice, :is_public_domain)
     end
 

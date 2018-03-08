@@ -116,9 +116,6 @@ gem 'acts_as_votable'
 # Real time application monitoring
 gem 'scout_apm', '~> 3.0.x'
 
-# Admin console
-gem 'rails_admin'
-
 # PostgreSQL database
 gem 'pg'
 
