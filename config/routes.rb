@@ -33,6 +33,8 @@ Exercises::Application.routes.draw do
           #has_logic
         end
       end
+
+      get :versions, on: :member
     end
 
     resources :vocab_terms do

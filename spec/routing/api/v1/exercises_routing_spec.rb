@@ -32,4 +32,10 @@ RSpec.describe Api::V1::ExercisesController, type: :routing, api: true, version:
       route_to('api/v1/exercises#destroy', id: '1', format: 'json')
     )
   end
+
+  it 'routes to #versions' do
+    expect(get('/api/exercises/1/versions')).to(
+      route_to('api/v1/exercises#versions', id: '1', format: 'json')
+    )
+  end
 end

@@ -2,7 +2,7 @@ module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
     before_filter :get_exercise_or_create_draft, only: [:show, :update]
-    before_filter :get_exercise, only: [:destroy]
+    before_filter :get_exercise, only: [:destroy, :versions]
 
     resource_description do
       api_versions "v1"
@@ -177,6 +177,24 @@ module Api::V1
     EOS
     def destroy
       standard_destroy(@exercise, Api::V1::Exercises::Representer, user: current_api_user)
+    end
+
+    ############
+    # versions #
+    ############
+
+    api :GET, '/exercises/:uid/versions',
+              'Gets the versions of the specified Exercise that are visible for the current user'
+    description <<-EOS
+      Gets the versions of the Exercise that matches the provided UID
+      that are visible for the current user.
+
+      #{json_schema(Api::V1::Exercises::VersionsRepresenter, include: :readable)}
+    EOS
+    def versions
+      standard_read(
+        @exercise, Api::V1::Exercises::VersionsRepresenter, false, user: current_api_user
+      )
     end
 
     protected
