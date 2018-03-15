@@ -81,11 +81,11 @@ class SearchVocabTerms
 
       # Block to be used for searches by name or term
       name_search_block = lambda do |names|
-        names.each do |name|
-          sanitized_names = to_string_array(name, append_wildcard: true, prepend_wildcard: true)
+        names.each do |nm|
+          sanitized_names = to_string_array(nm, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_names.empty?
 
-          @items = @items.where {name.like_any sanitized_names}
+          @items = @items.where { name.like_any sanitized_names }
         end
       end
 
@@ -161,12 +161,11 @@ class SearchVocabTerms
       with.keyword :term, &name_search_block
 
       with.keyword :definition do |definitions|
-        definitions.each do |definition|
-          sanitized_definitions = to_string_array(definition, append_wildcard: true,
-                                                              prepend_wildcard: true)
+        definitions.each do |df|
+          sanitized_definitions = to_string_array(df, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_definitions.empty?
 
-          @items = @items.where {definition.like_any sanitized_definitions}
+          @items = @items.where { definition.like_any sanitized_definitions }
         end
       end
 
@@ -177,7 +176,7 @@ class SearchVocabTerms
           next @items = @items.none if sanitized_contents.empty?
 
           @items = @items.where { (name.like_any sanitized_contents) |\
-                                 (definition.like_any sanitized_contents) }
+                                  (definition.like_any sanitized_contents) }
         end
       end
 

@@ -4,9 +4,9 @@ RSpec.describe SearchVocabTerms, type: :routine do
   before do
     10.times { FactoryBot.create(:vocab_term, :published) }
 
-    tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
+    tested_strings = ["%lorem ipsu%", "%uia dolor sit ame%", "%adipiscing elit%", "draft"]
     VocabTerm.where {(name.like_any tested_strings) |
-                    (definition.like_any tested_strings)}.delete_all
+                     (definition.like_any tested_strings)}.delete_all
 
     @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
     Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
@@ -60,6 +60,24 @@ RSpec.describe SearchVocabTerms, type: :routine do
       outputs = result.outputs
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [@vocab_term_draft]
+    end
+
+    it "returns a VocabTerm matching the term" do
+      result = described_class.call(q: 'term:"oLoReM iPsU"')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_2]
+    end
+
+    it "returns a VocabTerm matching the definition" do
+      result = described_class.call(q: 'definition:"UiA dOlOr SiT aMe"')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_2]
     end
 
     it "returns a VocabTerm matching the content" do
