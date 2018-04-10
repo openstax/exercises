@@ -3,6 +3,11 @@
 
 source 'https://rubygems.org'
 
+git_source(:github) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  "https://github.com/#{repo_name}.git"
+end
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
 
@@ -123,7 +128,10 @@ gem 'pg'
 gem 'httparty'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 2.1.0'
+gem 'openstax_rescue_from', '~> 3.0.0'
+
+# Sentry integration (the require disables automatic Rails integration since we use rescue_from)
+gem 'sentry-raven', require: 'raven/base'
 
 # API JSON rendering/parsing
 # Do not use Roar 1.0.4
