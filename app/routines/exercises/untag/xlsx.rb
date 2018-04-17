@@ -66,7 +66,6 @@ module Exercises
           if exercise.is_published?
             tagged_exercise = exercise.new_version
             published_uids << exercise.uid
-            new_uids << tagged_exercise.uid
           else
             tagged_exercise = exercise
             unpublished_uids << exercise.uid
@@ -75,6 +74,8 @@ module Exercises
           tagged_exercise.tags = final_tags
           tagged_exercise.save!
           tagged_exercise.publication.publish.save!
+
+          new_uids << tagged_exercise.uid if exercise.is_published?
         end
 
         Rails.logger.info do
