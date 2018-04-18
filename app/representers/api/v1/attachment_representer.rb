@@ -12,7 +12,18 @@ module Api::V1
              type: String,
              readable: true,
              writeable: false,
-             getter: ->(*) { { filename: read_attribute(:asset) }.merge asset.as_json },
+             getter: ->(*) do
+               host = AssetUploader.asset_host
+               filename = read_attribute(:asset)
+
+               {
+                 filename: filename,
+                 url:      "#{host}/attachments/#{filename}",
+                 large:    { url: "#{host}/attachments/large_#{filename}" },
+                 medium:   { url: "#{host}/attachments/medium_#{filename}" },
+                 small:    { url: "#{host}/attachments/small_#{filename}" }
+               }
+             end,
              schema_info: {
                required: true
              }
