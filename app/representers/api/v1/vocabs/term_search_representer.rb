@@ -18,7 +18,7 @@ module Api::V1::Vocabs
         end
       end
 
-      # Preload necessary records for any uncached Exercises
+      # Preload necessary records for any uncached VocabTerms
       ActiveRecord::Associations::Preloader.new.preload(
         uncached_items, VocabTerm::PRELOAD_ASSOCIATIONS
       )
