@@ -34,7 +34,8 @@ module Exercises
       url: redis_secrets['url'],
       namespace: redis_secrets['namespaces']['cache'],
       expires_in: 1.day,
-      compress: true
+      compress: true,
+      compress_threshold: 1.kilobyte
     }
   end
 end
