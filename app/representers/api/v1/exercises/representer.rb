@@ -74,8 +74,8 @@ module Api::V1::Exercises
       cache_key_types_for(represented, options).map { |type| cache_key_for represented, type }
     end
 
-    def self.all_cache_keys_for_array(representeds, options = {})
-      representeds.flat_map { |represented| all_cache_keys_for represented, options }
+    def self.all_cache_keys_for_array(represented_array, options = {})
+      represented_array.flat_map { |represented| all_cache_keys_for represented, options }
     end
 
     # Like Hash#deep_merge but also handles arrays
@@ -101,18 +101,14 @@ module Api::V1::Exercises
 
       no_solutions = Rails.cache.fetch(
         self.class.cache_key_for(represented, 'no_solutions'), expires_in: NEVER_EXPIRES
-      ) do
-        super(options.merge(user_options: user_options.merge(no_solutions: true)))
-      end
+      ) { super(options.merge(user_options: user_options.merge(no_solutions: true))) }
 
       return no_solutions unless user_options[:can_view_solutions] ||
                                  represented.can_view_solutions?(user_options[:user])
 
       solutions_only = Rails.cache.fetch(
         self.class.cache_key_for(represented, 'solutions_only'), expires_in: NEVER_EXPIRES
-      ) do
-        super(options.merge(user_options: user_options.merge(solutions_only: true)))
-      end
+      ) { super(options.merge(user_options: user_options.merge(solutions_only: true))) }
 
       recursive_merge(no_solutions.except(:versions), solutions_only)
     end

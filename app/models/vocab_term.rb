@@ -22,13 +22,21 @@ class VocabTerm < ActiveRecord::Base
   NEW_VERSION_DUPED_ASSOCIATIONS = [
     :tags,
     :vocab_distractors,
-    {
-      publication: [
-        :derivations,
-        :authors,
-        :copyright_holders
-      ]
-    }
+    publication: [
+      :derivations,
+      :authors,
+      :copyright_holders
+    ]
+  ]
+
+  PRELOAD_ASSOCIATIONS = [
+    :tags,
+    :vocab_distractors,
+    publication: [
+      :publication_group,
+      authors: { user: :account },
+      copyright_holders: { user: :account }
+    ]
   ]
 
   EXERCISE_PUBLICATION_FIELDS = [
