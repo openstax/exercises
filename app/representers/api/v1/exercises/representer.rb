@@ -57,6 +57,27 @@ module Api::V1::Exercises
                visible_versions(can_view_solutions: SOLUTIONS.call(user_options: user_options))
              end
 
+    def self.cache_key_types_for(represented, options = {})
+      user_options = options.fetch(:user_options, {})
+
+      [ 'no_solutions' ].tap do |types|
+        types << 'solutions_only' if user_options[:can_view_solutions] ||
+                                     represented.can_view_solutions?(user_options[:user])
+      end
+    end
+
+    def self.cache_key_for(represented, type)
+      "#{represented.cache_key}/#{type}"
+    end
+
+    def self.all_cache_keys_for(represented, options = {})
+      cache_key_types_for(represented, options).map { |type| cache_key_for represented, type }
+    end
+
+    def self.all_cache_keys_for_array(representeds, options = {})
+      representeds.flat_map { |represented| all_cache_keys_for represented, options }
+    end
+
     # Like Hash#deep_merge but also handles arrays
     def recursive_merge(enum1, enum2)
       return enum2 if enum1.nil?
@@ -79,7 +100,7 @@ module Api::V1::Exercises
       user_options = options.fetch(:user_options, {})
 
       no_solutions = Rails.cache.fetch(
-        "#{represented.cache_key}/no_solutions", expires_in: NEVER_EXPIRES
+        self.class.cache_key_for(represented, 'no_solutions'), expires_in: NEVER_EXPIRES
       ) do
         super(options.merge(user_options: user_options.merge(no_solutions: true)))
       end
@@ -88,7 +109,7 @@ module Api::V1::Exercises
                                  represented.can_view_solutions?(user_options[:user])
 
       solutions_only = Rails.cache.fetch(
-        "#{represented.cache_key}/solutions_only", expires_in: NEVER_EXPIRES
+        self.class.cache_key_for(represented, 'solutions_only'), expires_in: NEVER_EXPIRES
       ) do
         super(options.merge(user_options: user_options.merge(solutions_only: true)))
       end
