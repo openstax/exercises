@@ -59,6 +59,25 @@ class Exercise < ActiveRecord::Base
     }
   ]
 
+  PRELOAD_ASSOCIATIONS = [
+    :attachments,
+    :logic,
+    :tags,
+    publication: [
+      :publication_group,
+      :derivations,
+      authors: { user: :account },
+      copyright_holders: { user: :account }
+    ],
+    questions: [
+      :hints,
+      :collaborator_solutions,
+      :community_solutions,
+      answers: :stem_answers,
+      stems: [ :stylings, :combo_choices ]
+    ]
+  ]
+
   acts_as_votable
   user_html :stimulus
   publishable

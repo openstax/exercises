@@ -48,9 +48,26 @@ module Api::V1::Vocabs
                  required: true
                }
 
+    def self.cache_key_types_for(represented, options = {})
+      [ 'with_distractors_and_exercise_ids' ]
+    end
+
+    def self.cache_key_for(represented, type)
+      "#{represented.cache_key}/#{type}"
+    end
+
+    def self.all_cache_keys_for(represented, options = {})
+      cache_key_types_for(represented, options).map { |type| cache_key_for represented, type }
+    end
+
+    def self.all_cache_keys_for_array(represented_array, options = {})
+      represented_array.flat_map { |represented| all_cache_keys_for represented, options }
+    end
+
     def to_hash(*)
       Rails.cache.fetch(
-        "#{represented.cache_key}/with_distractors_and_exercise_ids", expires_in: NEVER_EXPIRES
+        self.class.cache_key_for(represented, 'with_distractors_and_exercise_ids'),
+        expires_in: NEVER_EXPIRES
       ) { super }
     end
 
