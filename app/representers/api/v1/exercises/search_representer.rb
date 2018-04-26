@@ -19,7 +19,7 @@ module Api::V1::Exercises
       # Preload necessary records for any uncached Exercises
       ActiveRecord::Associations::Preloader.new.preload(
         uncached_items, Exercise::PRELOAD_ASSOCIATIONS
-      )
+      ) unless uncached_items.empty?
 
       super(options)
     end

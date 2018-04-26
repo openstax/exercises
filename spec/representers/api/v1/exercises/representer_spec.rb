@@ -13,9 +13,8 @@ module Api::V1::Exercises
     end
 
     # This is lazily-evaluated on purpose
-    let(:representation) do
-      described_class.new(exercise).to_hash(user_options: { can_view_solutions: true })
-    end
+    let(:representer)    { described_class.new(exercise) }
+    let(:representation) { representer.to_hash(user_options: { can_view_solutions: true }) }
 
     context 'nickname' do
       it 'can be read' do
@@ -127,5 +126,40 @@ module Api::V1::Exercises
       end
     end
 
+    context '#to_hash' do
+      it 'caches calls to #super' do
+        count = 0
+        expect(representer).to(
+          receive(:create_representation_with).exactly(3).times.and_wrap_original do |method, *args|
+            count += 1
+
+            method.call *args
+          end
+        )
+
+        representer.to_hash
+        expect(count).to eq 1
+
+        representer.to_hash(user_options: { can_view_solutions: true })
+        expect(count).to eq 2
+
+        representer.to_hash
+        expect(count).to eq 2
+
+        representer.to_hash(user_options: { can_view_solutions: true })
+        expect(count).to eq 2
+
+        described_class.all_cache_keys_for(exercise).each { |key| Rails.cache.delete key }
+
+        representer.to_hash(user_options: { can_view_solutions: true })
+        expect(count).to eq 3
+
+        representer.to_hash
+        expect(count).to eq 3
+
+        representer.to_hash(user_options: { can_view_solutions: true })
+        expect(count).to eq 3
+      end
+    end
   end
 end
