@@ -2,7 +2,7 @@ class Attachment < ActiveRecord::Base
 
   mount_uploader :asset, AssetUploader
 
-  belongs_to :parent, polymorphic: true, inverse_of: :attachments
+  belongs_to :parent, polymorphic: true, inverse_of: :attachments, touch: true
 
   before_update { raise ActiveRecord::ReadOnlyRecord } # Prevent updates
 
