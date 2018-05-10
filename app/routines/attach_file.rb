@@ -34,12 +34,12 @@ class AttachFile
 
     unlink_file ? file.close! : file.close
 
-    outputs[:attachment] = attachment
-    outputs[:url] = attachment.asset.url
+    outputs.attachment = attachment
+    outputs.url = attachment.asset.url
     return unless attachment.asset.is_image?
 
-    outputs[:large_url] = attachment.asset.large.url
-    outputs[:medium_url] = attachment.asset.medium.url
-    outputs[:small_url] = attachment.asset.small.url
+    outputs.large_url = attachment.asset.large.url
+    outputs.medium_url = attachment.asset.medium.url
+    outputs.small_url = attachment.asset.small.url
   end
 end

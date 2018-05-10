@@ -35,6 +35,14 @@ RSpec.describe Attachment, type: :model do
     expect{ attachment.save! }.to raise_error(ActiveRecord::ReadOnlyRecord)
   end
 
+  it "updates the parent record's timestamp when it is created or destroyed" do
+    parent = attachment.parent
+
+    expect { attachment.destroy! }.to change { parent.reload.updated_at }
+
+    expect { FactoryBot.create :attachment, parent: parent }.to change { parent.reload.updated_at }
+  end
+
   context 'on destroy' do
     it 'does not remove the asset when there are other references left' do
       attachment_2 = FactoryBot.create :attachment, asset: attachment.asset
