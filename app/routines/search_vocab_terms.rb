@@ -41,6 +41,10 @@ class SearchVocabTerms
 
           sanitized_numbers = sanitized_ids.map(&:first).compact
           sanitized_versions = sanitized_ids.map(&:second).compact
+
+          # Disable "latest_visible" if any version is specified
+          latest_visible = false unless sanitized_versions.empty?
+
           if sanitized_numbers.empty?
             @items = @items.where(publications: { version: sanitized_versions })
           elsif sanitized_versions.empty?
@@ -74,9 +78,6 @@ class SearchVocabTerms
             end
           end
         end
-
-        # Since we are returning specific uids, disable "latest_visible"
-        latest_visible = false
       end
 
       # Block to be used for searches by name or term
