@@ -1,60 +1,38 @@
+require_relative '../../exercises/html_preview'
+
 namespace :exercises do
   namespace :export do
-    desc "export exercises to a15k"
-    task :a15k => :environment do |t, args|
+    desc "export exercise to a15k"
+    task :a15k, [:id] => [:environment] do |t, args|
 
-      A15kClient.configure do |c|
-        c.host = 'localhost:4001'
-        c.scheme = 'http'
-        # c.debugging = true
-        c.api_key['Authorization'] = ENV['A15K_AUTH']
-        c.verify_ssl_host = false
-        c.api_key_prefix['Authorization'] = 'Bearer'
-      end
+      format = A15kClient::FormatsApi.new
+                 .get_formats.data
+                 .find{|format| format.name == 'OpenStax' }
 
-      api_instance = A15kClient::AssessmentsApi.new
+      raise "Can't find OpenStax format!" unless format
 
-      exercise = Api::V1::Exercises::Representer.new(Exercise.find(30150)).as_json
-      questions = exercise.delete('questions')
+      exercise = Exercise.published.with_id(args[:id]).first
+      #(30150)
+      html = Exercises::HtmlPreview.new(exercise)
 
-      ox_format_uuid = "7ec91a74-ff17-4460-9776-1f2fc6b9ce61"
-
-      api_instance.api_v1_assessments_json_post(
-        data: {
-          type: 'assessment',
-          attributes: {
-            format_id: ox_format_uuid,
-            content: JSON.generate(exercise)
-          },
-          relationships: {
-            questions: {
-              data: questions.map{|question|
-                answers = question.delete('answers')
-                {
-                  type: 'question',
-                  attributes: {
-                    format_id: ox_format_uuid,
-                    content: JSON.generate(question)
-                  },
-                  relationships: {
-                    solutions: {
-                      data: answers.map{|answer|
-                        {
-                          type: 'solution',
-                          attributes: {
-                            format_id: ox_format_uuid,
-                            content: JSON.generate(answer)
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+      assessments = A15kClient::AssessmentsApi.new
+      reply = assessments.create_assessment(
+        format_id: format.id,
+        identifier: exercise.uuid,
+        preview_html: html.generate,
+        questions: [
+          {
+            format_id: format.id,
+            content: Api::V1::Exercises::Representer.new(exercise).as_json
           }
-        }
+        ]
       )
+      p reply.data
+      if reply.success
+        puts "Imported with uuid: #{reply.data.id}"
+      else
+        raise "Failed to create assessment: #{reply.message}"
+      end
     end
   end
 end

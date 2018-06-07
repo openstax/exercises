@@ -127,6 +127,11 @@ gem 'pg'
 # HTTP requests
 gem 'httparty'
 
+gem 'a15k_client',
+    git: 'https://github.com/a15k/mothership.git',
+    glob: 'clients/1.0.0/ruby/*gemspec',
+    ref: 'd91b0f9'
+
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from', '~> 3.0.0'
 
