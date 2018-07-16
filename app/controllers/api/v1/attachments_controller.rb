@@ -1,8 +1,6 @@
 module Api::V1
   class AttachmentsController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_exercise
-
     ##########
     # create #
     ##########
@@ -19,8 +17,19 @@ module Api::V1
       #{json_schema(Api::V1::AttachmentRepresenter, include: :readable)}
     EOS
     def create
+      exercise = Exercise
+                   .visible_for(user: current_api_user)
+                   .with_id(params[:exercise_id]).first
+      if !exercise && params[:exercise_id] =~ /(\d+)@draft/
+        published = Exercise
+                     .visible_for(user: current_api_user)
+                     .with_id($1).first!
+        exercise = published.new_version
+        exercise.save!
+      end
+      raise ActiveRecord::RecordNotFound, "Exercise was not found" if exercise.nil?
       attachment = AttachFile.call(
-        attachable: @exercise, file: params[:file].tempfile
+        attachable: exercise, file: params[:file].tempfile
       ).outputs[:attachment]
       respond_with attachment, represent_with: Api::V1::AttachmentRepresenter, location: nil
     end
@@ -39,15 +48,12 @@ module Api::V1
       #{json_schema(Api::V1::AttachmentRepresenter, include: :readable)}
     EOS
     def destroy
-      attachment = @exercise.attachments.find_by! asset: params[:filename]
+      exercise = Exercise.visible_for(user: current_api_user).with_id(params[:exercise_id]).first!
+      attachment = exercise.attachments.find_by! asset: params[:filename]
       standard_destroy(attachment)
     end
 
     protected
-
-    def get_exercise
-      @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:exercise_id]).first!
-    end
 
   end
 end
