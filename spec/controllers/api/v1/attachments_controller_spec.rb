@@ -43,20 +43,21 @@ module Api::V1
           tempfile: File.new("#{Rails.root}/spec/fixtures/rails.png")
         )
       }
-        it 'attaches a file to an exercise' do
-            expect do
-              api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
-            end.to change{ exercise.attachments.count }.by(1)
-            expect(response).to have_http_status(:success)
-        end
 
-        it 'creates a draft if needed' do
-          exercise.publication.publish.save!
-          expect do
-            api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
-          end.to change{ exercise.publication_group.reload.latest_version }.from(1).to(2)
-          expect(response).to have_http_status(:success)
-        end
+      it 'attaches a file to an exercise' do
+        expect do
+          api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
+        end.to change{ exercise.attachments.count }.by(1)
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'creates a draft if needed' do
+        exercise.publication.publish.save!
+        expect do
+          api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
+        end.to change{ exercise.publication_group.reload.latest_version }.from(1).to(2)
+        expect(response).to have_http_status(:success)
+      end
 
     end
 

@@ -1,6 +1,11 @@
 module Api::V1
   class AttachmentsController < OpenStax::Api::V1::ApiController
 
+    include Exercises::Finders
+
+    before_filter :find_exercise_or_create_draft, only: [:create]
+    before_filter :find_exercise, only: [:destroy]
+
     ##########
     # create #
     ##########
@@ -17,19 +22,8 @@ module Api::V1
       #{json_schema(Api::V1::AttachmentRepresenter, include: :readable)}
     EOS
     def create
-      exercise = Exercise
-                   .visible_for(user: current_api_user)
-                   .with_id(params[:exercise_id]).first
-      if !exercise && params[:exercise_id] =~ /(\d+)@draft/
-        published = Exercise
-                     .visible_for(user: current_api_user)
-                     .with_id($1).first!
-        exercise = published.new_version
-        exercise.save!
-      end
-      raise ActiveRecord::RecordNotFound, "Exercise was not found" if exercise.nil?
       attachment = AttachFile.call(
-        attachable: exercise, file: params[:file].tempfile
+        attachable: @exercise, file: params[:file].tempfile
       ).outputs[:attachment]
       respond_with attachment, represent_with: Api::V1::AttachmentRepresenter, location: nil
     end
@@ -48,12 +42,9 @@ module Api::V1
       #{json_schema(Api::V1::AttachmentRepresenter, include: :readable)}
     EOS
     def destroy
-      exercise = Exercise.visible_for(user: current_api_user).with_id(params[:exercise_id]).first!
-      attachment = exercise.attachments.find_by! asset: params[:filename]
+      attachment = @exercise.attachments.find_by! asset: params[:filename]
       standard_destroy(attachment)
     end
-
-    protected
 
   end
 end
