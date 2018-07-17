@@ -3,7 +3,7 @@ require_relative '../../exercises/html_preview'
 namespace :exercises do
   namespace :export do
     desc "export exercise to a15k"
-    task :a15k, [:id] => [:environment] do |t, args|
+    task :a15k, [:number] => [:environment] do |t, args|
 
       format = A15kClient::FormatsApi.new
                  .get_formats.data
@@ -11,8 +11,8 @@ namespace :exercises do
 
       raise "Can't find OpenStax format!" unless format
 
-      exercise = Exercise.published.with_id(args[:id]).first
-      #(30150)
+      exercise = Exercise.published.with_id(args[:number]).first!
+
       html = Exercises::HtmlPreview.new(exercise)
 
       assessments = A15kClient::AssessmentsApi.new
@@ -27,7 +27,7 @@ namespace :exercises do
           }
         ]
       )
-      p reply.data
+
       if reply.success
         puts "Imported with uuid: #{reply.data.id}"
       else
