@@ -1,7 +1,10 @@
 module Api::V1
   class AttachmentsController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_exercise
+    include Exercises::Finders
+
+    before_filter :find_exercise_or_create_draft, only: [:create]
+    before_filter :find_exercise, only: [:destroy]
 
     ##########
     # create #
@@ -41,12 +44,6 @@ module Api::V1
     def destroy
       attachment = @exercise.attachments.find_by! asset: params[:filename]
       standard_destroy(attachment)
-    end
-
-    protected
-
-    def get_exercise
-      @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:exercise_id]).first!
     end
 
   end

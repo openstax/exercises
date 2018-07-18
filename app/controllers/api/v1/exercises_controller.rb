@@ -1,8 +1,11 @@
 module Api::V1
   class ExercisesController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_exercise_or_create_draft, only: [:show, :update]
-    before_filter :get_exercise, only: [:destroy]
+    include ::Exercises::Finders
+
+    before_filter :find_exercise_or_create_draft, only: [:show, :update]
+    before_filter :find_exercise, only: [:destroy]
+
 
     resource_description do
       api_versions "v1"
@@ -177,43 +180,6 @@ module Api::V1
     EOS
     def destroy
       standard_destroy(@exercise, Api::V1::Exercises::Representer, user: current_api_user)
-    end
-
-    protected
-
-    def get_exercise
-      @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:id]).first || \
-        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}")
-    end
-
-    def get_exercise_or_create_draft
-      Exercise.transaction do
-        @number, @version = params[:id].split('@')
-        draft_requested = @version == 'draft' || @version == 'd'
-
-        # If a draft has been requested, lock the latest published exercise first
-        # so we don't create 2 drafts
-        published_exercise = Exercise.published.with_id(@number).lock.first \
-          if draft_requested
-
-        # Attempt to find existing exercise
-        @exercise = Exercise.visible_for(user: current_api_user).with_id(params[:id]).first
-        return unless @exercise.nil?
-
-        # Exercise not found and either draft not requested or
-        # no published_exercise so we can't create a draft
-        raise(ActiveRecord::RecordNotFound, "Couldn't find Exercise with 'uid'=#{params[:id]}") \
-          if published_exercise.nil?
-
-        # Check for permission to create the draft
-        OSU::AccessPolicy.require_action_allowed!(
-          :new_version, current_api_user, published_exercise
-        )
-
-        # Draft requested and published exercise found
-        @exercise = published_exercise.new_version
-        @exercise.save!
-      end
     end
 
   end

@@ -36,17 +36,28 @@ module Api::V1
 
     context "POST create" do
 
-        it 'attaches a file to an exercise' do
-            image = ActionDispatch::Http::UploadedFile.new({
-              filename: 'test_photo_1.jpg',
-              type: 'image/jpeg',
-              tempfile: File.new("#{Rails.root}/spec/fixtures/rails.png")
-            })
-            expect do
-              api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
-            end.to change{ exercise.attachments.count }.by(1)
-            expect(response).to have_http_status(:success)
-        end
+      let(:image) {
+        image = ActionDispatch::Http::UploadedFile.new(
+          filename: 'test_photo_1.jpg',
+          type: 'image/jpeg',
+          tempfile: File.new("#{Rails.root}/spec/fixtures/rails.png")
+        )
+      }
+
+      it 'attaches a file to an exercise' do
+        expect do
+          api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
+        end.to change{ exercise.attachments.count }.by(1)
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'creates a draft if needed' do
+        exercise.publication.publish.save!
+        expect do
+          api_post :create, user_token, parameters: { exercise_id: exercise_id, file: image }
+        end.to change{ exercise.publication_group.reload.latest_version }.from(1).to(2)
+        expect(response).to have_http_status(:success)
+      end
 
     end
 
