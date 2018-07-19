@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/a15k/mothership.git
-  revision: cde66f1a980c22c02fb743685e714fd010b5ad23
-  branch: master
+  revision: b93621de150986756241ed92ae80b824de262706
+  branch: update-client
   glob: clients/1.0.0/ruby/*gemspec
   specs:
     a15k_client (1.0.0)
@@ -137,6 +137,10 @@ GEM
     docile (1.1.5)
     doorkeeper (4.2.6)
       railties (>= 4.2)
+    dotenv (2.5.0)
+    dotenv-rails (2.5.0)
+      dotenv (= 2.5.0)
+      railties (>= 3.2, < 6.0)
     eco (1.0.0)
       coffee-script
       eco-source
@@ -162,7 +166,7 @@ GEM
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
-    ffi (1.9.8)
+    ffi (1.9.25)
     fine_print (3.0.0)
       action_interceptor (>= 1.0)
       jquery-rails
@@ -521,6 +525,7 @@ DEPENDENCIES
   database_cleaner
   deep_cloneable
   doorkeeper
+  dotenv-rails
   eco
   ejs
   factory_bot_rails

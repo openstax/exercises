@@ -1,0 +1,8 @@
+identifier: openstax
+name:  Open Stax
+specification: >-
+  The OpenStax assessment format consists of one or more questions, each of which
+  has a “stem_html” and “content_html”, and “answers” properties.
+
+  The answers property is an array of one or more objects each of which contains a
+  “content_html” property.
