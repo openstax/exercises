@@ -147,7 +147,7 @@ class Publication < ActiveRecord::Base
   end
 
   def has_read_permission?(user)
-    has_write_permission?(user) || collaborators.any? do |collaborator|
+    user.account.confirmed_faculty? || has_write_permission?(user) || collaborators.any? do |collaborator|
       ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
         .joins(list: [:list_publication_groups, :list_readers])
         .where(

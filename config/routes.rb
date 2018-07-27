@@ -44,9 +44,9 @@ Exercises::Application.routes.draw do
     #  post 'seeds', on: :member
     #end
 
-    #resources :lists do
-    #  publishable
-    #end
+    resources :lists do
+      publishable
+    end
 
     resources :users, only: [:index]
 

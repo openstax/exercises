@@ -38,7 +38,7 @@ module Api::V1
       is a comma-separated list of fields with an optional sort direction. The
       sort will be performed in the order the fields are given.
       The fields can be one of #{
-        SearchLists::SORTABLE_FIELDS.map {|sf| "`"+sf+"`"}.join(', ')
+        # SearchLists::SORTABLE_FIELDS.map {|sf| "`"+sf+"`"}.join(', ')
       }.
       Sort directions can either be `ASC` for an ascending sort, or `DESC` for
       a descending sort. If not provided, an ascending sort is assumed. Sort
@@ -50,11 +50,7 @@ module Api::V1
       `name, created_at DESC` &ndash; sorts by name ascending, then by created_at descending
     EOS
     def index
-      OSU::AccessPolicy.require_action_allowed!(:index, current_user, List)
-      outputs = OpenStax::Exercises::SearchLists.call(
-        params.slice(:name, :visibility, :order_by)
-      ).outputs
-      respond_with outputs, represent_with: Api::V1::ListSearchRepresenter
+      respond_with OpenStruct.new(items: current_human_user.lists_as_owner), represent_with: Api::V1::ListSearchRepresenter
     end
 
     ########

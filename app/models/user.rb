@@ -31,6 +31,9 @@ class User < ActiveRecord::Base
                           class_name: 'Doorkeeper::Application',
                           as: :owner, dependent: :destroy
 
+  has_many :list_owners, as: :owner
+  has_many :lists_as_owner, through: :list_owners, source: :list
+
   has_many :sortings, dependent: :destroy
 
   validates :account, presence: true, uniqueness: true
