@@ -3,7 +3,11 @@ class Tag < ActiveRecord::Base
   has_many :exercise_tags, dependent: :destroy
   has_many :vocab_term_tags, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: true, format: /\A[\w:#-]*\z/
+  validates :name, presence: true, uniqueness: true, format: /\A[\w\.:#-]*\z/
+
+  def self.sanitize_name(name)
+    name.to_s.gsub(/[^\w\.:#]+/, '-').gsub(/(?:\A-|-\z)/, '')
+  end
 
   def self.get(tags)
     # Initialize array of remaining tags
@@ -12,7 +16,7 @@ class Tag < ActiveRecord::Base
     # Get Tag objects in the given array
     result = remaining_tags.select { |tag| tag.is_a?(Tag) }
     remaining_tags = (remaining_tags - result).map do |tag|
-      sanitized_name = tag.to_s.gsub(/[^\w:#]+/, '-').gsub(/(?:\A-|-\z)/, '')
+      sanitized_name = sanitize_name(tag)
       sanitized_name unless sanitized_name.blank?
     end.compact.uniq
 
