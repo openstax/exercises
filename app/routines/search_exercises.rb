@@ -120,7 +120,7 @@ class SearchExercises
           sanitized_versions = to_string_array(version)
           next @items = @items.none if sanitized_versions.empty?
 
-          @items = @items.where(publications: { version: sanitized_versions })
+          @items = @items.where(publication: { version: sanitized_versions })
         end
 
         # Since we are returning specific versions, disable "latest_visible"
@@ -193,7 +193,7 @@ class SearchExercises
           next @items = @items.none if sn.empty?
 
           distinct = true
-          @items = @items.joins(publications: { authors: { user: :account } })
+          @items = @items.joins(publication: { authors: { user: :account } })
                          .where {
                            (publication.authors.user.account.username.like_any sn) |\
                            (publication.authors.user.account.first_name.like_any sn) |\
@@ -209,7 +209,7 @@ class SearchExercises
           next @items = @items.none if sn.empty?
 
           distinct = true
-          @items = @items.joins(publications: { copyright_holders: { user: :account } })
+          @items = @items.joins(publication: { copyright_holders: { user: :account } })
                          .where {
                            (publication.copyright_holders.user.account.username.like_any sn) |\
                            (publication.copyright_holders.user.account.first_name.like_any sn) |\
