@@ -48,6 +48,8 @@ Exercises::Application.routes.draw do
       publishable
     end
 
+    resources :favorites, only: [:create]
+
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy]

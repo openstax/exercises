@@ -6,6 +6,7 @@ class Publication < ActiveRecord::Base
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
   sortable_has_many :copyright_holders, dependent: :destroy, inverse_of: :publication
+  has_many :favorites, inverse_of: :publication
 
   sortable_has_many :sources, class_name: 'Derivation',
                               foreign_key: :derived_publication_id,

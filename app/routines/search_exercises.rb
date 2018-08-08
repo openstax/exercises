@@ -203,6 +203,22 @@ class SearchExercises
         end
       end
 
+      with.keyword :favorite do |names|
+        names.each do |name|
+          sn = to_string_array(name, append_wildcard: true)
+          next @items = @items.none if sn.empty?
+
+          distinct = true
+          @items = @items.joins(publication: { favorites: { user: :account } })
+                         .where {
+                           (publication.favorites.user.account.username.like_any sn) |\
+                           (publication.favorites.user.account.first_name.like_any sn) |\
+                           (publication.favorites.user.account.last_name.like_any sn) |\
+                           (publication.favorites.user.account.full_name.like_any sn)
+                         }
+        end
+      end
+
       with.keyword :copyright_holder do |names|
         names.each do |name|
           sn = to_string_array(name, append_wildcard: true)
