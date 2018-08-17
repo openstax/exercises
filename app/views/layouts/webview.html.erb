@@ -4,7 +4,7 @@
   <title>OpenStax Exercises</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&amp;delayStartupUntil=configured" async></script>
   <script id="exercises-boostrap-data" type="application/json"><%=raw json_escape client_bootstrap_data.to_json %></script>
-  <script type='text/javascript' src='<%= Rails.application.secrets[:js_url]%>' defer></script>
+  <script type='text/javascript' src='<%= Exercises::Assets::Scripts[:exercises] %>' defer></script>
   <%= csrf_meta_tags %>
 </head>
 <body>
