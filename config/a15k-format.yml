@@ -1,8 +1,18 @@
 identifier: openstax
 name:  Open Stax
 specification: >-
-  The OpenStax assessment format consists of one or more questions, each of which
-  has a “stem_html” and “content_html”, and “answers” properties.
+  The OpenStax assessment format consists of a stimulus and one or more
+  questions, each of which has a “stem_html”, “content_html”,
+  and “answers” properties.
 
-  The answers property is an array of one or more objects each of which contains a
-  “content_html” property.
+  The stimulus is intended to be displayed as a preamble before the questions.
+
+  The questions property is an array of one or more objects.  Questions contain:
+    * stimulus: html that is displayed before the answer choices
+    * stems: also displayed before the answer choices
+    * answers: Are present if the assessment is multiple choice
+    * collaborator_solutions: alternative solutions for the question, is an object which has a "content" proprty
+
+  Answers contain:
+    * content: html for the choice
+    * stem_answers: an array of feedback to assist in choosing the correct answer
