@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/a15k/mothership.git
-  revision: b93621de150986756241ed92ae80b824de262706
-  branch: update-client
+  revision: cb553acb7e2eecb401407a775436384f83403a62
+  branch: master
   glob: clients/1.0.0/ruby/*gemspec
   specs:
     a15k_client (1.0.0)

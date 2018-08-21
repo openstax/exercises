@@ -130,7 +130,7 @@ gem 'httparty'
 gem 'a15k_client',
     git: 'https://github.com/a15k/mothership.git',
     glob: 'clients/1.0.0/ruby/*gemspec',
-    branch: 'update-client'
+    branch: 'master'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from', '~> 3.0.0'
