@@ -1,6 +1,8 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
+require 'scout_helper'
+
 require 'user_mapper'
 
 require 'style'
