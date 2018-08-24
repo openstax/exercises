@@ -78,6 +78,8 @@ module Api::V1
       `number, version DESC` &ndash; sorts by number ascending, then by version descending
     EOS
     def index
+      ScoutHelper.ignore! 0.99
+
       standard_search(
         Exercise, SearchExercises, Exercises::SearchRepresenter, user: current_api_user
       )
