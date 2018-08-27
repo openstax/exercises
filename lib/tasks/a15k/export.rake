@@ -1,7 +1,7 @@
-require_relative '../../exercises/html_preview'
+require 'a15k/html_preview'
 require 'yaml'
 
-namespace :exercises do
+namespace :a15k do
   namespace :export do
     desc "export exercise to a15k"
     task :a15k, [:number] => [:environment] do |t, args|
