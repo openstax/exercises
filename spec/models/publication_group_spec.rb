@@ -47,4 +47,9 @@ RSpec.describe PublicationGroup, type: :model do
     )
   end
 
+  it 'sets nickname to null when blank' do
+    subject.update_attributes(nickname: '')
+    expect(subject.reload.nickname).to be_nil
+  end
+
 end
