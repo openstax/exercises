@@ -30,6 +30,7 @@ class Exercise < ActiveRecord::Base
     :attachments,
     :logic,
     :tags,
+    :release_to_a15k,
     {
       publication: [
         :derivations,
@@ -88,6 +89,9 @@ class Exercise < ActiveRecord::Base
   sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
   belongs_to :vocab_term, touch: true
+
+  scope :can_release_to_a15k, -> { where(release_to_a15k: true) }
+  scope :not_released_to_a15k, -> { where(a15k_identifier: nil) }
 
   def content_equals?(other_exercise)
     return false unless other_exercise.is_a? ActiveRecord::Base

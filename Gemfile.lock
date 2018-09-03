@@ -226,7 +226,7 @@ GEM
       hashie
       transaction_isolation
       transaction_retry
-    libv8 (3.16.14.7)
+    libv8 (3.16.14.19)
     lograge (0.3.1)
       actionpack (>= 3)
       activesupport (>= 3)
@@ -585,4 +585,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.16.0
+   1.16.4

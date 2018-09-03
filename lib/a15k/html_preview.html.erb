@@ -13,7 +13,7 @@
       <ol class="answers" type="a">
         <% question.answers.each do |answer| %>
         <li class="answer">
-          <div class="content"><%= nl2br answer.content %></div>
+          <div class="content"><%= nl2br answer.content %><% if answer.correcness == 1.0 %>✅<% end %></div>
           <% answer.stem_answers.each do|stem| %>
             <i class="feedback"><%= nl2br stem.feedback %></i>
           <% end %>

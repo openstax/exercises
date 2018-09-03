@@ -1,6 +1,6 @@
 require 'erb'
 
-module Exercises
+module A15k
 
   class HtmlPreview
     attr_reader :exercise
