@@ -11,6 +11,7 @@ set :runner_command, "#{bundle_command} rails runner"
 #   * https://github.com/javan/whenever/issues/481
 #   * https://github.com/javan/whenever/pull/239
 
-every 1.day do
-  rake "a15k:export"
-end
+# Add this in once a15k is stable
+# every 1.day do
+#   rake "a15k:export"
+# end
