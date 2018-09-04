@@ -51,9 +51,9 @@ module A15k
       # Get the exercise JSON; we toss out "community solutions" for licensing
       # reasons.
 
-      exercise_data = HashWithIndifferentAccess.new(Api::V1::Exercises::Representer.new(exercise).to_hash)
-      exercise_data[:questions].each do |question_data|
-        question_data.delete(:community_solutions)
+      exercise_data = Api::V1::Exercises::Representer.new(exercise).to_hash
+      exercise_data['questions'].each do |question_data|
+        question_data.delete('community_solutions')
       end
 
       # Make the API call
