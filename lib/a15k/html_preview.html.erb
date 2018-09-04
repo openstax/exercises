@@ -1,0 +1,101 @@
+<style type="text/css">
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+  }
+
+  .title {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 10px;
+  }
+
+  .stimulus {
+    margin-bottom: 10px;
+  }
+
+  .feedback {
+    font-size: 12px;
+  }
+
+  .solutions-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  li.answer, .solutions {
+    clear: both;
+  }
+
+  .answer .content.correct {
+    color: green;
+  }
+
+  .answers {
+    margin-top: 10px;
+  }
+</style>
+
+<div class="openstax-assessment" data-uuid="<%= exercise.uuid %>">
+
+  <% if exercise.title %>
+    <div class="title">Title: <%= exercise.title %></div>
+  <% end %>
+
+  <% if exercise.stimulus.present? %>
+    <div class="stimulus"><%= nl2br exercise.stimulus %></div>
+  <% end %>
+
+  <% exercise.questions.each do |question| %>
+    <div class="question">
+
+      <% if question.stimulus.present? %>
+        <div class="stimulus"><%= nl2br question.stimulus %></div>
+      <% end %>
+
+      <% question.stems.each do |stem| %>
+        <% if stem.content.present? %>
+          <div class="stem"><%= nl2br stem.content %></div>
+        <% end %>
+      <% end %>
+
+      <ol class="answers" type="a">
+        <% question.answers.each do |answer| %>
+
+        <li class="answer">
+          <% correct = answer.stem_answers.first.correctness == 1.0 %>
+          <% if correct %><div style="float:right">✅</div><% end %>
+          <div class="content <%= 'correct' if correct %>"><%= nl2br answer.content %></div>
+
+          <% answer.stem_answers.each do|stem_answer| %>
+            <% if stem_answer.feedback.present? %>
+              <div class="feedback">
+                <div style="float:left; padding-right: 5px;"><p>Feedback: </p></div>
+                <div style="float:left"><%= stem_answer.feedback %></div>
+              </div>
+            <% end %>
+          <% end %>
+        </li>
+        <% end %>
+      </ol>
+
+      <% solutions = question.collaborator_solutions %>
+
+      <% if solutions.any? %>
+        <div class="solutions">
+          <div class="solutions-title">Solutions</div>
+          <% question.collaborator_solutions.each do |solution| %>
+            <ol>
+              <li class="solution">
+                <%= nl2br solution.content %>
+              </li>
+            </ol>
+          <% end %>
+        </div>
+      <% end %>
+
+      </div>
+    </div>
+  <% end %>
+</div>
