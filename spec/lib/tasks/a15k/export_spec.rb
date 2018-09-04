@@ -13,8 +13,10 @@ RSpec.describe 'exercises export to a15k', type: :rake do
   context 'a15k' do
 
     let :run_rake_task do
-      Rake::Task["a15k:export"].reenable
-      Rake.application.invoke_task "a15k:export"
+      capture_stdout {
+        Rake::Task["a15k:export"].reenable
+        Rake.application.invoke_task "a15k:export"
+      }
     end
 
     it 'calls AssessmentsApi to create an assessment' do
