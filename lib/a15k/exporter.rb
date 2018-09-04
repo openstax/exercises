@@ -1,5 +1,4 @@
 require 'a15k/html_preview'
-require 'byebug'
 
 module A15k
   class Exporter
@@ -19,7 +18,7 @@ module A15k
       Exercise.published                     # Select only published exercises
               .can_release_to_a15k           # That have been marked as releaseable to a15k
               .not_released_to_a15k          # And that haven't yet been released
-              .find_each do |exercise|.      # iterate through them
+              .find_each do |exercise|       # iterate through them
 
         begin
           export_one_exercise(exercise, format)

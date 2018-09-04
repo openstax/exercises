@@ -30,7 +30,6 @@ class Exercise < ActiveRecord::Base
     :attachments,
     :logic,
     :tags,
-    :release_to_a15k,
     {
       publication: [
         :derivations,
