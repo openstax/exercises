@@ -1,4 +1,4 @@
-require 'a15k/html_preview'
+require 'a15k/exporter'
 require 'yaml'
 
 namespace :a15k do
@@ -12,14 +12,14 @@ namespace :a15k do
     # Report on outcomes
 
     success_count = outcomes[:success_count]
-    failure_count = outcomes[:failures].length
+    failure_count = outcomes[:failure_info].length
     total_count = success_count + failure_count
 
     puts "Exported #{success_count} of #{total_count} exercises to A15k.\n"
 
-    if outcomes[:failures].any?
+    if outcomes[:failure_info].any?
       puts "Failure info:\n"
-      outcomes[:failures].each do |failure|
+      outcomes[:failure_info].each do |failure|
         puts "  uid: #{failure[:uid]}, message: #{failure[:message]}"
       end
     end

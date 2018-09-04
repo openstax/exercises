@@ -1,3 +1,5 @@
+require 'a15k/html_preview'
+
 module A15k
   class Exporter
 
@@ -21,33 +23,35 @@ module A15k
         begin
           export_one_exercise(exercise, format)
 
-          outcomes[:success_count] += 1
+          @outcomes[:success_count] += 1
         rescue CreateAssessmentError, A15kClient::ApiError => ee
-          outcomes[:failure_info].push({uid: exercise.uid, message: ee.message})
+          @outcomes[:failure_info].push({uid: exercise.uid, message: ee.message})
         end
 
       end
 
-      outcomes
+      @outcomes
     end
 
     def make_sure_format_is_uploaded_and_return
       # See if it is already uploaded
       format = formats_api.get_formats
                           .data
-                          .find{|format| format.identifier == format_data['identifier']}
+                          .find{|format| format.identifier == local_format_data['identifier']}
 
       # If it is uploaded, return it; otherwise upload it via the API and return it
-      format || formats_api.create_format(
-                  YAML.load_file Rails.root.join('lib/a15k', 'format.yml') # read from local file
-                ).data
+      format || formats_api.create_format(local_format_data).data
+    end
+
+    def local_format_data
+      @local_format_data ||= YAML.load_file Rails.root.join('lib/a15k', 'format.yml')
     end
 
     def export_one_exercise(exercise, format)
       # Get the exercise JSON; we toss out "community solutions" for licensing
       # reasons.
 
-      exercise_data = Api::V1::Exercises::Representer.new(exercise).to_h
+      exercise_data = HashWithIndifferentAccess.new(Api::V1::Exercises::Representer.new(exercise).to_hash)
       exercise_data[:questions].each do |question_data|
         question_data.delete(:community_solutions)
       end
@@ -59,7 +63,7 @@ module A15k
         variants: [                                              # we don't have generative assessments,
           {                                                      #   so only one 'variant'
             format_id: format.id,
-            content: exercise_data.as_json,
+            content: exercise_data.to_json,
             preview_html: A15k::HtmlPreview.new(exercise).generate,
           }
         ]
