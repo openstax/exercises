@@ -1,21 +1,20 @@
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'exercises export', type: :rake do
+RSpec.describe 'exercises export to a15k', type: :rake do
 
   before :all do
-    Rake.application.rake_require "tasks/exercises/export"
+    Rake.application.rake_require "tasks/a15k/export"
     Rake::Task.define_task(:environment)
   end
 
-  let(:exercise) { FactoryBot.create :exercise, :published }
+  let(:exercise) { FactoryBot.create :exercise, :published, release_to_a15k: true }
 
   context 'a15k' do
 
-
     let :run_rake_task do
-      Rake::Task["exercises:export:a15k"].reenable
-      Rake.application.invoke_task "exercises:export:a15k[#{exercise.number}]"
+      Rake::Task["a15k:export"].reenable
+      Rake.application.invoke_task "a15k:export"
     end
 
     it 'calls AssessmentsApi to create an assessment' do
@@ -36,7 +35,7 @@ RSpec.describe 'exercises export', type: :rake do
         receive(:create_assessment)
           .with(
             hash_including(
-              identifier: exercise.uuid,
+              source_identifier: exercise.publication_group.uuid
             )
           )
           .and_return(assessments_api)

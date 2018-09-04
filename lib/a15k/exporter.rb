@@ -23,7 +23,7 @@ module A15k
         begin
           export_one_exercise(exercise, format)
 
-          @outcomes[:success_count] += 1.    # the rest is error handling and logging
+          @outcomes[:success_count] += 1     # the rest is error handling and logging
         rescue A15kClient::ApiError => ee
           message = JSON.parse(ee.response_body)["message"]
           @outcomes[:failure_info].push({uid: exercise.uid, message: message})
