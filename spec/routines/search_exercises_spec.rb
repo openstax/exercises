@@ -23,7 +23,8 @@ RSpec.describe SearchExercises, type: :routine do
         'stem_html' => "Consectetur adipiscing elit",
         'answers' => [{
           'content_html' => "Sed do eiusmod tempor"
-        }]
+        }],
+        'formats' => [ 'multiple-choice', 'free-response' ]
       }]
     )
     @exercise_1.save!
@@ -39,7 +40,8 @@ RSpec.describe SearchExercises, type: :routine do
         'stem_html' => "Consectetur adipisci velit",
         'answers' => [{
           'content_html' => "Sed quia non numquam"
-        }]
+        }],
+        'formats' => [ 'multiple-choice', 'free-response' ]
       }]
     )
     @exercise_2.save!
@@ -55,7 +57,8 @@ RSpec.describe SearchExercises, type: :routine do
         'stem_html' => "and should not appear",
         'answers' => [{
           'content_html' => "in most searches"
-        }]
+        }],
+        'formats' => [ 'multiple-choice', 'free-response' ]
       }]
     )
     @exercise_draft.save!
