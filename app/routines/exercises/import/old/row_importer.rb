@@ -85,8 +85,8 @@ module Exercises
 
         question_stem_content = parse(row[12], ex)
 
-        styles = [Style::MULTIPLE_CHOICE]
-        styles << Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
+        styles = [::Style::MULTIPLE_CHOICE]
+        styles << ::Style::FREE_RESPONSE if display_type_tags.include?('display-free-response')
         explanation = parse(row[13], ex)
         correct_answer_index = row[14].downcase.strip.each_byte.first - 97
 
@@ -98,14 +98,13 @@ module Exercises
 
         st = Stem.new
         st.content = question_stem_content
-        qq.stems << st
-
         styles.each do |style|
           styling = Styling.new
           styling.stylable = st
           styling.style = style
           st.stylings << styling
         end
+        qq.stems << st
 
         if author
           au = Author.new

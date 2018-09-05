@@ -12,7 +12,7 @@ RSpec.describe Styling, type: :model do
   it 'requires a unique style for each stylable' do
     styling_1 = FactoryBot.create :styling
     styling_2 = FactoryBot.build :styling, stylable: styling_1.stylable,
-                                            style: styling_1.style
+                                           style: styling_1.style
     expect(styling_2).not_to be_valid
     expect(styling_2.errors[:style]).to include('has already been taken')
 
