@@ -14,8 +14,5 @@ module A15k
       ERB.new(template.read).result(binding)
     end
 
-    def nl2br(text)
-      text.gsub("\n", '<br>')
-    end
   end
 end

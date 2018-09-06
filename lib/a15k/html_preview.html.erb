@@ -16,6 +16,8 @@
 
   .feedback {
     font-size: 12px;
+    margin-top: 3px;
+    font-style: italic;
   }
 
   .solutions-title {
@@ -32,9 +34,19 @@
     color: green;
   }
 
+  li.answer {
+    margin-top: 8px;
+  }
+
   .answers {
     margin-top: 10px;
   }
+
+  table {
+    width: 100%;
+    margin: 20px 0;
+  }
+
 </style>
 
 <div class="openstax-assessment" data-uuid="<%= exercise.uuid %>">
@@ -44,19 +56,19 @@
   <% end %>
 
   <% if exercise.stimulus.present? %>
-    <div class="stimulus"><%= nl2br exercise.stimulus %></div>
+    <div class="stimulus"><%= exercise.stimulus %></div>
   <% end %>
 
   <% exercise.questions.each do |question| %>
     <div class="question">
 
       <% if question.stimulus.present? %>
-        <div class="stimulus"><%= nl2br question.stimulus %></div>
+        <div class="stimulus"><%= question.stimulus %></div>
       <% end %>
 
       <% question.stems.each do |stem| %>
         <% if stem.content.present? %>
-          <div class="stem"><%= nl2br stem.content %></div>
+          <div class="stem"><%= stem.content %></div>
         <% end %>
       <% end %>
 
@@ -66,13 +78,12 @@
         <li class="answer">
           <% correct = answer.stem_answers.first.correctness == 1.0 %>
           <% if correct %><div style="float:right">✅</div><% end %>
-          <div class="content <%= 'correct' if correct %>"><%= nl2br answer.content %></div>
+          <div class="content <%= 'correct' if correct %>"><%= answer.content %></div>
 
           <% answer.stem_answers.each do|stem_answer| %>
             <% if stem_answer.feedback.present? %>
               <div class="feedback">
-                <div style="float:left; padding-right: 5px;"><p>Feedback: </p></div>
-                <div style="float:left"><%= stem_answer.feedback %></div>
+                Feedback: <%= stem_answer.feedback %>
               </div>
             <% end %>
           <% end %>
@@ -86,9 +97,9 @@
         <div class="solutions">
           <div class="solutions-title">Solutions</div>
           <% question.collaborator_solutions.each do |solution| %>
-            <ol>
+            <ol class="solution">
               <li class="solution">
-                <%= nl2br solution.content %>
+                <%= solution.content %>
               </li>
             </ol>
           <% end %>
@@ -99,3 +110,5 @@
     </div>
   <% end %>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&amp;delayStartupUntil=configured" async></script>
