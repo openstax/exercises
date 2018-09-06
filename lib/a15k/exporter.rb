@@ -69,7 +69,10 @@ module A15k
             content: exercise_data.to_json,
             preview_html: A15k::HtmlPreview.new(exercise).generate,
           }
-        ]
+        ],
+        metadata: {
+          tags: exercise.tags.to_a
+        }
       )
 
       raise(CreateAssessmentError, reply.message) if !reply.success
