@@ -1,18 +1,47 @@
-identifier: openstax
-name:  Open Stax
+identifier: openstax_v1
+name:  OpenStax V1
 specification: >-
-  The OpenStax assessment format consists of a stimulus and one or more
-  questions, each of which has a “stem_html”, “content_html”,
-  and “answers” properties.
+  <style type='text/css'>
+    .openstax-format-v1 {
+      font-family: Sans-Serif;
+    }
+  </style>
 
-  The stimulus is intended to be displayed as a preamble before the questions.
+  <div class='openstax-format-v1'>
+    <p>The OpenStax assessment format supports multi-part and single-part questions in multiple formats.  The
+    data is stored in a JSON-encoded string</p>
 
-  The questions property is an array of one or more objects.  Questions contain:
-    * stimulus: html that is displayed before the answer choices
-    * stems: also displayed before the answer choices
-    * answers: Are present if the assessment is multiple choice
-    * collaborator_solutions: alternative solutions for the question, is an object which has a "content" proprty
+    <p>The top level may contain a <b>stimulus_html</b> field.  This is where a common introduction
+    for a multi-part question is stored.  Nothing prohibits this field from being used for a
+    single-part question.</p>
 
-  Answers contain:
-    * content: html for the choice
-    * stem_answers: an array of feedback to assist in choosing the correct answer
+    <p>The top level will contain a <b>questions</b> array.  This field will have one entry for a
+    single-part question and multiple entries for a multi-part question. Each question contains
+    the following fields:</p>
+
+    <ol>
+      <li><b>stimulus_html</b>: html that introduces this question; may be blank/missing.</li>
+      <li><b>stem_html</b>: html that contains the actual question or directive.</li>
+      <li><b>answers</b>: present if the assessment is multiple choice; contains:
+        <ol>
+          <li><b>content_html</b>: html with the answer content</li>
+          <li><b>correctness</b>: a floating point value between 0.0 and 1.0, inclusive.  1.0 is fully correct.</li>
+          <li><b>feedback_html</b>: html containing feedback in the event this answer is chosen.</li>
+        </ol>
+      </li>
+      <li><b>formats</b>: an array of formats; most questions are 'multiple-choice' that can also be asked as 'free-response'.</li>
+      <li><b>collaborator_solutions</b>: an array of worked solutions for the assessment; contains:
+        <ol>
+          <li><b>content_html</b>: </li>
+          <li><b>solution_type</b>: one of 'summary', 'detailed', or 'example'</li>
+        </ol>
+      </li>
+      <li><b>tags</b>: an array of string tags</li>
+    </ol>
+
+    <p>There are other fields in the content that are largely self-explanatory or not necessary for using
+    the assessment.</p>
+
+    <p>OpenStax does have a different multi-stem format which should not be used in any
+    a15k contributions, but if you find one please contact OpenStax for details.</p>
+  </div>

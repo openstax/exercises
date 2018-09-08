@@ -82,9 +82,8 @@ Exercises::Application.routes.draw do
     end
 
     resources :a15k, only: [] do
-      member do
-        get 'preview'
-      end
+      get 'preview', on: :member
+      get 'format', on: :collection
     end
   end
 
