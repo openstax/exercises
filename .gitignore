@@ -47,3 +47,6 @@ notes
 # Ignore gedit and OSX temp files
 *~
 *.DS_Store
+
+# dotenv env variable definitions
+.env

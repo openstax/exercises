@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180220213530) do
+ActiveRecord::Schema.define(version: 20180829201038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -206,9 +206,12 @@ ActiveRecord::Schema.define(version: 20180220213530) do
   create_table "exercises", force: :cascade do |t|
     t.string   "title"
     t.text     "stimulus"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.integer  "vocab_term_id"
+    t.string   "a15k_identifier"
+    t.integer  "a15k_version"
+    t.boolean  "release_to_a15k"
   end
 
   add_index "exercises", ["title"], name: "index_exercises_on_title", using: :btree

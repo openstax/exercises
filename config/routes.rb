@@ -80,6 +80,11 @@ Exercises::Application.routes.draw do
         patch 'undelete'
       end
     end
+
+    resources :a15k, only: [] do
+      get 'preview', on: :member
+      get 'format', on: :collection
+    end
   end
 
   namespace :dev do

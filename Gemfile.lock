@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/a15k/mothership.git
+  revision: c6fc62e9a5821c72671e315c5a7ae30ff738f08a
+  branch: master
+  glob: clients/1.0.0/ruby/*gemspec
+  specs:
+    a15k_client (1.0.0)
+      json
+      typhoeus (~> 1.0, >= 1.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -75,7 +85,7 @@ GEM
       mime-types (>= 1.16)
     cheat (1.3.3)
       pager (~> 1.0)
-    choice (0.2.0)
+    choice (0.1.7)
     chronic (0.10.2)
     chunky_png (1.3.4)
     codeclimate-test-reporter (0.4.7)
@@ -127,6 +137,10 @@ GEM
     docile (1.1.5)
     doorkeeper (4.2.6)
       railties (>= 4.2)
+    dotenv (2.5.0)
+    dotenv-rails (2.5.0)
+      dotenv (= 2.5.0)
+      railties (>= 3.2, < 6.0)
     eco (1.0.0)
       coffee-script
       eco-source
@@ -134,6 +148,8 @@ GEM
     eco-source (1.1.0.rc.1)
     ejs (1.1.1)
     erubis (2.7.0)
+    ethon (0.11.0)
+      ffi (>= 1.3.0)
     eventmachine (1.0.7)
     exception_notification (4.2.1)
       actionmailer (>= 4.0, < 6)
@@ -150,7 +166,7 @@ GEM
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
-    ffi (1.9.8)
+    ffi (1.9.25)
     fine_print (3.0.0)
       action_interceptor (>= 1.0)
       jquery-rails
@@ -187,7 +203,7 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    i18n (0.9.5)
+    i18n (0.9.1)
       concurrent-ruby (~> 1.0)
     ipaddress (0.8.0)
     jquery-rails (4.3.1)
@@ -210,7 +226,7 @@ GEM
       hashie
       transaction_isolation
       transaction_retry
-    libv8 (3.16.14.7)
+    libv8 (3.16.14.19)
     lograge (0.3.1)
       actionpack (>= 3)
       activesupport (>= 3)
@@ -228,7 +244,7 @@ GEM
     mini_magick (4.2.0)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
-    minitest (5.11.3)
+    minitest (5.11.1)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -315,11 +331,11 @@ GEM
       activesupport (>= 4.2.0, < 5.0)
       nokogiri (~> 1.6)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-erd (1.5.2)
+    rails-erd (1.3.1)
       activerecord (>= 3.2)
       activesupport (>= 3.2)
-      choice (~> 0.2.0)
-      ruby-graphviz (~> 1.2)
+      choice (~> 0.1.6)
+      ruby-graphviz (~> 1.0.4)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
     railties (4.2.7.1)
@@ -392,7 +408,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    ruby-graphviz (1.2.3)
+    ruby-graphviz (1.0.9)
     ruby2ruby (2.1.3)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
@@ -461,7 +477,9 @@ GEM
       transaction_isolation (>= 1.0.2)
     turbolinks (2.5.3)
       coffee-rails
-    tzinfo (1.2.5)
+    typhoeus (1.3.0)
+      ethon (>= 0.9.0)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uber (0.0.15)
     uglifier (2.7.1)
@@ -487,6 +505,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  a15k_client!
   acts_as_votable
   addressable
   apipie-rails
@@ -506,6 +525,7 @@ DEPENDENCIES
   database_cleaner
   deep_cloneable
   doorkeeper
+  dotenv-rails
   eco
   ejs
   factory_bot_rails
@@ -565,4 +585,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.16.0
+   1.16.4
