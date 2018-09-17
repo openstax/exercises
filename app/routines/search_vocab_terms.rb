@@ -33,53 +33,6 @@ class SearchVocabTerms
                  sortable_fields: SORTABLE_FIELDS,
                  params: params) do |with|
 
-      # Block to be used for searches by id or uid
-      id_search_block = lambda do |ids|
-        ids.each do |id|
-          sanitized_ids = to_string_array(id).map { |id| id.split('@') }
-          next @items = @items.none if sanitized_ids.empty?
-
-          sanitized_numbers = sanitized_ids.map(&:first).compact
-          sanitized_versions = sanitized_ids.map(&:second).compact
-
-          # Disable "latest_visible" if any version is specified
-          latest_visible = false unless sanitized_versions.empty?
-
-          if sanitized_numbers.empty?
-            @items = @items.where(publications: { version: sanitized_versions })
-          elsif sanitized_versions.empty?
-            @items = @items.where do
-              publication.uuid.in(sanitized_numbers) |
-              publication.publication_group.number.in(sanitized_numbers) |
-              publication.publication_group.uuid.in(sanitized_numbers)
-            end
-          else
-            # Combine the id's one at a time using Squeel
-            @items = @items.where do
-              only_numbers = sanitized_ids.select { |sid| sid.second.blank? }.map(&:first)
-              only_versions = sanitized_ids.select { |sid| sid.first.blank? }.map(&:second)
-              full_ids = sanitized_ids.reject { |sid| sid.first.blank? || sid.second.blank? }
-
-              cumulative_query = publication.uuid.in(only_numbers) |
-                                 publication.publication_group.number.in(only_numbers) | \
-                                 publication.publication_group.uuid.in(only_numbers) | \
-                                 publication.version.in(only_versions)
-
-              full_ids.each do |full_id|
-                sanitized_number = full_id.first
-                sanitized_version = full_id.second
-                query = ((publication.publication_group.uuid == sanitized_number) |
-                         (publication.publication_group.number == sanitized_number)) & \
-                        (publication.version == sanitized_version)
-                cumulative_query = cumulative_query | query
-              end
-
-              cumulative_query
-            end
-          end
-        end
-      end
-
       # Block to be used for searches by name or term
       name_search_block = lambda do |names|
         names.each do |nm|
@@ -92,20 +45,65 @@ class SearchVocabTerms
 
       with.default_keyword :content
 
-      with.keyword :id, &id_search_block
+      with.keyword :id do |ids|
+        ids.each do |id|
+          sanitized_ids = to_number_array(id)
+          next @items = @items.none if sanitized_ids.empty?
 
-      with.keyword :uid, &id_search_block
+          latest_visible = false
+          @items = @items.where(id: sanitized_ids)
+        end
+      end
+
+      with.keyword :uid do |uids|
+        uids.each do |uid|
+          sanitized_uids = to_string_array(uid).map { |uid| uid.split('@') }
+          next @items = @items.none if sanitized_uids.empty?
+
+          sanitized_numbers = sanitized_uids.map(&:first).compact
+          sanitized_versions = sanitized_uids.map(&:second).compact
+
+          # Disable "latest_visible" if any version is specified
+          latest_visible = false unless sanitized_versions.empty?
+
+          if sanitized_numbers.empty?
+            @items = @items.where(publications: { version: sanitized_versions })
+          elsif sanitized_versions.empty?
+            @items = @items.where(publication_groups: { number: sanitized_numbers })
+          else
+            # Combine the id's one at a time using Squeel
+            @items = @items.where do
+              only_numbers = sanitized_uids.select { |suid| suid.second.blank? }.map(&:first)
+              only_versions = sanitized_uids.select { |suid| suid.first.blank? }.map(&:second)
+              full_uids = sanitized_uids.reject { |suid| suid.first.blank? || suid.second.blank? }
+
+              cumulative_query = publication.publication_group.number.in(only_numbers) |
+                                 publication.version.in(only_versions)
+
+              full_uids.each do |full_uid|
+                sanitized_number = full_uid.first
+                sanitized_version = full_uid.second
+                query = (publication.publication_group.number == sanitized_number) &
+                        (publication.version == sanitized_version)
+                cumulative_query = cumulative_query | query
+              end
+
+              cumulative_query
+            end
+          end
+        end
+      end
 
       with.keyword :uuid do |uuids|
         uuids.each do |uuid|
           sanitized_uuids = to_string_array(uuid)
           next @items = @items.none if sanitized_uuids.empty?
 
-          @items = @items.where do
-            publication.uuid.in(sanitized_uuids) |
-            publication.publication_group.uuid.in(sanitized_uuids)
-          end
+          @items = @items.where(publications: { uuid: sanitized_uuids })
         end
+
+        # Since we are returning specific uuids, disable "latest_visible"
+        latest_visible = false
       end
 
       with.keyword :group_uuid do |uuids|
@@ -113,7 +111,7 @@ class SearchVocabTerms
           sanitized_uuids = to_string_array(uuid)
           next @items = @items.none if sanitized_uuids.empty?
 
-          @items = @items.where { publication.publication_group.uuid.in(sanitized_uuids) }
+          @items = @items.where(publication_groups: { uuid: sanitized_uuids })
         end
       end
 
@@ -143,7 +141,7 @@ class SearchVocabTerms
           sanitized_nicknames = to_string_array(nickname)
           next @items = @items.none if sanitized_nicknames.empty?
 
-          @items = @items.where { publication.publication_group.nickname.in(sanitized_nicknames) }
+          @items = @items.where(publication_groups: { nickname: sanitized_nicknames })
         end
       end
 
@@ -176,8 +174,9 @@ class SearchVocabTerms
                                                         prepend_wildcard: true)
           next @items = @items.none if sanitized_contents.empty?
 
-          @items = @items.where { (name.like_any sanitized_contents) |\
-                                  (definition.like_any sanitized_contents) }
+          @items = @items.where do
+            name.like_any(sanitized_contents) | definition.like_any(sanitized_contents)
+          end
         end
       end
 
@@ -187,13 +186,12 @@ class SearchVocabTerms
           next @items = @items.none if sn.empty?
 
           distinct = true
-          @items = @items.joins(publication: {authors: {user: :account}})
-                         .where {
-                           (publication.authors.user.account.username.like_any sn) |\
-                           (publication.authors.user.account.first_name.like_any sn) |\
-                           (publication.authors.user.account.last_name.like_any sn) |\
-                           (publication.authors.user.account.full_name.like_any sn)
-                         }
+          @items = @items.joins(publication: { authors: { user: :account } }).where do
+            publication.authors.user.account.username.like_any(sn) |
+            publication.authors.user.account.first_name.like_any(sn) |
+            publication.authors.user.account.last_name.like_any(sn) |
+            publication.authors.user.account.full_name.like_any(sn)
+          end
         end
       end
 
@@ -203,13 +201,12 @@ class SearchVocabTerms
           next @items = @items.none if sn.empty?
 
           distinct = true
-          @items = @items.joins(publication: {copyright_holders: {user: :account}})
-                         .where {
-                           (publication.copyright_holders.user.account.username.like_any sn) |\
-                           (publication.copyright_holders.user.account.first_name.like_any sn) |\
-                           (publication.copyright_holders.user.account.last_name.like_any sn) |\
-                           (publication.copyright_holders.user.account.full_name.like_any sn)
-                         }
+          @items = @items.joins(publication: { copyright_holders: { user: :account } }).where do
+            publication.copyright_holders.user.account.username.like_any(sn) |
+            publication.copyright_holders.user.account.first_name.like_any(sn) |
+            publication.copyright_holders.user.account.last_name.like_any(sn) |
+            publication.copyright_holders.user.account.full_name.like_any(sn)
+          end
         end
       end
 
@@ -221,16 +218,16 @@ class SearchVocabTerms
           distinct = true
           @items = @items.joins {publication.authors.outer.user.outer.account.outer}
                          .joins {publication.copyright_holders.outer.user.outer.account.outer}
-                         .where {
-                           (publication.authors.user.account.username.like_any sn) |\
-                           (publication.authors.user.account.first_name.like_any sn) |\
-                           (publication.authors.user.account.last_name.like_any sn) |\
-                           (publication.authors.user.account.full_name.like_any sn) |\
-                           (publication.copyright_holders.user.account.username.like_any sn) |\
-                           (publication.copyright_holders.user.account.first_name.like_any sn) |\
-                           (publication.copyright_holders.user.account.last_name.like_any sn) |\
-                           (publication.copyright_holders.user.account.full_name.like_any sn)
-                         }
+                         .where do
+            publication.authors.user.account.username.like_any(sn) |
+            publication.authors.user.account.first_name.like_any(sn) |
+            publication.authors.user.account.last_name.like_any(sn) |
+            publication.authors.user.account.full_name.like_any(sn) |
+            publication.copyright_holders.user.account.username.like_any(sn) |
+            publication.copyright_holders.user.account.first_name.like_any(sn) |
+            publication.copyright_holders.user.account.last_name.like_any(sn) |
+            publication.copyright_holders.user.account.full_name.like_any(sn)
+          end
         end
       end
 
