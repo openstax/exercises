@@ -168,9 +168,6 @@ group :development, :test do
   # Thin webserver
   gem 'thin'
 
-  # Class diagrams
-  gem 'rails-erd'
-
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
