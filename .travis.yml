@@ -2,11 +2,11 @@
 # License version 3 or later.  See the COPYRIGHT file for details.
 sudo: false
 language: ruby
-rvm: 2.2.3
+rvm: 2.3.7
 cache: bundler
 bundler_args: --without production --retry=6
 addons:
-  postgresql: "9.5"
+  postgresql: 9.6
 services: redis-server
 script: bundle exec parallel_rspec ./spec
 branches:
