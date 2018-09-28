@@ -1,33 +1,54 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
-    before_filter :set_user
-    before_filter :set_application, only: [:show, :edit, :update, :destroy]
+    before_action :set_user
 
     def index
-      @applications = @user.is_administrator? ? Doorkeeper::Application.all : @user.applications
-    end
+      @applications = @user.is_administrator? ? Doorkeeper::Application.ordered_by(:created_at) :
+                                                @user.applications.sort_by(&:created_at)
 
-    def new
-      @application = Doorkeeper::Application.new
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
-      super
-    end
-
-    def create
-      @application = Doorkeeper::Application.new(application_params)
-      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
-      @application.owner = OpenStax::Accounts::CreateGroup[owner: current_user.account]
-
-      if @application.save
-        flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
-        redirect_to oauth_application_url(@application)
-      else
-        render :new
+      respond_to do |format|
+        format.html
+        format.json { head :no_content }
       end
     end
 
     def show
       OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
+
+      respond_to do |format|
+        format.html
+        format.json { render json: @application }
+      end
+    end
+
+    def new
+      @application = Doorkeeper::Application.new
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
+    end
+
+    def create
+      @application = Doorkeeper::Application.new(application_params(@user))
+      @application.owner = OpenStax::Accounts::CreateGroup[owner: current_user.account]
+
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
+
+      if @application.save
+        flash[:notice] = I18n.t(
+          :notice, scope: %i[doorkeeper flash applications create]
+        )
+        respond_to do |format|
+          format.html { redirect_to oauth_application_url(@application) }
+          format.json { render json: @application }
+        end
+      else
+        respond_to do |format|
+          format.html { render :new }
+          format.json do
+            render json: { errors: @application.errors.full_messages },
+                   status: :unprocessable_entity
+          end
+        end
+      end
     end
 
     def edit
@@ -36,31 +57,64 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      if @application.update_attributes(application_params)
-        flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :update])
-        redirect_to oauth_application_url(@application)
+
+      app_params = application_params(@user)
+      if @application.update_attributes(app_params)
+        flash[:notice] = I18n.t(
+          :notice, scope: %i[doorkeeper flash applications update]
+        )
+        respond_to do |format|
+          format.html { redirect_to oauth_application_url(@application) }
+          format.json { render json: @application }
+        end
       else
-        render :edit
+        respond_to do |format|
+          format.html { render :edit }
+          format.json do
+            render json: { errors: @application.errors.full_messages },
+                   status: :unprocessable_entity
+          end
+        end
       end
     end
 
     def destroy
       OSU::AccessPolicy.require_action_allowed!(:destroy, @user, @application)
-      super
+
+      if @application.destroy
+        flash[:notice] = I18n.t(
+          :notice, scope: %i[doorkeeper flash applications destroy]
+        )
+      end
+
+      respond_to do |format|
+        format.html { redirect_to oauth_applications_url }
+        format.json { head :no_content }
+      end
     end
 
-    protected
+    private
 
     def set_user
       @user = current_user
     end
 
-    def set_application
-      @application = Doorkeeper::Application.find(params[:id])
+    def user_params
+      params.require(:doorkeeper_application).permit(
+        :name, :redirect_uri, :scopes, :email_subject_prefix
+      )
     end
 
-    def application_params
-      params.require(:doorkeeper_application).permit(:name, :redirect_uri, :email_subject_prefix)
+    def admin_params
+      params.require(:doorkeeper_application).permit(
+        :name, :redirect_uri, :scopes, :confidential, :email_subject_prefix
+      )
+    end
+
+    # We control which attributes of Doorkeeper::Applications can be updated
+    # here, since they differ for normal users and administrators
+    def application_params(user)
+      user.is_administrator? ? admin_params : user_params
     end
   end
 end

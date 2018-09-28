@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180829201038) do
+ActiveRecord::Schema.define(version: 20180927223943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -399,15 +399,16 @@ ActiveRecord::Schema.define(version: 20180829201038) do
   add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
 
   create_table "oauth_applications", force: :cascade do |t|
-    t.string   "name",                      null: false
-    t.string   "uid",                       null: false
-    t.string   "secret",                    null: false
-    t.text     "redirect_uri",              null: false
-    t.string   "scopes",       default: "", null: false
+    t.string   "name",                        null: false
+    t.string   "uid",                         null: false
+    t.string   "secret",                      null: false
+    t.text     "redirect_uri",                null: false
+    t.string   "scopes",       default: "",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
+    t.boolean  "confidential", default: true, null: false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
@@ -662,6 +663,8 @@ ActiveRecord::Schema.define(version: 20180829201038) do
   add_foreign_key "exercise_tags", "tags", on_update: :cascade, on_delete: :cascade
   add_foreign_key "list_publication_groups", "lists"
   add_foreign_key "list_publication_groups", "publication_groups"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "vocab_term_tags", "tags", on_update: :cascade, on_delete: :cascade
   add_foreign_key "vocab_term_tags", "vocab_terms", on_update: :cascade, on_delete: :cascade
 end
