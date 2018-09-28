@@ -4,10 +4,6 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    # Because ActionController::Base has a `before_filter :authenticate_user!`, this will
-    # normally only be called when the user is already signed in, which is ok because that's what
-    # lets us get to the authorization part of oauth, or when we skip the `:authenticate_user!`
-    # before_filter, which we don't normally do in the oauth flow where this matters
     authenticate_user!
     current_user
   end
@@ -18,9 +14,6 @@ Doorkeeper.configure do
   # every time somebody will try to access the admin web interface.
   #
   admin_authenticator do
-    # We allow all users of Accounts to manage applications
-    # We subclassed Doorkeeper::ApplicationsController to provide better
-    # control over access to the Doorkeeper::Application pages
     authenticate_user!
     current_user
   end
