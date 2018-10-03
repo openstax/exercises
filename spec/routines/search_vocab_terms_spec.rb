@@ -1,7 +1,9 @@
 require "rails_helper"
 
 RSpec.describe SearchVocabTerms, type: :routine do
-  before do
+  before(:all) do
+    DatabaseCleaner.start
+
     10.times { FactoryBot.create(:vocab_term, :published) }
 
     tested_strings = ["%lorem ipsu%", "%uia dolor sit ame%", "%adipiscing elit%", "draft"]
@@ -10,21 +12,32 @@ RSpec.describe SearchVocabTerms, type: :routine do
 
     @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
     Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
+      'nickname' => 'Some Vocab',
       'tags' => ['tag1', 'tag2'],
       'term' => "Lorem ipsum",
       'definition' => "Dolor sit amet",
       'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
     )
     @vocab_term_1.save!
+    FactoryBot.create :author, publication: @vocab_term_1.publication
+    FactoryBot.create :copyright_holder, publication: @vocab_term_1.publication
+    @vocab_term_1.publication.authors.reset
+    @vocab_term_1.publication.copyright_holders.reset
 
     @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
     Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_2).from_hash(
+      'nickname' => 'MyVocab',
       'tags' => ['tag2', 'tag3'],
       'term' => "Dolorem ipsum",
       'definition' => "Quia dolor sit amet",
       'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"]
     )
     @vocab_term_2.save!
+    @vocab_term_2.publication.update_attribute :version, 42
+    FactoryBot.create :author, publication: @vocab_term_2.publication
+    FactoryBot.create :copyright_holder, publication: @vocab_term_2.publication
+    @vocab_term_2.publication.authors.reset
+    @vocab_term_2.publication.copyright_holders.reset
 
     @vocab_term_draft = FactoryBot.build(:vocab_term)
     Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_draft).from_hash(
@@ -37,6 +50,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
 
     @vocab_terms_count = VocabTerm.count
   end
+  after(:all) { DatabaseCleaner.clean }
 
   context "no matches" do
     it "does not return drafts that the user is not allowed to see" do
@@ -62,7 +76,19 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_draft]
     end
 
-    it "returns a VocabTerm matching the term" do
+    [ :id, :uid, :uuid, :group_uuid, :number, :version, :nickname, :name ]
+      .each do |field|
+      it "returns a VocabTerm matching some #{field}" do
+        result = described_class.call(q: "#{field}:\"#{@vocab_term_2.public_send field}\"")
+        expect(result.errors).to be_empty
+
+        outputs = result.outputs
+        expect(outputs.total_count).to eq 1
+        expect(outputs.items).to eq [@vocab_term_2]
+      end
+    end
+
+    it "returns a VocabTerm matching some term" do
       result = described_class.call(q: 'term:"oLoReM iPsU"')
       expect(result.errors).to be_empty
 
@@ -71,7 +97,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_2]
     end
 
-    it "returns a VocabTerm matching the definition" do
+    it "returns a VocabTerm matching some definition" do
       result = described_class.call(q: 'definition:"UiA dOlOr SiT aMe"')
       expect(result.errors).to be_empty
 
@@ -80,16 +106,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_2]
     end
 
-    it "returns a VocabTerm matching the content" do
-      result = described_class.call(q: 'content:"oLoReM iPsU"')
-      expect(result.errors).to be_empty
-
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@vocab_term_2]
-    end
-
-    it "returns a VocabTerm matching the tags" do
+    it "returns a VocabTerm matching some tags" do
       result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
@@ -98,9 +115,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_1]
     end
 
-    it "returns a VocabTerm matching the publication number" do
-      number = @vocab_term_2.publication.number
-      result = described_class.call(q: "number:#{number}")
+    it "returns a VocabTerm matching some content" do
+      result = described_class.call(q: 'content:"oLoReM iPsU"')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -181,14 +197,35 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [new_vocab_term_2]
     end
 
-    it "returns a VocabTerm matching a nickname" do
-      @vocab_term_2.publication.publication_group.update_attribute :nickname, 'MyVocab'
-      result = described_class.call(q: 'nickname:MyVocab')
+    it "returns a VocabTerm matching an author" do
+      result = described_class.call(q: "author:\"#{@vocab_term_1.authors.first.name}\"")
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@vocab_term_2]
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
+
+    it "returns a VocabTerm matching a copyright holder" do
+      result = described_class.call(
+        q: "copyright_holder:\"#{@vocab_term_1.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
+
+    it "returns a VocabTerm matching a collaborator" do
+      result = described_class.call(
+        q: "collaborator:\"#{@vocab_term_1.authors.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
     end
   end
 

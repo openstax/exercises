@@ -1,7 +1,9 @@
 require "rails_helper"
 
 RSpec.describe SearchExercises, type: :routine do
-  before do
+  before(:all) do
+    DatabaseCleaner.start
+
     10.times { FactoryBot.create(:exercise, :published) }
 
     tested_strings = [ "%adipisci%", "%draft%" ]
@@ -15,6 +17,7 @@ RSpec.describe SearchExercises, type: :routine do
 
     @exercise_1 = Exercise.new
     Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
+      'nickname' => 'Some Exercise',
       'tags' => ['tag1', 'tag2'],
       'title' => "Lorem ipsum",
       'stimulus' => "Dolor",
@@ -29,9 +32,12 @@ RSpec.describe SearchExercises, type: :routine do
     )
     @exercise_1.save!
     @exercise_1.publication.publish.save!
+    FactoryBot.create :author, publication: @exercise_1.publication
+    FactoryBot.create :copyright_holder, publication: @exercise_1.publication
 
     @exercise_2 = Exercise.new
     Api::V1::Exercises::Representer.new(@exercise_2).from_hash(
+      'nickname' => 'MyExercise',
       'tags' => ['tag2', 'tag3'],
       'title' => "Dolorem ipsum",
       'stimulus' => "Quia dolor",
@@ -45,7 +51,10 @@ RSpec.describe SearchExercises, type: :routine do
       }]
     )
     @exercise_2.save!
+    @exercise_2.publication.version = 42
     @exercise_2.publication.publish.save!
+    FactoryBot.create :author, publication: @exercise_2.publication
+    FactoryBot.create :copyright_holder, publication: @exercise_2.publication
 
     @exercise_draft = FactoryBot.build(:exercise)
     Api::V1::Exercises::Representer.new(@exercise_draft).from_hash(
@@ -65,6 +74,7 @@ RSpec.describe SearchExercises, type: :routine do
 
     @exercises_count = Exercise.count
   end
+  after(:all) { DatabaseCleaner.clean }
 
   context "no matches" do
     it "does not return drafts that the user is not allowed to see" do
@@ -90,32 +100,24 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [@exercise_draft]
     end
 
-    it "returns an Exercise matching the content" do
-      result = described_class.call(q: 'content:"aDiPiScInG eLiT"')
-      expect(result.errors).to be_empty
+    [ :id, :uid, :uuid, :group_uuid, :number, :version, :nickname, :title ].each do |field|
+      it "returns an Exercise matching some #{field}" do
+        result = described_class.call(q: "#{field}:\"#{@exercise_2.public_send field}\"")
+        expect(result.errors).to be_empty
 
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@exercise_1]
+        outputs = result.outputs
+        expect(outputs.total_count).to eq 1
+        expect(outputs.items).to eq [@exercise_2]
+      end
     end
 
-    it "returns an Exercise matching the tags" do
+    it "returns an Exercise matching some tags" do
       result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [@exercise_1]
-    end
-
-    it "returns an Exercise matching the publication number" do
-      number = @exercise_2.publication.number
-      result = described_class.call(q: "number:#{number}")
-      expect(result.errors).to be_empty
-
-      outputs = result.outputs
-      expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@exercise_2]
     end
 
     it "does not return old versions of published Exercises matching the tags" do
@@ -162,20 +164,50 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [new_exercise_2]
     end
 
-    it "returns an Exercise matching a nickname" do
-      @exercise_2.publication.publication_group.update_attribute :nickname, 'MyExercise'
-      result = described_class.call(q: 'nickname:MyExercise')
+    it "returns an Exercise matching some content" do
+      result = described_class.call(q: 'content:"aDiPiScInG eLiT"')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 1
-      expect(outputs.items).to eq [@exercise_2]
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns an Exercise matching an author" do
+      result = described_class.call(q: "author:\"#{@exercise_1.authors.first.name}\"")
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns an Exercise matching a copyright holder" do
+      result = described_class.call(
+        q: "copyright_holder:\"#{@exercise_1.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns an Exercise matching a collaborator" do
+      result = described_class.call(
+        q: "collaborator:\"#{@exercise_1.authors.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
     end
   end
 
   context "multiple matches" do
-    it "returns Exercises matching the content" do
-      result = described_class.call(q: 'content:AdIpIsCi')
+    it "returns Exercises matching some tags" do
+      result = described_class.call(q: 'tag:TaG2')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
@@ -183,8 +215,8 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [@exercise_1, @exercise_2]
     end
 
-    it "returns Exercises matching the tags" do
-      result = described_class.call(q: 'tag:TaG2')
+    it "returns Exercises matching some content" do
+      result = described_class.call(q: 'content:AdIpIsCi')
       expect(result.errors).to be_empty
 
       outputs = result.outputs

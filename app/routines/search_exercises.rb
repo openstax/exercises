@@ -22,7 +22,6 @@ class SearchExercises
     params[:ob] ||= [{number: :asc}, {version: :desc}]
     relation = Exercise.visible_for(options).joins(publication: :publication_group)
 
-    distinct = false
     # By default, only return the latest exercises visible to the user.
     # If either versions, ids, uids or a publication date are specified,
     # this "latest_visible" condition is disabled.
@@ -139,7 +138,6 @@ class SearchExercises
           sanitized_tags = to_string_array(tag).map(&:downcase)
           next @items = @items.none if sanitized_tags.empty?
 
-          distinct = true
           @items = @items.joins(:tags).where(tags: { name: sanitized_tags })
         end
       end
@@ -159,7 +157,6 @@ class SearchExercises
                                                         prepend_wildcard: true)
           next @items = @items.none if sanitized_contents.empty?
 
-          distinct = true
           @items = @items.joins {[questions.outer.stems.outer, questions.outer.answers.outer]}
                          .where do
              title.like_any(sanitized_contents) |
@@ -176,12 +173,11 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          distinct = true
           @items = @items.joins(publication: { authors: { user: :account } }).where do
-            publication.authors.user.account.username.like_any(sn) |
-            publication.authors.user.account.first_name.like_any(sn) |
-            publication.authors.user.account.last_name.like_any(sn) |
-            publication.authors.user.account.full_name.like_any(sn)
+            openstax_accounts_accounts.username.like_any(sn) |
+            openstax_accounts_accounts.first_name.like_any(sn) |
+            openstax_accounts_accounts.last_name.like_any(sn) |
+            openstax_accounts_accounts.full_name.like_any(sn)
           end
         end
       end
@@ -191,12 +187,11 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          distinct = true
           @items = @items.joins(publication: { copyright_holders: { user: :account } }).where do
-            publication.copyright_holders.user.account.username.like_any(sn) |
-            publication.copyright_holders.user.account.first_name.like_any(sn) |
-            publication.copyright_holders.user.account.last_name.like_any(sn) |
-            publication.copyright_holders.user.account.full_name.like_any(sn)
+            openstax_accounts_accounts.username.like_any(sn) |
+            openstax_accounts_accounts.first_name.like_any(sn) |
+            openstax_accounts_accounts.last_name.like_any(sn) |
+            openstax_accounts_accounts.full_name.like_any(sn)
           end
         end
       end
@@ -206,7 +201,6 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          distinct = true
           @items = @items.joins {publication.authors.outer.user.outer.account.outer}
                          .joins {publication.copyright_holders.outer.user.outer.account.outer}
                          .where do
@@ -224,24 +218,22 @@ class SearchExercises
 
     end
 
-    if distinct
-      pg = PublicationGroup.arel_table
-      pb = Publication.arel_table
+    pg = PublicationGroup.arel_table
+    pb = Publication.arel_table
 
-      outputs[:items] = outputs[:items].select(
-        [
-          Exercise.arel_table[ Arel.star ],
-          pg[:uuid],
-          pg[:number],
-          pb[:version],
-          pb[:published_at]
-        ]
-      ).distinct
-    end
+    outputs.items = outputs.items.select(
+      [
+        Exercise.arel_table[ Arel.star ],
+        pg[:uuid],
+        pg[:number],
+        pb[:version],
+        pb[:published_at]
+      ]
+    ).distinct
 
     return unless latest_visible
 
-    outputs[:items] = outputs[:items].chainable_latest
-    outputs[:total_count] = outputs[:items].limit(nil).offset(nil).reorder(nil).count
+    outputs.items = outputs.items.chainable_latest
+    outputs.total_count = outputs.items.limit(nil).offset(nil).reorder(nil).count
   end
 end
