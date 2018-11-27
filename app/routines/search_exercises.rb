@@ -1,5 +1,7 @@
 class SearchExercises
 
+  MAX_PER_PAGE = 100
+
   lev_routine express_output: :items
 
   uses_routine OSU::SearchAndOrganizeRelation,
@@ -20,6 +22,9 @@ class SearchExercises
 
   def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
+    params[:per_page] = [
+      Integer(params[:per_page] || params[:pp]), MAX_PER_PAGE
+    ].min rescue MAX_PER_PAGE
     relation = Exercise.visible_for(options).joins(publication: :publication_group)
 
     # By default, only return the latest exercises visible to the user.
@@ -27,10 +32,7 @@ class SearchExercises
     # this "latest_visible" condition is disabled.
     latest_visible = true
 
-    run(:search, relation: relation,
-                 sortable_fields: SORTABLE_FIELDS,
-                 params: params) do |with|
-
+    run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       with.default_keyword :content
 
       with.keyword :id do |ids|
@@ -215,7 +217,6 @@ class SearchExercises
           end
         end
       end
-
     end
 
     pg = PublicationGroup.arel_table
