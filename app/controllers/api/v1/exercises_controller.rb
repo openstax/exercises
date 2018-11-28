@@ -6,6 +6,11 @@ module Api::V1
     before_filter :find_exercise_or_create_draft, only: [:show, :update]
     before_filter :find_exercise, only: [:destroy]
 
+    rescue_from Apipie::ParamMissing do |exception|
+      render json: { errors: [ { code: :missing_parameter, message: exception.message } ] },
+             status: 400
+    end
+
     resource_description do
       api_versions "v1"
       short_description 'A collection of related questions.'

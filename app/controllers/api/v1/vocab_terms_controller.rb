@@ -4,6 +4,11 @@ module Api::V1
     before_filter :get_vocab_term_or_create_draft, only: [:show, :update]
     before_filter :get_vocab_term, only: :destroy
 
+    rescue_from Apipie::ParamMissing do |exception|
+      render json: { errors: [ { code: :missing_parameter, message: exception.message } ] },
+             status: 400
+    end
+
     resource_description do
       api_versions "v1"
       short_description 'A vocabulary term, its definition and distractors'
