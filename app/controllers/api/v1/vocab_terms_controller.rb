@@ -16,7 +16,9 @@ module Api::V1
     # index #
     #########
 
-    api :GET, '/vocab_terms', 'Return a set of VocabTerms matching query terms'
+    api :GET, '/vocab_terms'        , 'Return a set of VocabTerms matching query terms'
+    api :GET, '/vocab_terms/search' , 'Return a set of VocabTerms matching query terms'
+    api :POST, '/vocab_terms/search', 'Return a set of VocabTerms matching query terms'
     description <<-EOS
       Accepts a query string along with options and returns a JSON representation
       of the matching VocabTerms. Only VocabTerms visible to the caller will be

@@ -8,6 +8,23 @@ GIT
       json
       typhoeus (~> 1.0, >= 1.0.1)
 
+GIT
+  remote: https://github.com/openstax/openstax_api.git
+  revision: b3bd5febe16b21b64a6b3add624a9e0789c29d24
+  ref: b3bd5febe16b21b64a6b3add624a9e0789c29d24
+  specs:
+    openstax_api (8.3.0)
+      doorkeeper (>= 2.0)
+      exception_notification (>= 4.0)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
+      rails (>= 3.1, < 5.0)
+      representable (>= 2.4, < 4.0)
+      responders
+      roar (>= 1.0)
+      roar-rails (>= 1.0)
+      uber (< 0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -133,7 +150,7 @@ GEM
     deep_cloneable (2.1.1)
       activerecord (>= 3.1.0, < 5.0.0)
     diff-lcs (1.2.5)
-    diffy (3.1.0)
+    diffy (3.2.1)
     docile (1.1.5)
     doorkeeper (5.0.0)
       railties (>= 4.2)
@@ -151,7 +168,7 @@ GEM
     ethon (0.11.0)
       ffi (>= 1.3.0)
     eventmachine (1.0.7)
-    exception_notification (4.2.1)
+    exception_notification (4.3.0)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     excon (0.45.3)
@@ -283,16 +300,6 @@ GEM
       rails (>= 4.1, < 5.0)
       representable (>= 2.0)
       roar (>= 1.0)
-    openstax_api (8.0.0)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1, < 5.0)
-      representable (>= 2.4, < 4.0)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
     openstax_rescue_from (3.0.0)
@@ -456,7 +463,7 @@ GEM
     terminal-table (1.4.5)
     test_after_commit (0.4.1)
       activerecord (>= 3.2)
-    test_xml (0.1.7)
+    test_xml (0.1.8)
       diffy (~> 3.0)
       nokogiri (>= 1.3.2)
     therubyracer (0.12.1)
@@ -547,7 +554,7 @@ DEPENDENCIES
   oj_mimic_json
   omniauth-oauth2 (~> 1.3.1)
   openstax_accounts (~> 7.12.0)
-  openstax_api (~> 8.0.0)
+  openstax_api (~> 8.3.0)!
   openstax_healthcheck
   openstax_rescue_from (~> 3.0.0)
   openstax_utilities

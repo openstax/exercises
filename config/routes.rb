@@ -1,5 +1,4 @@
 Exercises::Application.routes.draw do
-
   root 'webview#home'
 
   get '/dashboard', to: 'webview#index'
@@ -21,6 +20,8 @@ Exercises::Application.routes.draw do
 
   api :v1, default: true do
     resources :exercises do
+      match :search, action: :index, via: [:get, :post], on: :collection
+
       resource :attachments, only: [:create, :destroy]
 
       publishable
@@ -36,6 +37,8 @@ Exercises::Application.routes.draw do
     end
 
     resources :vocab_terms do
+      match :search, action: :index, via: [:get, :post], on: :collection
+
       publishable
     end
 
@@ -94,5 +97,4 @@ Exercises::Application.routes.draw do
   end
 
   match '*path', to: 'webview#index', via: :all
-
 end
