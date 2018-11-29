@@ -6,11 +6,6 @@ module Api::V1
     before_filter :find_exercise_or_create_draft, only: [:show, :update]
     before_filter :find_exercise, only: [:destroy]
 
-    rescue_from Apipie::ParamMissing do |exception|
-      render json: { errors: [ { code: :missing_parameter, message: exception.message } ] },
-             status: 400
-    end
-
     resource_description do
       api_versions "v1"
       short_description 'A collection of related questions.'
@@ -36,7 +31,7 @@ module Api::V1
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/exercises',
                            url_end: '?q=author:"bob" content:"test"')}"
-    param :q, String, required: true, desc: <<-EOS
+    param :q, String, desc: <<-EOS
       The search query string, built up as a space-separated collection of
       search conditions on different fields. Each condition is formatted as
       "field_name:comma-separated-values". The resulting list of exercises will
