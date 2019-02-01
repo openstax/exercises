@@ -16,7 +16,9 @@ module Api::V1
     # index #
     #########
 
-    api :GET, '/vocab_terms', 'Return a set of VocabTerms matching query terms'
+    api :GET, '/vocab_terms'        , 'Return a set of VocabTerms matching query terms'
+    api :GET, '/vocab_terms/search' , 'Return a set of VocabTerms matching query terms'
+    api :POST, '/vocab_terms/search', 'Return a set of VocabTerms matching query terms'
     description <<-EOS
       Accepts a query string along with options and returns a JSON representation
       of the matching VocabTerms. Only VocabTerms visible to the caller will be
@@ -27,7 +29,7 @@ module Api::V1
     # Using route helpers doesn't work in test or production, probably has to do with initialization order
     example "#{api_example(url_base: 'https://exercises.openstax.org/api/vocab_terms',
                            url_end: '?q=name:"term" definition:"def"')}"
-    param :q, String, required: true, desc: <<-EOS
+    param :q, String, desc: <<-EOS
       The search query string, built up as a space-separated collection of
       search conditions on different fields. Each condition is formatted as
       "field_name:comma-separated-values". The resulting list of vocab_terms will
@@ -87,7 +89,7 @@ module Api::V1
       result = SearchVocabTerms.call(params, options)
       return render_api_errors(result.errors) if result.errors.any?
 
-      respond_with result.outputs, { user_options: options }.merge(
+      respond_with result.outputs, { user_options: options, location: nil }.merge(
         represent_with: Api::V1::Vocabs::TermSearchRepresenter
       )
     end

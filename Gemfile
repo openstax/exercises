@@ -70,7 +70,7 @@ gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
-gem 'openstax_api', '~> 8.0.0'
+gem 'openstax_api', '~> 8.3.0'
 gem 'apipie-rails'
 gem 'maruku'
 

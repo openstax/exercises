@@ -2,205 +2,219 @@ require "rails_helper"
 
 module Api::V1
   RSpec.describe ExercisesController, type: :controller, api: true, version: :v1 do
+    before(:all) do
+      DatabaseCleaner.start
 
-    let(:application)       { FactoryBot.create :doorkeeper_application }
-    let(:user)              { FactoryBot.create :user, :agreed_to_terms }
-    let(:admin)             { FactoryBot.create :user, :administrator, :agreed_to_terms }
+      application = FactoryBot.create :doorkeeper_application
+      @user = FactoryBot.create :user, :agreed_to_terms
+      admin = FactoryBot.create :user, :administrator, :agreed_to_terms
+      @application_token = FactoryBot.create :doorkeeper_access_token,
+                                             application: application,
+                                             resource_owner_id: nil
+      @user_token = FactoryBot.create :doorkeeper_access_token,
+                                      application: application,
+                                      resource_owner_id: @user.id
+      FactoryBot.create :doorkeeper_access_token,
+                        application: application,
+                        resource_owner_id: admin.id
 
-    let(:user_token)        { FactoryBot.create :doorkeeper_access_token,
-                                                application: application,
-                                                resource_owner_id: user.id }
-    let(:admin_token)       { FactoryBot.create :doorkeeper_access_token,
-                                                application: application,
-                                                resource_owner_id: admin.id }
-    let(:application_token) { FactoryBot.create :doorkeeper_access_token,
-                                                application: application,
-                                                resource_owner_id: nil }
-
-    before do
       @exercise = FactoryBot.build(:exercise)
       @exercise.publication.authors << FactoryBot.build(
-        :author, user: user, publication: @exercise.publication
+        :author, user: @user, publication: @exercise.publication
       )
       @exercise.nickname = 'MyExercise'
+      @exercise.save!
     end
+    after(:all) { DatabaseCleaner.clean }
 
-    context "GET index" do
+    [ :get, :post ].each do |method|
+      context "#{method.to_s.upcase} index" do
+        before(:all) do
+          DatabaseCleaner.start
 
-      before do
-        10.times { FactoryBot.create(:exercise, :published) }
+          10.times { FactoryBot.create(:exercise, :published) }
 
-        tested_strings = ["%adipisci%", "%draft%"]
-        Exercise.joins {questions.outer.stems.outer}
-                .joins {questions.outer.answers.outer}
-                .where {(title.like_any tested_strings) |\
-                       (stimulus.like_any tested_strings) |\
-                       (questions.stimulus.like_any tested_strings) |\
-                       (stems.content.like_any tested_strings) |\
-                       (answers.content.like_any tested_strings)}.delete_all
+          tested_strings = ["%adipisci%", "%draft%"]
+          Exercise.joins {questions.outer.stems.outer}
+                  .joins {questions.outer.answers.outer}
+                  .where do
+            title.like_any(tested_strings) |\
+            stimulus.like_any(tested_strings) |\
+            questions.stimulus.like_any(tested_strings) |\
+            stems.content.like_any(tested_strings) |\
+            answers.content.like_any(tested_strings)
+          end.delete_all
 
-        @exercise_1 = FactoryBot.build(:exercise, :published)
-        Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
-          'tags' => ['tag1', 'tag2'],
-          'title' => "Lorem ipsum",
-          'stimulus' => "Dolor",
-          'questions' => [{
-            'stimulus' => "Sit amet",
-            'stem_html' => "Consectetur adipiscing elit",
-            'answers' => [{
-              'content_html' => "Sed do eiusmod tempor"
-            }],
-            'formats' => [ 'multiple-choice', 'free-response' ]
-          }]
-        )
-        @exercise_1.save!
+          @exercise_1 = FactoryBot.build(:exercise, :published)
+          Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
+            'tags' => ['tag1', 'tag2'],
+            'title' => "Lorem ipsum",
+            'stimulus' => "Dolor",
+            'questions' => [{
+              'stimulus' => "Sit amet",
+              'stem_html' => "Consectetur adipiscing elit",
+              'answers' => [{
+                'content_html' => "Sed do eiusmod tempor"
+              }],
+              'formats' => [ 'multiple-choice', 'free-response' ]
+            }]
+          )
+          @exercise_1.save!
 
-        @exercise_2 = FactoryBot.build(:exercise, :published)
-        Api::V1::Exercises::Representer.new(@exercise_2).from_hash(
-          'tags' => ['tag2', 'tag3'],
-          'title' => "Dolorem ipsum",
-          'stimulus' => "Quia dolor",
-          'questions' => [{
-            'stimulus' => "Sit amet",
-            'stem_html' => "Consectetur adipisci velit",
-            'answers' => [{
-              'content_html' => "Sed quia non numquam"
-            }],
-            'formats' => [ 'multiple-choice', 'free-response' ]
-          }]
-        )
-        @exercise_2.save!
+          @exercise_2 = FactoryBot.build(:exercise, :published)
+          Api::V1::Exercises::Representer.new(@exercise_2).from_hash(
+            'tags' => ['tag2', 'tag3'],
+            'title' => "Dolorem ipsum",
+            'stimulus' => "Quia dolor",
+            'questions' => [{
+              'stimulus' => "Sit amet",
+              'stem_html' => "Consectetur adipisci velit",
+              'answers' => [{
+                'content_html' => "Sed quia non numquam"
+              }],
+              'formats' => [ 'multiple-choice', 'free-response' ]
+            }]
+          )
+          @exercise_2.save!
 
-        @exercise_draft = FactoryBot.build(:exercise)
-        Api::V1::Exercises::Representer.new(@exercise_draft).from_hash(
-          'tags' => ['all', 'the', 'tags'],
-          'title' => "DRAFT",
-          'stimulus' => "This is a draft",
-          'questions' => [{
-            'stimulus' => "with no collaborators",
-            'stem_html' => "and should not appear",
-            'answers' => [{
-              'content_html' => "in most searches"
-            }],
-            'formats' => [ 'multiple-choice', 'free-response' ]
-          }]
-        )
-        @exercise_draft.save!
-      end
+          @exercise_draft = FactoryBot.build(:exercise)
+          Api::V1::Exercises::Representer.new(@exercise_draft).from_hash(
+            'tags' => ['all', 'the', 'tags'],
+            'title' => "DRAFT",
+            'stimulus' => "This is a draft",
+            'questions' => [{
+              'stimulus' => "with no collaborators",
+              'stem_html' => "and should not appear",
+              'answers' => [{
+                'content_html' => "in most searches"
+              }],
+              'formats' => [ 'multiple-choice', 'free-response' ]
+            }]
+          )
+          @exercise_draft.save!
+        end
+        after(:all) { DatabaseCleaner.clean }
 
-      context "no matches" do
-        it "does not return drafts that the user is not allowed to see" do
-          api_get :index, user_token, parameters: {q: 'content:draft'}
-          expect(response).to have_http_status(:success)
+        before { request.env['HTTP_AUTHORIZATION'] = "Bearer #{@user_token.token}" }
 
-          expected_response = {
-            total_count: 0,
-            items: []
-          }
+        context "no matches" do
+          it "does not return drafts that the user is not allowed to see" do
+            send method, :index, q: 'content:draft', format: :json
+            expect(response).to have_http_status(:success)
 
-          expect(response.body_as_hash).to match(expected_response)
+            expected_response = {
+              total_count: 0,
+              items: []
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
+        end
+
+        context "single match" do
+          it "returns drafts that the user is allowed to see" do
+            @exercise_draft.publication.authors << Author.new(user: @user)
+            @exercise_draft.reload
+            @user.reload
+            send method, :index, q: 'content:draft', format: :json
+            expect(response).to have_http_status(:success)
+
+            expected_response = {
+              total_count: 1,
+              items: [a_hash_including(uuid: @exercise_draft.uuid)]
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
+
+          it "returns an Exercise matching the content" do
+            send method, :index, q: 'content:"aDiPiScInG eLiT"', format: :json
+            expect(response).to have_http_status(:success)
+
+            expected_response = {
+              total_count: 1,
+              items: [a_hash_including(uuid: @exercise_1.uuid)]
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
+
+          it "returns an Exercise matching the tags" do
+            send method, :index, q: 'tag:tAg1', format: :json
+            expect(response).to have_http_status(:success)
+
+            expected_response = {
+              total_count: 1,
+              items: [a_hash_including(uuid: @exercise_1.uuid)]
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
+        end
+
+        context "multiple matches" do
+          it "returns Exercises matching the content" do
+            send method, :index, q: 'content:AdIpIsCi', format: :json
+            expect(response).to have_http_status(:success)
+
+            expected_response = {
+              total_count: 2,
+              items: [a_hash_including(uuid: @exercise_1.uuid),
+                      a_hash_including(uuid: @exercise_2.uuid)]
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
+
+          it "returns Exercises matching the tags" do
+            send method, :index, q: 'tag:TaG2', format: :json
+            expect(response).to have_http_status(:success)
+
+            expected_response = {
+              total_count: 2,
+              items: [a_hash_including(uuid: @exercise_1.uuid),
+                      a_hash_including(uuid: @exercise_2.uuid)]
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
+
+          it "sorts by multiple fields in different directions" do
+            send method, :index, q: 'content:aDiPiScI', order_by: "number DESC, version ASC",
+                                 format: :json
+            expect(response).to have_http_status(:success)
+
+            expected_response = {
+              total_count: 2,
+              items: [a_hash_including(uuid: @exercise_2.uuid),
+                      a_hash_including(uuid: @exercise_1.uuid)]
+            }
+
+            expect(response.body_as_hash).to match(expected_response)
+          end
         end
       end
-
-      context "single match" do
-        it "returns drafts that the user is allowed to see" do
-          @exercise_draft.publication.authors << Author.new(user: user)
-          @exercise_draft.reload
-          user.reload
-          api_get :index, user_token, parameters: {q: 'content:draft'}
-          expect(response).to have_http_status(:success)
-
-          expected_response = {
-            total_count: 1,
-            items: [a_hash_including(uuid: @exercise_draft.uuid)]
-          }
-
-          expect(response.body_as_hash).to match(expected_response)
-        end
-
-        it "returns an Exercise matching the content" do
-          api_get :index, user_token, parameters: {q: 'content:"aDiPiScInG eLiT"'}
-          expect(response).to have_http_status(:success)
-
-          expected_response = {
-            total_count: 1,
-            items: [a_hash_including(uuid: @exercise_1.uuid)]
-          }
-
-          expect(response.body_as_hash).to match(expected_response)
-        end
-
-        it "returns an Exercise matching the tags" do
-          api_get :index, user_token, parameters: {q: 'tag:tAg1'}
-          expect(response).to have_http_status(:success)
-
-          expected_response = {
-            total_count: 1,
-            items: [a_hash_including(uuid: @exercise_1.uuid)]
-          }
-
-          expect(response.body_as_hash).to match(expected_response)
-        end
-      end
-
-      context "multiple matches" do
-        it "returns Exercises matching the content" do
-          api_get :index, user_token, parameters: {q: 'content:AdIpIsCi'}
-          expect(response).to have_http_status(:success)
-
-          expected_response = {
-            total_count: 2,
-            items: [a_hash_including(uuid: @exercise_1.uuid),
-                    a_hash_including(uuid: @exercise_2.uuid)]
-          }
-
-          expect(response.body_as_hash).to match(expected_response)
-        end
-
-        it "returns Exercises matching the tags" do
-          api_get :index, user_token, parameters: {q: 'tag:TaG2'}
-          expect(response).to have_http_status(:success)
-
-          expected_response = {
-            total_count: 2,
-            items: [a_hash_including(uuid: @exercise_1.uuid),
-                    a_hash_including(uuid: @exercise_2.uuid)]
-          }
-
-          expect(response.body_as_hash).to match(expected_response)
-        end
-
-        it "sorts by multiple fields in different directions" do
-          api_get :index, user_token, parameters: {q: 'content:aDiPiScI',
-                                                   order_by: "number DESC, version ASC"}
-          expect(response).to have_http_status(:success)
-
-          expected_response = {
-            total_count: 2,
-            items: [a_hash_including(uuid: @exercise_2.uuid),
-                    a_hash_including(uuid: @exercise_1.uuid)]
-          }
-
-          expect(response.body_as_hash).to match(expected_response)
-        end
-      end
-
     end
 
     context "GET show" do
+      before(:all) do
+        DatabaseCleaner.start
 
-      before do
-        @exercise.publication.publish
-        @exercise.save!
-        @exercise.reload
+        @exercise.publication.publish.save!
         @exercise_1 = @exercise.new_version
         @exercise_1.save!
         @exercise_2 = @exercise.new_version
         @exercise_2.save!
       end
+      after(:all) { DatabaseCleaner.clean }
+
+      before do
+        @exercise_1.reload
+        @exercise_2.reload
+      end
 
       it "returns the Exercise requested by group_uuid and version" do
-        api_get :show, user_token, parameters: {
+        api_get :show, @user_token, parameters: {
           id: "#{@exercise.group_uuid}@#{@exercise.version}"
         }
         expect(response).to have_http_status(:success)
@@ -211,7 +225,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by uuid" do
-        api_get :show, user_token, parameters: { id: @exercise.uuid }
+        api_get :show, @user_token, parameters: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -220,7 +234,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by uid" do
-        api_get :show, user_token, parameters: { id: @exercise.uid }
+        api_get :show, @user_token, parameters: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -229,7 +243,7 @@ module Api::V1
       end
 
       it "returns the latest published Exercise if only the group_uuid is specified" do
-        api_get :show, user_token, parameters: { id: @exercise.group_uuid }
+        api_get :show, @user_token, parameters: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -238,7 +252,7 @@ module Api::V1
       end
 
       it "returns the latest published Exercise if only the number is specified" do
-        api_get :show, user_token, parameters: { id: @exercise.number }
+        api_get :show, @user_token, parameters: { id: @exercise.number }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -247,7 +261,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
-        api_get :show, user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
+        api_get :show, @user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -256,7 +270,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"number@draft\" is requested" do
-        api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
+        api_get :show, @user_token, parameters: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -266,7 +280,7 @@ module Api::V1
 
       it "returns the latest version of a Exercise if \"@latest\" is requested" do
         @exercise_1.publication.update_attributes(version: 1000)
-        api_get :show, user_token, parameters: { id: "#{@exercise.number}@latest" }
+        api_get :show, @user_token, parameters: { id: "#{@exercise.number}@latest" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_1.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -279,7 +293,7 @@ module Api::V1
         @exercise_2.destroy
 
         expect do
-          api_get :show, user_token, parameters: { id: "#{@exercise.number}@draft" }
+          api_get :show, @user_token, parameters: { id: "#{@exercise.number}@draft" }
         end.to change{ Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
@@ -293,14 +307,17 @@ module Api::V1
       end
 
       context 'with solutions' do
-        before do
+        before(:all) do
+          DatabaseCleaner.start
+
           question = @exercise.questions.first
           question.collaborator_solutions << FactoryBot.create(:collaborator_solution,
                                                                 question: question)
         end
+        after(:all) { DatabaseCleaner.clean }
 
         it "shows solutions for published exercises if the requestor is an app" do
-          api_get :show, application_token, parameters: { id: @exercise.uid }
+          api_get :show, @application_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
@@ -311,7 +328,7 @@ module Api::V1
         end
 
         it "shows solutions for published exercises if the requestor is allowed to edit it" do
-          api_get :show, user_token, parameters: { id: @exercise.uid }
+          api_get :show, @user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
@@ -324,7 +341,7 @@ module Api::V1
         it "hides solutions for published exercises if the requestor is not allowed to edit it" do
           @exercise.publication.authors.destroy_all
 
-          api_get :show, user_token, parameters: { id: @exercise.uid }
+          api_get :show, @user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first['collaborator_solutions']).to be_nil
@@ -335,25 +352,32 @@ module Api::V1
         end
 
         it "includes versions of the exercise" do
-          api_get :show, user_token, parameters: { id: @exercise.uid }
+          api_get :show, @user_token, parameters: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
           expect(response.body_as_hash[:versions]).to(
             eq([@exercise_2.version, @exercise_1.version, @exercise.version])
           )
         end
-
       end
-
     end
 
     context "POST create" do
+      before(:all) do
+        DatabaseCleaner.start
+
+        PublicationGroup.where(id: @exercise.publication.publication_group_id).delete_all
+        Publication.where(id: @exercise.publication.id).delete_all
+        Exercise.where(id: @exercise.id).delete_all
+      end
+      after(:all) { DatabaseCleaner.clean }
+
       before { Rails.cache.clear }
 
       it "creates the requested Exercise and assigns the user as author and CR holder" do
         expect do
-          api_post :create, user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_token, raw_post_data: Api::V1::Exercises::Representer.new(
             @exercise
-          ).to_hash(user_options: { user: user })
+          ).to_hash(user_options: { user: @user })
         end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
@@ -377,20 +401,20 @@ module Api::V1
 
         expect(Set.new db_solutions.map(&:content)).to eq(Set.new json_solutions.map(&:content))
 
-        expect(new_exercise.authors.first.user).to eq user
-        expect(new_exercise.copyright_holders.first.user).to eq user
+        expect(new_exercise.authors.first.user).to eq @user
+        expect(new_exercise.copyright_holders.first.user).to eq @user
       end
 
       it "creates the exercise with a collaborator solution" do
         exercise = FactoryBot.build(:exercise, collaborator_solutions_count: 1)
         exercise.publication.authors << FactoryBot.build(
-          :author, user: user, publication: @exercise.publication
+          :author, user: @user, publication: @exercise.publication
         )
 
         expect do
-          api_post :create, user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_token, raw_post_data: Api::V1::Exercises::Representer.new(
             exercise
-          ).to_hash(user_options: { user: user })
+          ).to_hash(user_options: { user: @user })
         end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
@@ -403,9 +427,9 @@ module Api::V1
         FactoryBot.create :publication_group, nickname: 'MyExercise'
 
         expect do
-          api_post :create, user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_token, raw_post_data: Api::V1::Exercises::Representer.new(
             @exercise
-          ).to_hash(user_options: { user: user })
+          ).to_hash(user_options: { user: @user })
         end.not_to change { Exercise.count }
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -415,15 +439,10 @@ module Api::V1
     end
 
     context "PATCH update" do
-
-      before do
-        @exercise.save!
-        @exercise.reload
-        @old_attributes = @exercise.attributes
-      end
+      before { @old_attributes = @exercise.reload.attributes }
 
       it "updates the requested Exercise" do
-        api_patch :update, user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+        api_patch :update, @user_token, parameters: { id: @exercise.uid }, raw_post_data: {
           nickname: 'MyExercise', title: "Ipsum lorem"
         }
         expect(response).to have_http_status(:success)
@@ -440,7 +459,7 @@ module Api::V1
         @exercise.publication.publish.save!
 
         expect do
-          api_patch :update, user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+          api_patch :update, @user_token, parameters: { id: @exercise.uid }, raw_post_data: {
             nickname: 'MyExercise', title: "Ipsum lorem"
           }
         end.to raise_error(SecurityTransgression)
@@ -452,7 +471,7 @@ module Api::V1
       it "fails if the nickname has already been taken" do
         FactoryBot.create :publication_group, nickname: 'MyExercise2'
 
-        api_patch :update, user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+        api_patch :update, @user_token, parameters: { id: @exercise.uid }, raw_post_data: {
           nickname: 'MyExercise2', title: "Ipsum lorem"
         }
 
@@ -470,7 +489,7 @@ module Api::V1
         exercise_2.reload
 
         id = "#{@exercise.number}@draft"
-        api_patch :update, user_token, parameters: { id: id }, raw_post_data: {
+        api_patch :update, @user_token, parameters: { id: id }, raw_post_data: {
           nickname: 'MyExercise', title: "Ipsum lorem"
         }
         expect(response).to have_http_status(:success)
@@ -493,7 +512,7 @@ module Api::V1
 
         id = "#{@exercise.number}@draft"
         expect do
-          api_patch :update, user_token, parameters: { id: id }, raw_post_data: {
+          api_patch :update, @user_token, parameters: { id: id }, raw_post_data: {
             nickname: 'MyExercise', title: "Ipsum lorem"
           }
         end.to change{ Exercise.count }.by(1)
@@ -514,21 +533,16 @@ module Api::V1
         expect(new_attributes.except('id', 'title', 'created_at', 'updated_at'))
           .to eq(@old_attributes.except('id', 'title', 'created_at', 'updated_at'))
       end
-
     end
 
     context "DELETE destroy" do
-
       it "deletes the requested draft Exercise" do
-        @exercise.save!
         expect do
-          api_delete :destroy, user_token, parameters: { id: @exercise.uid }
+          api_delete :destroy, @user_token, parameters: { id: @exercise.uid }
         end.to change(Exercise, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(Exercise.where(id: @exercise.id)).not_to exist
       end
-
     end
-
   end
 end

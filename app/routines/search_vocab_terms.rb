@@ -1,5 +1,7 @@
 class SearchVocabTerms
 
+  MAX_PER_PAGE = 100
+
   lev_routine express_output: :items
 
   uses_routine OSU::SearchAndOrganizeRelation,
@@ -21,6 +23,9 @@ class SearchVocabTerms
 
   def exec(params = {}, options = {})
     params[:ob] ||= [{number: :asc}, {version: :desc}]
+    params[:per_page] = [
+      Integer(params[:per_page] || params[:pp]), MAX_PER_PAGE
+    ].min rescue MAX_PER_PAGE
     relation = VocabTerm.visible_for(options).joins(publication: :publication_group)
 
     # By default, only return the latest exercises visible to the user.
@@ -28,10 +33,7 @@ class SearchVocabTerms
     # this "latest_visible" condition is disabled.
     latest_visible = true
 
-    run(:search, relation: relation,
-                 sortable_fields: SORTABLE_FIELDS,
-                 params: params) do |with|
-
+    run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       # Block to be used for searches by name or term
       name_search_block = lambda do |names|
         names.each do |nm|
@@ -225,7 +227,6 @@ class SearchVocabTerms
           end
         end
       end
-
     end
 
     pg = PublicationGroup.arel_table
