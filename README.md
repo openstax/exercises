@@ -70,6 +70,8 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 
 ```sh
 $ bundle --without production
+$ createuser --superuser ox_exercises
+$ createdb ox_exercises_dev
 $ rake db:migrate
 $ rake db:seed
 $ rails s
