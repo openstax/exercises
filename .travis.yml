@@ -2,7 +2,7 @@
 # License version 3 or later.  See the COPYRIGHT file for details.
 sudo: false
 language: ruby
-rvm: 2.3.7
+rvm: 2.6.1
 cache: bundler
 bundler_args: --without production --retry=6
 addons:

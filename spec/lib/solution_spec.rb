@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Solution do
+RSpec.describe Solution, type: :model do
 
   [CollaboratorSolution, CommunitySolution].each do |klass|
     describe klass do

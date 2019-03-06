@@ -5,7 +5,7 @@ FactoryBot.define do
 
     transient do
       stem_answers_count { stem_answers.empty? ? 3 : 0 }
-      styles [Style::FREE_RESPONSE]
+      styles { [Style::FREE_RESPONSE] }
     end
 
     after(:build) do |stem, evaluator|

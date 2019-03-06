@@ -7,7 +7,7 @@ FactoryBot.define do
     copyright_notice { Faker::Lorem.sentence }
 
     transient do
-      licensed_classes ['Exercise', 'CommunitySolution', 'List']
+      licensed_classes { ['Exercise', 'CommunitySolution', 'List'] }
     end
 
     after(:build) do |license, evaluator|

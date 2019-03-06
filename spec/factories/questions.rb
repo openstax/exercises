@@ -5,7 +5,7 @@ FactoryBot.define do
     transient do
       stems_count { stems.empty? ? 1 : 0 }
       answers_count { answers.empty? ? 3 : 0 }
-      collaborator_solutions_count 1
+      collaborator_solutions_count { 1 }
     end
 
     after(:build) do |question, evaluator|
