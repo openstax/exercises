@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180927223943) do
+ActiveRecord::Schema.define(version: 20190308184133) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -229,11 +229,12 @@ ActiveRecord::Schema.define(version: 20180927223943) do
   add_index "fine_print_contracts", ["name", "version"], name: "index_fine_print_contracts_on_name_and_version", unique: true, using: :btree
 
   create_table "fine_print_signatures", force: :cascade do |t|
-    t.integer  "contract_id", null: false
-    t.integer  "user_id",     null: false
-    t.string   "user_type",   null: false
+    t.integer  "contract_id",                 null: false
+    t.integer  "user_id",                     null: false
+    t.string   "user_type",                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_implicit", default: false, null: false
   end
 
   add_index "fine_print_signatures", ["contract_id"], name: "index_fine_print_signatures_on_contract_id", using: :btree

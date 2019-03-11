@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :publication do
-    embargo_children_only false
-    major_change false
+    embargo_children_only { false }
+    major_change { false }
 
     transient do
-      number nil
+      number { nil }
     end
 
     trait :published do

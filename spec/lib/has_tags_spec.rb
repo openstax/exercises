@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HasTags do
+RSpec.describe HasTags, type: :model do
   context 'modifies exercises' do
     subject(:exercise) { FactoryBot.create :exercise }
 

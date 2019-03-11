@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user do
-    deleted_at nil
+    deleted_at { nil }
 
     transient do
       username   { Faker::Lorem.characters }

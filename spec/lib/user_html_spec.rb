@@ -23,7 +23,7 @@ RSpec.describe UserHtml do
 
   it 'removes script tags' do
     content = 'Have a cup of <script>1337 $cr1pt</script>.'
-    expect(described_class.link_and_sanitize(content)).to eq 'Have a cup of 1337 $cr1pt.'
+    expect(described_class.link_and_sanitize(content)).to eq 'Have a cup of .'
   end
 
   it 'allows iframes to whitelisted domains' do

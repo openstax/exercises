@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :logic_variable do
     logic
-    variable "x"
+    variable { "x" }
   end
 end
