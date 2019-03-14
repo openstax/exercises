@@ -84,6 +84,10 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
         expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
       end
+      it 'cannot be accessed even by an author' do
+        author = FactoryBot.create(:author, publication: exercise.publication, user: user)
+        expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
+      end
     end
 
     context 'not vocab exercise' do
@@ -115,6 +119,11 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
         expect(described_class.action_allowed?(:update, app, exercise)).to eq false
         expect(described_class.action_allowed?(:destroy, app, exercise)).to eq false
+      end
+      it 'can be accessed by an author' do
+        author = FactoryBot.create(:author, publication: exercise.publication, user: user)
+        expect(described_class.action_allowed?(:update, user, exercise)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, exercise)).to eq true
       end
     end
 
@@ -197,6 +206,7 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
         exercise.vocab_term = FactoryBot.create :vocab_term
         exercise.publication.published_at = Time.now
         exercise.publication.save!
+        exercise.save!
       end
 
       it 'cannot be accessed by anyone' do
@@ -205,6 +215,10 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:new_version, user, exercise)).to eq false
 
         expect(described_class.action_allowed?(:new_version, app, exercise)).to eq false
+      end
+      it 'can be accessed by an author' do
+        author = FactoryBot.create(:author, publication: exercise.publication, user: user)
+        expect(described_class.action_allowed?(:new_version, user, exercise.reload)).to eq true
       end
     end
 

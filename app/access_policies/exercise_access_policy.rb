@@ -7,17 +7,14 @@ class ExerciseAccessPolicy
       true
     when :create
       !requestor.is_anonymous? &&
-      requestor.is_human? &&
-      exercise.vocab_term_id.nil?
+      requestor.is_human?
     when :read
       exercise.is_public? || exercise.has_read_permission?(requestor)
     when :update, :destroy
       !exercise.is_published? &&
-      exercise.vocab_term_id.nil? &&
       exercise.has_write_permission?(requestor)
     when :new_version
       exercise.is_published? &&
-      exercise.vocab_term_id.nil? &&
       exercise.has_write_permission?(requestor)
     else
       false
