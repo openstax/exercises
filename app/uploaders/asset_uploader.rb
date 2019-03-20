@@ -51,7 +51,7 @@ class AssetUploader < CarrierWave::Uploader::Base
     when CarrierWave::SanitizedFile
       file.to_file
     when CarrierWave::Storage::Fog::File
-      CarrierWave::Storage::Fog.new(self).retrieve!(File.basename(file.path))
+      file.read
     else
       open(file)
     end
