@@ -3,7 +3,7 @@ module HasAttachments
     module Base
       def has_attachments
         class_exec do
-          has_many :attachments, as: :parent, dependent: :destroy, inverse_of: :parent, validate: false
+          has_many :attachments, as: :parent, dependent: :destroy, inverse_of: :parent
         end
       end
     end
