@@ -12,7 +12,7 @@ end
 gem 'rails', '4.2.11'
 
 # Bootstrap
-gem 'bootstrap-sass', '~> 3.2.0'
+gem 'bootstrap-sass'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
