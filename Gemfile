@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11'
+gem 'rails', '>= 5.0.0.rc2', '< 5.1'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -76,9 +76,6 @@ gem 'maruku'
 # Lev framework
 gem 'lev'
 
-# Ruby dsl for SQL queries
-gem 'squeel'
-
 # Contract management
 gem 'fine_print'
 
@@ -95,7 +92,7 @@ gem 'mini_magick'
 
 # Markdown parsing
 # Pinned for Rails 4.X
-gem 'kramdown', '1.6.0'
+gem 'kramdown'
 
 # Read Excel xlsx spreadsheet files
 gem 'roo'
@@ -123,7 +120,7 @@ gem 'scout_apm', '~> 3.0.x'
 
 # PostgreSQL database
 # Pinned for rails 4.X
-gem 'pg', '~> 0.15'
+gem 'pg'
 
 # HTTP requests
 gem 'httparty'
@@ -180,11 +177,11 @@ group :development, :test do
 
   # Fixture replacement
   # Pinned for rails 4.X
-  gem 'factory_bot_rails', '< 5.0.0'
+  gem 'factory_bot_rails'
 
   # Lorem Ipsum
   # Pinned to avoid 18n problem
-  gem 'faker', '1.6.6'
+  gem 'faker'
 
   # Database cleaning functionality for tests
   gem 'database_cleaner'
