@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '>= 5.0.0.rc2', '< 5.1'
+gem 'rails', '~> 5.0.7.2'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -62,14 +62,17 @@ gem 'whenever'
 gem 'omniauth-oauth2', '~> 1.3.1'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 7.12.0'
+#gem 'openstax_accounts', '~> 7.12.0'
+gem 'openstax_accounts', path: '../accounts-rails'
+
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
-gem 'openstax_api', '~> 8.3.0'
+#gem 'openstax_api', '~> 8.3.0'
+gem 'openstax_api', github: 'openstax/openstax_api', branch: 'rails5'
 gem 'apipie-rails'
 gem 'maruku'
 
@@ -77,7 +80,8 @@ gem 'maruku'
 gem 'lev'
 
 # Contract management
-gem 'fine_print'
+#gem 'fine_print'
+gem 'fine_print', github: 'lml/fine_print', branch: 'rails5'
 
 # Keyword search
 gem 'keyword_search'
@@ -107,7 +111,8 @@ gem 'eco'
 gem 'deep_cloneable'
 
 # Sortable objects
-gem 'sortability'
+#gem 'sortability'
+gem 'sortability', github: 'openstax/sortability', branch: 'rails5'
 
 # Comments on objects
 gem 'commontator'
@@ -120,7 +125,7 @@ gem 'scout_apm', '~> 3.0.x'
 
 # PostgreSQL database
 # Pinned for rails 4.X
-gem 'pg'
+gem 'pg', '~> 0.18'
 
 # HTTP requests
 gem 'httparty'
@@ -131,7 +136,8 @@ gem 'a15k_client',
     branch: 'master'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 3.0.0'
+#gem 'openstax_rescue_from', '~> 3.0.0'
+gem 'openstax_rescue_from', github: 'openstax/rescue_from', branch: 'rails5'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
@@ -173,7 +179,7 @@ group :development, :test do
   gem 'rspec-rails'
 
   # Mute asset pipeline log messages
-  gem 'quiet_assets'
+#  gem 'quiet_assets'
 
   # Fixture replacement
   # Pinned for rails 4.X
@@ -221,8 +227,6 @@ group :test do
   # Codecov integration
   gem 'codecov', require: false
 
-  # Test after-commit hooks
-  gem 'test_after_commit'
 end
 
 group :production do

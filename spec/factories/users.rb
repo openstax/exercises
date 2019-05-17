@@ -7,7 +7,7 @@ FactoryBot.define do
       first_name { Faker::Name.first_name }
       last_name  { Faker::Name.last_name }
       full_name  { "#{first_name} #{last_name}" }
-      title      { Faker::Name.title }
+      title      { Faker::Job.title }
     end
 
     after(:build) do |user, evaluator|
