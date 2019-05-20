@@ -7,7 +7,6 @@ class Attachment < ActiveRecord::Base
   before_update { raise ActiveRecord::ReadOnlyRecord } # Prevent updates
 
   validates :asset, presence: true
-  validates :parent, presence: true
   validate :unique_asset
 
   def filename
@@ -22,9 +21,10 @@ class Attachment < ActiveRecord::Base
 
   def unique_asset
     return if asset.nil? || parent.nil?
-    return unless Attachment.where {(id != my{id}) & \
-                                   (parent == my{parent}) & \
-                                   (asset == my{asset.identifier})}.exists?
+    at = Attachment.arel_table
+    return unless Attachment.where((at[:id] != id) & \
+                                   (at[:parent] == parent) & \
+                                   (at[:asset] == asset.identifier)).exists?
     errors.add(:asset, 'has already been associated with this resource')
     false
   end

@@ -21,7 +21,7 @@ module Admin
       context 'for anonymous' do
         it 'returns 403 forbidden' do
           EXCEPTIONS.each do |klass, args|
-            xhr :get, :show, id: klass.name, args: args
+            get :show, params: { id: klass.name, args: args }, xhr: true
             expect(response).to have_http_status(:forbidden)
           end
         end
@@ -31,7 +31,7 @@ module Admin
         it 'raises SecurityTransgression' do
           controller.sign_in user
           EXCEPTIONS.each do |klass, args|
-            expect{ xhr :get, :show, id: klass.name, args: args }.to(
+            expect{ get :show, params: { id: klass.name, args: args }, xhr: true }.to(
               raise_error(SecurityTransgression)
             )
           end
@@ -42,7 +42,7 @@ module Admin
         it 'raises the given exception' do
           controller.sign_in admin
           EXCEPTIONS.each do |klass, args|
-            expect{ xhr :get, :show, id: klass.name, args: args }.to raise_error(klass)
+            expect{ get :show, params: { id: klass.name, args: args }, xhr: true }.to raise_error(klass)
           end
         end
       end

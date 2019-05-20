@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190308184133) do
+ActiveRecord::Schema.define(version: 20190517204620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
   enable_extension "citext"
-  enable_extension "uuid-ossp"
 
   create_table "administrators", force: :cascade do |t|
     t.integer  "user_id",    null: false
@@ -393,10 +392,11 @@ ActiveRecord::Schema.define(version: 20190308184133) do
     t.datetime "updated_at",                                                 null: false
     t.integer  "faculty_status",        default: 0,                          null: false
     t.string   "salesforce_contact_id"
-    t.uuid     "uuid",                  default: -> { "gen_random_uuid()" }, null: false
+    t.uuid     "uuid",                  default: -> { "gen_random_uuid()" }
     t.integer  "role",                  default: 0,                          null: false
     t.citext   "support_identifier"
     t.boolean  "is_test"
+    t.integer  "school_type",           default: 0,                          null: false
     t.index ["access_token"], name: "index_openstax_accounts_accounts_on_access_token", unique: true, using: :btree
     t.index ["faculty_status"], name: "index_openstax_accounts_accounts_on_faculty_status", using: :btree
     t.index ["first_name"], name: "index_openstax_accounts_accounts_on_first_name", using: :btree
@@ -405,6 +405,7 @@ ActiveRecord::Schema.define(version: 20190308184133) do
     t.index ["openstax_uid"], name: "index_openstax_accounts_accounts_on_openstax_uid", unique: true, using: :btree
     t.index ["role"], name: "index_openstax_accounts_accounts_on_role", using: :btree
     t.index ["salesforce_contact_id"], name: "index_openstax_accounts_accounts_on_salesforce_contact_id", using: :btree
+    t.index ["school_type"], name: "index_openstax_accounts_accounts_on_school_type", using: :btree
     t.index ["support_identifier"], name: "index_openstax_accounts_accounts_on_support_identifier", unique: true, using: :btree
     t.index ["username"], name: "index_openstax_accounts_accounts_on_username", unique: true, using: :btree
     t.index ["uuid"], name: "index_openstax_accounts_accounts_on_uuid", unique: true, using: :btree

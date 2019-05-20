@@ -189,7 +189,7 @@ module Api::V1
       after(:all) { DatabaseCleaner.clean }
 
       it "returns the VocabTerm requested by group_uuid and version" do
-        api_get :show, @user_token, parameters: {
+        api_get :show, @user_token, params: {
           id: "#{@vocab_term.group_uuid}@#{@vocab_term.version}"
         }
         expect(response).to have_http_status(:success)
@@ -197,37 +197,37 @@ module Api::V1
       end
 
       it "returns the VocabTerm requested by uuid" do
-        api_get :show, @user_token, parameters: { id: @vocab_term.uuid }
+        api_get :show, @user_token, params: { id: @vocab_term.uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the VocabTerm requested by uid" do
-        api_get :show, @user_token, parameters: { id: @vocab_term.uid }
+        api_get :show, @user_token, params: { id: @vocab_term.uid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest published VocabTerm if only the group_uuid is specified" do
-        api_get :show, @user_token, parameters: { id: @vocab_term.group_uuid }
+        api_get :show, @user_token, params: { id: @vocab_term.group_uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest published VocabTerm if only the number is specified" do
-        api_get :show, @user_token, parameters: { id: @vocab_term.number }
+        api_get :show, @user_token, params: { id: @vocab_term.number }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest draft VocabTerm if \"group_uuid@draft\" is requested" do
-        api_get :show, @user_token, parameters: { id: "#{@vocab_term.group_uuid}@draft" }
+        api_get :show, @user_token, params: { id: "#{@vocab_term.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term_2.uuid))
       end
 
       it "returns the latest draft VocabTerm if \"number@draft\" is requested" do
-        api_get :show, @user_token, parameters: { id: "#{@vocab_term.number}@draft" }
+        api_get :show, @user_token, params: { id: "#{@vocab_term.number}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term_2.uuid))
       end
@@ -236,7 +236,7 @@ module Api::V1
         @vocab_term_2.destroy
 
         expect do
-          api_get :show, @user_token, parameters: { id: "#{@vocab_term.number}@draft" }
+          api_get :show, @user_token, params: { id: "#{@vocab_term.number}@draft" }
         end.to change{ VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
 
@@ -265,7 +265,7 @@ module Api::V1
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
         expect do
           api_post :create, @user_token,
-                   raw_post_data: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
+                   body: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
                    ).to_hash(user_options: { user: @user })
         end.to change { VocabTerm.count }.by(1)
@@ -285,7 +285,7 @@ module Api::V1
 
         expect do
           api_post :create, @user_token,
-                   raw_post_data: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
+                   body: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
                    ).to_hash(user_options: { user: @user })
         end.not_to change { VocabTerm.count }
@@ -299,8 +299,8 @@ module Api::V1
       before { @old_attributes = @vocab_term.reload.attributes }
 
       it "updates the requested VocabTerm" do
-        api_patch :update, @user_token, parameters: { id: @vocab_term.uid },
-                                        raw_post_data: { nickname: 'MyVocab', term: "Ipsum lorem" }
+        api_patch :update, @user_token, params: { id: @vocab_term.uid },
+                                        body: { nickname: 'MyVocab', term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
         new_attributes = @vocab_term.attributes
@@ -315,7 +315,7 @@ module Api::V1
         @vocab_term.publication.publish.save!
 
         expect do
-          api_patch :update, @user_token, parameters: { id: @vocab_term.uid }, raw_post_data: {
+          api_patch :update, @user_token, params: { id: @vocab_term.uid }, body: {
             nickname: 'MyVocab', term: "Ipsum lorem"
           }
         end.to raise_error(SecurityTransgression)
@@ -329,7 +329,7 @@ module Api::V1
       it "fails if the nickname has already been taken" do
         FactoryBot.create :publication_group, nickname: 'MyVocab2'
 
-        api_patch :update, @user_token, parameters: { id: @vocab_term.uid }, raw_post_data: {
+        api_patch :update, @user_token, params: { id: @vocab_term.uid }, body: {
           nickname: 'MyVocab2', title: "Ipsum lorem"
         }
 
@@ -348,8 +348,8 @@ module Api::V1
         vocab_term_2.save!
         vocab_term_2.reload
 
-        api_patch :update, @user_token, parameters: { id: "#{@vocab_term.number}@draft" },
-                                        raw_post_data: { nickname: 'MyVocab', term: "Ipsum lorem" }
+        api_patch :update, @user_token, params: { id: "#{@vocab_term.number}@draft" },
+                                        body: { nickname: 'MyVocab', term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
@@ -371,8 +371,8 @@ module Api::V1
         @vocab_term.publication.publish.save!
 
         expect do
-          api_patch :update, @user_token, parameters: { id: "#{@vocab_term.number}@draft" },
-                                          raw_post_data: {
+          api_patch :update, @user_token, params: { id: "#{@vocab_term.number}@draft" },
+                                          body: {
                                             nickname: 'MyVocab', term: "Ipsum lorem"
                                           }
         end.to change{ VocabTerm.count }.by(1)
@@ -400,7 +400,7 @@ module Api::V1
     context "DELETE destroy" do
       it "deletes the requested draft VocabTerm" do
         expect do
-          api_delete :destroy, @user_token, parameters: { id: @vocab_term.uid }
+          api_delete :destroy, @user_token, params: { id: @vocab_term.uid }
         end.to change(VocabTerm, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(VocabTerm.where(id: @vocab_term.id)).not_to exist

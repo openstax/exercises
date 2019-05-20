@@ -35,6 +35,8 @@ class SearchExercises
     run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       with.default_keyword :content
 
+      ex = Exercise.arel_table
+
       with.keyword :id do |ids|
         ids.each do |id|
           sanitized_ids = to_number_array(id)
@@ -149,7 +151,7 @@ class SearchExercises
           sanitized_titles = to_string_array(ttl, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_titles.empty?
 
-          @items = @items.where { title.like_any sanitized_titles }
+          @items = @items.where(ex[:title].matches_any(sanitized_titles))
         end
       end
 

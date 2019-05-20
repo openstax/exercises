@@ -40,7 +40,7 @@ class SearchVocabTerms
           sanitized_names = to_string_array(nm, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_names.empty?
 
-          @items = @items.where { name.like_any sanitized_names }
+          @items = @items.where ( name.like_any sanitized_names )
         end
       end
 
@@ -164,7 +164,7 @@ class SearchVocabTerms
           sanitized_definitions = to_string_array(df, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_definitions.empty?
 
-          @items = @items.where { definition.like_any sanitized_definitions }
+          @items = @items.where( definition.like_any sanitized_definitions )
         end
       end
 

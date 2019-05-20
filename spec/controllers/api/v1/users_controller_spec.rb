@@ -43,7 +43,7 @@ module Api::V1
       end
 
       it "returns no results if the maximum number of results is exceeded" do
-        api_get :index, admin_token, parameters: {q: ''}
+        api_get :index, admin_token, params: {q: ''}
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -55,7 +55,7 @@ module Api::V1
       end
 
       it "returns single results" do
-        api_get :index, application_token, parameters: { q: 'first_name:jOhN last_name:dOe' }
+        api_get :index, application_token, params: { q: 'first_name:jOhN last_name:dOe' }
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -81,7 +81,7 @@ module Api::V1
       end
 
       it "returns multiple results" do
-        api_get :index, user_token, parameters: {q: 'last_name:DoE'}
+        api_get :index, user_token, params: {q: 'last_name:DoE'}
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -120,7 +120,7 @@ module Api::V1
       end
 
       it "sorts by multiple fields in different directions" do
-        api_get :index, user_token, parameters: {q: 'username:doe',
+        api_get :index, user_token, params: {q: 'username:doe',
                                                  order_by: "first_name DESC, last_name"}
         expect(response).to have_http_status(:success)
 
@@ -184,7 +184,7 @@ module Api::V1
       end
 
       it "ignores id parameters" do
-        api_get :show, user_token, parameters: {id: admin.id, user_id: admin.id}
+        api_get :show, user_token, params: {id: admin.id, user_id: admin.id}
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -208,7 +208,7 @@ module Api::V1
     context "PATCH update" do
 
       it "updates the current User's profile" do
-        api_patch :update, user_token, raw_post_data: {
+        api_patch :update, user_token, body: {
           first_name: "Jerry", last_name: "Mouse"
         }
         expect(response).to have_http_status(:success)
@@ -218,9 +218,9 @@ module Api::V1
       end
 
       it "ignores id parameters" do
-        api_patch :update, user_token, raw_post_data: {
+        api_patch :update, user_token, body: {
           first_name: "Jerry", last_name: "Mouse"
-        }, parameters: {id: admin.id, user_id: admin.id}
+        }, params: {id: admin.id, user_id: admin.id}
         expect(response).to have_http_status(:success)
         user.reload
         admin.reload
@@ -242,7 +242,7 @@ module Api::V1
       end
 
       it "ignores id parameters" do
-        api_delete :destroy, user_token, parameters: {id: admin.id, user_id: admin.id}
+        api_delete :destroy, user_token, params: {id: admin.id, user_id: admin.id}
         expect(response).to have_http_status(:success)
         user.reload
         admin.reload

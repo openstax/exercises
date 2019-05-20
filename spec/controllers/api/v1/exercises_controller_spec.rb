@@ -214,7 +214,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by group_uuid and version" do
-        api_get :show, @user_token, parameters: {
+        api_get :show, @user_token, params: {
           id: "#{@exercise.group_uuid}@#{@exercise.version}"
         }
         expect(response).to have_http_status(:success)
@@ -225,7 +225,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by uuid" do
-        api_get :show, @user_token, parameters: { id: @exercise.uuid }
+        api_get :show, @user_token, params: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -234,7 +234,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by uid" do
-        api_get :show, @user_token, parameters: { id: @exercise.uid }
+        api_get :show, @user_token, params: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -243,7 +243,7 @@ module Api::V1
       end
 
       it "returns the latest published Exercise if only the group_uuid is specified" do
-        api_get :show, @user_token, parameters: { id: @exercise.group_uuid }
+        api_get :show, @user_token, params: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -252,7 +252,7 @@ module Api::V1
       end
 
       it "returns the latest published Exercise if only the number is specified" do
-        api_get :show, @user_token, parameters: { id: @exercise.number }
+        api_get :show, @user_token, params: { id: @exercise.number }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -261,7 +261,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
-        api_get :show, @user_token, parameters: { id: "#{@exercise.group_uuid}@draft" }
+        api_get :show, @user_token, params: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -270,7 +270,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"number@draft\" is requested" do
-        api_get :show, @user_token, parameters: { id: "#{@exercise.number}@draft" }
+        api_get :show, @user_token, params: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -280,7 +280,7 @@ module Api::V1
 
       it "returns the latest version of a Exercise if \"@latest\" is requested" do
         @exercise_1.publication.update_attributes(version: 1000)
-        api_get :show, @user_token, parameters: { id: "#{@exercise.number}@latest" }
+        api_get :show, @user_token, params: { id: "#{@exercise.number}@latest" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_1.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -293,7 +293,7 @@ module Api::V1
         @exercise_2.destroy
 
         expect do
-          api_get :show, @user_token, parameters: { id: "#{@exercise.number}@draft" }
+          api_get :show, @user_token, params: { id: "#{@exercise.number}@draft" }
         end.to change{ Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
@@ -317,7 +317,7 @@ module Api::V1
         after(:all) { DatabaseCleaner.clean }
 
         it "shows solutions for published exercises if the requestor is an app" do
-          api_get :show, @application_token, parameters: { id: @exercise.uid }
+          api_get :show, @application_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
@@ -328,7 +328,7 @@ module Api::V1
         end
 
         it "shows solutions for published exercises if the requestor is allowed to edit it" do
-          api_get :show, @user_token, parameters: { id: @exercise.uid }
+          api_get :show, @user_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
@@ -341,7 +341,7 @@ module Api::V1
         it "hides solutions for published exercises if the requestor is not allowed to edit it" do
           @exercise.publication.authors.destroy_all
 
-          api_get :show, @user_token, parameters: { id: @exercise.uid }
+          api_get :show, @user_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first['collaborator_solutions']).to be_nil
@@ -352,7 +352,7 @@ module Api::V1
         end
 
         it "includes versions of the exercise" do
-          api_get :show, @user_token, parameters: { id: @exercise.uid }
+          api_get :show, @user_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
           expect(response.body_as_hash[:versions]).to(
             eq([@exercise_2.version, @exercise_1.version, @exercise.version])
@@ -375,7 +375,7 @@ module Api::V1
 
       it "creates the requested Exercise and assigns the user as author and CR holder" do
         expect do
-          api_post :create, @user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
             @exercise
           ).to_hash(user_options: { user: @user })
         end.to change { Exercise.count }.by(1)
@@ -412,7 +412,7 @@ module Api::V1
         )
 
         expect do
-          api_post :create, @user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
             exercise
           ).to_hash(user_options: { user: @user })
         end.to change { Exercise.count }.by(1)
@@ -427,7 +427,7 @@ module Api::V1
         FactoryBot.create :publication_group, nickname: 'MyExercise'
 
         expect do
-          api_post :create, @user_token, raw_post_data: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
             @exercise
           ).to_hash(user_options: { user: @user })
         end.not_to change { Exercise.count }
@@ -442,7 +442,7 @@ module Api::V1
       before { @old_attributes = @exercise.reload.attributes }
 
       it "updates the requested Exercise" do
-        api_patch :update, @user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+        api_patch :update, @user_token, params: { id: @exercise.uid }, body: {
           nickname: 'MyExercise', title: "Ipsum lorem"
         }
         expect(response).to have_http_status(:success)
@@ -459,7 +459,7 @@ module Api::V1
         @exercise.publication.publish.save!
 
         expect do
-          api_patch :update, @user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+          api_patch :update, @user_token, params: { id: @exercise.uid }, body: {
             nickname: 'MyExercise', title: "Ipsum lorem"
           }
         end.to raise_error(SecurityTransgression)
@@ -471,7 +471,7 @@ module Api::V1
       it "fails if the nickname has already been taken" do
         FactoryBot.create :publication_group, nickname: 'MyExercise2'
 
-        api_patch :update, @user_token, parameters: { id: @exercise.uid }, raw_post_data: {
+        api_patch :update, @user_token, params: { id: @exercise.uid }, body: {
           nickname: 'MyExercise2', title: "Ipsum lorem"
         }
 
@@ -489,7 +489,7 @@ module Api::V1
         exercise_2.reload
 
         id = "#{@exercise.number}@draft"
-        api_patch :update, @user_token, parameters: { id: id }, raw_post_data: {
+        api_patch :update, @user_token, params: { id: id }, body: {
           nickname: 'MyExercise', title: "Ipsum lorem"
         }
         expect(response).to have_http_status(:success)
@@ -512,7 +512,7 @@ module Api::V1
 
         id = "#{@exercise.number}@draft"
         expect do
-          api_patch :update, @user_token, parameters: { id: id }, raw_post_data: {
+          api_patch :update, @user_token, params: { id: id }, body: {
             nickname: 'MyExercise', title: "Ipsum lorem"
           }
         end.to change{ Exercise.count }.by(1)
@@ -538,7 +538,7 @@ module Api::V1
     context "DELETE destroy" do
       it "deletes the requested draft Exercise" do
         expect do
-          api_delete :destroy, @user_token, parameters: { id: @exercise.uid }
+          api_delete :destroy, @user_token, params: { id: @exercise.uid }
         end.to change(Exercise, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(Exercise.where(id: @exercise.id)).not_to exist

@@ -20,23 +20,6 @@ GIT
       responders
 
 GIT
-  remote: https://github.com/openstax/openstax_api.git
-  revision: 3068f04b5e96f790284fac02509b3c404f5ff059
-  branch: rails5
-  specs:
-    openstax_api (8.3.2)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1)
-      representable (>= 2.4, < 4.0)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
-      uber (< 0.1.0)
-
-GIT
   remote: https://github.com/openstax/rescue_from.git
   revision: 20255f01002b452733cbb66911a7db9d065e2f10
   branch: rails5
@@ -66,6 +49,21 @@ PATH
       openstax_utilities (>= 4.1.0)
       rails (>= 4.1)
       representable (>= 2.0)
+
+PATH
+  remote: ../openstax_api
+  specs:
+    openstax_api (8.3.2)
+      doorkeeper (>= 2.0)
+      exception_notification (>= 4.0)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
+      rails (>= 3.1)
+      representable (>= 2.4, < 4.0)
+      responders
+      roar (>= 1.0)
+      roar-rails (>= 1.0)
+      uber (< 0.1.0)
 
 GEM
   remote: https://rubygems.org/

@@ -36,7 +36,7 @@ module Api::V1
           expect(exercise.reload.is_published?).to eq false
 
           api_put :publish, exercise_author_token,
-                            parameters: { exercise_id: exercise.uid.to_s }
+                            params: { exercise_id: exercise.uid.to_s }
 
           expected_response = Api::V1::Exercises::Representer
                                 .new(exercise.reload)
@@ -54,7 +54,7 @@ module Api::V1
           end
 
           api_put :publish, exercise_author_token,
-                            parameters: { exercise_id: exercise.uid.to_s }
+                            params: { exercise_id: exercise.uid.to_s }
 
           expected_response = {
             errors: [{ code: 'exercise_has_a_question_with_only_incorrect_answers',
@@ -72,7 +72,7 @@ module Api::V1
           expect(vocab_term.reload.is_published?).to eq false
 
           api_put :publish, vocab_term_author_token,
-                            parameters: { vocab_term_id: vocab_term.uid.to_s }
+                            params: { vocab_term_id: vocab_term.uid.to_s }
 
           expected_response = \
             Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(vocab_term.reload)
@@ -88,7 +88,7 @@ module Api::V1
           vocab_term.vocab_distractors.delete_all
 
           api_put :publish, vocab_term_author_token,
-                            parameters: { vocab_term_id: vocab_term.uid.to_s }
+                            params: { vocab_term_id: vocab_term.uid.to_s }
 
           expected_response = {
             errors: [{ code: 'vocab_term_must_have_at_least_1_distractor',
@@ -105,7 +105,7 @@ module Api::V1
         it "publishes the requested community solution" do
           expect(solution.reload.is_published?).to eq false
 
-          api_put :publish, solution_author_token, parameters: {
+          api_put :publish, solution_author_token, params: {
             community_solution_id: solution.uid.to_s
           }
 
@@ -124,7 +124,7 @@ module Api::V1
 
           expect{
             api_put :publish, exercise_author_token,
-                              parameters: { exercise_id: exercise.uid.to_s,
+                              params: { exercise_id: exercise.uid.to_s,
                                             vocab_term_id: vocab_term.uid.to_s,
                                             community_solution_id: solution.uid.to_s }
           }.to raise_error(ActionController::BadRequest)

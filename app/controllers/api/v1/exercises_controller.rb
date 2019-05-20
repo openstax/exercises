@@ -3,8 +3,8 @@ module Api::V1
 
     include ::Exercises::Finders
 
-    before_filter :find_exercise_or_create_draft, only: [:show, :update]
-    before_filter :find_exercise, only: [:destroy]
+    before_action :find_exercise_or_create_draft, only: [:show, :update]
+    before_action :find_exercise, only: [:destroy]
 
     resource_description do
       api_versions "v1"
