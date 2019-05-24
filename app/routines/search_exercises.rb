@@ -36,6 +36,9 @@ class SearchExercises
       with.default_keyword :content
 
       ex = Exercise.arel_table
+      qu = Question.arel_table
+      st = Stem.arel_table
+      ans = Answer.arel_table
 
       with.keyword :id do |ids|
         ids.each do |id|
@@ -64,24 +67,25 @@ class SearchExercises
             @items = @items.where(publication_groups: { number: sanitized_numbers })
           else
             # Combine the id's one at a time using Squeel
-            @items = @items.where do
-              only_numbers = sanitized_uids.select { |suid| suid.second.blank? }.map(&:first)
-              only_versions = sanitized_uids.select { |suid| suid.first.blank? }.map(&:second)
-              full_uids = sanitized_uids.reject { |suid| suid.first.blank? || suid.second.blank? }
+            pub = Publication.arel_table
+            pubg = PublicationGroup.arel_table
+           
+            only_numbers = sanitized_uids.select { |suid| suid.second.blank? }.map(&:first)
+            only_versions = sanitized_uids.select { |suid| suid.first.blank? }.map(&:second)
+            full_uids = sanitized_uids.reject { |suid| suid.first.blank? || suid.second.blank? }
 
-              cumulative_query = publication.publication_group.number.in(only_numbers) |
-                                 publication.version.in(only_versions)
+            cumulative_query = pubg[:number].in(only_numbers).or(
+                               pub[:version].in(only_versions))
 
-              full_uids.each do |full_uid|
-                sanitized_number = full_uid.first
-                sanitized_version = full_uid.second
-                query = (publication.publication_group.number == sanitized_number) &
-                        (publication.version == sanitized_version)
-                cumulative_query = cumulative_query | query
+            full_uids.each do |full_uid|
+              sanitized_number = full_uid.first
+              sanitized_version = full_uid.second
+              query = pubg[:number].eq(sanitized_number).and(
+                      pub[:version].eq(sanitized_version))
+              cumulative_query = cumulative_query.or(query)
               end
 
-              cumulative_query
-            end
+            @items = @items.where(cumulative_query)
           end
         end
       end
@@ -161,14 +165,12 @@ class SearchExercises
                                                         prepend_wildcard: true)
           next @items = @items.none if sanitized_contents.empty?
 
-          @items = @items.joins {[questions.outer.stems.outer, questions.outer.answers.outer]}
-                         .where do
-             title.like_any(sanitized_contents) |
-             stimulus.like_any(sanitized_contents) |
-             questions.stimulus.like_any(sanitized_contents) |
-             questions.stems.content.like_any(sanitized_contents) |
-             questions.answers.content.like_any(sanitized_contents)
-          end
+          @items = @items.left_joins(questions: [:stems, :answers]).where(
+               ex[:title].matches_any(sanitized_contents)
+           .or(ex[:stimulus].matches_any(sanitized_contents))
+           .or(qu[:stimulus].matches_any(sanitized_contents))
+           .or(st[:content].matches_any(sanitized_contents))
+           .or(ans[:content].matches_any(sanitized_contents)))
         end
       end
 
@@ -177,12 +179,12 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins(publication: { authors: { user: :account } }).where do
-            openstax_accounts_accounts.username.like_any(sn) |
-            openstax_accounts_accounts.first_name.like_any(sn) |
-            openstax_accounts_accounts.last_name.like_any(sn) |
-            openstax_accounts_accounts.full_name.like_any(sn)
-          end
+          acct = OpenStax::Accounts::Account.arel_table
+          @items = @items.joins(publication: { authors: { user: :account } }).where(
+                acct[:username].matches_any(sn)
+            .or(acct[:first_name].matches_any(sn))
+            .or(acct[:last_name].matches_any(sn))
+            .or(acct[:full_name].matches_any(sn)))
         end
       end
 
@@ -191,12 +193,12 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins(publication: { copyright_holders: { user: :account } }).where do
-            openstax_accounts_accounts.username.like_any(sn) |
-            openstax_accounts_accounts.first_name.like_any(sn) |
-            openstax_accounts_accounts.last_name.like_any(sn) |
-            openstax_accounts_accounts.full_name.like_any(sn)
-          end
+          acct = OpenStax::Accounts::Account.arel_table
+          @items = @items.joins(publication: { copyright_holders: { user: :account } }).where(
+                acct[:username].matches_any(sn)
+            .or(acct[:first_name].matches_any(sn))
+            .or(acct[:last_name].matches_any(sn))
+            .or(acct[:full_name].matches_any(sn)))
         end
       end
 
@@ -205,18 +207,18 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins {publication.authors.outer.user.outer.account.outer}
-                         .joins {publication.copyright_holders.outer.user.outer.account.outer}
-                         .where do
-            publication.authors.user.account.username.like_any(sn) |
-            publication.authors.user.account.first_name.like_any(sn) |
-            publication.authors.user.account.last_name.like_any(sn) |
-            publication.authors.user.account.full_name.like_any(sn) |
-            publication.copyright_holders.user.account.username.like_any(sn) |
-            publication.copyright_holders.user.account.first_name.like_any(sn) |
-            publication.copyright_holders.user.account.last_name.like_any(sn) |
-            publication.copyright_holders.user.account.full_name.like_any(sn)
-          end
+          acct_author = OpenStax::Accounts::Account.arel_table
+          acct_copyright = OpenStax::Accounts::Account.arel_table.alias('accounts_users')
+          @items = @items.joins(publication: { authors: { user: :account } })
+                         .joins(publication: { copyright_holders: { user: :account } }).where(
+                acct_author[:username].matches_any(sn)
+            .or(acct_author[:first_name].matches_any(sn))
+            .or(acct_author[:last_name].matches_any(sn))
+            .or(acct_author[:full_name].matches_any(sn))
+            .or(acct_copyright[:username].matches_any(sn))
+            .or(acct_copyright[:first_name].matches_any(sn))
+            .or(acct_copyright[:last_name].matches_any(sn))
+            .or(acct_copyright[:full_name].matches_any(sn)))
         end
       end
     end
@@ -237,6 +239,6 @@ class SearchExercises
     return unless latest_visible
 
     outputs.items = outputs.items.chainable_latest
-    outputs.total_count = outputs.items.limit(nil).offset(nil).reorder(nil).count
+    outputs.total_count = outputs.items.limit(nil).offset(nil).reorder(nil).count(:all)
   end
 end

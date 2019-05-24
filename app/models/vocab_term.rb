@@ -122,12 +122,10 @@ class VocabTerm < ActiveRecord::Base
   end
 
   def after_publication
-      vt = VocabTerm.arel_table
-      pub = Publication.arel_table
     last_def = VocabTerm.joins(publication: :publication_group)
                         .where(publication: {publication_group: {number: number}})
-                        .where (vt[:id] != id)
-                        .order (vt[:publication] { pub[:version].desc})
+                        .where.not(id: id)
+                        .order(Publication.arel_table[:version].desc)
                         .limit(1)
                         .pluck(:definition)
     return if definition == last_def

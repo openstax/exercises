@@ -36,10 +36,12 @@ module Exercises
         end
         id_tag = "exid:qb:#{hash['id']}"
 
+        pub = Publication.arel_table
+        pubg = PublicationGroup.arel_table
         latest_exercise = Exercise
           .joins([{publication: :publication_group}, {exercise_tags: :tag}])
-          .where(exercise_tags: {tag: {name: id_tag}})
-          .order {[publication.publication_group.number.desc, publication.version.desc]}.first
+          .where(exercise_tags: {tag: {name: id_tag}}
+                ).order(pubg[:number].desc, pub[:version].desc).first
 
         publication = import_metadata(exercise.publication, hash['attribution'])
 

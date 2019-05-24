@@ -34,16 +34,21 @@ module Api::V1
 
           10.times { FactoryBot.create(:exercise, :published) }
 
-          tested_strings = ["%adipisci%", "%draft%"]
-          Exercise.joins {questions.outer.stems.outer}
-                  .joins {questions.outer.answers.outer}
-                  .where do
-            title.like_any(tested_strings) |\
-            stimulus.like_any(tested_strings) |\
-            questions.stimulus.like_any(tested_strings) |\
-            stems.content.like_any(tested_strings) |\
-            answers.content.like_any(tested_strings)
-          end.delete_all
+          ex = Exercise.arel_table
+          qu = Question.arel_table
+          st = Stem.arel_table
+          ans = Answer.arel_table
+
+          tested_strings = [ "%adipisci%", "%draft%" ]
+
+          ex_ids = Exercise.left_joins(questions: [:stems, :answers]).where(
+                     ex[:title].matches_any(tested_strings)
+                 .or(ex[:stimulus].matches_any(tested_strings))
+                 .or(qu[:stimulus].matches_any(tested_strings))
+                 .or(st[:content].matches_any(tested_strings))
+                 .or(ans[:content].matches_any(tested_strings))).pluck(:id)
+
+          Exercise.where(id: ex_ids).delete_all
 
           @exercise_1 = FactoryBot.build(:exercise, :published)
           Api::V1::Exercises::Representer.new(@exercise_1).from_hash(

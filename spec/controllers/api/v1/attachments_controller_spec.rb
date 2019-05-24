@@ -46,7 +46,7 @@ module Api::V1
 
       it 'attaches a file to an exercise' do
         expect do
-          api_post :create, user_token, params: { exercise_id: exercise_id, file: image }
+          api_post :create, user_token, params: { exercise_id: exercise_id }, file: image
         end.to change{ exercise.attachments.count }.by(1)
         expect(response).to have_http_status(:success)
       end
@@ -54,7 +54,7 @@ module Api::V1
       it 'creates a draft if needed' do
         exercise.publication.publish.save!
         expect do
-          api_post :create, user_token, params: { exercise_id: exercise_id, file: image }
+          api_post :create, user_token, params: { exercise_id: exercise_id }, file: image
         end.to change{ exercise.publication_group.reload.latest_version }.from(1).to(2)
         expect(response).to have_http_status(:success)
       end

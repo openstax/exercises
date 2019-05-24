@@ -6,14 +6,21 @@ RSpec.describe SearchExercises, type: :routine do
 
     10.times { FactoryBot.create(:exercise, :published) }
 
+    ex = Exercise.arel_table
+    qu = Question.arel_table
+    st = Stem.arel_table
+    ans = Answer.arel_table
+
     tested_strings = [ "%adipisci%", "%draft%" ]
-    Exercise.joins {questions.outer.stems.outer}
-            .joins {questions.outer.answers.outer}
-            .where {(title.like_any tested_strings) |\
-                   (stimulus.like_any tested_strings) |\
-                   (questions.stimulus.like_any tested_strings) |\
-                   (stems.content.like_any tested_strings) |\
-                   (answers.content.like_any tested_strings)}.delete_all
+
+    ex_ids = Exercise.left_joins(questions: [:stems, :answers]).where(
+               ex[:title].matches_any(tested_strings)
+           .or(ex[:stimulus].matches_any(tested_strings))
+           .or(qu[:stimulus].matches_any(tested_strings))
+           .or(st[:content].matches_any(tested_strings))
+           .or(ans[:content].matches_any(tested_strings))).pluck(:id)
+
+    Exercise.where(id: ex_ids).delete_all
 
     @exercise_1 = Exercise.new
     Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
@@ -91,6 +98,8 @@ RSpec.describe SearchExercises, type: :routine do
     it "returns drafts that the user is allowed to see" do
       user = FactoryBot.create :user
       @exercise_draft.publication.authors << Author.new(user: user)
+      @exercise_draft.publication.save!
+      @exercise_draft.publication.publish.save!
       @exercise_draft.reload
       result = described_class.call({q: 'content:draft'}, user: user.reload)
       expect(result.errors).to be_empty
