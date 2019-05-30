@@ -62,8 +62,7 @@ gem 'whenever'
 gem 'omniauth-oauth2', '~> 1.3.1'
 
 # OpenStax Accounts integration
-#gem 'openstax_accounts', '~> 7.12.0'
-gem 'openstax_accounts', path: '../accounts-rails'
+gem 'openstax_accounts'
 
 
 # Access control for API's
@@ -71,9 +70,7 @@ gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
-#gem 'openstax_api', '~> 8.3.0'
-#gem 'openstax_api', github: 'openstax/openstax_api', branch: 'rails5'
-gem 'openstax_api', path: '../openstax_api'
+gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 
@@ -81,8 +78,7 @@ gem 'maruku'
 gem 'lev'
 
 # Contract management
-#gem 'fine_print'
-gem 'fine_print', github: 'lml/fine_print', branch: 'rails5'
+gem 'fine_print'
 
 # Keyword search
 gem 'keyword_search'
@@ -112,8 +108,7 @@ gem 'eco'
 gem 'deep_cloneable'
 
 # Sortable objects
-#gem 'sortability'
-gem 'sortability', github: 'openstax/sortability', branch: 'rails5'
+gem 'sortability'
 
 # Comments on objects
 gem 'commontator'
@@ -137,8 +132,7 @@ gem 'a15k_client',
     branch: 'master'
 
 # Notify developers of Exceptions in production
-#gem 'openstax_rescue_from', '~> 3.0.0'
-gem 'openstax_rescue_from', github: 'openstax/rescue_from', branch: 'rails5'
+gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
@@ -175,6 +169,9 @@ group :development, :test do
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+
+  # Some controller test support
+  gem 'rails-controller-testing'
 
   # Use RSpec for tests
   gem 'rspec-rails'

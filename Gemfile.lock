@@ -8,67 +8,10 @@ GIT
       json
       typhoeus (~> 1.0, >= 1.0.1)
 
-GIT
-  remote: https://github.com/lml/fine_print.git
-  revision: 6efd8c8ae1c9800e5cc2b082bd8b467e7df36430
-  branch: rails5
-  specs:
-    fine_print (4.0.1)
-      action_interceptor (>= 1.0)
-      jquery-rails
-      rails (>= 4.2)
-      responders
-
-GIT
-  remote: https://github.com/openstax/rescue_from.git
-  revision: 20255f01002b452733cbb66911a7db9d065e2f10
-  branch: rails5
-  specs:
-    openstax_rescue_from (3.0.0)
-      rails (>= 3.1, < 6.0)
-
-GIT
-  remote: https://github.com/openstax/sortability.git
-  revision: 09116898fbab7b07361251891315574259db9d78
-  branch: rails5
-  specs:
-    sortability (0.1.0)
-      rails
-
-PATH
-  remote: ../accounts-rails
-  specs:
-    openstax_accounts (7.13.1)
-      action_interceptor (>= 1.0)
-      keyword_search (>= 1.0.0)
-      lev (>= 2.2.1)
-      oauth2 (>= 0.5.0)
-      omniauth (>= 1.1)
-      omniauth-oauth2 (>= 1.1)
-      openstax_api (>= 3.1.0)
-      openstax_utilities (>= 4.1.0)
-      rails (>= 4.1)
-      representable (>= 2.0)
-
-PATH
-  remote: ../openstax_api
-  specs:
-    openstax_api (8.3.2)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1)
-      representable (>= 2.4, < 4.0)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
-      uber (< 0.1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
-    action_interceptor (1.1.0)
+    action_interceptor (1.1.2)
       rails (>= 3.1)
     actioncable (5.0.7.2)
       actionpack (= 5.0.7.2)
@@ -113,7 +56,7 @@ GEM
     acts_as_votable (0.12.0)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
-    apipie-rails (0.5.15)
+    apipie-rails (0.5.16)
       rails (>= 4.1)
     arel (7.1.4)
     autoprefixer-rails (9.5.1.1)
@@ -213,7 +156,12 @@ GEM
       i18n (>= 0.7)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
-    ffi (1.10.0)
+    ffi (1.11.1)
+    fine_print (5.0.0)
+      action_interceptor
+      jquery-rails
+      rails
+      responders
     fog-aws (3.5.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
@@ -248,7 +196,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.2.0)
-    jwt (2.1.0)
+    jwt (2.2.1)
     keyword_search (1.5.0)
     kgio (2.11.2)
     kramdown (2.1.0)
@@ -262,7 +210,7 @@ GEM
       transaction_isolation
       transaction_retry
     libv8 (7.3.492.27.1)
-    lograge (0.11.0)
+    lograge (0.11.1)
       actionpack (>= 4)
       activesupport (>= 4)
       railties (>= 4)
@@ -307,8 +255,34 @@ GEM
     omniauth-oauth2 (1.3.1)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
+    openstax_accounts (8.0.0)
+      action_interceptor
+      keyword_search
+      lev
+      oauth2
+      omniauth
+      omniauth-oauth2
+      openstax_api
+      openstax_utilities
+      pg
+      rails
+      representable
+      roar
+    openstax_api (9.0.0)
+      doorkeeper (>= 2.0)
+      exception_notification (>= 4.0)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
+      rails (>= 3.1)
+      representable (>= 2.4, < 4.0)
+      responders
+      roar (>= 1.0)
+      roar-rails (>= 1.0)
+      uber (< 0.1.0)
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
+    openstax_rescue_from (4.0.0)
+      rails (>= 3.1, < 6.0)
     openstax_utilities (4.2.3)
       keyword_search
       lev
@@ -318,7 +292,7 @@ GEM
     parallel_tests (2.29.0)
       parallel
     pg (0.21.0)
-    public_suffix (3.0.3)
+    public_suffix (3.1.0)
     rack (2.0.7)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -335,6 +309,10 @@ GEM
       bundler (>= 1.3.0)
       railties (= 5.0.7.2)
       sprockets-rails (>= 2.0.0)
+    rails-controller-testing (1.0.4)
+      actionpack (>= 5.0.1.x)
+      actionview (>= 5.0.1.x)
+      activesupport (>= 5.0.1.x)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -356,7 +334,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
-    redis (4.1.1)
+    redis (4.1.2)
     redis-actionpack (5.0.2)
       actionpack (>= 4.0, < 6)
       redis-rack (>= 1, < 3)
@@ -373,7 +351,7 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-store (1.6.0)
       redis (>= 2.2, < 5)
-    remotipart (1.4.2)
+    remotipart (1.4.3)
     representable (3.0.0)
       declarative (~> 0.0.5)
       uber (~> 0.0.15)
@@ -419,7 +397,7 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     ruby-graphviz (1.2.4)
-    rubyzip (1.2.2)
+    rubyzip (1.2.3)
     sanitize (5.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.8.0)
@@ -444,6 +422,8 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    sortability (1.0.0)
+      rails
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -525,7 +505,7 @@ DEPENDENCIES
   ejs
   factory_bot_rails
   faker
-  fine_print!
+  fine_print
   fog-aws
   httparty
   jquery-rails
@@ -542,15 +522,16 @@ DEPENDENCIES
   oj
   oj_mimic_json
   omniauth-oauth2 (~> 1.3.1)
-  openstax_accounts!
-  openstax_api!
+  openstax_accounts
+  openstax_api
   openstax_healthcheck
-  openstax_rescue_from!
+  openstax_rescue_from
   openstax_utilities
   parallel_tests
   pg (~> 0.18)
   railroady
   rails (~> 5.0.7.2)
+  rails-controller-testing
   rails-erd
   rails-html-sanitizer
   redis-rails
@@ -566,7 +547,7 @@ DEPENDENCIES
   scout_apm (~> 3.0.x)
   sentry-raven
   shoulda-matchers
-  sortability!
+  sortability
   thin
   timecop
   turbolinks
