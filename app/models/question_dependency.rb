@@ -1,4 +1,4 @@
-class QuestionDependency < ActiveRecord::Base
+class QuestionDependency < ApplicationRecord
 
   belongs_to :parent_question, class_name: 'Question',
                                inverse_of: :child_dependencies

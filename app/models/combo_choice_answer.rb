@@ -1,4 +1,4 @@
-class ComboChoiceAnswer < ActiveRecord::Base
+class ComboChoiceAnswer < ApplicationRecord
 
   belongs_to :combo_choice
   belongs_to :answer

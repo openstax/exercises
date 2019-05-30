@@ -1,4 +1,4 @@
-class Question < ActiveRecord::Base
+class Question < ApplicationRecord
 
   attr_accessor :temp_id
 

@@ -1,4 +1,4 @@
-class Derivation < ActiveRecord::Base
+class Derivation < ApplicationRecord
 
   sortable_belongs_to :derived_publication, class_name: 'Publication', inverse_of: :sources
   belongs_to :source_publication, class_name: 'Publication', inverse_of: :derivations

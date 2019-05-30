@@ -1,3 +1,3 @@
-class CollaboratorSolution < ActiveRecord::Base
+class CollaboratorSolution < ApplicationRecord
   solution
 end

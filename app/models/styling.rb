@@ -1,4 +1,4 @@
-class Styling < ActiveRecord::Base
+class Styling < ApplicationRecord
 
   belongs_to :stylable, polymorphic: true, inverse_of: :stylings
 

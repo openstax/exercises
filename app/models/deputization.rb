@@ -1,4 +1,4 @@
-class Deputization < ActiveRecord::Base
+class Deputization < ApplicationRecord
 
   belongs_to :deputizer, class_name: 'User', inverse_of: :child_deputizations
   belongs_to :deputy, polymorphic: true

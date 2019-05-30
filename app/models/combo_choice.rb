@@ -1,4 +1,4 @@
-class ComboChoice < ActiveRecord::Base
+class ComboChoice < ApplicationRecord
 
   belongs_to :stem
 

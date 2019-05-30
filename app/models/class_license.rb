@@ -1,4 +1,4 @@
-class ClassLicense < ActiveRecord::Base
+class ClassLicense < ApplicationRecord
 
   sortable_class scope: :class_name
 

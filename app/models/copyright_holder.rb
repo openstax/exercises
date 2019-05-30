@@ -1,4 +1,4 @@
-class CopyrightHolder < ActiveRecord::Base
+class CopyrightHolder < ApplicationRecord
 
   sortable_belongs_to :publication, inverse_of: :copyright_holders
 

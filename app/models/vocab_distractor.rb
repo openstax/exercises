@@ -1,4 +1,4 @@
-class VocabDistractor < ActiveRecord::Base
+class VocabDistractor < ApplicationRecord
   belongs_to :vocab_term, inverse_of: :vocab_distractors
   belongs_to :distractor_publication_group, class_name: 'PublicationGroup',
                                             inverse_of: :vocab_distractors

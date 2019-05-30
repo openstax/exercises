@@ -1,4 +1,4 @@
-class StemAnswer < ActiveRecord::Base
+class StemAnswer < ApplicationRecord
 
   belongs_to :stem
   belongs_to :answer

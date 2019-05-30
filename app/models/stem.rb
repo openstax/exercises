@@ -1,4 +1,4 @@
-class Stem < ActiveRecord::Base
+class Stem < ApplicationRecord
 
   user_html :content
   stylable

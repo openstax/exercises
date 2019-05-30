@@ -1,4 +1,4 @@
-class Publication < ActiveRecord::Base
+class Publication < ApplicationRecord
 
   belongs_to :publication_group, inverse_of: :publications
   belongs_to :publishable, polymorphic: true, inverse_of: :publication, touch: true

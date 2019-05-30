@@ -1,4 +1,4 @@
-class LogicVariable < ActiveRecord::Base
+class LogicVariable < ApplicationRecord
 
   VARIABLE_REGEX = /\A[_a-zA-Z]{1}\w*\z/
 

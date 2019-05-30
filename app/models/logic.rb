@@ -1,4 +1,4 @@
-class Logic < ActiveRecord::Base
+class Logic < ApplicationRecord
 
   belongs_to :parent, polymorphic: true, inverse_of: :logic
 

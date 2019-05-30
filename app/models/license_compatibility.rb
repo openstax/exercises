@@ -1,4 +1,4 @@
-class LicenseCompatibility < ActiveRecord::Base
+class LicenseCompatibility < ApplicationRecord
 
   belongs_to :original_license, class_name: 'License',
                                 inverse_of: :combined_license_compatibilities

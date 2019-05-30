@@ -1,4 +1,4 @@
-class ListEditor < ActiveRecord::Base
+class ListEditor < ApplicationRecord
 
   belongs_to :list, inverse_of: :list_editors
   belongs_to :editor, polymorphic: true

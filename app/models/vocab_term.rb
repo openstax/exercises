@@ -1,4 +1,4 @@
-class VocabTerm < ActiveRecord::Base
+class VocabTerm < ApplicationRecord
 
   EQUALITY_ASSOCIATIONS = [
     :tags,

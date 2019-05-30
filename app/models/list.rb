@@ -1,4 +1,4 @@
-class List < ActiveRecord::Base
+class List < ApplicationRecord
 
   publishable
 

@@ -1,4 +1,4 @@
-class Author < ActiveRecord::Base
+class Author < ApplicationRecord
 
   sortable_belongs_to :publication, inverse_of: :authors
 

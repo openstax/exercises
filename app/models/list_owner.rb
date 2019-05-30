@@ -1,4 +1,4 @@
-class ListOwner < ActiveRecord::Base
+class ListOwner < ApplicationRecord
 
   belongs_to :list, inverse_of: :list_owners
   belongs_to :owner, polymorphic: true

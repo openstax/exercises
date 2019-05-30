@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 

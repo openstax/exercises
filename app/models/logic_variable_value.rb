@@ -1,4 +1,4 @@
-class LogicVariableValue < ActiveRecord::Base
+class LogicVariableValue < ApplicationRecord
 
   belongs_to :logic_variable
 

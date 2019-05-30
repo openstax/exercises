@@ -1,4 +1,4 @@
-class VocabTermTag < ActiveRecord::Base
+class VocabTermTag < ApplicationRecord
   belongs_to :vocab_term
   belongs_to :tag
 
