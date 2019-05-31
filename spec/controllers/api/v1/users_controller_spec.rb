@@ -73,7 +73,8 @@ module Api::V1
               self_reported_role: @john_doe.role,
               uuid: @john_doe.uuid,
               support_identifier: @john_doe.support_identifier,
-              is_test: true
+              is_test: true,
+              school_type: 'unknown_school_type'
             }
           ]
         }
@@ -99,7 +100,8 @@ module Api::V1
               self_reported_role: @jane_doe.role,
               uuid: @jane_doe.uuid,
               support_identifier: @jane_doe.support_identifier,
-              is_test: true
+              is_test: true,
+              school_type: 'unknown_school_type'
             },
             {
               id: @john_doe.account.openstax_uid,
@@ -112,7 +114,9 @@ module Api::V1
               self_reported_role: @john_doe.role,
               uuid: @john_doe.uuid,
               support_identifier: @john_doe.support_identifier,
-              is_test: true
+              is_test: true,
+              school_type: 'unknown_school_type'
+
             }
           ]
         }
@@ -139,7 +143,9 @@ module Api::V1
               self_reported_role: @john_doe.role,
               uuid: @john_doe.uuid,
               support_identifier: @john_doe.support_identifier,
-              is_test: true
+              is_test: true,
+              school_type: 'unknown_school_type'
+
             },
             {
               id: @jane_doe.account.openstax_uid,
@@ -152,7 +158,9 @@ module Api::V1
               self_reported_role: @jane_doe.role,
               uuid: @jane_doe.uuid,
               support_identifier: @jane_doe.support_identifier,
-              is_test: true
+              is_test: true,
+              school_type: 'unknown_school_type'
+
             }
           ]
         }
