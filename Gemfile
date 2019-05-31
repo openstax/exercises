@@ -225,6 +225,9 @@ group :test do
   # Codecov integration
   gem 'codecov', require: false
 
+  # Rubocop
+  gem 'rubocop-rails'
+
 end
 
 group :production do
