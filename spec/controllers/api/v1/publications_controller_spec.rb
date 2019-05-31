@@ -17,6 +17,16 @@ module Api::V1
       FactoryBot.create :author, publication: solution.publication
     }
 
+    let(:exercise_copyright_holder) {
+      FactoryBot.create :copyright_holder, publication: exercise.publication
+    }
+    let(:vocab_term_copyright_holder) {
+      FactoryBot.create :copyright_holder, publication: vocab_term.publication
+    }
+    let(:solution_copyright_holder) {
+      FactoryBot.create :copyright_holder, publication: solution.publication
+    }
+
     let(:exercise_author_token) {
       FactoryBot.create :doorkeeper_access_token,
                          resource_owner_id: exercise_author.user_id
