@@ -6,9 +6,11 @@ RSpec.describe Publishable, type: :lib do
   subject(:publishable) { FactoryBot.create :exercise }
 
   let(:author) { FactoryBot.create :user }
+  let(:coyright_holder) { FactoryBot.create :user }
   let(:user)   { FactoryBot.create :user }
 
-  before { publishable.authors << Author.new(user: author) }
+  before { publishable.authors << Author.new(user: author)
+           publishable.copyright_holders << CopyrightHolder.new(user: author) }
 
   it 'can determine versions visible for a user' do
     p1 = publishable

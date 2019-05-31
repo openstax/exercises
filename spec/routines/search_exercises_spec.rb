@@ -98,8 +98,7 @@ RSpec.describe SearchExercises, type: :routine do
     it "returns drafts that the user is allowed to see" do
       user = FactoryBot.create :user
       @exercise_draft.publication.authors << Author.new(user: user)
-      @exercise_draft.publication.save!
-      @exercise_draft.publication.publish.save!
+      @exercise_draft.publication.copyright_holders << CopyrightHolder.new(user: user)
       @exercise_draft.reload
       result = described_class.call({q: 'content:draft'}, user: user.reload)
       expect(result.errors).to be_empty

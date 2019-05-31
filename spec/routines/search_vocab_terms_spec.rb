@@ -69,6 +69,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     it "returns drafts that the user is allowed to see" do
       user = FactoryBot.create :user
       @vocab_term_draft.publication.authors << Author.new(user: user)
+      @vocab_term_draft.publication.copyright_holders << CopyrightHolder.new(user: user)
       @vocab_term_draft.reload
       result = described_class.call({q: 'content:draft'}, user: user)
       expect(result.errors).to be_empty
