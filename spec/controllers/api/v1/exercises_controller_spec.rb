@@ -7,6 +7,7 @@ module Api::V1
 
       application = FactoryBot.create :doorkeeper_application
       @user = FactoryBot.create :user, :agreed_to_terms
+      @user_1 = FactoryBot.create :user, :agreed_to_terms
       admin = FactoryBot.create :user, :administrator, :agreed_to_terms
       @application_token = FactoryBot.create :doorkeeper_access_token,
                                              application: application,
@@ -67,6 +68,12 @@ module Api::V1
               'formats' => [ 'multiple-choice', 'free-response' ]
             }]
           )
+          @exercise_1.publication.authors << FactoryBot.create(
+            :author, user: @user_1, publication: @exercise_1.publication
+          )
+          @exercise_1.publication.copyright_holders << FactoryBot.create(
+            :copyright_holder, user: @user_1, publication: @exercise_1.publication
+          )
           @exercise_1.save!
 
           @exercise_2 = FactoryBot.build(:exercise, :published)
@@ -82,6 +89,12 @@ module Api::V1
               }],
               'formats' => [ 'multiple-choice', 'free-response' ]
             }]
+          )
+          @exercise_2.publication.authors << FactoryBot.create(
+            :author, user: @user_1, publication: @exercise_2.publication
+          )
+          @exercise_2.publication.copyright_holders << FactoryBot.create(
+            :copyright_holder, user: @user_1, publication: @exercise_2.publication
           )
           @exercise_2.save!
 
@@ -418,6 +431,9 @@ module Api::V1
         exercise = FactoryBot.build(:exercise, collaborator_solutions_count: 1)
         exercise.publication.authors << FactoryBot.build(
           :author, user: @user, publication: @exercise.publication
+        )
+        exercise.publication.copyright_holders << FactoryBot.build(
+          :copyright_holder, user: @user, publication: @exercise.publication
         )
 
         expect do
