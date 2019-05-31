@@ -28,9 +28,10 @@ module Api::V1
       before do
         100.times { FactoryBot.create(:user) }
 
-        User.joins(:account).where {(account.first_name.like '%doe%') |
-                                   (account.last_name.like '%doe%') |
-                                   (account.username.like '%doe%')}.delete_all
+        acc = OpenStax::Accounts::Account.arel_table
+        User.joins(:account).where(acc[:first_name].matches('%doe%').or(
+                                   acc[:last_name].matches('%doe%')).or(
+                                   acc[:username].matches('%doe%'))).delete_all
 
         @john_doe = FactoryBot.create :user, first_name: "John",
                                               last_name: "Doe",

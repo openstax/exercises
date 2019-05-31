@@ -19,8 +19,11 @@ module Api::V1
                         resource_owner_id: admin.id
 
       @exercise = FactoryBot.build(:exercise)
-      @exercise.publication.authors << FactoryBot.build(
+      @exercise.publication.authors << FactoryBot.create(
         :author, user: @user, publication: @exercise.publication
+      )
+      @exercise.publication.copyright_holders << FactoryBot.create(
+        :copyright_holder, user: @user, publication: @exercise.publication
       )
       @exercise.nickname = 'MyExercise'
       @exercise.save!
@@ -104,7 +107,7 @@ module Api::V1
 
         context "no matches" do
           it "does not return drafts that the user is not allowed to see" do
-            send method, :index, params: {q: 'content:draft'}, format: :json
+            send method, :index, params: {q: 'content:draft', format: :json}
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -119,10 +122,10 @@ module Api::V1
         context "single match" do
           it "returns drafts that the user is allowed to see" do
             @exercise_draft.publication.authors << Author.new(user: @user)
-            @exercise_draft.publication.reload
+            @exercise_draft.publication.copyright_holders << CopyrightHolder.new(user: @user)
             @exercise_draft.reload
             @user.reload
-            send method, :index, params: {q: 'content:draft'}, format: :json
+            send method, :index, params: {q: 'content:draft', format: :json}
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -134,7 +137,7 @@ module Api::V1
           end
 
           it "returns an Exercise matching the content" do
-            send method, :index, params: {q: 'content:"aDiPiScInG eLiT"'}, format: :json
+            send method, :index, params: {q: 'content:"aDiPiScInG eLiT"', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -146,7 +149,7 @@ module Api::V1
           end
 
           it "returns an Exercise matching the tags" do
-            send method, :index, params: {q: 'tag:tAg1'}, format: :json
+            send method, :index, params: {q: 'tag:tAg1', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -160,7 +163,7 @@ module Api::V1
 
         context "multiple matches" do
           it "returns Exercises matching the content" do
-            send method, :index, params: {q: 'content:AdIpIsCi'}, format: :json
+            send method, :index, params: {q: 'content:AdIpIsCi', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -173,7 +176,7 @@ module Api::V1
           end
 
           it "returns Exercises matching the tags" do
-            send method, :index, params: {q: 'tag:TaG2'}, format: :json
+            send method, :index, params: {q: 'tag:TaG2', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -186,8 +189,8 @@ module Api::V1
           end
 
           it "sorts by multiple fields in different directions" do
-            send method, :index, params: {q: 'content:aDiPiScI', order_by: "number DESC, version ASC"},
-                                 format: :json
+            send method, :index, params: {q: 'content:aDiPiScI', order_by: "number DESC, version ASC",
+                                 format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {

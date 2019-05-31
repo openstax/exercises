@@ -38,8 +38,8 @@ module Api::V1
           end
 
           tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
-          VocabTerm.where {(name.like_any tested_strings) |
-                          (definition.like_any tested_strings)}.delete_all
+          VocabTerm.where(VocabTerm.arel_table[:name].matches_any(tested_strings).or(
+                          VocabTerm.arel_table[:definition].matches_any(tested_strings))).delete_all
 
           @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
           Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
@@ -80,7 +80,7 @@ module Api::V1
 
         context "no matches" do
           it "does not return drafts that the user is not allowed to see" do
-            send method, :index, q: 'content:draft', format: :json
+            send method, :index, params: { q: 'content:draft', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -97,7 +97,7 @@ module Api::V1
             @vocab_term_draft.publication.authors << Author.new(user: @user)
             @vocab_term_draft.reload
             @user.reload
-            send method, :index, q: 'content:draft', format: :json
+            send method, :index, params: { q: 'content:draft', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -109,7 +109,7 @@ module Api::V1
           end
 
           it "returns a VocabTerm matching the content" do
-            send method, :index, q: 'content:"oLoReM iPsU"', format: :json
+            send method, :index, params: { q: 'content:"oLoReM iPsU"', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -121,7 +121,7 @@ module Api::V1
           end
 
           it "returns a VocabTerm matching the tags" do
-            send method, :index, q: 'tag:tAg1', format: :json
+            send method, :index, params: { q: 'tag:tAg1', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -135,7 +135,7 @@ module Api::V1
 
         context "multiple matches" do
           it "returns VocabTerms matching the content" do
-            send method, :index, q: 'content:"lOrEm IpSuM"', format: :json
+            send method, :index, params: { q: 'content:"lOrEm IpSuM"', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -148,7 +148,7 @@ module Api::V1
           end
 
           it "returns VocabTerms matching the tags" do
-            send method, :index, q: 'tag:TaG2', format: :json
+            send method, :index, params: { q: 'tag:TaG2', format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
@@ -161,8 +161,8 @@ module Api::V1
           end
 
           it "sorts by multiple fields in different directions" do
-            send method, :index, q: 'content:"lOrEm IpSuM"', order_by: "number DESC, version ASC",
-                                 format: :json
+            send method, :index, params: {q: 'content:"lOrEm IpSuM"', order_by: "number DESC, version ASC",
+                                 format: :json }
             expect(response).to have_http_status(:success)
 
             expected_response = {
