@@ -59,7 +59,8 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # Talks to Accounts (latest version is broken)
-gem 'omniauth-oauth2', '~> 1.3.1'
+# gem 'omniauth-oauth2', '~> 1.3.1'
+gem 'omniauth-oauth2'
 
 # OpenStax Accounts integration
 gem 'openstax_accounts'
