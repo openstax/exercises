@@ -362,6 +362,13 @@ module Api::V1
 
         it "hides solutions for published exercises if the requestor is not allowed to edit it" do
           @exercise.publication.authors.destroy_all
+          @exercise.publication.copyright_holders.destroy_all
+          @exercise.publication.authors << FactoryBot.create(
+            :author, user: @user_1, publication: @exercise.publication
+          )
+          @exercise.publication.copyright_holders << FactoryBot.create(
+            :copyright_holder, user: @user_1, publication: @exercise.publication
+          )
 
           api_get :show, @user_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
