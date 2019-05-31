@@ -84,7 +84,7 @@ module Oauth
         end
 
         it "assigns a newly created application as @application" do
-          post :create, params: {doorkeeper_application: valid_attributes}, session: dmin_session
+          post :create, params: {doorkeeper_application: valid_attributes}, session: admin_session
           expect(assigns(:application)).to be_a(Doorkeeper::Application)
           expect(assigns(:application)).to be_persisted
         end
