@@ -51,12 +51,13 @@ module Exercises
       ex.tags = book_tags + lo_tags + type_tags + \
                 [id_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag]
 
-      latest_exercise = Exercise
-        .joins([{publication: :publication_group}, {exercise_tags: :tag}])
-        .where(exercise_tags: {tag: {name: id_tag}})
-        .order {[publication.publication_group.number.desc, publication.version.desc]}.first
+      pub = Publication.arel_table
+      pubg = PublicationGroup.arel_table
 
-      unless latest_exercise.nil?
+      latest_exercise = Exercise.joins([{publication: :publication_group}, {exercise_tags: :tag}]).where(exercise_tags: {tag: {name: id_tag}}).order ([pubg[:number].desc, pub[:version].desc]).first
+
+
+      unless latest_exercise.empty?
         ex.publication.publication_group = latest_exercise.publication.publication_group
         ex.publication.version = latest_exercise.publication.version + 1
       end

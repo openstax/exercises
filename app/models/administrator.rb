@@ -2,6 +2,6 @@ class Administrator < ApplicationRecord
 
   belongs_to :user
 
-  validates :user, uniqueness: true
+  validates :user, presence: true, uniqueness: true
 
 end

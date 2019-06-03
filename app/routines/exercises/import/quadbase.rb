@@ -45,7 +45,7 @@ module Exercises
 
         publication = import_metadata(exercise.publication, hash['attribution'])
 
-        unless latest_exercise.nil?
+        unless latest_exercise.empty?
           publication.publication_group = latest_exercise.publication.publication_group
           publication.version = latest_exercise.publication.version + 1
         end
@@ -88,7 +88,7 @@ module Exercises
         ex = "Imported Exercise #{hash['id']}"
         uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{exercise.uid}"
         changes = skipped ? "Exercise skipped (no changes)" : \
-                            "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
+                            "New #{latest_exercise.empty? ? 'exercise' : 'version'}"
         Rails.logger.info "#{ex} - #{uid} - #{changes}"
       end
 
