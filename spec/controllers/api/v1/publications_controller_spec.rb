@@ -7,23 +7,23 @@ module Api::V1
     let(:vocab_term)      { FactoryBot.create :vocab_term }
     let(:solution)        { FactoryBot.create :community_solution }
 
-    let(:exercise_author) {
+    let!(:exercise_author) {
       FactoryBot.create :author, publication: exercise.publication
     }
-    let(:vocab_term_author) {
+    let!(:vocab_term_author) {
       FactoryBot.create :author, publication: vocab_term.publication
     }
-    let(:solution_author) {
+    let!(:solution_author) {
       FactoryBot.create :author, publication: solution.publication
     }
 
-    let(:exercise_copyright_holder) {
+    let!(:exercise_copyright_holder) {
       FactoryBot.create :copyright_holder, publication: exercise.publication
     }
-    let(:vocab_term_copyright_holder) {
+    let!(:vocab_term_copyright_holder) {
       FactoryBot.create :copyright_holder, publication: vocab_term.publication
     }
-    let(:solution_copyright_holder) {
+    let!(:solution_copyright_holder) {
       FactoryBot.create :copyright_holder, publication: solution.publication
     }
 

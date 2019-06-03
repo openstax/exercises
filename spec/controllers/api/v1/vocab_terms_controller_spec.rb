@@ -7,6 +7,9 @@ module Api::V1
 
       application = FactoryBot.create :doorkeeper_application
       @user = FactoryBot.create :user, :agreed_to_terms
+      @user_1 = FactoryBot.create :user, :agreed_to_terms
+      @user_2 = FactoryBot.create :user, :agreed_to_terms
+      @user_draft = FactoryBot.create :user, :agreed_to_terms
       admin = FactoryBot.create :user, :administrator, :agreed_to_terms
       @application_token = FactoryBot.create :doorkeeper_access_token,
                                              application: application,
@@ -54,8 +57,8 @@ module Api::V1
             'definition' => "Dolor sit amet",
             'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
           )
-          @vocab_term_1.publication.authors << Author.new(publication: @vocab_term_1.publication, user: @user)
-          @vocab_term_1.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_1.publication, user: @user)
+          @vocab_term_1.publication.authors << Author.new(publication: @vocab_term_1.publication, user: @user_1)
+          @vocab_term_1.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_1.publication, user: @user_1)
           @vocab_term_1.save!
 
           @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
@@ -67,8 +70,8 @@ module Api::V1
             'definition' => "Quia dolor sit amet",
             'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"]
           )
-          @vocab_term_2.publication.authors << Author.new(publication: @vocab_term_2.publication, user: @user)
-          @vocab_term_2.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_2.publication, user: @user)
+          @vocab_term_2.publication.authors << Author.new(publication: @vocab_term_2.publication, user: @user_2)
+          @vocab_term_2.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_2.publication, user: @user_2)
           @vocab_term_2.save!
 
           @vocab_term_draft = FactoryBot.build(:vocab_term)
@@ -80,8 +83,8 @@ module Api::V1
             'definition' => "Not ready for prime time",
             'distractor_literals' => ["Release to production NOW"]
           )
-          @vocab_term_draft.publication.authors << Author.new(publication: @vocab_term_draft.publication, user: @user)
-          @vocab_term_draft.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_draft.publication, user: @user)
+          @vocab_term_draft.publication.authors << Author.new(publication: @vocab_term_draft.publication, user: @user_draft)
+          @vocab_term_draft.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_draft.publication, user: @user_draft)
           @vocab_term_draft.save!
         end
         after(:all) { DatabaseCleaner.clean }
