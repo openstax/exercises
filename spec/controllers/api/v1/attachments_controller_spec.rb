@@ -40,11 +40,8 @@ module Api::V1
     context "POST create" do
 
       let(:image) {
-        image = ActionDispatch::Http::UploadedFile.new(
-          filename: 'test_photo_1.jpg',
-          type: 'image/jpeg',
-          tempfile: File.new("#{Rails.root}/spec/fixtures/rails.png")
-        )
+          image = Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/rails.png",
+                                               'image/jpeg')
       }
 
       it 'attaches a file to an exercise' do
