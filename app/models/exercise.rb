@@ -141,8 +141,6 @@ class Exercise < ApplicationRecord
         throw(:abort)
       end
     end
-
-    true
   end
 
   protected
@@ -150,7 +148,7 @@ class Exercise < ApplicationRecord
   def has_questions
     return unless questions.first.nil?
     errors.add(:questions, "can't be blank")
-    false
+    throw(:abort)
   end
 
 end

@@ -220,7 +220,7 @@ class Publication < ApplicationRecord
     return if license.nil? || license.valid_for?(publishable_type)
 
     errors.add(:license, "is invalid for #{publishable_type}")
-    false
+    throw(:abort)
   end
 
   def valid_publication_group
@@ -233,13 +233,16 @@ class Publication < ApplicationRecord
     errors.add(:publication_group, "is invalid for #{publishable_type}") \
       if publication_group.publishable_type != publishable_type
     publication_group.errors.each { |attribute, error| errors.add attribute, error }
-    false
+    throw(:abort)
   end
 
   def before_publication
     return if published_at.nil? || publishable.nil?
 
-    publishable.before_publication
+    catch(:abort) do
+        publishable.before_publication
+    end
+
     return if publishable.errors.empty?
 
     publishable.errors.full_messages.each do |message|
@@ -265,7 +268,7 @@ class Publication < ApplicationRecord
       errors.add(publishable_type.underscore.to_sym, message)
     end
 
-    false
+    throw(:abort)
   end
 
 end
