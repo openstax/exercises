@@ -12,7 +12,7 @@ module Exercises
 
       text = text.to_s
 
-      kd = Kramdown::Document.new(text.to_s.strip, attachable: exercise)
+      kd = Kramdown::Document.new(text.to_s.strip, math_engine: :openstax, attachable: exercise)
       # If only one <p> tag, remove it and just return the nodes below
       kd.root.children = kd.root.children.first.children \
         if kd.root.children.length == 1 && kd.root.children.first.type == :p
