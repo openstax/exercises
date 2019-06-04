@@ -111,14 +111,13 @@ class VocabTerm < ApplicationRecord
     errors.add(:base, 'must have at least 1 distractor') \
       if distractor_literals.empty? && vocab_distractors.empty?
 
-    return false if errors.any?
+    throw(:abort) if errors.any?
 
     # Publish exercises
     latest_exercises.each do |exercise|
       exercise.publication.update_attribute :published_at, published_at
     end
 
-    true
   end
 
   def after_publication

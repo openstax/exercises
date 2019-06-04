@@ -246,7 +246,7 @@ class Publication < ApplicationRecord
       errors.add(publishable_type.underscore.to_sym, message)
     end
 
-    false
+    throw(:abort)
   end
 
   def after_publication

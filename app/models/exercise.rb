@@ -138,7 +138,7 @@ class Exercise < ApplicationRecord
       question.stems.each do |stem|
         next if stem.stem_answers.empty? || stem.stem_answers.any?{ |sa| sa.is_correct? }
         errors.add(:base, 'has a question with only incorrect answers')
-        return false
+        throw(:abort)
       end
     end
 
