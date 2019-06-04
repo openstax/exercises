@@ -54,10 +54,13 @@ module Exercises
       pub = Publication.arel_table
       pubg = PublicationGroup.arel_table
 
-      latest_exercise = Exercise.joins([{publication: :publication_group}, {exercise_tags: :tag}]).where(exercise_tags: {tag: {name: id_tag}}).order ([pubg[:number].desc, pub[:version].desc]).first
+      latest_exercise = Exercise
+          .joins([{publication: :publication_group}, {exercise_tags: :tag}])
+          .where(exercise_tags: {tag: {name: id_tag}})
+          .order([pubg[:number].desc, pub[:version].desc]).first
 
 
-      unless latest_exercise.empty?
+      unless latest_exercise.nil?
         ex.publication.publication_group = latest_exercise.publication.publication_group
         ex.publication.version = latest_exercise.publication.version + 1
       end
