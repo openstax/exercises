@@ -7,9 +7,6 @@ RSpec.describe ListNesting, type: :model do
   it { is_expected.to belong_to(:parent_list) }
   it { is_expected.to belong_to(:child_list) }
 
-  it { is_expected.to validate_presence_of(:parent_list) }
-  it { is_expected.to validate_presence_of(:child_list) }
-
   it { is_expected.to validate_uniqueness_of(:child_list) }
 
 end

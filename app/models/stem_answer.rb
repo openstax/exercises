@@ -3,8 +3,7 @@ class StemAnswer < ApplicationRecord
   belongs_to :stem
   belongs_to :answer
 
-  validates :stem, presence: true
-  validates :answer, presence: true, uniqueness: { scope: :stem_id }
+  validates :answer, uniqueness: { scope: :stem_id }
   validates :correctness, presence: true, numericality: { greater_than_or_equal_to: 0.0,
                                                           less_than_or_equal_to: 1.0 }
 

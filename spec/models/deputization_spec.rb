@@ -5,9 +5,6 @@ RSpec.describe Deputization, type: :model do
   it { is_expected.to belong_to(:deputy) }
   it { is_expected.to belong_to(:deputizer) }
 
-  it { is_expected.to validate_presence_of(:deputy) }
-  it { is_expected.to validate_presence_of(:deputizer) }
-
   it 'requires a unique deputizer for each deputy' do
     deputization_1 = FactoryBot.create :deputization
     deputization_2 = FactoryBot.build :deputization,

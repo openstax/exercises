@@ -23,6 +23,4 @@ class Question < ApplicationRecord
            foreign_key: :parent_question_id, dependent: :destroy,
            inverse_of: :parent_question
 
-  validates :exercise, presence: true
-
 end

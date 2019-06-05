@@ -87,7 +87,7 @@ class Exercise < ApplicationRecord
 
   sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
-  belongs_to :vocab_term, touch: true
+  belongs_to :vocab_term, touch: true, optional: true
 
   scope :can_release_to_a15k, -> { where(release_to_a15k: true) }
   scope :not_released_to_a15k, -> { where(a15k_identifier: nil) }

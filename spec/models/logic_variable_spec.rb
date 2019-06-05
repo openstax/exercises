@@ -11,7 +11,6 @@ RSpec.describe LogicVariable, type: :model do
 
   it { is_expected.to have_many(:logic_variable_values).dependent(:destroy) }
 
-  it { is_expected.to validate_presence_of(:logic) }
   it { is_expected.to validate_presence_of(:variable) }
 
   it { is_expected.to validate_uniqueness_of(:variable).scoped_to(:logic_id) }

@@ -33,7 +33,7 @@ class User < ApplicationRecord
 
   has_many :sortings, dependent: :destroy
 
-  validates :account, presence: true, uniqueness: true
+  validates :account, uniqueness: true
 
   delegate :username, :first_name, :last_name, :full_name, :title,
            :name, :casual_name, :first_name=, :last_name=, :full_name=,

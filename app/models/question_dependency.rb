@@ -5,9 +5,7 @@ class QuestionDependency < ApplicationRecord
   belongs_to :dependent_question, class_name: 'Question',
                                   inverse_of: :parent_dependencies
 
-  validates :parent_question, presence: true
-  validates :dependent_question, presence: true,
-                                 uniqueness: { scope: :parent_question_id }
+  validates :dependent_question, uniqueness: { scope: :parent_question_id }
 
   validate :same_exercise
 

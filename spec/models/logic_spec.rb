@@ -6,7 +6,6 @@ RSpec.describe Logic, type: :model do
 
   it { is_expected.to have_many(:logic_variables) }
 
-  it { is_expected.to validate_presence_of(:parent) }
   it { is_expected.to validate_presence_of(:language) }
   it { is_expected.to validate_presence_of(:code) }
 

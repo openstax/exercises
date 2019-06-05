@@ -14,7 +14,6 @@ class LogicVariable < ApplicationRecord
 
   has_many :logic_variable_values, dependent: :destroy
 
-  validates :logic, presence: true
   validates :variable, presence: true, uniqueness: { scope: :logic_id },
                        format: { with: VARIABLE_REGEX },
                        exclusion: { in: RESERVED_WORDS }

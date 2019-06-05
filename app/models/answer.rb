@@ -10,7 +10,6 @@ class Answer < ApplicationRecord
 
   has_many :combo_choice_answers, dependent: :destroy
 
-  validates :question, presence: true
   validates :content, presence: true
 
 end

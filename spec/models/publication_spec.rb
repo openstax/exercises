@@ -6,16 +6,13 @@ RSpec.describe Publication, type: :model do
 
   it { is_expected.to belong_to(:publication_group) }
   it { is_expected.to belong_to(:publishable) }
-  it { is_expected.to belong_to(:license) }
+  it { is_expected.to belong_to(:license).optional }
 
   it { is_expected.to have_many(:authors).dependent(:destroy) }
   it { is_expected.to have_many(:copyright_holders).dependent(:destroy) }
 
   it { is_expected.to have_many(:sources).dependent(:destroy) }
   it { is_expected.to have_many(:derivations).dependent(:destroy) }
-
-  it { is_expected.to validate_presence_of(:publication_group) }
-  it { is_expected.to validate_presence_of(:publishable) }
 
   it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:version).scoped_to(:publication_group_id) }

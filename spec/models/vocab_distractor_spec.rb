@@ -5,8 +5,7 @@ RSpec.describe VocabDistractor, type: :model do
 
   it { is_expected.to belong_to(:vocab_term) }
 
-  it { is_expected.to validate_presence_of(:vocab_term) }
-  it { is_expected.to validate_presence_of(:distractor_publication_group) }
+  it { is_expected.to belong_to(:distractor_publication_group) }
   it { is_expected.to validate_presence_of(:distractor_term) }
 
   it do

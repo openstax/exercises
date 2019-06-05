@@ -7,7 +7,6 @@ class Attachment < ApplicationRecord
   before_update { raise ActiveRecord::ReadOnlyRecord } # Prevent updates
 
   validates :asset, presence: true
-  validates :parent, presence: true
   validate :unique_asset
 
   def filename

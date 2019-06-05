@@ -4,7 +4,6 @@ class Logic < ApplicationRecord
 
   has_many :logic_variables, dependent: :destroy
 
-  validates :parent, presence: true
   validates :parent_id, uniqueness: { scope: :parent_type }
   validates :language, presence: true, inclusion: { in: Language.all }
   validates :code, presence: true
