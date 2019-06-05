@@ -1,4 +1,4 @@
-class CreateStemAnswers < ActiveRecord::Migration
+class CreateStemAnswers < ActiveRecord::Migration[4.2]
   def change
     create_table :stem_answers do |t|
       t.references :stem, null: false

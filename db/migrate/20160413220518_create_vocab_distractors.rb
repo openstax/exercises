@@ -1,4 +1,4 @@
-class CreateVocabDistractors < ActiveRecord::Migration
+class CreateVocabDistractors < ActiveRecord::Migration[4.2]
   def change
     create_table :vocab_distractors do |t|
       t.references :vocab_term, null: false

@@ -1,4 +1,4 @@
-class CreateVocabTerms < ActiveRecord::Migration
+class CreateVocabTerms < ActiveRecord::Migration[4.2]
   def change
     create_table :vocab_terms do |t|
       t.string :name, null: false

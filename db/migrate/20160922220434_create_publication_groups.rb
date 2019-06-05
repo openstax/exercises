@@ -1,4 +1,4 @@
-class CreatePublicationGroups < ActiveRecord::Migration
+class CreatePublicationGroups < ActiveRecord::Migration[4.2]
   def change
     create_table :publication_groups do |t|
       t.string  :publishable_type, null: false, index: true

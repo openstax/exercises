@@ -1,4 +1,4 @@
-class CreateDeputizations < ActiveRecord::Migration
+class CreateDeputizations < ActiveRecord::Migration[4.2]
   def change
     create_table :deputizations do |t|
       t.references :deputizer, null: false

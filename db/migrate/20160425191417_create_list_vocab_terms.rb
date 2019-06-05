@@ -1,4 +1,4 @@
-class CreateListVocabTerms < ActiveRecord::Migration
+class CreateListVocabTerms < ActiveRecord::Migration[4.2]
   def change
     create_table :list_vocab_terms do |t|
       t.sortable

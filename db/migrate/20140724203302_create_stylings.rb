@@ -1,4 +1,4 @@
-class CreateStylings < ActiveRecord::Migration
+class CreateStylings < ActiveRecord::Migration[4.2]
   def change
     create_table :stylings do |t|
       t.references :stylable, polymorphic: true, null: false

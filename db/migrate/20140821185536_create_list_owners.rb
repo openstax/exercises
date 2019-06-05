@@ -1,4 +1,4 @@
-class CreateListOwners < ActiveRecord::Migration
+class CreateListOwners < ActiveRecord::Migration[4.2]
   def change
     create_table :list_owners do |t|
       t.references :owner, polymorphic: true, null: false

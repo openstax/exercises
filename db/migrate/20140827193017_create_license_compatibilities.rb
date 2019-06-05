@@ -1,4 +1,4 @@
-class CreateLicenseCompatibilities < ActiveRecord::Migration
+class CreateLicenseCompatibilities < ActiveRecord::Migration[4.2]
   def change
     create_table :license_compatibilities do |t|
       t.references :original_license, null: false

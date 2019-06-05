@@ -1,4 +1,4 @@
-class CreateLogics < ActiveRecord::Migration
+class CreateLogics < ActiveRecord::Migration[4.2]
   def change
     create_table :logics do |t|
       t.references :parent, polymorphic: true, null: false

@@ -1,4 +1,4 @@
-class CreateListEditors < ActiveRecord::Migration
+class CreateListEditors < ActiveRecord::Migration[4.2]
   def change
     create_table :list_editors do |t|
       t.references :editor, polymorphic: true, null: false

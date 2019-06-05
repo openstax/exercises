@@ -1,4 +1,4 @@
-class CreateCopyrightHolders < ActiveRecord::Migration
+class CreateCopyrightHolders < ActiveRecord::Migration[4.2]
   def change
     create_table :copyright_holders do |t|
       t.sortable

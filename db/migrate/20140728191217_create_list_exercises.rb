@@ -1,4 +1,4 @@
-class CreateListExercises < ActiveRecord::Migration
+class CreateListExercises < ActiveRecord::Migration[4.2]
   def change
     create_table :list_exercises do |t|
       t.sortable

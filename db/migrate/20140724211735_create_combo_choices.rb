@@ -1,4 +1,4 @@
-class CreateComboChoices < ActiveRecord::Migration
+class CreateComboChoices < ActiveRecord::Migration[4.2]
   def change
     create_table :combo_choices do |t|
       t.references :stem, null: false
