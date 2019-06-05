@@ -114,22 +114,23 @@ module Oauth
 
     context "PATCH update" do
       context "with valid params" do
+        dummy_params = ActionController::Parameters.new({ "name" => "Dummy" }).permit!
         it "updates the requested application" do
           expect_any_instance_of(Doorkeeper::Application)
-            .to receive(:update_attributes).with({ "name" => "Dummy" })
+            .to receive(:update_attributes).with(dummy_params)
           patch :update, params: {id: group_1_application_1.to_param,
-                          doorkeeper_application: { "name" => "Dummy" }}, session: valid_session
+                          doorkeeper_application: dummy_params}, session: valid_session
         end
 
         it "assigns the requested application as @application" do
           patch :update, params: {id: group_1_application_1.to_param,
-                          doorkeeper_application: { "name" => "Dummy" }}, session: valid_session
+                          doorkeeper_application: dummy_params}, session: valid_session
           expect(assigns(:application)).to eq(group_1_application_1)
         end
 
         it "redirects to the application" do
           patch :update, params: {id: group_1_application_1.to_param,
-                          doorkeeper_application: { "name" => "Dummy" }}, session: valid_session
+                          doorkeeper_application: dummy_params}, session: valid_session
           expect(response).to redirect_to(
             oauth_application_url(group_1_application_1)
           )
