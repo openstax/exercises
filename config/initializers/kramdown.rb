@@ -12,7 +12,8 @@ Kramdown::Parser::Kramdown.class_exec do
 
     add_link_without_attachments(el, href, title, alt_text, ial)
   end
-  alias_method_chain :add_link, :attachments
+  alias_method :add_link_without_attachments, :add_link
+  alias_method :add_link, :add_link_with_attachments
 
   SINGLE_DOLLAR_INLINE_MATH_START = /(?<!\\)(?:\\\\)*\$(.*?)(?<!\\)(?:\\\\)*\$/m
   define_parser(:single_dollar_inline_math, SINGLE_DOLLAR_INLINE_MATH_START)
@@ -25,7 +26,8 @@ Kramdown::Parser::Kramdown.class_exec do
 
     @span_parsers.insert(@span_parsers.index(:inline_math) + 1, :single_dollar_inline_math)
   end
-  alias_method_chain :initialize, :single_dollar_inline_math
+  alias_method :initialize_without_single_dollar_inline_math, :initialize
+  alias_method :initialize, :initialize_with_single_dollar_inline_math
 
 end
 
@@ -50,6 +52,7 @@ module Kramdown::Converter
         end
       end
 
+      # Copied from MathJax math_engine
       def self.preview_string(converter, el, opts)
         preview = converter.options[:math_engine_opts][:preview]
         return '' unless preview
