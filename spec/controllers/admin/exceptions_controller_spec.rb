@@ -6,7 +6,6 @@ module Admin
     EXCEPTIONS = [[SecurityTransgression],
                   [ActiveRecord::RecordNotFound],
                   [ActionController::RoutingError, '/blah/blah/blah'.inspect],
-                  [ActionController::UnknownController],
                   [AbstractController::ActionNotFound],
                   [ActionView::MissingTemplate, [['a', 'b'], 'path',
                                                  ['pre1', 'pre2'],

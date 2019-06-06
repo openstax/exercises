@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.7'
+gem 'rails', '~> 5.2'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -154,6 +154,9 @@ gem 'redis-rails'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
+
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', '~> 1.4.0', require: false
 
 group :development, :test do
   # Get env variables from .env file
