@@ -11,6 +11,9 @@ NEVER_EXPIRES = 68.years
 
 module Exercises
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 5.1
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -27,10 +30,10 @@ module Exercises
     # Set the default cache store to Redis
     # This setting cannot be set from an initializer
     # See https://github.com/rails/rails/issues/10908
-    redis_secrets = secrets['redis']
+    redis_secrets = secrets[:redis]
     config.cache_store = :redis_store, {
-      url: redis_secrets['url'],
-      namespace: redis_secrets['namespaces']['cache'],
+      url: redis_secrets[:url],
+      namespace: redis_secrets[:namespaces][:cache],
       expires_in: 1.day,
       compress: true,
       compress_threshold: 1.kilobyte
@@ -38,6 +41,3 @@ module Exercises
 
   end
 end
-
-# Require `belongs_to` associations by default. Previous versions had false.
-Rails.application.config.active_record.belongs_to_required_by_default = true

@@ -31,5 +31,5 @@ require 'active_record/table_association_name_patch'
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"
 
-# Initialize the rails application
+# Initialize the Rails application
 Exercises::Application.initialize!

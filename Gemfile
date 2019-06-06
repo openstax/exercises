@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.7.2'
+gem 'rails', '~> 5.1.7'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -24,7 +24,7 @@ gem 'compass-rails'
 gem 'uglifier', '>= 1.3.0'
 
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
+gem 'coffee-rails', '~> 4.2.2'
 
 gem 'mini_racer'
 
