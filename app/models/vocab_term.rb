@@ -51,7 +51,7 @@ class VocabTerm < ApplicationRecord
 
   has_tags
 
-  has_many :vocab_distractors, dependent: :destroy
+  has_many :vocab_distractors, dependent: :destroy, autosave: true
 
   has_many :exercises, dependent: :destroy, autosave: true
 

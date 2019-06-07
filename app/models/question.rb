@@ -8,7 +8,7 @@ class Question < ApplicationRecord
 
   has_many :stems, dependent: :destroy
 
-  sortable_has_many :answers, dependent: :destroy, inverse_of: :question
+  sortable_has_many :answers, dependent: :destroy, inverse_of: :question, autosave: true
 
   has_many :collaborator_solutions, dependent: :destroy
   has_many :community_solutions, dependent: :destroy
