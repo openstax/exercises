@@ -1,7 +1,7 @@
 class Publication < ApplicationRecord
 
   belongs_to :publication_group, inverse_of: :publications
-  belongs_to :publishable, polymorphic: true, inverse_of: :publication, touch: true, autosave: true
+  belongs_to :publishable, polymorphic: true, inverse_of: :publication, touch: true
   belongs_to :license, optional: true
 
   sortable_has_many :authors, dependent: :destroy, inverse_of: :publication
