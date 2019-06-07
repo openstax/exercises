@@ -51,5 +51,8 @@ notes
 *~
 *.DS_Store
 
-# dotenv env variable definitions
+# Ignore dotenv env variable definitions
 .env
+
+# Ignore byebug history
+.byebug_history
