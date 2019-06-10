@@ -122,7 +122,9 @@ module Api::V1
         if publication.save && publication_group.save && exercise.save
           respond_with exercise, create_options.merge(represent_with_options)
         else
-          render_api_errors(publication_group.errors) || render_api_errors(exercise.errors)
+          render_api_errors(publication.errors) ||
+          render_api_errors(publication_group.errors) ||
+          render_api_errors(exercise.errors)
           raise ActiveRecord::Rollback
         end
       end
