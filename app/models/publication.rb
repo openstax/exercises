@@ -44,13 +44,13 @@ class Publication < ApplicationRecord
     wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
     case vv
       when NilClass
-                wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
+        wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
       when 'draft', 'd'
-                wheres = wheres.and(pub[:published_at].eq(nil))
+        wheres = wheres.and(pub[:published_at].eq(nil))
       when 'latest'
         wheres
       else
-                wheres = wheres.and(pub[:version].eq(vv))
+        wheres = wheres.and(pub[:version].eq(vv))
     end 
 
     joins(publication: :publication_group).where(wheres
