@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2'
+gem 'rails', '~> 5.2.3'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -59,7 +59,6 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # Talks to Accounts (latest version is broken)
-# gem 'omniauth-oauth2', '~> 1.3.1'
 gem 'omniauth-oauth2'
 
 # OpenStax Accounts integration
@@ -93,7 +92,6 @@ gem 'mimemagic'
 gem 'mini_magick'
 
 # Markdown parsing
-# Pinned for Rails 4.X
 gem 'kramdown'
 
 # Read Excel xlsx spreadsheet files
@@ -121,8 +119,7 @@ gem 'acts_as_votable'
 gem 'scout_apm', '~> 3.0.x'
 
 # PostgreSQL database
-# Pinned for rails 4.X
-gem 'pg', '~> 0.18'
+gem 'pg'
 
 # HTTP requests
 gem 'httparty'
@@ -181,14 +178,11 @@ group :development, :test do
   gem 'rspec-rails'
 
   # Mute asset pipeline log messages
-#  gem 'quiet_assets'
 
   # Fixture replacement
-  # Pinned for rails 4.X
   gem 'factory_bot_rails'
 
   # Lorem Ipsum
-  # Pinned to avoid 18n problem
   gem 'faker'
 
   # Database cleaning functionality for tests

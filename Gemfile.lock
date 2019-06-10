@@ -304,7 +304,7 @@ GEM
       parallel
     parser (2.6.3.0)
       ast (~> 2.4.0)
-    pg (0.21.0)
+    pg (1.1.4)
     public_suffix (3.1.0)
     rack (2.0.7)
     rack-test (1.1.0)
@@ -556,9 +556,9 @@ DEPENDENCIES
   openstax_rescue_from
   openstax_utilities
   parallel_tests
-  pg (~> 0.18)
+  pg
   railroady
-  rails (~> 5.2)
+  rails (~> 5.2.3)
   rails-controller-testing
   rails-erd
   rails-html-sanitizer
