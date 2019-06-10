@@ -33,16 +33,24 @@ class SearchVocabTerms
     # this "latest_visible" condition is disabled.
     latest_visible = true
 
+    vt = VocabTerm.arel_table
+    pubg = PublicationGroup.arel_table
+    pub = Publication.arel_table
+    acct = OpenStax::Accounts::Account.arel_table
+    # NB: this encapsulates magic knowledge of how ActiveRecord will alias the second join of accounts
+    acct_author = OpenStax::Accounts::Account.arel_table
+    acct_copyright = OpenStax::Accounts::Account.arel_table.alias('accounts_users')
+
+
     run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       # Block to be used for searches by name or term
 
       name_search_block = lambda do |names|
-        vt = VocabTerm.arel_table
         names.each do |nm|
           sanitized_names = to_string_array(nm, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_names.empty?
 
-          @items = @items.where ( vt[:name].matches_any(sanitized_names ))
+          @items = @items.where( vt[:name].matches_any(sanitized_names ))
         end
       end
 
@@ -74,10 +82,6 @@ class SearchVocabTerms
           elsif sanitized_versions.empty?
             @items = @items.where(publication_groups: { number: sanitized_numbers })
           else
-            # Combine the id's one at a time using Squeel
-            pub = Publication.arel_table
-            pubg = PublicationGroup.arel_table
-           
             only_numbers = sanitized_uids.select { |suid| suid.second.blank? }.map(&:first)
             only_versions = sanitized_uids.select { |suid| suid.first.blank? }.map(&:second)
             full_uids = sanitized_uids.reject { |suid| suid.first.blank? || suid.second.blank? }
@@ -163,7 +167,6 @@ class SearchVocabTerms
       with.keyword :term, &name_search_block
 
       with.keyword :definition do |definitions|
-        vt = VocabTerm.arel_table
         definitions.each do |df|
           sanitized_definitions = to_string_array(df, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_definitions.empty?
@@ -173,7 +176,6 @@ class SearchVocabTerms
       end
 
       with.keyword :content do |contents|
-        vt = VocabTerm.arel_table
         contents.each do |content|
           sanitized_contents = to_string_array(content, append_wildcard: true,
                                                         prepend_wildcard: true)
@@ -189,7 +191,6 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          acct = OpenStax::Accounts::Account.arel_table
           @items = @items.joins(publication: { authors: { user: :account } }).where(
                 acct[:username].matches_any(sn)
             .or(acct[:first_name].matches_any(sn))
@@ -203,7 +204,6 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          acct = OpenStax::Accounts::Account.arel_table
           @items = @items.joins(publication: { copyright_holders: { user: :account } }).where(
                 acct[:username].matches_any(sn)
             .or(acct[:first_name].matches_any(sn))
@@ -217,8 +217,6 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          acct_author = OpenStax::Accounts::Account.arel_table
-          acct_copyright = OpenStax::Accounts::Account.arel_table.alias('accounts_users')
           @items = @items.joins(publication: { authors: { user: :account } })
                          .joins(publication: { copyright_holders: { user: :account } }).where(
                 acct_author[:username].matches_any(sn)
@@ -233,16 +231,13 @@ class SearchVocabTerms
       end
     end
 
-    pg = PublicationGroup.arel_table
-    pb = Publication.arel_table
-
     outputs.items = outputs.items.select(
       [
-        VocabTerm.arel_table[ Arel.star ],
-        pg[:uuid],
-        pg[:number],
-        pb[:version],
-        pb[:published_at]
+        vt[ Arel.star ],
+        pubg[:uuid],
+        pubg[:number],
+        pub[:version],
+        pub[:published_at]
       ]
     ).distinct
 

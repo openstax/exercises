@@ -32,14 +32,20 @@ class SearchExercises
     # this "latest_visible" condition is disabled.
     latest_visible = true
 
+    ex = Exercise.arel_table
+    qu = Question.arel_table
+    st = Stem.arel_table
+    ans = Answer.arel_table
+    pub = Publication.arel_table
+    pubg = PublicationGroup.arel_table
+    acct = OpenStax::Accounts::Account.arel_table
+    # NB encapsulates magic knowledge of how ActiveRecord will alias second join
+    acct_author = OpenStax::Accounts::Account.arel_table
+    acct_copyright = OpenStax::Accounts::Account.arel_table.alias('accounts_users')
+
     run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       with.default_keyword :content
-
-      ex = Exercise.arel_table
-      qu = Question.arel_table
-      st = Stem.arel_table
-      ans = Answer.arel_table
-
+ 
       with.keyword :id do |ids|
         ids.each do |id|
           sanitized_ids = to_number_array(id)
@@ -66,10 +72,6 @@ class SearchExercises
           elsif sanitized_versions.empty?
             @items = @items.where(publication_groups: { number: sanitized_numbers })
           else
-            # Combine the id's one at a time using Squeel
-            pub = Publication.arel_table
-            pubg = PublicationGroup.arel_table
-           
             only_numbers = sanitized_uids.select { |suid| suid.second.blank? }.map(&:first)
             only_versions = sanitized_uids.select { |suid| suid.first.blank? }.map(&:second)
             full_uids = sanitized_uids.reject { |suid| suid.first.blank? || suid.second.blank? }
@@ -179,7 +181,6 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          acct = OpenStax::Accounts::Account.arel_table
           @items = @items.joins(publication: { authors: { user: :account } }).where(
                 acct[:username].matches_any(sn)
             .or(acct[:first_name].matches_any(sn))
@@ -193,7 +194,6 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          acct = OpenStax::Accounts::Account.arel_table
           @items = @items.joins(publication: { copyright_holders: { user: :account } }).where(
                 acct[:username].matches_any(sn)
             .or(acct[:first_name].matches_any(sn))
@@ -207,8 +207,6 @@ class SearchExercises
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          acct_author = OpenStax::Accounts::Account.arel_table
-          acct_copyright = OpenStax::Accounts::Account.arel_table.alias('accounts_users')
           @items = @items.joins(publication: { authors: { user: :account } })
                          .joins(publication: { copyright_holders: { user: :account } }).where(
                 acct_author[:username].matches_any(sn)
@@ -223,16 +221,13 @@ class SearchExercises
       end
     end
 
-    pg = PublicationGroup.arel_table
-    pb = Publication.arel_table
-
     outputs.items = outputs.items.select(
       [
-        Exercise.arel_table[ Arel.star ],
-        pg[:uuid],
-        pg[:number],
-        pb[:version],
-        pb[:published_at]
+        ex[ Arel.star ],
+        pubg[:uuid],
+        pubg[:number],
+        pub[:version],
+        pub[:published_at]
       ]
     ).distinct
 

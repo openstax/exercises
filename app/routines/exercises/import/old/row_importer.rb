@@ -72,9 +72,9 @@ module Exercises
         pub = Publication.arel_table
         pubg = PublicationGroup.arel_table
 
-        latest_exercise = Exercise.joins([{publication: :publication_group}, {exercise_tags: :tag}]).where(exercise_tags: {tag: {name: exercise_id_tag}}).order ([pubg[:number].desc, pub[:version].desc]).first
+        latest_exercise = Exercise.joins([{publication: :publication_group}, {exercise_tags: :tag}]).where(exercise_tags: {tag: {name: exercise_id_tag}}).order([pubg[:number].desc, pub[:version].desc]).first
 
-        unless latest_exercise.empty?
+        unless latest_exercise.nil?
           ex.publication.publication_group = latest_exercise.publication.publication_group
           ex.publication.version = latest_exercise.publication.version + 1
         end
@@ -172,7 +172,7 @@ module Exercises
         row = "Imported row ##{index + 1}"
         uid = skipped ? "Existing uid: #{latest_exercise.uid}" : "New uid: #{ex.uid}"
         changes = skipped ? "Exercise skipped (no changes)" : \
-                            "New #{latest_exercise.empty? ? 'exercise' : 'version'}"
+                            "New #{latest_exercise.nil? ? 'exercise' : 'version'}"
         Rails.logger.info "#{row} - #{uid} - #{changes}"
       end
 
