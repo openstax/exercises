@@ -21,8 +21,7 @@ class Attachment < ApplicationRecord
 
   def unique_asset
     return if asset.nil? || parent.nil?
-    at = Attachment.arel_table
-    return unless Attachment.where(at[:id].not_eq(id).and(at[:parent_id].eq(parent.id)).and(at[:asset].eq(asset.identifier))).exists?
+    return unless Attachment.where.not(id: id).where({parent_id: parent.id, asset: asset.identifier}).exists?
     errors.add(:asset, 'has already been associated with this resource')
     throw(:abort)
   end
