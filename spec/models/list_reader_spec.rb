@@ -5,9 +5,6 @@ RSpec.describe ListReader, type: :model do
   it { is_expected.to belong_to(:list) }
   it { is_expected.to belong_to(:reader) }
 
-  it { is_expected.to validate_presence_of(:list) }
-  it { is_expected.to validate_presence_of(:reader) }
-
   it 'requires a unique reader for each list' do
     list_reader_1 = FactoryBot.create :list_reader
     list_reader_2 = FactoryBot.build :list_reader,

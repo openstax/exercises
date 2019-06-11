@@ -1,10 +1,9 @@
-class VocabDistractor < ActiveRecord::Base
+class VocabDistractor < ApplicationRecord
   belongs_to :vocab_term, inverse_of: :vocab_distractors
   belongs_to :distractor_publication_group, class_name: 'PublicationGroup',
                                             inverse_of: :vocab_distractors
 
-  validates :vocab_term, presence: true
-  validates :distractor_publication_group, presence: true, uniqueness: { scope: :vocab_term_id }
+  validates :distractor_publication_group, uniqueness: { scope: :vocab_term_id }
   validates :distractor_term, presence: true
 
   validate :vocab_term_publication_group, :different_terms

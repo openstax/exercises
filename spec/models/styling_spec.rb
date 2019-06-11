@@ -4,7 +4,6 @@ RSpec.describe Styling, type: :model do
 
   it { is_expected.to belong_to(:stylable) }
 
-  it { is_expected.to validate_presence_of(:stylable) }
   it { is_expected.to validate_presence_of(:style) }
 
   it { is_expected.to validate_inclusion_of(:style).in_array(Style.all) }

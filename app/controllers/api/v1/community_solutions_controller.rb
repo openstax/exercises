@@ -1,7 +1,7 @@
 module Api::V1
   class CommunitySolutionsController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_community_solution, only: [:show, :update, :destroy]
+    before_action :get_community_solution, only: [:show, :update, :destroy]
 
     resource_description do
       api_versions "v1"

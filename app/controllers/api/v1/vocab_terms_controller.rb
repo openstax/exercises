@@ -1,8 +1,8 @@
 module Api::V1
   class VocabTermsController < OpenStax::Api::V1::ApiController
 
-    before_filter :get_vocab_term_or_create_draft, only: [:show, :update]
-    before_filter :get_vocab_term, only: :destroy
+    before_action :get_vocab_term_or_create_draft, only: [:show, :update]
+    before_action :get_vocab_term, only: :destroy
 
     resource_description do
       api_versions "v1"

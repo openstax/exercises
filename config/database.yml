@@ -14,6 +14,7 @@ test:
   <<: *default
   database: '<%= ENV['OXE_TEST_DB'] || 'ox_exercises_test' %><%= \
                  "_#{ENV['TEST_ENV_NUMBER']}" if !ENV['TEST_ENV_NUMBER'].blank? %>'
+  reaping_frequency: 0 # 0 = disabled - incompatible with our DatabaseCleaner config
 
 production:
   <<: *default

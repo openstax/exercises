@@ -1,4 +1,4 @@
-class CreateQuestionDependencies < ActiveRecord::Migration
+class CreateQuestionDependencies < ActiveRecord::Migration[4.2]
   def change
     create_table :question_dependencies do |t|
       t.references :parent_question, null: false

@@ -10,7 +10,7 @@ module UserHtml
     module Base
       def user_html(*attributes)
         attributes.each do |attribute|
-          filter_name = "link_and_sanitize_#{attribute.to_s}"
+          filter_name = :"link_and_sanitize_#{attribute.to_s}"
 
           class_exec do
             before_validation filter_name

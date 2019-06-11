@@ -9,7 +9,7 @@ module Admin
     describe 'GET index' do
       context 'for anonymous' do
         it 'redirects to the login page' do
-          xhr :get, :index
+          get :index, xhr: true
           expect(response).to have_http_status(:forbidden)
         end
       end
@@ -17,14 +17,14 @@ module Admin
       context 'for non-admins' do
         it 'raises SecurityTransgression' do
           controller.sign_in user
-          expect{ xhr :get, :index }.to raise_error(SecurityTransgression)
+          expect{ get :index, xhr: true }.to raise_error(SecurityTransgression)
         end
       end
 
       context 'for admins' do
         it 'returns http ok' do
           controller.sign_in admin
-          xhr :get, :index
+          get :index, xhr: true
           expect(response).to have_http_status(:ok)
         end
       end

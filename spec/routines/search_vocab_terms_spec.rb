@@ -7,8 +7,10 @@ RSpec.describe SearchVocabTerms, type: :routine do
     10.times { FactoryBot.create(:vocab_term, :published) }
 
     tested_strings = ["%lorem ipsu%", "%uia dolor sit ame%", "%adipiscing elit%", "draft"]
-    VocabTerm.where {(name.like_any tested_strings) |
-                     (definition.like_any tested_strings)}.delete_all
+    
+    vt = VocabTerm.arel_table
+    VocabTerm.where(vt[:name].matches_any(tested_strings).or(
+                    vt[:definition].matches_any(tested_strings))).delete_all
 
     @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
     Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(
@@ -67,6 +69,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
     it "returns drafts that the user is allowed to see" do
       user = FactoryBot.create :user
       @vocab_term_draft.publication.authors << Author.new(user: user)
+      @vocab_term_draft.publication.copyright_holders << CopyrightHolder.new(user: user)
       @vocab_term_draft.reload
       result = described_class.call({q: 'content:draft'}, user: user)
       expect(result.errors).to be_empty

@@ -12,6 +12,6 @@ RSpec.describe Question, type: :model do
   it { is_expected.to have_many(:parent_dependencies).dependent(:destroy) }
   it { is_expected.to have_many(:child_dependencies).dependent(:destroy) }
 
-  it { is_expected.to validate_presence_of(:exercise) }
+  it { is_expected.to belong_to(:exercise) }
 
 end

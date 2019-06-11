@@ -7,7 +7,7 @@ module Api::V1
       'VocabTerm'         => 'Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter',
     }
 
-    before_filter :get_publishable
+    before_action :get_publishable
 
     resource_description do
       api_versions "v1"

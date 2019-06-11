@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :set_user, only: [:show, :edit, :update, :become, :delete, :undelete]
+    before_action :set_user, only: [:show, :edit, :update, :become, :delete, :undelete]
 
   # GET /users
     def index

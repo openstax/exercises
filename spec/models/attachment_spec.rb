@@ -9,8 +9,6 @@ RSpec.describe Attachment, type: :model do
 
   it { is_expected.to belong_to(:parent) }
 
-  it { is_expected.to validate_presence_of(:parent) }
-
   it 'requires a unique asset for each parent' do
     attachment_2 = FactoryBot.build :attachment, parent: attachment.parent, asset: nil
     expect(attachment_2).not_to be_valid

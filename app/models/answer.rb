@@ -1,4 +1,4 @@
-class Answer < ActiveRecord::Base
+class Answer < ApplicationRecord
 
   attr_accessor :temp_id
 
@@ -10,7 +10,6 @@ class Answer < ActiveRecord::Base
 
   has_many :combo_choice_answers, dependent: :destroy
 
-  validates :question, presence: true
   validates :content, presence: true
 
 end

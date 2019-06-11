@@ -1,4 +1,4 @@
-class AddLatestPublishedVersionToPublicationGroups < ActiveRecord::Migration
+class AddLatestPublishedVersionToPublicationGroups < ActiveRecord::Migration[4.2]
   def change
     add_column :publication_groups, :latest_version, :integer
     add_column :publication_groups, :latest_published_version, :integer

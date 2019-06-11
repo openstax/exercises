@@ -1,4 +1,4 @@
-class CreateListPublicationGroups < ActiveRecord::Migration
+class CreateListPublicationGroups < ActiveRecord::Migration[4.2]
   def change
     create_table :list_publication_groups do |t|
       t.sortable

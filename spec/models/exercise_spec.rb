@@ -14,7 +14,7 @@ RSpec.describe Exercise, type: :model do
     expect(exercise.errors).to be_empty
 
     exercise.questions = []
-    exercise.send :has_questions
+    expect { exercise.send :has_questions }.to throw_symbol(:abort)
     expect(exercise.errors[:questions]).to include("can't be blank")
   end
 
@@ -26,7 +26,7 @@ RSpec.describe Exercise, type: :model do
     exercise.questions.first.stems.first.stem_answers.each do |stem_answer|
       stem_answer.update_attribute :correctness, 0.0
     end
-    exercise.before_publication
+    expect { exercise.before_publication }.to throw_symbol(:abort)
     expect(exercise.errors[:base]).to include('has a question with only incorrect answers')
   end
 

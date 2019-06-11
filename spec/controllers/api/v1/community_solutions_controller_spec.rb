@@ -11,7 +11,7 @@ module Api::V1
     context "GET index" do
       it "assigns all solutions as @solutions" do
         solution = CommunitySolution.create! valid_attributes
-        get :index, {}, valid_session
+        get :index, session: valid_session
         expect(assigns(:solutions)).to eq([solution])
       end
     end
@@ -19,7 +19,7 @@ module Api::V1
     context "GET show" do
       it "assigns the requested solution as @solution" do
         solution = CommunitySolution.create! valid_attributes
-        get :show, {id: solution.to_param}, valid_session
+        get :show, params: { id: solution.to_param }, session: valid_session
         expect(assigns(:solution)).to eq(solution)
       end
     end
@@ -28,18 +28,18 @@ module Api::V1
       context "with valid params" do
         it "creates a new CommunitySolution" do
           expect {
-            post :create, {solution: valid_attributes}, valid_session
+            post :create, params: { solution: valid_attributes }, session: valid_session
           }.to change(CommunitySolution, :count).by(1)
         end
 
         it "assigns a newly created solution as @solution" do
-          post :create, {solution: valid_attributes}, valid_session
+          post :create, params: { solution: valid_attributes }, session: valid_session
           expect(assigns(:solution)).to be_a(CommunitySolution)
           expect(assigns(:solution)).to be_persisted
         end
 
         it "redirects to the created solution" do
-          post :create, {solution: valid_attributes}, valid_session
+          post :create, params: { solution: valid_attributes }, session: valid_session
           expect(response).to redirect_to(CommunitySolution.last)
         end
       end
@@ -48,14 +48,14 @@ module Api::V1
         it "assigns a newly created but unsaved solution as @solution" do
           # Trigger the behavior that occurs when invalid params are submitted
           CommunitySolution.any_instance.stub(:save).and_return(false)
-          post :create, {solution: { "number" => "invalid value" }}, valid_session
+          post :create, params: { solution: { "number" => "invalid value" } }, session: valid_session
           expect(assigns(:solution)).to be_a_new(CommunitySolution)
         end
 
         it "re-renders the 'new' template" do
           # Trigger the behavior that occurs when invalid params are submitted
           CommunitySolution.any_instance.stub(:save).and_return(false)
-          post :create, {solution: { "number" => "invalid value" }}, valid_session
+          post :create, params: { solution: { "number" => "invalid value" } }, session: valid_session
           expect(response).to render_template("new")
         end
       end
@@ -70,18 +70,18 @@ module Api::V1
           # receives the :update_attributes message with whatever params are
           # submitted in the request.
           expect(CommunitySolution.any_instance).to_receive(:update_attributes).with({ "number" => "1" })
-          put :update, {id: solution.to_param, solution: { "number" => "1" }}, valid_session
+          put :update, params: { id: solution.to_param, solution: { "number" => "1" } }, session: valid_session
         end
 
         it "assigns the requested solution as @solution" do
           solution = CommunitySolution.create! valid_attributes
-          put :update, {id: solution.to_param, solution: valid_attributes}, valid_session
+          put :update, params: { id: solution.to_param, solution: valid_attributes }, session: valid_session
           expect(assigns(:solution)).to eq(solution)
         end
 
         it "redirects to the solution" do
           solution = CommunitySolution.create! valid_attributes
-          put :update, {id: solution.to_param, solution: valid_attributes}, valid_session
+          put :update, params: { id: solution.to_param, solution: valid_attributes }, session: valid_session
           expect(response).to redirect_to(solution)
         end
       end
@@ -91,7 +91,7 @@ module Api::V1
           solution = CommunitySolution.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           CommunitySolution.any_instance.stub(:save).and_return(false)
-          put :update, {id: solution.to_param, solution: { "number" => "invalid value" }}, valid_session
+          put :update, params: { id: solution.to_param, solution: { "number" => "invalid value" } }, session: valid_session
           expect(assigns(:solution)).to eq(solution)
         end
 
@@ -99,7 +99,7 @@ module Api::V1
           solution = CommunitySolution.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           CommunitySolution.any_instance.stub(:save).and_return(false)
-          put :update, {id: solution.to_param, solution: { "number" => "invalid value" }}, valid_session
+          put :update, params: { id: solution.to_param, solution: { "number" => "invalid value" } }, session: valid_session
           expect(response).to render_template("edit")
         end
       end
@@ -109,13 +109,13 @@ module Api::V1
       it "destroys the requested solution" do
         solution = CommunitySolution.create! valid_attributes
         expect {
-          delete :destroy, {id: solution.to_param}, valid_session
+          delete :destroy, params: { id: solution.to_param }, session: valid_session
         }.to change(CommunitySolution, :count).by(-1)
       end
 
       it "redirects to the solutions list" do
         solution = CommunitySolution.create! valid_attributes
-        delete :destroy, {id: solution.to_param}, valid_session
+        delete :destroy, params: { id: solution.to_param }, session: valid_session
         expect(response).to redirect_to(solutions_url)
       end
     end

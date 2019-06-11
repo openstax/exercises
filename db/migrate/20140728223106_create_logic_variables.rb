@@ -1,4 +1,4 @@
-class CreateLogicVariables < ActiveRecord::Migration
+class CreateLogicVariables < ActiveRecord::Migration[4.2]
   def change
     create_table :logic_variables do |t|
       t.references :logic, null: false

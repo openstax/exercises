@@ -1,4 +1,4 @@
-class Stem < ActiveRecord::Base
+class Stem < ApplicationRecord
 
   user_html :content
   stylable
@@ -12,7 +12,6 @@ class Stem < ActiveRecord::Base
   has_many :combo_choices, dependent: :destroy
 
   validates :stylings, presence: true
-  validates :question, presence: true
   validates :content, presence: true
 
 end

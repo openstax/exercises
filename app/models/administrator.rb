@@ -1,7 +1,7 @@
-class Administrator < ActiveRecord::Base
+class Administrator < ApplicationRecord
 
   belongs_to :user
 
-  validates :user, presence: true, uniqueness: true
+  validates :user, uniqueness: true
 
 end

@@ -1,4 +1,4 @@
-class CreateDerivations < ActiveRecord::Migration
+class CreateDerivations < ActiveRecord::Migration[4.2]
   def change
     create_table :derivations do |t|
       t.sortable

@@ -1,4 +1,4 @@
-class PublicationGroup < ActiveRecord::Base
+class PublicationGroup < ApplicationRecord
 
   has_many :publications, dependent: :destroy, inverse_of: :publication_group, autosave: true
 

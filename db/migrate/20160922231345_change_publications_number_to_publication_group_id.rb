@@ -1,4 +1,4 @@
-class ChangePublicationsNumberToPublicationGroupId < ActiveRecord::Migration
+class ChangePublicationsNumberToPublicationGroupId < ActiveRecord::Migration[4.2]
   def up
     add_column :publications, :publication_group_id, :integer
 

@@ -67,7 +67,7 @@ module Api::V1::Exercises
     end
 
     def self.cache_key_for(represented, type)
-      "#{represented.cache_key}/#{type}"
+      "#{represented.cache_key}/#{represented.cache_version}/#{type}"
     end
 
     def self.all_cache_keys_for(represented, options = {})

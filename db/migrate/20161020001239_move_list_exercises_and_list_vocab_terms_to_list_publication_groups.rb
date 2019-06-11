@@ -1,4 +1,4 @@
-class MoveListExercisesAndListVocabTermsToListPublicationGroups < ActiveRecord::Migration
+class MoveListExercisesAndListVocabTermsToListPublicationGroups < ActiveRecord::Migration[4.2]
   def up
     exercise_id_list_id_pairs = \
       ActiveRecord::Base.connection.execute('SELECT list_id, exercise_id FROM list_exercises;')

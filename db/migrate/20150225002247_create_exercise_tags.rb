@@ -1,4 +1,4 @@
-class CreateExerciseTags < ActiveRecord::Migration
+class CreateExerciseTags < ActiveRecord::Migration[4.2]
   def change
     create_table :exercise_tags do |t|
       t.references :exercise, null: false

@@ -1,4 +1,4 @@
-class AddVocabTermIdToExercises < ActiveRecord::Migration
+class AddVocabTermIdToExercises < ActiveRecord::Migration[4.2]
   def change
     add_column :exercises, :vocab_term_id, :integer
 

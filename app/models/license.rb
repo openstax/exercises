@@ -1,4 +1,4 @@
-class License < ActiveRecord::Base
+class License < ApplicationRecord
 
   has_many :publications, dependent: :destroy
   has_many :class_licenses, dependent: :destroy

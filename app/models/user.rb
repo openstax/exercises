@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   USERNAME_FORBIDDEN_CHAR_REGEX = /[^\w-]/
 
@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
   has_many :sortings, dependent: :destroy
 
-  validates :account, presence: true, uniqueness: true
+  validates :account, uniqueness: true
 
   delegate :username, :first_name, :last_name, :full_name, :title,
            :name, :casual_name, :first_name=, :last_name=, :full_name=,

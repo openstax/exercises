@@ -1,4 +1,4 @@
-class Question < ActiveRecord::Base
+class Question < ApplicationRecord
 
   attr_accessor :temp_id
 
@@ -8,7 +8,7 @@ class Question < ActiveRecord::Base
 
   has_many :stems, dependent: :destroy
 
-  sortable_has_many :answers, dependent: :destroy, inverse_of: :question
+  sortable_has_many :answers, dependent: :destroy, inverse_of: :question, autosave: true
 
   has_many :collaborator_solutions, dependent: :destroy
   has_many :community_solutions, dependent: :destroy
@@ -22,7 +22,5 @@ class Question < ActiveRecord::Base
   has_many :child_dependencies, class_name: 'QuestionDependency',
            foreign_key: :parent_question_id, dependent: :destroy,
            inverse_of: :parent_question
-
-  validates :exercise, presence: true
 
 end

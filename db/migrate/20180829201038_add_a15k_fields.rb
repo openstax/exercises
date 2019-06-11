@@ -1,4 +1,4 @@
-class AddA15kFields < ActiveRecord::Migration
+class AddA15kFields < ActiveRecord::Migration[4.2]
   def change
     add_column :exercises, :a15k_identifier, :string, index: true
     add_column :exercises, :a15k_version, :integer

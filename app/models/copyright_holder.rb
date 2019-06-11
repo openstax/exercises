@@ -1,11 +1,10 @@
-class CopyrightHolder < ActiveRecord::Base
+class CopyrightHolder < ApplicationRecord
 
   sortable_belongs_to :publication, inverse_of: :copyright_holders
 
   belongs_to :user
 
-  validates :publication, presence: true
-  validates :user, presence: true, uniqueness: { scope: :publication_id }
+  validates :user, uniqueness: { scope: :publication_id }
 
   delegate :name, to: :user
 

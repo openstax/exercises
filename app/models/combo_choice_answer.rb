@@ -1,10 +1,9 @@
-class ComboChoiceAnswer < ActiveRecord::Base
+class ComboChoiceAnswer < ApplicationRecord
 
   belongs_to :combo_choice
   belongs_to :answer
 
-  validates :combo_choice, presence: true
-  validates :answer, presence: true, uniqueness: { scope: :combo_choice_id }
+  validates :answer, uniqueness: { scope: :combo_choice_id }
   validate :same_question
 
   protected

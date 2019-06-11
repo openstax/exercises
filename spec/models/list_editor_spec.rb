@@ -5,9 +5,6 @@ RSpec.describe ListEditor, type: :model do
   it { is_expected.to belong_to(:list) }
   it { is_expected.to belong_to(:editor) }
 
-  it { is_expected.to validate_presence_of(:list) }
-  it { is_expected.to validate_presence_of(:editor) }
-
   it 'requires a unique editor for each list' do
     list_editor_1 = FactoryBot.create :list_editor
     list_editor_2 = FactoryBot.build :list_editor,

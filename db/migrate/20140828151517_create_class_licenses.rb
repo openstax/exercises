@@ -1,4 +1,4 @@
-class CreateClassLicenses < ActiveRecord::Migration
+class CreateClassLicenses < ActiveRecord::Migration[4.2]
   def change
     create_table :class_licenses do |t|
       t.sortable

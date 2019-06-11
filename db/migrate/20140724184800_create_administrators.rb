@@ -1,4 +1,4 @@
-class CreateAdministrators < ActiveRecord::Migration
+class CreateAdministrators < ActiveRecord::Migration[4.2]
   def change
     create_table :administrators do |t|
       t.references :user, null: false

@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11'
+gem 'rails', '~> 5.2.3'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -24,7 +24,7 @@ gem 'compass-rails'
 gem 'uglifier', '>= 1.3.0'
 
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
+gem 'coffee-rails', '~> 4.2.2'
 
 gem 'mini_racer'
 
@@ -59,25 +59,23 @@ gem 'openstax_utilities'
 gem 'whenever'
 
 # Talks to Accounts (latest version is broken)
-gem 'omniauth-oauth2', '~> 1.3.1'
+gem 'omniauth-oauth2'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 7.12.0'
+gem 'openstax_accounts'
+
 
 # Access control for API's
 gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
-gem 'openstax_api', '~> 8.3.0'
+gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 
 # Lev framework
 gem 'lev'
-
-# Ruby dsl for SQL queries
-gem 'squeel'
 
 # Contract management
 gem 'fine_print'
@@ -94,8 +92,7 @@ gem 'mimemagic'
 gem 'mini_magick'
 
 # Markdown parsing
-# Pinned for Rails 4.X
-gem 'kramdown', '1.6.0'
+gem 'kramdown'
 
 # Read Excel xlsx spreadsheet files
 gem 'roo'
@@ -122,8 +119,7 @@ gem 'acts_as_votable'
 gem 'scout_apm', '~> 3.0.x'
 
 # PostgreSQL database
-# Pinned for rails 4.X
-gem 'pg', '~> 0.15'
+gem 'pg'
 
 # HTTP requests
 gem 'httparty'
@@ -134,7 +130,7 @@ gem 'a15k_client',
     branch: 'master'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 3.0.0'
+gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
@@ -156,6 +152,9 @@ gem 'redis-rails'
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
 
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', '~> 1.4.0', require: false
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
@@ -172,19 +171,19 @@ group :development, :test do
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
+  # Some controller test support
+  gem 'rails-controller-testing'
+
   # Use RSpec for tests
   gem 'rspec-rails'
 
   # Mute asset pipeline log messages
-  gem 'quiet_assets'
 
   # Fixture replacement
-  # Pinned for rails 4.X
-  gem 'factory_bot_rails', '< 5.0.0'
+  gem 'factory_bot_rails'
 
   # Lorem Ipsum
-  # Pinned to avoid 18n problem
-  gem 'faker', '1.6.6'
+  gem 'faker'
 
   # Database cleaning functionality for tests
   gem 'database_cleaner'
@@ -224,8 +223,9 @@ group :test do
   # Codecov integration
   gem 'codecov', require: false
 
-  # Test after-commit hooks
-  gem 'test_after_commit'
+  # Rubocop
+  gem 'rubocop-rails'
+
 end
 
 group :production do

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include Lev::HandleWith
 
-  before_filter :authenticate_user!, :valid_user!
+  before_action :authenticate_user!, :valid_user!
 
   fine_print_require :general_terms_of_use, :privacy_policy
 

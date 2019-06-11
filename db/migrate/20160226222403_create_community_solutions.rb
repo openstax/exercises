@@ -1,4 +1,4 @@
-class CreateCommunitySolutions < ActiveRecord::Migration
+class CreateCommunitySolutions < ActiveRecord::Migration[4.2]
   def change
     create_table :community_solutions do |t|
       t.references :question, null: false

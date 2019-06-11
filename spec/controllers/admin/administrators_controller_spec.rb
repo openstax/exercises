@@ -35,7 +35,7 @@ module Admin
 
       context 'for anonymous' do
         it 'redirects to the login page' do
-          expect{ post :create, valid_params }.not_to change{ Administrator.count }
+          expect{ post :create, params: valid_params }.not_to change{ Administrator.count }
           expect(response).to redirect_to(controller.openstax_accounts.login_path)
         end
       end
@@ -43,14 +43,14 @@ module Admin
       context 'for non-admins' do
         it 'raises SecurityTransgression' do
           controller.sign_in user
-          expect{ post :create, valid_params }.to raise_error(SecurityTransgression)
+          expect{ post :create, params: valid_params }.to raise_error(SecurityTransgression)
         end
       end
 
       context 'for admins' do
         it 'makes the given user an administrator' do
           controller.sign_in admin
-          expect{ post :create, valid_params }.to change{ Administrator.count }.by(1)
+          expect{ post :create, params: valid_params }.to change{ Administrator.count }.by(1)
           expect(response).to redirect_to(admin_administrators_path)
           expect(user.reload.is_administrator?).to eq true
         end
@@ -62,7 +62,7 @@ module Admin
 
       context 'for anonymous' do
         it 'redirects to the login page' do
-          expect{ delete :destroy, valid_params }.not_to change{ Administrator.count }
+          expect{ delete :destroy, params: valid_params }.not_to change{ Administrator.count }
           expect(response).to redirect_to(controller.openstax_accounts.login_path)
         end
       end
@@ -70,14 +70,14 @@ module Admin
       context 'for non-admins' do
         it 'raises SecurityTransgression' do
           controller.sign_in user
-          expect{ delete :destroy, valid_params }.to raise_error(SecurityTransgression)
+          expect{ delete :destroy, params: valid_params }.to raise_error(SecurityTransgression)
         end
       end
 
       context 'for admins' do
         it 'deletes the given administrator' do
           controller.sign_in admin
-          expect{ delete :destroy, valid_params }.to change{ Administrator.count }.by(-1)
+          expect{ delete :destroy, params: valid_params }.to change{ Administrator.count }.by(-1)
           expect(response).to redirect_to(admin_administrators_path)
           expect(admin.reload.is_administrator?).to eq false
         end

@@ -5,9 +5,7 @@ RSpec.describe Derivation, type: :model do
   subject(:derivation) { FactoryBot.create :derivation }
 
   it { is_expected.to belong_to(:derived_publication) }
-  it { is_expected.to belong_to(:source_publication) }
-
-  it { is_expected.to validate_presence_of(:derived_publication) }
+  it { is_expected.to belong_to(:source_publication).optional }
 
   it 'requires a unique source_publication for each derived_publication' do
     derivation_2 = FactoryBot.build(:derivation,

@@ -6,7 +6,7 @@ OpenStax::RescueFrom.configure do |config|
   config.raise_exceptions = Rails.application.config.consider_all_requests_local
 
   config.app_name = 'Exercises'
-  config.contact_name = exception_secrets['contact_name']
+  config.contact_name = exception_secrets[:contact_name]
 
   # Notify devs using sentry-raven
   config.notify_proc = ->(proxy, controller) do

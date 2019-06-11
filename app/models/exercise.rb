@@ -1,4 +1,4 @@
-class Exercise < ActiveRecord::Base
+class Exercise < ApplicationRecord
 
   EQUALITY_ASSOCIATIONS = [
     :attachments,
@@ -87,7 +87,7 @@ class Exercise < ActiveRecord::Base
 
   sortable_has_many :questions, dependent: :destroy, autosave: true, inverse_of: :exercise
 
-  belongs_to :vocab_term, touch: true
+  belongs_to :vocab_term, touch: true, optional: true
 
   scope :can_release_to_a15k, -> { where(release_to_a15k: true) }
   scope :not_released_to_a15k, -> { where(a15k_identifier: nil) }
@@ -138,11 +138,9 @@ class Exercise < ActiveRecord::Base
       question.stems.each do |stem|
         next if stem.stem_answers.empty? || stem.stem_answers.any?{ |sa| sa.is_correct? }
         errors.add(:base, 'has a question with only incorrect answers')
-        return false
+        throw(:abort)
       end
     end
-
-    true
   end
 
   protected
@@ -150,7 +148,7 @@ class Exercise < ActiveRecord::Base
   def has_questions
     return unless questions.first.nil?
     errors.add(:questions, "can't be blank")
-    false
+    throw(:abort)
   end
 
 end

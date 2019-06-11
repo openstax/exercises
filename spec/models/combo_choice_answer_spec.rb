@@ -7,9 +7,6 @@ RSpec.describe ComboChoiceAnswer, type: :model do
   it { is_expected.to belong_to(:combo_choice) }
   it { is_expected.to belong_to(:answer) }
 
-  it { is_expected.to validate_presence_of(:combo_choice) }
-  it { is_expected.to validate_presence_of(:answer) }
-
   it { is_expected.to validate_uniqueness_of(:answer).scoped_to(:combo_choice_id) }
 
   it 'should require answer and combo_choice to have the same question' do

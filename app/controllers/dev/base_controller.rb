@@ -4,9 +4,9 @@
 module Dev
   class BaseController < ApplicationController
 
-    before_filter :development_or_test!
+    before_action :development_or_test!
 
-    skip_before_filter :authenticate_user!
+    skip_before_action :authenticate_user!
     fine_print_skip :general_terms_of_use, :privacy_policy
 
     protected

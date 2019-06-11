@@ -1,4 +1,4 @@
-class CommunitySolution < ActiveRecord::Base
+class CommunitySolution < ApplicationRecord
   publishable
   solution
 end

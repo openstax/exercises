@@ -2,7 +2,7 @@ class StaticPagesController < ApplicationController
   
   respond_to :html
 
-  skip_before_filter :authenticate_user!,
+  skip_before_action :authenticate_user!,
                      only: [:about, :contact, :copyright, :developers,
                             :help, :privacy, :share, :status, :terms]
   fine_print_skip :general_terms_of_use, :privacy_policy,

@@ -1,4 +1,4 @@
-class VocabTerm < ActiveRecord::Base
+class VocabTerm < ApplicationRecord
 
   EQUALITY_ASSOCIATIONS = [
     :tags,
@@ -51,7 +51,7 @@ class VocabTerm < ActiveRecord::Base
 
   has_tags
 
-  has_many :vocab_distractors, dependent: :destroy
+  has_many :vocab_distractors, dependent: :destroy, autosave: true
 
   has_many :exercises, dependent: :destroy, autosave: true
 
@@ -111,21 +111,20 @@ class VocabTerm < ActiveRecord::Base
     errors.add(:base, 'must have at least 1 distractor') \
       if distractor_literals.empty? && vocab_distractors.empty?
 
-    return false if errors.any?
+    throw(:abort) if errors.any?
 
     # Publish exercises
     latest_exercises.each do |exercise|
       exercise.publication.update_attribute :published_at, published_at
     end
 
-    true
   end
 
   def after_publication
     last_def = VocabTerm.joins(publication: :publication_group)
                         .where(publication: {publication_group: {number: number}})
-                        .where {id != my{id}}
-                        .order {publication.version.desc}
+                        .where.not(id: id)
+                        .order(Publication.arel_table[:version].desc)
                         .limit(1)
                         .pluck(:definition)
     return if definition == last_def

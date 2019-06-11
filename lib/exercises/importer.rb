@@ -12,7 +12,7 @@ module Exercises
 
       text = text.to_s
 
-      kd = Kramdown::Document.new(text.to_s.strip, attachable: exercise)
+      kd = Kramdown::Document.new(text.to_s.strip, math_engine: :openstax, attachable: exercise)
       # If only one <p> tag, remove it and just return the nodes below
       kd.root.children = kd.root.children.first.children \
         if kd.root.children.length == 1 && kd.root.children.first.type == :p
@@ -51,10 +51,14 @@ module Exercises
       ex.tags = book_tags + lo_tags + type_tags + \
                 [id_tag, cnxmod_tag, dok_tag, blooms_tag, time_tag]
 
+      pub = Publication.arel_table
+      pubg = PublicationGroup.arel_table
+
       latest_exercise = Exercise
-        .joins([{publication: :publication_group}, {exercise_tags: :tag}])
-        .where(exercise_tags: {tag: {name: id_tag}})
-        .order {[publication.publication_group.number.desc, publication.version.desc]}.first
+          .joins([{publication: :publication_group}, {exercise_tags: :tag}])
+          .where(exercise_tags: {tag: {name: id_tag}})
+          .order([pubg[:number].desc, pub[:version].desc]).first
+
 
       unless latest_exercise.nil?
         ex.publication.publication_group = latest_exercise.publication.publication_group

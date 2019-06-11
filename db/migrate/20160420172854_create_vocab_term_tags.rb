@@ -1,4 +1,4 @@
-class CreateVocabTermTags < ActiveRecord::Migration
+class CreateVocabTermTags < ActiveRecord::Migration[4.2]
   def change
     create_table :vocab_term_tags do |t|
       t.references :vocab_term, foreign_key: { on_update: :cascade, on_delete: :cascade }

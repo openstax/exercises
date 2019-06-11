@@ -4,7 +4,7 @@ RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
   let(:anon)        { AnonymousUser.instance }
   let(:user)        { FactoryBot.create(:user) }
   let(:admin)       { FactoryBot.create(:user, :administrator) }
-  let(:app)         { FactoryBot.build(:doorkeeper_application) }
+  let(:app)         { FactoryBot.create(:doorkeeper_application) }
   let(:another_app) { FactoryBot.create(:doorkeeper_application) }
 
   context 'read, update' do

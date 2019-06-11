@@ -1,4 +1,4 @@
-class Attachment < ActiveRecord::Base
+class Attachment < ApplicationRecord
 
   mount_uploader :asset, AssetUploader
 
@@ -7,7 +7,6 @@ class Attachment < ActiveRecord::Base
   before_update { raise ActiveRecord::ReadOnlyRecord } # Prevent updates
 
   validates :asset, presence: true
-  validates :parent, presence: true
   validate :unique_asset
 
   def filename
@@ -22,11 +21,9 @@ class Attachment < ActiveRecord::Base
 
   def unique_asset
     return if asset.nil? || parent.nil?
-    return unless Attachment.where {(id != my{id}) & \
-                                   (parent == my{parent}) & \
-                                   (asset == my{asset.identifier})}.exists?
+    return unless Attachment.where.not(id: id).where({parent_id: parent.id, asset: asset.identifier}).exists?
     errors.add(:asset, 'has already been associated with this resource')
-    false
+    throw(:abort)
   end
 
 end

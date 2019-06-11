@@ -24,7 +24,7 @@ RSpec.describe VocabTerm, type: :model do
     expect(vocab_term.errors).to be_empty
 
     vocab_term.definition = ''
-    vocab_term.before_publication
+    expect { vocab_term.before_publication }.to throw_symbol(:abort)
     expect(vocab_term.errors[:base]).to include('must have a definition')
   end
 
@@ -39,7 +39,7 @@ RSpec.describe VocabTerm, type: :model do
     expect(vocab_term.errors).to be_empty
 
     vocab_term.distractor_literals = []
-    vocab_term.before_publication
+    expect { vocab_term.before_publication }.to throw_symbol(:abort)
     expect(vocab_term.errors[:base]).to include('must have at least 1 distractor')
   end
 

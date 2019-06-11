@@ -1,4 +1,4 @@
-class CreateListNestings < ActiveRecord::Migration
+class CreateListNestings < ActiveRecord::Migration[4.2]
   def change
     create_table :list_nestings do |t|
       t.references :parent_list, null: false

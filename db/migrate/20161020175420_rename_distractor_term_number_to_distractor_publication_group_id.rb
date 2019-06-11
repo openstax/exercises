@@ -1,4 +1,4 @@
-class RenameDistractorTermNumberToDistractorPublicationGroupId < ActiveRecord::Migration
+class RenameDistractorTermNumberToDistractorPublicationGroupId < ActiveRecord::Migration[4.2]
   def up
     add_column :vocab_distractors, :distractor_publication_group_id, :integer
 

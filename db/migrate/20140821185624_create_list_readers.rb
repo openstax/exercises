@@ -1,4 +1,4 @@
-class CreateListReaders < ActiveRecord::Migration
+class CreateListReaders < ActiveRecord::Migration[4.2]
   def change
     create_table :list_readers do |t|
       t.references :reader, polymorphic: true, null: false

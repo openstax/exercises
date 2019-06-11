@@ -1,5 +1,5 @@
-# Load the rails application
-require File.expand_path('../application', __FILE__)
+# Load the Rails application.
+require_relative 'application'
 
 require 'scout_helper'
 
@@ -26,10 +26,10 @@ require 'user_html'
 
 require 'ar_collection_setter'
 
-require 'active_record/calculations_patch'
+require 'active_record/table_association_name_patch'
 
 SITE_NAME = "OpenStax Exercises"
 COPYRIGHT_HOLDER = "Rice University"
 
-# Initialize the rails application
+# Initialize the Rails application
 Exercises::Application.initialize!
