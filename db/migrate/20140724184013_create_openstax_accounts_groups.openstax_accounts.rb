@@ -2,7 +2,7 @@
 class CreateOpenStaxAccountsGroups < ActiveRecord::Migration[4.2]
   def change
     create_table :openstax_accounts_groups do |t|
-      t.integer :openstax_uid, :null => false
+      t.integer :openstax_uid, null: false
       t.boolean :is_public, null: false, default: false
       t.string :name
       t.text :cached_subtree_group_ids
@@ -11,7 +11,7 @@ class CreateOpenStaxAccountsGroups < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
 
-    add_index :openstax_accounts_groups, :openstax_uid, :unique => true
+    add_index :openstax_accounts_groups, :openstax_uid, unique: true
     add_index :openstax_accounts_groups, :is_public
   end
 end
