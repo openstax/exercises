@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "uuid-ossp"
 
   create_table "administrators", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
@@ -35,8 +34,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "attachments", id: :serial, force: :cascade do |t|
-    t.integer "parent_id", null: false
     t.string "parent_type", null: false
+    t.integer "parent_id", null: false
     t.string "asset", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -157,8 +156,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
 
   create_table "deputizations", id: :serial, force: :cascade do |t|
     t.integer "deputizer_id", null: false
-    t.integer "deputy_id", null: false
     t.string "deputy_type", null: false
+    t.integer "deputy_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deputizer_id"], name: "index_deputizations_on_deputizer_id"
@@ -212,8 +211,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
 
   create_table "fine_print_signatures", id: :serial, force: :cascade do |t|
     t.integer "contract_id", null: false
-    t.integer "user_id", null: false
     t.string "user_type", null: false
+    t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "is_implicit", default: false, null: false
@@ -257,8 +256,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "list_editors", id: :serial, force: :cascade do |t|
-    t.integer "editor_id", null: false
     t.string "editor_type", null: false
+    t.integer "editor_id", null: false
     t.integer "list_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -276,8 +275,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "list_owners", id: :serial, force: :cascade do |t|
-    t.integer "owner_id", null: false
     t.string "owner_type", null: false
+    t.integer "owner_id", null: false
     t.integer "list_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -296,8 +295,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "list_readers", id: :serial, force: :cascade do |t|
-    t.integer "reader_id", null: false
     t.string "reader_type", null: false
+    t.integer "reader_id", null: false
     t.integer "list_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -330,8 +329,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "logics", id: :serial, force: :cascade do |t|
-    t.integer "parent_id", null: false
     t.string "parent_type", null: false
+    t.integer "parent_id", null: false
     t.string "language", null: false
     t.text "code", null: false
     t.datetime "created_at", null: false
@@ -469,8 +468,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "publications", id: :serial, force: :cascade do |t|
-    t.integer "publishable_id", null: false
     t.string "publishable_type", null: false
+    t.integer "publishable_id", null: false
     t.integer "license_id"
     t.integer "version", null: false
     t.datetime "published_at"
@@ -531,8 +530,8 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "stylings", id: :serial, force: :cascade do |t|
-    t.integer "stylable_id", null: false
     t.string "stylable_type", null: false
+    t.integer "stylable_id", null: false
     t.string "style", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -596,10 +595,10 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
   end
 
   create_table "votes", id: :serial, force: :cascade do |t|
-    t.integer "votable_id"
     t.string "votable_type"
-    t.integer "voter_id"
+    t.integer "votable_id"
     t.string "voter_type"
+    t.integer "voter_id"
     t.boolean "vote_flag"
     t.string "vote_scope"
     t.integer "vote_weight"
