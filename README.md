@@ -1,4 +1,4 @@
-<!-- Copyright 2011-2015 Rice University. Licensed under the Affero General Public
+<!-- Copyright 2011-2019 Rice University. Licensed under the Affero General Public
      License version 3 or later.  See the COPYRIGHT file for details. -->
 
 OpenStax Exercises
@@ -11,14 +11,12 @@ OpenStax Exercises
 OpenStax Exercises is an open homework and test question bank, where questions are written
 by the community and access is free. Successor to Quadbase.
 
-Check it out at ~~http://quadbase.org~~.
-
 Requirements
 ------------
 
 To run Exercises, you must have the following dependencies installed:
 
-* Ruby 2.2.3
+* Ruby 2.6.1
 
 License
 -------
@@ -65,18 +63,16 @@ See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
 ### Install everything yourself
 
 1. Install a ruby version manager on your machine, such as rbenv or rvm
-2. Install ruby 2.2.3
+2. Install ruby 2.6.1
 3. Run the following shell commands from the OpenStax Exercises folder:
 
 ```sh
 $ bundle --without production
 $ createuser --superuser ox_exercises
-$ createdb ox_exercises_dev
-$ rake db:migrate
-$ rake db:seed
+$ rails db:setup
 $ rails s
 ```
 
-If any of the above commands fail, try prepending `bundle exec`, e.g. `bundle exec rake db:migrate`
+If any of the above commands fail, try prepending `bundle exec`, e.g. `bundle exec rails db:setup`
 
 You should then be able to point a web browser to http://localhost:3000 and access OpenStax Exercises.
