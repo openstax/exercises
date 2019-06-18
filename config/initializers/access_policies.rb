@@ -2,7 +2,7 @@ require_relative 'doorkeeper'
 
 # User
 OSU::AccessPolicy.register(User, UserAccessPolicy)
-OSU::AccessPolicy.register(Deputization, DeputizationAccessPolicy)
+OSU::AccessPolicy.register(Delegation, DelegationAccessPolicy)
 
 # API
 OSU::AccessPolicy.register(Exercise, ExerciseAccessPolicy)

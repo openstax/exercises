@@ -14,8 +14,8 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_many(:authors).dependent(:destroy) }
   it { is_expected.to have_many(:copyright_holders).dependent(:destroy) }
 
-  it { is_expected.to have_many(:child_deputizations).dependent(:destroy) }
-  it { is_expected.to have_many(:direct_deputizations).dependent(:destroy) }
+  it { is_expected.to have_many(:delegations_as_delegator).dependent(:destroy) }
+  it { is_expected.to have_many(:delegations_as_delegate).dependent(:destroy)  }
 
   it { is_expected.to have_many(:direct_list_owners).dependent(:destroy) }
   it { is_expected.to have_many(:direct_list_editors).dependent(:destroy) }
@@ -35,13 +35,6 @@ RSpec.describe User, type: :model do
   end
 
   context 'instance' do
-    it 'defines has_many_through_groups methods' do
-      expect(user).to respond_to(:deputizations)
-      expect(user).to respond_to(:list_owners)
-      expect(user).to respond_to(:list_editors)
-      expect(user).to respond_to(:list_readers)
-    end
-
     it 'is a human' do
       expect(user.is_human?).to eq true
     end

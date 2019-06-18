@@ -41,7 +41,7 @@ module Publishable
                 wheres
               else
                 wheres = wheres.and(pub[:version].eq(vv))
-            end 
+            end
 
             joins(publication: :publication_group).where(wheres
             ).order( [pubg[:number].asc, pub[:version].desc] )
@@ -59,30 +59,26 @@ module Publishable
             pub = Publication.arel_table
             au = Author.arel_table
             cw = CopyrightHolder.arel_table
-            pubg = PublicationGroup.arel_table
-            lpg = ListPublicationGroup.arel_table
-            l_own = ListOwner.arel_table
-            l_edit = ListEditor.arel_table
-            l_read = ListReader.arel_table
+            dg = Delegation.arel_table
+            me = arel_table
 
-            me = self.arel_table
-
-            joins(me.join(pub).on(pub[:publishable_id].eq(me[:id]), pub[:publishable_type].eq(self.name))
-               .join(au).on(au[:publication_id].eq(pub[:id]))
-               .join(cw).on(cw[:publication_id].eq(pub[:id]))
-               .join(pubg).on(pub[:publication_group_id].eq(pubg[:id]))
-               .outer_join(lpg).on(lpg[:publication_group_id].eq(pubg[:id]))
-               .outer_join(l_own).on(l_own[:list_id].eq(lpg[:id]))
-               .outer_join(l_edit).on(l_edit[:list_id].eq(lpg[:id]))
-               .outer_join(l_read).on(l_read[:list_id].eq(lpg[:id])).join_sources
-               ).where(
-                 pub[:published_at].not_eq(nil)
+            joins(
+              me.join(pub).on(pub[:publishable_id].eq(me[:id]), pub[:publishable_type].eq(name))
+                .join(au).on(au[:publication_id].eq(pub[:id]))
+                .join(cw).on(cw[:publication_id].eq(pub[:id]))
+                .outer_join(dg).on(
+                  dg[:can_read].eq(true).and(
+                    dg[:delegator_id].eq(au[:user_id]).or(
+                      dg[:delegator_id].eq(cw[:user_id])
+                    )
+                  )
+                ).join_sources
+            ).where(
+              pub[:published_at].not_eq(nil)
                 .or(au[:user_id].eq(user_id))
                 .or(cw[:user_id].eq(user_id))
-                .or(l_own[:owner_id].eq(user_id).and(l_own[:owner_type].eq('User')))
-                .or(l_edit[:editor_id].eq(user_id).and(l_edit[:editor_type].eq('User')))
-                .or(l_read[:reader_id].eq(user_id).and(l_read[:reader_type].eq('User'))))
-
+                .or(dg[:delegate_id].eq(user_id))
+            )
           end
 
           # By default, returns both the latest published version and the latest draft, if any

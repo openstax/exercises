@@ -54,8 +54,6 @@ Exercises::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy]
-
-    resources :deputizations, only: [:index, :create, :destroy], path: 'deputies'
   end
 
   mount OpenStax::Accounts::Engine, at: "/accounts"
@@ -83,6 +81,8 @@ Exercises::Application.routes.draw do
         patch 'undelete'
       end
     end
+
+    resources :delegations, except: [:new, :show, :edit]
 
     resources :a15k, only: [] do
       get 'preview', on: :member

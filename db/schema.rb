@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_17_204620) do
+ActiveRecord::Schema.define(version: 2019_06_14_154313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -154,14 +154,18 @@ ActiveRecord::Schema.define(version: 2019_05_17_204620) do
     t.index ["user_id", "publication_id"], name: "index_copyright_holders_on_user_id_and_publication_id", unique: true
   end
 
-  create_table "deputizations", id: :serial, force: :cascade do |t|
-    t.integer "deputizer_id", null: false
-    t.string "deputy_type", null: false
-    t.integer "deputy_id", null: false
+  create_table "delegations", id: :serial, force: :cascade do |t|
+    t.integer "delegator_id", null: false
+    t.integer "delegate_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deputizer_id"], name: "index_deputizations_on_deputizer_id"
-    t.index ["deputy_id", "deputy_type", "deputizer_id"], name: "index_deputizations_on_d_id_and_d_type_and_d_id", unique: true
+    t.boolean "can_create", default: false, null: false
+    t.boolean "can_read", default: true, null: false
+    t.boolean "can_update", default: false, null: false
+    t.boolean "can_destroy", default: false, null: false
+    t.index ["delegate_id", "delegator_id"], name: "index_delegations_on_delegate_id_and_delegator_id", unique: true
+    t.index ["delegate_id"], name: "index_read_delegations_on_delegate_id", where: "can_read"
+    t.index ["delegator_id"], name: "index_delegations_on_delegator_id"
   end
 
   create_table "derivations", id: :serial, force: :cascade do |t|
