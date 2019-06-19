@@ -1,0 +1,14 @@
+<%#
+  Clients of this partial must provide the following variable:
+  user
+%>
+
+<%= link_to 'Delegator', '#',
+    data: { turbolinks: false },
+    onclick: "$('#delegator-id').val('#{user.id}'); $('#delegator-name').val('#{user.name}');" %>
+
+<br>
+
+<%= link_to 'Delegate', '#',
+    data: { turbolinks: false },
+    onclick: "$('#delegate-id').val('#{user.id}'); $('#delegate-name').val('#{user.name}');" %>

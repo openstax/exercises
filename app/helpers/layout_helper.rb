@@ -1,4 +1,4 @@
-# Copyright 2011-2015 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2015 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 module LayoutHelper
@@ -35,37 +35,37 @@ module LayoutHelper
   end
 
   def top_nav_about_active
-    content_for :top_nav_about_current do 
+    content_for :top_nav_about_current do
       top_nav_current_link_class
     end
   end
 
   def top_nav_dashboard_active
-    content_for :top_nav_dashboard_current do 
+    content_for :top_nav_dashboard_current do
       top_nav_current_link_class
     end
   end
 
   def top_nav_course_catalog_active
-    content_for :top_nav_course_catalog_current do 
+    content_for :top_nav_course_catalog_current do
       top_nav_current_link_class
     end
   end
 
   def top_nav_current_classes_active
-    content_for :top_nav_current_classes_current do 
+    content_for :top_nav_current_classes_current do
       top_nav_current_link_class
     end
   end
 
   def top_nav_my_tutor_active
-    content_for :top_nav_my_tutor_current do 
+    content_for :top_nav_my_tutor_current do
       top_nav_current_link_class
     end
   end
 
   def top_nav_help_active
-    content_for :top_nav_help_current do 
+    content_for :top_nav_help_current do
       top_nav_current_link_class
     end
   end
@@ -100,7 +100,7 @@ protected
   end
 
   def salutation(user)
-    return "Welcome, #{user.first_name || user.username}" if user
+    return "Welcome, #{user.casual_name}" if user
   end
 
   def account_bar_transparent

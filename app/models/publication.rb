@@ -77,11 +77,7 @@ class Publication < ApplicationRecord
         .join(au).on(au[:publication_id].eq(pub[:id]))
         .join(cw).on(cw[:publication_id].eq(pub[:id]))
         .outer_join(dg).on(
-          dg[:can_read].eq(true).and(
-            dg[:delegator_id].eq(au[:user_id]).or(
-              dg[:delegator_id].eq(cw[:user_id])
-            )
-          )
+          dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
         ).join_sources
     ).where(
       pub[:published_at].not_eq(nil)

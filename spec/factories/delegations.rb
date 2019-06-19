@@ -4,7 +4,6 @@ FactoryBot.define do
     association :delegate,  factory: :user
 
     can_create  { [true, false].sample }
-    can_read    { [true, false].sample }
     can_update  { [true, false].sample }
     can_destroy { [true, false].sample }
   end

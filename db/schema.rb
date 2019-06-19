@@ -160,11 +160,9 @@ ActiveRecord::Schema.define(version: 2019_06_14_154313) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "can_create", default: false, null: false
-    t.boolean "can_read", default: true, null: false
     t.boolean "can_update", default: false, null: false
     t.boolean "can_destroy", default: false, null: false
     t.index ["delegate_id", "delegator_id"], name: "index_delegations_on_delegate_id_and_delegator_id", unique: true
-    t.index ["delegate_id"], name: "index_read_delegations_on_delegate_id", where: "can_read"
     t.index ["delegator_id"], name: "index_delegations_on_delegator_id"
   end
 

@@ -31,7 +31,7 @@ module Admin
     # PUT /users/1/become
     def become
       sign_in(@user)
-      redirect_to request.referrer, notice: "Logged in as #{@user.username}"
+      redirect_to request.referrer, notice: "Logged in as #{@user.name}"
     end
 
     # PATCH /users/1/delete
@@ -39,7 +39,7 @@ module Admin
       @user.delete
       respond_to do |format|
         format.html { redirect_to request.referrer,
-                                  notice: "#{@user.username}'s account has been disabled." }
+                                  notice: "#{@user.name}'s account has been disabled." }
         format.js { render 'admin/users/delete' }
       end
     end
@@ -49,7 +49,7 @@ module Admin
       @user.undelete
       respond_to do |format|
         format.html { redirect_to request.referrer,
-                                  notice: "#{@user.username}'s account has been enabled." }
+                                  notice: "#{@user.name}'s account has been enabled." }
         format.js { render 'admin/users/delete' }
       end
     end

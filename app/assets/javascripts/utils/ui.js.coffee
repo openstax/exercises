@@ -28,7 +28,7 @@ Ui = do () ->
                       ((userScreenHeight / 2) - (modalHeight / 2)))
 
   enableOnChecked: (targetSelector, sourceSelector) ->
-    $(document).ready =>
+    $(document).on 'turbolinks:load', =>
       @disableButton(targetSelector)
 
     $(sourceSelector).on 'click', =>
@@ -43,7 +43,7 @@ Ui = do () ->
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
     return json.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, 
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
       (match) ->
         cls = 'number'
         if (/^"/.test(match))
@@ -55,9 +55,9 @@ Ui = do () ->
           cls = 'boolean'
         else if (/null/.test(match))
           cls = 'null'
-        
+
         return '<span class="' + cls + '">' + match + '</span>'
-    )  
+    )
 
 
 (exports = this).Exercises ?= {}

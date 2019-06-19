@@ -64,7 +64,6 @@ gem 'omniauth-oauth2'
 # OpenStax Accounts integration
 gem 'openstax_accounts'
 
-
 # Access control for API's
 gem 'doorkeeper'
 

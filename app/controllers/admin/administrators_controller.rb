@@ -15,7 +15,7 @@ module Admin
         if @administrator.save
           format.html {
             redirect_to admin_administrators_url,
-                        notice: "#{@administrator.user.full_name} is now an Administrator."
+                        notice: "#{@administrator.user.name} is now an Administrator."
             }
         else
           format.html { render action: "new" }
@@ -28,9 +28,10 @@ module Admin
       @administrator = Administrator.find(params[:id])
       @administrator.destroy
       respond_to do |format|
-        format.html { redirect_to admin_administrators_url,
-                                  notice: "#{@administrator.user.username} is no longer an Administrator."
-                    }
+        format.html do
+          redirect_to admin_administrators_url,
+                      notice: "#{@administrator.user.name} is no longer an Administrator."
+        end
       end
     end
 

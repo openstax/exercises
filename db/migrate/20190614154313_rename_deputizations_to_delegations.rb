@@ -12,12 +12,9 @@ class RenameDeputizationsToDelegations < ActiveRecord::Migration[5.2]
     remove_column :delegations, :deputy_type, :string, null: false
 
     add_column :delegations, :can_create,  :boolean, default: false, null: false
-    add_column :delegations, :can_read,    :boolean, default: true,  null: false
     add_column :delegations, :can_update,  :boolean, default: false, null: false
     add_column :delegations, :can_destroy, :boolean, default: false, null: false
 
     add_index :delegations, [ :delegate_id, :delegator_id ], unique: true
-    add_index :delegations, :delegate_id, where: :can_read,
-                                          name: 'index_read_delegations_on_delegate_id'
   end
 end

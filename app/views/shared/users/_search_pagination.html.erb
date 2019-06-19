@@ -1,17 +1,17 @@
 <%
   page = Integer(params[:page]) rescue 0
   per_page = Integer(params[:per_page]) rescue 20
-  num_users = @handler_result.outputs[:total_count] || 0
-  pages = (num_users * 1.0 / per_page).ceil 
+  num_users = @handler_result&.outputs&.total_count || 0
+  pages = (num_users * 1.0 / per_page).ceil
 %>
 
 <div id='search-results-pagination'>
-  <%= pluralize(num_users, 'user') %> found. 
+  <%= pluralize(num_users, 'user') %> found.
 
   <% if pages > 0 %>
-    Page: 
+    Page:
 
-    <% 
+    <%
       linked_page_numbers = [page+1]
       linked_page_numbers.push(1)
       linked_page_numbers.push(pages)
@@ -22,9 +22,9 @@
     %>
 
     <% linked_page_numbers.each do |lpn| %>
-      <%= link_to_unless lpn == page + 1,
-                         lpn, 
-                         admin_users_path(search: {query: @handler_result.outputs[:query], page: lpn-1, per_page: per_page}), remote: true %>
+      <%= link_to_unless lpn == page + 1, lpn, admin_users_path(
+        search: { query: @handler_result&.outputs&.query || '', page: lpn-1, per_page: per_page }),
+        remote: true %>
     <% end %>
   <% end %>
 </div>

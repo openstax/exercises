@@ -82,7 +82,9 @@ Exercises::Application.routes.draw do
       end
     end
 
-    resources :delegations, except: [:new, :show, :edit]
+    resources :delegations, except: :show do
+      get :users, on: :collection
+    end
 
     resources :a15k, only: [] do
       get 'preview', on: :member

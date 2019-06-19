@@ -1,0 +1,72 @@
+<%#
+  Clients of this partial must provide the following variables:
+  delegation
+%>
+
+<%#
+  Remove local: true when Turbolinks adds support for the default behavior
+  (so error messages render properly)
+%>
+
+<div class='form-inline'>
+  <%=
+    render partial: 'openstax/accounts/shared/accounts/search', locals: {
+      search_action_path: users_admin_delegations_url,
+      action_partial: 'admin/delegations/actions',
+      action_heading: 'Make',
+      remote: true
+    }
+  %>
+</div>
+
+<div id='search-results-list'>
+  <%=
+    render partial: 'shared/users/search_results', locals: {
+      action_partial: 'admin/delegations/actions',
+      action_heading: 'Make'
+    }
+  %>
+</div>
+
+<%= form_with model: [:admin, delegation], local: true do |form| %>
+  <%= render partial: 'shared/error_messages', locals: { target: delegation } %>
+
+  <br>
+
+  <%= form.label :delegator_id, 'Delegator' %>
+  <%= form.hidden_field :delegator_id, id: 'delegator-id' %>
+  <%= form.text_field :delegator_name, id: 'delegator-name', disabled: true %>
+
+  <br>
+
+  <%= form.label :delegate_id, 'Delegate' %>
+  <%= form.hidden_field :delegate_id, id: 'delegate-id' %>
+  <%= form.text_field :delegate_name, id: 'delegate-name', disabled: true %>
+
+  <br>
+
+  <h5>Delegate can:</h5>
+
+  <%= form.check_box :can_create %>
+  <%= form.label :can_create, 'Create' %>
+
+  <br>
+
+  <%= form.check_box :can_read, disabled: true %>
+  <%= form.label :can_read, 'Read' %>
+
+  <br>
+
+  <%= form.check_box :can_update %>
+  <%= form.label :can_update, 'Update' %>
+
+  <br>
+
+  <%= form.check_box :can_destroy %>
+  <%= form.label :can_destroy, 'Destroy' %>
+
+  <br>
+  <br>
+
+  <%= form.submit class: 'btn btn-primary' %>
+<% end %>

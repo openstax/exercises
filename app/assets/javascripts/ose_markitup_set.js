@@ -1,9 +1,9 @@
-// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// Copyright 2011-2019 Rice University. Licensed under the Affero General Public 
 // License version 3 or later.  See the COPYRIGHT file for details.
 
-mySettings = {	
+mySettings = {
   onTab:    		{keepDefault:false, replaceWith:'    '},
-  markupSet:  [ 	
+  markupSet:  [
 	  {name:'Bold', key:'B', openWith:'\!\!', closeWith:'\!\!' },
 	  {name:'Italic', key:'I', openWith:'\'\'', closeWith:'\'\''  },
 	  {name:'Underline', key:'U', openWith:'\_\_', closeWith:'\_\_'},
