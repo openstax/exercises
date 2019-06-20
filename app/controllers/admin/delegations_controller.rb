@@ -69,7 +69,8 @@ module Admin
 
     def delegation_params
       params.require(:delegation).permit(
-        :delegator_id, :delegate_id, :can_create, :can_update, :can_destroy
+        :delegator_id, :delegate_id, :can_read, :can_assign_authorship,
+        :can_assign_copyright, :can_update, :can_destroy
       )
     end
 

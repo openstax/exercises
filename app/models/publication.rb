@@ -38,7 +38,7 @@ class Publication < ApplicationRecord
   scope :with_id, ->(id) do
     nn, vv = id.to_s.split('@')
 
-    pub = Publication.arel_table
+    pub = arel_table
     pubg = PublicationGroup.arel_table
 
     wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
@@ -53,8 +53,7 @@ class Publication < ApplicationRecord
         wheres = wheres.and(pub[:version].eq(vv))
     end
 
-    joins(publication: :publication_group).where(wheres
-    ).order( [pubg[:number].asc, pub[:version].desc] )
+    joins(:publication_group).where(wheres).order( [pubg[:number].asc, pub[:version].desc] )
   end
 
   scope :visible_for, ->(options) do
@@ -64,26 +63,24 @@ class Publication < ApplicationRecord
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
     next all if user.administrator
+
     user_id = user.id
 
-    pub = Publication.arel_table
+    pub = arel_table
     au = Author.arel_table
     cw = CopyrightHolder.arel_table
     dg = Delegation.arel_table
-    me = arel_table
 
-    joins(
-      me.join(pub).on(pub[:publishable_id].eq(me[:id]), pub[:publishable_type].eq(name))
-        .join(au).on(au[:publication_id].eq(pub[:id]))
-        .join(cw).on(cw[:publication_id].eq(pub[:id]))
-        .outer_join(dg).on(
+    where(
+      pub[:published_at].not_eq(nil).or(
+        Author.where(user_id: user_id).where(au[:publication_id].eq(pub[:id])).exists
+      ).or(
+        CopyrightHolder.where(user_id: user_id).where(cw[:publication_id].eq(pub[:id])).exists
+      ).or(
+        Delegation.where(delegate_id: user_id, can_read: true).where(
           dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
-        ).join_sources
-    ).where(
-      pub[:published_at].not_eq(nil)
-        .or(au[:user_id].eq(user_id))
-        .or(cw[:user_id].eq(user_id))
-        .or(dg[:delegate_id].eq(user_id))
+        ).exists
+      )
     )
   end
 

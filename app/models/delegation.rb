@@ -6,10 +6,6 @@ class Delegation < ApplicationRecord
   validates :delegate, uniqueness: { scope: :delegator_id }
   validate :different_users
 
-  def can_read
-    true
-  end
-
   def delegator_name
     delegator&.name
   end

@@ -3,12 +3,15 @@
   osu.action_list(
     records: @delegations,
     list: {
-      headings: [ 'Delegator', 'Delegate', 'Create?', 'Read?', 'Update?', 'Destroy?', 'Actions' ],
-      widths: [ '20%', '20%', '10%', '10%', '10%', '10%', '20%' ],
+      headings: [
+        'Delegator', 'Delegate', 'Author?', 'Copy?', 'Read?', 'Update?', 'Delete?', 'Actions'
+      ],
+      widths: [ '30%', '30%', '5%', '5%', '5%', '5%', '5%', '15%' ],
       data_procs: [
         ->(delegation) { delegation.delegator.name },
         ->(delegation) { delegation.delegate.name },
-        ->(delegation) { yn(delegation.can_create) },
+        ->(delegation) { yn(delegation.can_assign_authorship) },
+        ->(delegation) { yn(delegation.can_assign_copyright) },
         ->(delegation) { yn(delegation.can_read) },
         ->(delegation) { yn(delegation.can_update) },
         ->(delegation) { yn(delegation.can_destroy) },

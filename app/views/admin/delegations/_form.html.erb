@@ -47,23 +47,28 @@
 
   <h5>Delegate can:</h5>
 
-  <%= form.check_box :can_create %>
-  <%= form.label :can_create, 'Create' %>
+  <%= form.check_box :can_assign_authorship %>
+  <%= form.label :can_assign_authorship, 'Assign authorship to Delegator' %>
 
   <br>
 
-  <%= form.check_box :can_read, disabled: true %>
-  <%= form.label :can_read, 'Read' %>
+  <%= form.check_box :can_assign_copyright %>
+  <%= form.label :can_assign_copyright, 'Assign copyright to Delegator' %>
+
+  <br>
+
+  <%= form.check_box :can_read %>
+  <%= form.label :can_read, "Read Delegator's drafts" %>
 
   <br>
 
   <%= form.check_box :can_update %>
-  <%= form.label :can_update, 'Update' %>
+  <%= form.label :can_update, "Update Delegator's publications" %>
 
   <br>
 
   <%= form.check_box :can_destroy %>
-  <%= form.label :can_destroy, 'Destroy' %>
+  <%= form.label :can_destroy, "Delete Delegator's publications" %>
 
   <br>
   <br>
