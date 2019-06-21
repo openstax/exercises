@@ -9,12 +9,13 @@
       widths: ['30%', '60%', '10%'],
       data_procs:
         [
-          lambda { |application| application.name || '---' },
-          lambda { |application| truncate(application.redirect_uri) || '---' },
-          lambda { |application| "<span id=application-#{application.id}-actions>
-                                #{render partial: action_partial,
-                                         locals: {application: application}}
-                              </span>".html_safe }
+          ->(application) { application.name || '---' },
+          ->(application) { truncate(application.redirect_uri) || '---' },
+          ->(application) do
+            "<span id=application-#{application.id}-actions>#{
+              render partial: action_partial, locals: { application: application }
+            }</span>".html_safe
+          end
         ]
     }
   ) %>

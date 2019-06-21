@@ -45,7 +45,7 @@ module Publishable
 
             joins(publication: :publication_group)
               .where(wheres)
-              .order( [pubg[:number].asc, pub[:version].desc] )
+              .order(pubg[:number].asc, pub[:version].desc)
           end
 
           scope :visible_for, ->(options) do
@@ -63,17 +63,15 @@ module Publishable
             dg = Delegation.arel_table
             me = arel_table
 
-            joins(:publication).where(
+            joins(:publication).left_outer_joins(publication: [:authors, :copyright_holders]).where(
               pub[:published_at].not_eq(nil).or(
-                Author.where(user_id: user_id).where(au[:publication_id].eq(pub[:id])).exists
+                au[:user_id].eq(user_id)
               ).or(
-                CopyrightHolder.where(user_id: user_id).where(
-                  cw[:publication_id].eq(pub[:id])
-                ).exists
+                cw[:user_id].eq(user_id)
               ).or(
                 Delegation.where(delegate_id: user_id, can_read: true).where(
                   dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
-                ).exists
+                ).arel.exists
               )
             )
           end

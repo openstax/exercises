@@ -7,9 +7,16 @@ Doorkeeper::Application.class_exec do
 
   validates :owner, presence: true
 
-  scope :trusted, lambda { joins(:trusted_application) }
-  scope :not_trusted, lambda { joins{trusted_application.outer}
-                                 .where(trusted_application: {id: nil}) }
+  scope :trusted, -> do
+    ta = TrustedApplication.arel_table
+    ap = arel_table
+    where(TrustedApplication.where(ta[:application_id].eq(ap[:id])).arel.exists)
+  end
+  scope :not_trusted, -> do
+    ta = TrustedApplication.arel_table
+    ap = arel_table
+    where.not(TrustedApplication.where(ta[:application_id].eq(ap[:id])).arel.exists)
+  end
 
   def is_human?
     false

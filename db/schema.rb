@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_14_154313) do
+ActiveRecord::Schema.define(version: 2019_06_21_222656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -91,45 +91,6 @@ ActiveRecord::Schema.define(version: 2019_06_14_154313) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["stem_id", "correctness"], name: "index_combo_choices_on_stem_id_and_correctness"
-  end
-
-  create_table "commontator_comments", id: :serial, force: :cascade do |t|
-    t.string "creator_type"
-    t.integer "creator_id"
-    t.string "editor_type"
-    t.integer "editor_id"
-    t.integer "thread_id", null: false
-    t.text "body", null: false
-    t.datetime "deleted_at"
-    t.integer "cached_votes_up", default: 0
-    t.integer "cached_votes_down", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cached_votes_down"], name: "index_commontator_comments_on_cached_votes_down"
-    t.index ["cached_votes_up"], name: "index_commontator_comments_on_cached_votes_up"
-    t.index ["creator_id", "creator_type", "thread_id"], name: "index_commontator_comments_on_c_id_and_c_type_and_t_id"
-    t.index ["thread_id", "created_at"], name: "index_commontator_comments_on_thread_id_and_created_at"
-  end
-
-  create_table "commontator_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "subscriber_type", null: false
-    t.integer "subscriber_id", null: false
-    t.integer "thread_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["subscriber_id", "subscriber_type", "thread_id"], name: "index_commontator_subscriptions_on_s_id_and_s_type_and_t_id", unique: true
-    t.index ["thread_id"], name: "index_commontator_subscriptions_on_thread_id"
-  end
-
-  create_table "commontator_threads", id: :serial, force: :cascade do |t|
-    t.string "commontable_type"
-    t.integer "commontable_id"
-    t.datetime "closed_at"
-    t.string "closer_type"
-    t.integer "closer_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["commontable_id", "commontable_type"], name: "index_commontator_threads_on_c_id_and_c_type", unique: true
   end
 
   create_table "community_solutions", id: :serial, force: :cascade do |t|

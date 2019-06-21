@@ -108,9 +108,6 @@ gem 'deep_cloneable'
 # Sortable objects
 gem 'sortability'
 
-# Comments on objects
-gem 'commontator'
-
 # Comment voting
 gem 'acts_as_votable'
 

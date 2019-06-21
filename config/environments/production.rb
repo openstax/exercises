@@ -82,7 +82,7 @@ Rails.application.configure do
   # Lograge configuration (one-line logs in production)
   config.lograge.enabled = true
   config.log_tags = [:remote_ip]
-  config.lograge.custom_options = lambda do |event|
+  config.lograge.custom_options = ->(event) do
     params = event.payload[:params].reject do |k|
       ['controller', 'action', 'format'].include? k
     end

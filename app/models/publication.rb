@@ -71,15 +71,15 @@ class Publication < ApplicationRecord
     cw = CopyrightHolder.arel_table
     dg = Delegation.arel_table
 
-    where(
+    left_outer_joins(:authors, :copyright_holders).where(
       pub[:published_at].not_eq(nil).or(
-        Author.where(user_id: user_id).where(au[:publication_id].eq(pub[:id])).exists
+        au[:user_id].eq(user_id)
       ).or(
-        CopyrightHolder.where(user_id: user_id).where(cw[:publication_id].eq(pub[:id])).exists
+        cw[:user_id].eq(user_id)
       ).or(
         Delegation.where(delegate_id: user_id, can_read: true).where(
           dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
-        ).exists
+        ).arel.exists
       )
     )
   end

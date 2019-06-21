@@ -34,22 +34,20 @@ module ApplicationHelper
     return if heading_text.blank?
 
     content_for :page_heading do
-      render(:partial => 'shared/page_heading',
-             :locals => {:heading_text => heading_text,
-                         :sub_heading_text => options[:sub_heading_text]})
+      render partial: 'shared/page_heading', locals: {
+        heading_text: heading_text, sub_heading_text: options[:sub_heading_text]
+      }
     end
   end
 
   def partial_width_block(&block)
-    content_tag :div, :class => 'partial-width-block' do
+    content_tag :div, class: 'partial-width-block' do
       (capture(&block)).html_safe
     end
   end
 
   def section(title, options={}, &block)
-    block_to_partial('shared/section',
-                     options.merge(:title => title),
-                     &block)
+    block_to_partial('shared/section', options.merge(title: title), &block)
   end
 
   def yn(bool)

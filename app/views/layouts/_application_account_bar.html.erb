@@ -1,29 +1,29 @@
-<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+<%# Copyright 2011-2019 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
 <% account_bar_classes = yield :account_bar_class %>
 
 <div id="account-bar-frame" class="<%= account_bar_classes %>" >
   <div id="account-bar-content">
-  
+
     <% if signed_in? %>
 
       <span class="<%= account_bar_classes %> welcome-message" data-test-user-welcome><%= salutation current_user %></span>
-      <%= link_to "My Account", openstax_accounts.profile_path, :class => "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
-      <%= vertical_bar(id: "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
-      <%= link_to "Sign out", openstax_accounts.logout_path, :class => "#{account_bar_classes}", :'data-test-link-sign-out' => "", :method => :delete %>
+      <%= link_to "My Account", openstax_accounts.profile_path, class: "#{account_bar_classes}", :'data-test-link-my-account' => "" %>
+      <%= vertical_bar(id: "account-bar-vertical-bar", class: "#{account_bar_classes}") %>
+      <%= link_to "Sign out", openstax_accounts.logout_path, class: "#{account_bar_classes}", :'data-test-link-sign-out' => "", method: :delete %>
     <% else %>
-      <%= link_to "Join now", openstax_accounts.login_path, :class => "#{account_bar_classes}", :'data-test-link-join' => "" %>
-      <%= vertical_bar(id: "account-bar-vertical-bar", :class => "#{account_bar_classes}") %>
-      <%= link_to "Sign in",  openstax_accounts.login_path, :class => "#{account_bar_classes}", :'data-test-link-sign-in' => "" %>
+      <%= link_to "Join now", openstax_accounts.login_path, class: "#{account_bar_classes}", :'data-test-link-join' => "" %>
+      <%= vertical_bar(id: "account-bar-vertical-bar", class: "#{account_bar_classes}") %>
+      <%= link_to "Sign in",  openstax_accounts.login_path, class: "#{account_bar_classes}", :'data-test-link-sign-in' => "" %>
     <% end %>
 
     <%= link_to "http://www.facebook.com/openstaxtutor", id: "facebook-link" do %>
-      <%= image_tag("facebook_icon.png", :class => "facebook-icon") %>
+      <%= image_tag("facebook_icon.png", class: "facebook-icon") %>
     <% end %>
     <%= link_to "http://www.twitter.com/openstaxtutor", id: "twitter-link" do %>
-      <%= image_tag("twitter_icon.png", :class => "twitter-icon") %>
+      <%= image_tag("twitter_icon.png", class: "twitter-icon") %>
     <% end %>
-  
+
   </div>
 </div>
