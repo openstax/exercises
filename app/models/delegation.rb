@@ -1,9 +1,9 @@
 class Delegation < ApplicationRecord
 
-  belongs_to :delegator, class_name: 'User', inverse_of: :delegations_as_delegator
-  belongs_to :delegate,  class_name: 'User', inverse_of: :delegations_as_delegate
+  belongs_to :delegator, class_name: User.name, inverse_of: :delegations_as_delegator
+  belongs_to :delegate,  polymorphic: true, inverse_of: :delegations_as_delegate
 
-  validates :delegate, uniqueness: { scope: :delegator_id }
+  validates :delegate_id, uniqueness: { scope: [ :delegator_id, :delegate_type ] }
   validate :different_users
 
   def delegator_name
@@ -17,8 +17,8 @@ class Delegation < ApplicationRecord
   protected
 
   def different_users
-    return if delegator.nil? || delegator != delegate
-    errors.add :delegator, 'must not be the same user as Delegate'
+    return if delegate_type != User.name || delegator_id != delegate_id
+    errors.add :delegate, 'must not be the same user as the Delegator'
     throw(:abort)
   end
 

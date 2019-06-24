@@ -8,22 +8,23 @@ class RenameDeputizationsToDelegations < ActiveRecord::Migration[5.2]
 
     rename_column :delegations, :deputizer_id, :delegator_id
     rename_column :delegations, :deputy_id, :delegate_id
-
-    remove_column :delegations, :deputy_type, :string, null: false
+    rename_column :delegations, :deputy_type, :delegate_type
 
     add_column :delegations, :can_read,              :boolean, default: false, null: false
     add_column :delegations, :can_assign_authorship, :boolean, default: false, null: false
     add_column :delegations, :can_assign_copyright,  :boolean, default: false, null: false
-    add_column :delegations, :can_update,    :boolean, default: false, null: false
+    add_column :delegations, :can_update,            :boolean, default: false, null: false
 
-    add_index :delegations, [ :delegate_id, :delegator_id ], unique: true
-    add_index :delegations, [ :delegate_id, :delegator_id ],
+    add_index :delegations, [ :delegate_id, :delegator_id, :delegate_type ],
+              unique: true,
+              name: 'index_delegations_on_delegate_delegator'
+    add_index :delegations, [ :delegate_id, :delegator_id, :delegate_type ],
               where: 'can_read',
               unique: true,
-              name: 'index_read_delegations_on_delegate_id_delegator_id'
-    add_index :delegations, [ :delegate_id, :delegator_id ],
+              name: 'index_read_delegations_on_delegate_delegator'
+    add_index :delegations, [ :delegate_id, :delegator_id, :delegate_type ],
               where: 'can_update',
               unique: true,
-              name: 'index_update_destroy_delegations_on_delegate_id_delegator_id'
+              name: 'index_update_delegations_on_delegate_delegator'
   end
 end

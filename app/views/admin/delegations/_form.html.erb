@@ -33,15 +33,16 @@
 
   <br>
 
-  <%= form.label :delegator_id, 'Delegator' %>
-  <%= form.hidden_field :delegator_id, id: 'delegator-id' %>
+  <%= form.label :delegator_name, 'Delegator' %>
   <%= form.text_field :delegator_name, id: 'delegator-name', disabled: true %>
+  <%= form.hidden_field :delegator_id, id: 'delegator-id' %>
 
   <br>
 
-  <%= form.label :delegate_id, 'Delegate' %>
-  <%= form.hidden_field :delegate_id, id: 'delegate-id' %>
+  <%= form.label :delegate_name, 'Delegate' %>
   <%= form.text_field :delegate_name, id: 'delegate-name', disabled: true %>
+  <%= form.hidden_field :delegate_id, id: 'delegate-id' %>
+  <%= form.hidden_field :delegate_type, id: 'delegate-type' %>
 
   <br>
 

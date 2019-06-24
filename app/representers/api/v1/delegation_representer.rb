@@ -19,5 +19,13 @@ module Api::V1
                required: true
              }
 
+    property :delegate_type,
+             type: String,
+             writeable: true,
+             readable: true,
+             schema_info: {
+               required: true
+             }
+
   end
 end

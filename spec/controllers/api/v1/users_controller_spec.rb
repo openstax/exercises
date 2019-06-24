@@ -6,45 +6,51 @@ module Api::V1
     let!(:application)      { FactoryBot.create :doorkeeper_application }
 
     let!(:user)             { FactoryBot.create :user, :agreed_to_terms, first_name: 'U',
-                                                        last_name: 'ser', username: 'user' }
+                                                       last_name: 'ser', username: 'user' }
     let!(:admin)            { FactoryBot.create :user, :administrator,
-                                                 :agreed_to_terms, first_name: 'Ad',
-                                                 last_name: 'min', username: 'Admin'}
+                                                :agreed_to_terms, first_name: 'Ad',
+                                                last_name: 'min', username: 'Admin'}
 
     let(:user_token)        { FactoryBot.create :doorkeeper_access_token,
-                                                 application: application,
-                                                 resource_owner_id: user.id }
+                                                application: application,
+                                                resource_owner_id: user.id }
     let(:admin_token)       { FactoryBot.create :doorkeeper_access_token,
-                                                 application: application,
-                                                 resource_owner_id: admin.id }
+                                                application: application,
+                                                resource_owner_id: admin.id }
     let(:application_token) { FactoryBot.create :doorkeeper_access_token,
-                                                 application: application,
-                                                 resource_owner_id: nil }
+                                                application: application,
+                                                resource_owner_id: nil }
 
     let(:response_hash)     { JSON.parse(response.body).deep_symbolize_keys }
 
     context "GET index" do
 
       before do
-        100.times { FactoryBot.create(:user) }
+        30.times { FactoryBot.create(:user) }
 
         acc = OpenStax::Accounts::Account.arel_table
-        User.joins(:account).where(acc[:first_name].matches('%doe%').or(
-                                   acc[:last_name].matches('%doe%')).or(
-                                   acc[:username].matches('%doe%'))).delete_all
+        acc_ids = OpenStax::Accounts::Account.where(
+          acc[:first_name].matches('%doe%').or(
+            acc[:last_name].matches('%doe%')
+          ).or(
+            acc[:username].matches('%doe%')
+          )
+        ).pluck(:id)
+        User.where(account_id: acc_ids).delete_all
+        OpenStax::Accounts::Account.where(id: acc_ids).delete_all
 
         @john_doe = FactoryBot.create :user, first_name: "John",
-                                              last_name: "Doe",
-                                              username: "doejohn"
+                                             last_name: "Doe",
+                                             username: "doejohn"
         @jane_doe = FactoryBot.create :user, first_name: "Jane",
-                                              last_name: "Doe",
-                                              username: "doejane"
+                                             last_name: "Doe",
+                                             username: "doejane"
         @john_doe.account.reload
         @jane_doe.account.reload
       end
 
       it "returns no results if the maximum number of results is exceeded" do
-        api_get :index, admin_token, params: {q: ''}
+        api_get :index, admin_token, params: { q: '' }
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -83,7 +89,7 @@ module Api::V1
       end
 
       it "returns multiple results" do
-        api_get :index, user_token, params: {q: 'last_name:DoE'}
+        api_get :index, user_token, params: { q: 'last_name:DoE' }
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -116,7 +122,6 @@ module Api::V1
               support_identifier: @john_doe.support_identifier,
               is_test: true,
               school_type: 'unknown_school_type'
-
             }
           ]
         }
@@ -125,8 +130,8 @@ module Api::V1
       end
 
       it "sorts by multiple fields in different directions" do
-        api_get :index, user_token, params: {q: 'username:doe',
-                                                 order_by: "first_name DESC, last_name"}
+        api_get :index, user_token,
+                params: { q: 'username:doe', order_by: "first_name DESC, last_name" }
         expect(response).to have_http_status(:success)
 
         expected_response = {
@@ -145,7 +150,6 @@ module Api::V1
               support_identifier: @john_doe.support_identifier,
               is_test: true,
               school_type: 'unknown_school_type'
-
             },
             {
               id: @jane_doe.account.openstax_uid,
@@ -160,7 +164,6 @@ module Api::V1
               support_identifier: @jane_doe.support_identifier,
               is_test: true,
               school_type: 'unknown_school_type'
-
             }
           ]
         }

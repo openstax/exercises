@@ -53,7 +53,7 @@ class Publication < ApplicationRecord
         wheres = wheres.and(pub[:version].eq(vv))
     end
 
-    joins(:publication_group).where(wheres).order( [pubg[:number].asc, pub[:version].desc] )
+    joins(:publication_group).where(wheres).order(pubg[:number].asc, pub[:version].desc)
   end
 
   scope :visible_for, ->(options) do
@@ -77,7 +77,9 @@ class Publication < ApplicationRecord
       ).or(
         cw[:user_id].eq(user_id)
       ).or(
-        Delegation.where(delegate_id: user_id, can_read: true).where(
+        Delegation.where(
+          delegate_id: user_id, delegate_type: user.class.name, can_read: true
+        ).where(
           dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
         ).arel.exists
       )
@@ -151,20 +153,36 @@ class Publication < ApplicationRecord
   def has_read_permission?(user)
     has_collaborator?(user) ||
     authors.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: { can_read: true, delegate_id: user.id }
+      delegations_as_delegator: {
+        can_read: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
     }).exists? ||
     copyright_holders.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: { can_read: true, delegate_id: user.id }
+      delegations_as_delegator: {
+        can_read: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
     }).exists?
   end
 
   def has_write_permission?(user)
     has_collaborator?(user) ||
     authors.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: { can_update: true, delegate_id: user.id }
+      delegations_as_delegator: {
+        can_update: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
     }).exists? ||
     copyright_holders.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: { can_update: true, delegate_id: user.id }
+      delegations_as_delegator: {
+        can_update: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
     }).exists?
   end
 

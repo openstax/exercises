@@ -19,9 +19,8 @@ class User < ApplicationRecord
                                       dependent: :destroy,
                                       inverse_of: :delegator
   has_many :delegations_as_delegate, class_name: 'Delegation',
-                                     foreign_key: :delegate_id,
-                                     dependent: :destroy,
-                                     inverse_of: :delegate
+                                     as: :delegate,
+                                     dependent: :destroy
 
   has_many_through_groups :groups_as_member, :list_owners, as: :owner, dependent: :destroy
   has_many_through_groups :groups_as_member, :list_editors, as: :editor, dependent: :destroy

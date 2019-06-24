@@ -3,9 +3,13 @@
   user
 %>
 
-<%= link_to 'Delegator', '#',
-    data: { turbolinks: false },
-    onclick: "$('#delegator-id').val('#{user.id}'); $('#delegator-name').val('#{user.name}');" %>
+<%=
+  link_to 'Delegator', '#', data: { turbolinks: false }, onclick: <<~ONCLICK
+    $('#delegator-id').val('#{user.id}');
+    $('#delegator-type').val('#{user.class.name}');
+    $('#delegator-name').val('#{user.name}');
+  ONCLICK
+%>
 
 <br>
 

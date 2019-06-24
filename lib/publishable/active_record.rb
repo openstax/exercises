@@ -69,7 +69,9 @@ module Publishable
               ).or(
                 cw[:user_id].eq(user_id)
               ).or(
-                Delegation.where(delegate_id: user_id, can_read: true).where(
+                Delegation.where(
+                  delegate_id: user_id, delegate_type: user.class.name, can_read: true
+                ).where(
                   dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
                 ).arel.exists
               )
