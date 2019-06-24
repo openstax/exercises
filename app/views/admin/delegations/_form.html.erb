@@ -63,15 +63,27 @@
   <br>
 
   <%= form.check_box :can_update %>
-  <%= form.label :can_update, "Update Delegator's publications" %>
+  <%= form.label :can_update, "Update Delegator's drafts and publications" %>
 
   <br>
 
   <%= form.check_box :can_destroy %>
-  <%= form.label :can_destroy, "Delete Delegator's publications" %>
+  <%= form.label :can_destroy, "Delete Delegator's drafts" %>
 
-  <br>
-  <br>
+  <br><br>
+
+  <p>
+    For now, since only admins can change those, the authorship and copyright options force the
+    delegate to also assign the delegator as author/copyright holder for newly-created exercises or
+    vocab terms.
+  <p>
+  <p>
+    If users are ever given the option to create delegations themselves, make sure to add new
+    array columns to the users table to allow them to set whether or not to do this by default.
+    E.g. default_author_ids/default_copyright_holder_ids
+    This is also a way to specify the default author/copyright_holder ordering for each user.
+    Also, add a lock to work-for-hire accounts so they cannot change this setting.
+  </p>
 
   <%= form.submit class: 'btn btn-primary' %>
 <% end %>

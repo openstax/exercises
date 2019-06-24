@@ -43,6 +43,14 @@ class User < ApplicationRecord
     AnonymousUser.instance
   end
 
+  def default_authors
+    [ self ] + delegations_as_delegate.to_a.select(&:can_assign_authorship).map(&:delegator)
+  end
+
+  def default_copyright_holders
+    [ self ] + delegations_as_delegate.to_a.select(&:can_assign_copyright).map(&:delegator)
+  end
+
   def is_human?
     true
   end

@@ -67,18 +67,16 @@ module Publishable
                    {
                      class: Author,
                      extend: Api::V1::RoleRepresenter,
-                     writeable: true,
-                     readable: true,
-                     setter: AR_COLLECTION_SETTER
+                     writeable: false,
+                     readable: true
                    }.merge(options)
 
         collection :copyright_holders,
                    {
                      class: CopyrightHolder,
                      extend: Api::V1::RoleRepresenter,
-                     writeable: true,
-                     readable: true,
-                     setter: AR_COLLECTION_SETTER
+                     writeable: false,
+                     readable: true
                    }.merge(options)
 
         collection :derivations,

@@ -402,7 +402,7 @@ module Api::V1
 
       before { Rails.cache.clear }
 
-      it "creates the requested Exercise and assigns the user as author and CR holder" do
+      it "creates the requested Exercise and assigns the user as author and copyright holder" do
         expect do
           api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
             @exercise

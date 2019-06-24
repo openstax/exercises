@@ -109,12 +109,17 @@ module Api::V1
         consume!(exercise, represent_with_options.dup)
 
         publication = exercise.publication
-        publication.authors << Author.new(
-          publication: publication, user: user
-        ) unless publication.authors.any? { |au| au.user = user }
-        publication.copyright_holders << CopyrightHolder.new(
-          publication: publication, user: user
-        ) unless publication.copyright_holders.any? { |ch| ch.user = user }
+        user.default_authors.each do |author|
+          publication.authors << Author.new(
+            publication: publication, user: author
+          ) unless publication.authors.any? { |au| au.user == author }
+        end
+        user.default_copyright_holders.each do |copyright_holder|
+          publication.copyright_holders << CopyrightHolder.new(
+            publication: publication, user: user
+          ) unless publication.copyright_holders.any? { |ch| ch.user == copyright_holder }
+        end
+
         publication_group = publication.publication_group
 
         OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, exercise)
