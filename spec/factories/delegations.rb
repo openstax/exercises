@@ -5,7 +5,6 @@ FactoryBot.define do
 
     can_assign_authorship { [true, false].sample }
     can_assign_copyright  { [true, false].sample }
-    can_update            { [true, false].sample }
-    can_destroy           { [true, false].sample }
+    can_update    { [true, false].sample }
   end
 end

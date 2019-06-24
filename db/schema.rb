@@ -124,9 +124,9 @@ ActiveRecord::Schema.define(version: 2019_06_21_222656) do
     t.boolean "can_assign_authorship", default: false, null: false
     t.boolean "can_assign_copyright", default: false, null: false
     t.boolean "can_update", default: false, null: false
-    t.boolean "can_destroy", default: false, null: false
     t.index ["delegate_id", "delegator_id"], name: "index_delegations_on_delegate_id_and_delegator_id", unique: true
     t.index ["delegate_id", "delegator_id"], name: "index_read_delegations_on_delegate_id_delegator_id", unique: true, where: "can_read"
+    t.index ["delegate_id", "delegator_id"], name: "index_update_destroy_delegations_on_delegate_id_delegator_id", unique: true, where: "can_update"
     t.index ["delegator_id"], name: "index_delegations_on_delegator_id"
   end
 

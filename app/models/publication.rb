@@ -149,35 +149,23 @@ class Publication < ApplicationRecord
   end
 
   def has_read_permission?(user)
-    has_write_permission?(user) || collaborators.any? do |collaborator|
-      ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
-        .joins(list: [:list_publication_groups, :list_readers])
-        .where(
-          list_publication_groups: { publication_group_id: publication_group_id },
-          list_readers: { reader_id: user.id, reader_type: user.class.name }
-        )
-        .exists?
-    end
+    has_collaborator?(user) ||
+    authors.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: { can_read: true, delegate_id: user.id }
+    }).exists? ||
+    copyright_holders.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: { can_read: true, delegate_id: user.id }
+    }).exists?
   end
 
   def has_write_permission?(user)
-    has_collaborator?(user) || collaborators.any? do |collaborator|
-      ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
-        .joins(list: :list_publication_groups)
-        .joins('INNER JOIN "list_owners" "lo" ON "lo"."list_id" = "lists"."id"')
-        .where(list_publication_groups: { publication_group_id: publication_group_id })
-        .where(
-          "\"lo\".\"owner_id\" = #{user.id} AND \"lo\".\"owner_type\" = '#{user.class.name}'"
-        )
-        .exists? ||
-      ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
-        .joins(list: [:list_publication_groups, :list_editors])
-        .where(
-          list_publication_groups: { publication_group_id: publication_group_id },
-          list_editors: { editor_id: user.id, editor_type: user.class.name }
-        )
-        .exists?
-    end
+    has_collaborator?(user) ||
+    authors.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: { can_update: true, delegate_id: user.id }
+    }).exists? ||
+    copyright_holders.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: { can_update: true, delegate_id: user.id }
+    }).exists?
   end
 
   def publish

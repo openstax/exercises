@@ -45,50 +45,24 @@ RSpec.describe Exercise, type: :model do
       exercise.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder)
     end
 
-    it 'is true for collaborators' do
-      expect(exercise.can_view_solutions?(author)          ).to eq true
+    it 'is true for collaborators and their delegates' do
+      expect(exercise.can_view_solutions?(author)).to eq true
       expect(exercise.can_view_solutions?(copyright_holder)).to eq true
-    end
 
-    it 'is true for list_readers, list_editors and list_owners if the list contains the ' +
-       'publication_group and one of the collaborators is also an owner of the list' do
-      list = FactoryBot.create :list
+      delegation = FactoryBot.create :delegation, delegator: author, delegate: user, can_read: false
+      expect(exercise.can_view_solutions?(user)).to eq false
 
-      collaborator_list_owner = ListOwner.new(owner: copyright_holder)
-      list.list_owners << collaborator_list_owner
-      list.list_editors << ListEditor.new(editor: copyright_holder)
-      list.list_readers << ListReader.new(reader: copyright_holder)
+      delegation.update_attribute :can_read, true
+      expect(exercise.can_view_solutions?(user)).to eq true
 
-      owner = FactoryBot.create :user
-      list.list_owners << ListOwner.new(owner: owner)
+      delegation.update_attribute :delegator, copyright_holder
+      expect(exercise.can_view_solutions?(user)).to eq true
 
-      editor = FactoryBot.create :user
-      list.list_editors << ListEditor.new(editor: editor)
+      delegation.update_attribute :can_read, false
+      expect(exercise.can_view_solutions?(user)).to eq false
 
-      reader = FactoryBot.create :user
-      list.list_readers << ListReader.new(reader: reader)
-
-      expect(exercise.can_view_solutions?(owner)).to eq false
-      expect(exercise.can_view_solutions?(editor)).to eq false
-      expect(exercise.can_view_solutions?(reader)).to eq false
-
-      list.list_publication_groups << ListPublicationGroup.new(
-        publication_group: exercise.publication_group
-      )
-
-      exercise.reload
-
-      expect(exercise.can_view_solutions?(owner)).to eq true
-      expect(exercise.can_view_solutions?(editor)).to eq true
-      expect(exercise.can_view_solutions?(reader)).to eq true
-
-      collaborator_list_owner.destroy
-
-      exercise.reload
-
-      expect(exercise.can_view_solutions?(owner)).to eq false
-      expect(exercise.can_view_solutions?(editor)).to eq false
-      expect(exercise.can_view_solutions?(reader)).to eq false
+      delegation.destroy
+      expect(exercise.can_view_solutions?(user)).to eq false
     end
 
     it 'is true for external applications' do
