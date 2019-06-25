@@ -6,27 +6,27 @@ module Api::V1
       DatabaseCleaner.start
 
       application = FactoryBot.create :doorkeeper_application
-      @user = FactoryBot.create :user, :agreed_to_terms
       @user_1 = FactoryBot.create :user, :agreed_to_terms
       @user_2 = FactoryBot.create :user, :agreed_to_terms
+      @user_3 = FactoryBot.create :user, :agreed_to_terms
       @user_draft = FactoryBot.create :user, :agreed_to_terms
       admin = FactoryBot.create :user, :administrator, :agreed_to_terms
       @application_token = FactoryBot.create :doorkeeper_access_token,
                                              application: application,
                                              resource_owner_id: nil
-      @user_token = FactoryBot.create :doorkeeper_access_token,
-                                      application: application,
-                                      resource_owner_id: @user.id
+      @user_1_token = FactoryBot.create :doorkeeper_access_token,
+                                        application: application,
+                                        resource_owner_id: @user_1.id
       FactoryBot.create :doorkeeper_access_token,
                         application: application,
                         resource_owner_id: admin.id
 
       @vocab_term = FactoryBot.build(:vocab_term)
       @vocab_term.publication.authors << FactoryBot.build(
-        :author, user: @user, publication: @vocab_term.publication
+        :author, user: @user_1, publication: @vocab_term.publication
       )
       @vocab_term.publication.copyright_holders << FactoryBot.build(
-        :copyright_holder, user: @user, publication: @vocab_term.publication
+        :copyright_holder, user: @user_1, publication: @vocab_term.publication
       )
       @vocab_term.nickname = 'MyVocab'
       @vocab_term.save!
@@ -40,8 +40,10 @@ module Api::V1
 
           10.times do
             vt = FactoryBot.create(:vocab_term, :published)
-            vt.publication.authors << Author.new(publication: vt.publication, user: @user)
-            vt.publication.copyright_holders << CopyrightHolder.new(publication: vt.publication, user: @user)
+            vt.publication.authors << Author.new(publication: vt.publication, user: @user_1)
+            vt.publication.copyright_holders << CopyrightHolder.new(
+              publication: vt.publication, user: @user_1
+            )
           end
 
           tested_strings = ["%lorem ipsu%", "%adipiscing elit%", "draft"]
@@ -57,8 +59,12 @@ module Api::V1
             'definition' => "Dolor sit amet",
             'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
           )
-          @vocab_term_1.publication.authors << Author.new(publication: @vocab_term_1.publication, user: @user_1)
-          @vocab_term_1.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_1.publication, user: @user_1)
+          @vocab_term_1.publication.authors << Author.new(
+            publication: @vocab_term_1.publication, user: @user_2
+          )
+          @vocab_term_1.publication.copyright_holders << CopyrightHolder.new(
+            publication: @vocab_term_1.publication, user: @user_2
+          )
           @vocab_term_1.save!
 
           @vocab_term_2 = FactoryBot.build(:vocab_term, :published)
@@ -70,8 +76,12 @@ module Api::V1
             'definition' => "Quia dolor sit amet",
             'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"]
           )
-          @vocab_term_2.publication.authors << Author.new(publication: @vocab_term_2.publication, user: @user_2)
-          @vocab_term_2.publication.copyright_holders << CopyrightHolder.new(publication: @vocab_term_2.publication, user: @user_2)
+          @vocab_term_2.publication.authors << Author.new(
+            publication: @vocab_term_2.publication, user: @user_3
+          )
+          @vocab_term_2.publication.copyright_holders << CopyrightHolder.new(
+            publication: @vocab_term_2.publication, user: @user_3
+          )
           @vocab_term_2.save!
 
           @vocab_term_draft = FactoryBot.build(:vocab_term)
@@ -89,7 +99,7 @@ module Api::V1
         end
         after(:all) { DatabaseCleaner.clean }
 
-        before { request.env['HTTP_AUTHORIZATION'] = "Bearer #{@user_token.token}" }
+        before { request.env['HTTP_AUTHORIZATION'] = "Bearer #{@user_1_token.token}" }
 
         context "no matches" do
           it "does not return drafts that the user is not allowed to see" do
@@ -107,10 +117,10 @@ module Api::V1
 
         context "single match" do
           it "returns drafts that the user is allowed to see" do
-            @vocab_term_draft.publication.authors << Author.new(user: @user)
-            @vocab_term_draft.publication.copyright_holders << CopyrightHolder.new(user: @user)
+            @vocab_term_draft.publication.authors << Author.new(user: @user_1)
+            @vocab_term_draft.publication.copyright_holders << CopyrightHolder.new(user: @user_1)
             @vocab_term_draft.reload
-            @user.reload
+            @user_1.reload
             send method, :index, params: { q: 'content:draft', format: :json }
             expect(response).to have_http_status(:success)
 
@@ -191,7 +201,7 @@ module Api::V1
       end
     end
 
-    context "GET show" do
+    context "GET #show" do
       before(:all) do
         DatabaseCleaner.start
 
@@ -203,7 +213,7 @@ module Api::V1
       after(:all) { DatabaseCleaner.clean }
 
       it "returns the VocabTerm requested by group_uuid and version" do
-        api_get :show, @user_token, params: {
+        api_get :show, @user_1_token, params: {
           id: "#{@vocab_term.group_uuid}@#{@vocab_term.version}"
         }
         expect(response).to have_http_status(:success)
@@ -211,37 +221,37 @@ module Api::V1
       end
 
       it "returns the VocabTerm requested by uuid" do
-        api_get :show, @user_token, params: { id: @vocab_term.uuid }
+        api_get :show, @user_1_token, params: { id: @vocab_term.uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the VocabTerm requested by uid" do
-        api_get :show, @user_token, params: { id: @vocab_term.uid }
+        api_get :show, @user_1_token, params: { id: @vocab_term.uid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest published VocabTerm if only the group_uuid is specified" do
-        api_get :show, @user_token, params: { id: @vocab_term.group_uuid }
+        api_get :show, @user_1_token, params: { id: @vocab_term.group_uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest published VocabTerm if only the number is specified" do
-        api_get :show, @user_token, params: { id: @vocab_term.number }
+        api_get :show, @user_1_token, params: { id: @vocab_term.number }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term.uuid))
       end
 
       it "returns the latest draft VocabTerm if \"group_uuid@draft\" is requested" do
-        api_get :show, @user_token, params: { id: "#{@vocab_term.group_uuid}@draft" }
+        api_get :show, @user_1_token, params: { id: "#{@vocab_term.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term_2.uuid))
       end
 
       it "returns the latest draft VocabTerm if \"number@draft\" is requested" do
-        api_get :show, @user_token, params: { id: "#{@vocab_term.number}@draft" }
+        api_get :show, @user_1_token, params: { id: "#{@vocab_term.number}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @vocab_term_2.uuid))
       end
@@ -250,7 +260,7 @@ module Api::V1
         @vocab_term_2.destroy
 
         expect do
-          api_get :show, @user_token, params: { id: "#{@vocab_term.number}@draft" }
+          api_get :show, @user_1_token, params: { id: "#{@vocab_term.number}@draft" }
         end.to change{ VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
 
@@ -264,7 +274,7 @@ module Api::V1
       end
     end
 
-    context "POST create" do
+    context "POST #create" do
       before(:all) do
         DatabaseCleaner.start
 
@@ -278,30 +288,61 @@ module Api::V1
 
       it "creates the requested VocabTerm and assigns the user as author and CR holder" do
         expect do
-          api_post :create, @user_token,
+          api_post :create, @user_1_token,
                    body: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
-                   ).to_hash(user_options: { user: @user })
+                   ).to_hash(user_options: { user: @user_1 })
         end.to change { VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
 
-        new_vocab_term = VocabTerm.last
+        new_vocab_term = VocabTerm.order(:created_at).last
         expect(new_vocab_term.nickname).to eq 'MyVocab'
         expect(new_vocab_term.name).to eq @vocab_term.name
         expect(new_vocab_term.definition).to eq @vocab_term.definition
 
-        expect(new_vocab_term.authors.first.user).to eq @user
-        expect(new_vocab_term.copyright_holders.first.user).to eq @user
+        expect(new_vocab_term.authors.first.user).to eq @user_1
+        expect(new_vocab_term.copyright_holders.first.user).to eq @user_1
+      end
+
+      it "assigns the author and copyright holder through delegations" do
+        FactoryBot.create :delegation, delegator: @user_2,
+                                       delegate: @user_1,
+                                       can_assign_authorship: true,
+                                       can_assign_copyright: false
+        FactoryBot.create :delegation, delegator: @user_3,
+                                       delegate: @user_1,
+                                       can_assign_authorship: false,
+                                       can_assign_copyright: true
+
+        expect do
+          api_post :create, @user_1_token,
+                   body: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
+                     @vocab_term
+                   ).to_hash(user_options: { user: @user_1 })
+        end.to change { VocabTerm.count }.by(1)
+        expect(response).to have_http_status(:success)
+
+        new_vocab_term = VocabTerm.order(:created_at).last
+
+        authors = new_vocab_term.authors.map(&:user)
+        expect(authors).to include(@user_1)
+        expect(authors).to include(@user_2)
+        expect(authors).not_to include(@user_3)
+
+        copyright_holders = new_vocab_term.copyright_holders.map(&:user)
+        expect(copyright_holders).to include(@user_1)
+        expect(copyright_holders).not_to include(@user_2)
+        expect(copyright_holders).to include(@user_3)
       end
 
       it "fails if the nickname has already been taken" do
         FactoryBot.create :publication_group, nickname: 'MyVocab'
 
         expect do
-          api_post :create, @user_token,
+          api_post :create, @user_1_token,
                    body: Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
                      @vocab_term
-                   ).to_hash(user_options: { user: @user })
+                   ).to_hash(user_options: { user: @user_1 })
         end.not_to change { VocabTerm.count }
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -309,12 +350,12 @@ module Api::V1
       end
     end
 
-    context "PATCH update" do
+    context "PATCH #update" do
       before { @old_attributes = @vocab_term.reload.attributes }
 
       it "updates the requested VocabTerm" do
-        api_patch :update, @user_token, params: { id: @vocab_term.uid },
-                                        body: { nickname: 'MyVocab', term: "Ipsum lorem" }
+        api_patch :update, @user_1_token, params: { id: @vocab_term.uid },
+                                          body: { nickname: 'MyVocab', term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
         new_attributes = @vocab_term.attributes
@@ -329,7 +370,7 @@ module Api::V1
         @vocab_term.publication.publish.save!
 
         expect do
-          api_patch :update, @user_token, params: { id: @vocab_term.uid }, body: {
+          api_patch :update, @user_1_token, params: { id: @vocab_term.uid }, body: {
             nickname: 'MyVocab', term: "Ipsum lorem"
           }
         end.to raise_error(SecurityTransgression)
@@ -343,7 +384,7 @@ module Api::V1
       it "fails if the nickname has already been taken" do
         FactoryBot.create :publication_group, nickname: 'MyVocab2'
 
-        api_patch :update, @user_token, params: { id: @vocab_term.uid }, body: {
+        api_patch :update, @user_1_token, params: { id: @vocab_term.uid }, body: {
           nickname: 'MyVocab2', title: "Ipsum lorem"
         }
 
@@ -362,8 +403,8 @@ module Api::V1
         vocab_term_2.save!
         vocab_term_2.reload
 
-        api_patch :update, @user_token, params: { id: "#{@vocab_term.number}@draft" },
-                                        body: { nickname: 'MyVocab', term: "Ipsum lorem" }
+        api_patch :update, @user_1_token, params: { id: "#{@vocab_term.number}@draft" },
+                                          body: { nickname: 'MyVocab', term: "Ipsum lorem" }
         expect(response).to have_http_status(:success)
         @vocab_term.reload
 
@@ -385,10 +426,10 @@ module Api::V1
         @vocab_term.publication.publish.save!
 
         expect do
-          api_patch :update, @user_token, params: { id: "#{@vocab_term.number}@draft" },
-                                          body: {
-                                            nickname: 'MyVocab', term: "Ipsum lorem"
-                                          }
+          api_patch :update, @user_1_token, params: { id: "#{@vocab_term.number}@draft" },
+                                            body: {
+                                              nickname: 'MyVocab', term: "Ipsum lorem"
+                                            }
         end.to change{ VocabTerm.count }.by(1)
         expect(response).to have_http_status(:success)
         @vocab_term.reload
@@ -411,10 +452,10 @@ module Api::V1
       end
     end
 
-    context "DELETE destroy" do
+    context "DELETE #destroy" do
       it "deletes the requested draft VocabTerm" do
         expect do
-          api_delete :destroy, @user_token, params: { id: @vocab_term.uid }
+          api_delete :destroy, @user_1_token, params: { id: @vocab_term.uid }
         end.to change(VocabTerm, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(VocabTerm.where(id: @vocab_term.id)).not_to exist

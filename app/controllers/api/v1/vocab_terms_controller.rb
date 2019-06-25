@@ -119,15 +119,15 @@ module Api::V1
         consume!(vocab_term, represent_with_options.dup)
 
         publication = vocab_term.publication
-        user.default_authors.each do |author|
-          publication.authors << Author.new(
-            publication: publication, user: author
-          ) unless publication.authors.any? { |au| au.user == author }
+
+        existing_authors = publication.authors.map(&:user)
+        (user.default_authors - existing_authors).each do |au|
+          publication.authors << Author.new(publication: publication, user: au)
         end
-        user.default_copyright_holders.each do |copyright_holder|
-          publication.copyright_holders << CopyrightHolder.new(
-            publication: publication, user: user
-          ) unless publication.copyright_holders.any? { |ch| ch.user == copyright_holder }
+
+        existing_copyright_holders = publication.copyright_holders.map(&:user)
+        (user.default_copyright_holders - existing_copyright_holders).each do |ch|
+          publication.copyright_holders << CopyrightHolder.new(publication: publication, user: ch)
         end
 
         publication_group = publication.publication_group

@@ -11,7 +11,7 @@ RSpec.describe WebviewController, type: :controller do
   let(:new_user)        { FactoryBot.create(:user) }
   let(:registered_user) { FactoryBot.create(:user, :agreed_to_terms) }
 
-  describe 'GET home' do
+  describe 'GET #home' do
     it 'renders a static page for anonymous' do
       get :home
       expect(response).to have_http_status(:success)
@@ -25,7 +25,7 @@ RSpec.describe WebviewController, type: :controller do
     end
   end
 
-  describe 'GET index' do
+  describe 'GET #index' do
     it 'requires a user' do
       get :index
       expect(response).to redirect_to(controller.openstax_accounts.login_path)

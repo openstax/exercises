@@ -16,7 +16,7 @@ module Admin
     let(:user)  { FactoryBot.create(:user, :agreed_to_terms) }
     let(:admin) { FactoryBot.create(:user, :administrator, :agreed_to_terms) }
 
-    describe 'GET show' do
+    describe 'GET #show' do
       context 'for anonymous' do
         it 'returns 403 forbidden' do
           EXCEPTIONS.each do |klass, args|

@@ -6,7 +6,7 @@ module Admin
     let(:user)  { FactoryBot.create(:user, :agreed_to_terms) }
     let(:admin) { FactoryBot.create(:user, :administrator, :agreed_to_terms) }
 
-    describe 'GET index' do
+    describe 'GET #index' do
       context 'for anonymous' do
         it 'redirects to the login page' do
           get :index, xhr: true

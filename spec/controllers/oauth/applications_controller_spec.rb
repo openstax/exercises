@@ -32,7 +32,7 @@ module Oauth
     let(:valid_session) { { "account_id" => user_1.account_id } }
     let(:admin_session) { { "account_id" => admin.account_id } }
 
-    context "GET index" do
+    context "GET #index" do
       it "assigns the user's applications as @applications" do
         get :index, session: valid_session
         expect(response.code).to eq('200')
@@ -52,28 +52,28 @@ module Oauth
       end
     end
 
-    context "GET show" do
+    context "GET #show" do
       it "assigns the requested application as @application" do
         get :show, params: {id: group_1_application_1.to_param}, session: valid_session
         expect(assigns(:application)).to eq(group_1_application_1)
       end
     end
 
-    context "GET new" do
+    context "GET #new" do
       it "assigns a new application as @application" do
         get :new, session: admin_session
         expect(assigns(:application)).to be_a_new(Doorkeeper::Application)
       end
     end
 
-    context "GET edit" do
+    context "GET #edit" do
       it "assigns the requested application as @application" do
         get :edit, params: {id: group_1_application_1.to_param}, session: valid_session
         expect(assigns(:application)).to eq(group_1_application_1)
       end
     end
 
-    context "POST create" do
+    context "POST #create" do
       context "with valid params" do
         let(:valid_attributes) { FactoryBot.build(:doorkeeper_application).attributes }
 
@@ -92,7 +92,7 @@ module Oauth
         it "redirects to the created application" do
           post :create, params: {doorkeeper_application: valid_attributes}, session: admin_session
           expect(response).to redirect_to(
-            oauth_application_url(Doorkeeper::Application.last)
+            oauth_application_url(Doorkeeper::Application.order(:created_at).last)
           )
         end
       end
@@ -112,7 +112,7 @@ module Oauth
       end
     end
 
-    context "PATCH update" do
+    context "PATCH #update" do
       context "with valid params" do
         dummy_params = ActionController::Parameters.new({ "name" => "Dummy" }).permit!
         it "updates the requested application" do
@@ -154,7 +154,7 @@ module Oauth
       end
     end
 
-    context "DELETE destroy" do
+    context "DELETE #destroy" do
       it "destroys the requested application" do
         expect {
           delete :destroy, params: {id: group_1_application_1.to_param}, session: admin_session

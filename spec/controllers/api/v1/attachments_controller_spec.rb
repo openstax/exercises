@@ -37,7 +37,7 @@ module Api::V1
 
     let(:exercise_id)       { "#{exercise.number}@draft" }
 
-    context "POST create" do
+    context "POST #create" do
 
       let(:image) {
           image = Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/rails.png",
@@ -61,7 +61,7 @@ module Api::V1
 
     end
 
-    context "DELETE destroy" do
+    context "DELETE #destroy" do
       it 'removes the attachment when called' do
         attachment = AttachFile.call(
           attachable: exercise, file: 'spec/fixtures/os_exercises_logo.png'

@@ -6,7 +6,7 @@ module Admin
     let(:user)  { FactoryBot.create(:user, :agreed_to_terms) }
     let(:admin) { FactoryBot.create(:user, :administrator, :agreed_to_terms) }
 
-    describe 'GET index' do
+    describe 'GET #index' do
       context 'for anonymous' do
         it 'redirects to the login page' do
           get :index
@@ -30,7 +30,7 @@ module Admin
       end
     end
 
-    describe 'POST create' do
+    describe 'POST #create' do
       let(:valid_params) { { administrator: { user_id: user.id } } }
 
       context 'for anonymous' do
@@ -57,7 +57,7 @@ module Admin
       end
     end
 
-    describe 'DELETE destroy' do
+    describe 'DELETE #destroy' do
       let!(:valid_params) { { id: admin.administrator.id } }
 
       context 'for anonymous' do

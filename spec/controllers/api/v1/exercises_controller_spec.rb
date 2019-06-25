@@ -6,25 +6,25 @@ module Api::V1
       DatabaseCleaner.start
 
       application = FactoryBot.create :doorkeeper_application
-      @user = FactoryBot.create :user, :agreed_to_terms
       @user_1 = FactoryBot.create :user, :agreed_to_terms
+      @user_2 = FactoryBot.create :user, :agreed_to_terms
       admin = FactoryBot.create :user, :administrator, :agreed_to_terms
       @application_token = FactoryBot.create :doorkeeper_access_token,
                                              application: application,
                                              resource_owner_id: nil
-      @user_token = FactoryBot.create :doorkeeper_access_token,
-                                      application: application,
-                                      resource_owner_id: @user.id
+      @user_1_token = FactoryBot.create :doorkeeper_access_token,
+                                        application: application,
+                                        resource_owner_id: @user_1.id
       FactoryBot.create :doorkeeper_access_token,
                         application: application,
                         resource_owner_id: admin.id
 
       @exercise = FactoryBot.build(:exercise)
       @exercise.publication.authors << FactoryBot.create(
-        :author, user: @user, publication: @exercise.publication
+        :author, user: @user_1, publication: @exercise.publication
       )
       @exercise.publication.copyright_holders << FactoryBot.create(
-        :copyright_holder, user: @user, publication: @exercise.publication
+        :copyright_holder, user: @user_1, publication: @exercise.publication
       )
       @exercise.nickname = 'MyExercise'
       @exercise.save!
@@ -69,10 +69,10 @@ module Api::V1
             }]
           )
           @exercise_1.publication.authors << FactoryBot.create(
-            :author, user: @user_1, publication: @exercise_1.publication
+            :author, user: @user_2, publication: @exercise_1.publication
           )
           @exercise_1.publication.copyright_holders << FactoryBot.create(
-            :copyright_holder, user: @user_1, publication: @exercise_1.publication
+            :copyright_holder, user: @user_2, publication: @exercise_1.publication
           )
           @exercise_1.save!
 
@@ -91,10 +91,10 @@ module Api::V1
             }]
           )
           @exercise_2.publication.authors << FactoryBot.create(
-            :author, user: @user_1, publication: @exercise_2.publication
+            :author, user: @user_2, publication: @exercise_2.publication
           )
           @exercise_2.publication.copyright_holders << FactoryBot.create(
-            :copyright_holder, user: @user_1, publication: @exercise_2.publication
+            :copyright_holder, user: @user_2, publication: @exercise_2.publication
           )
           @exercise_2.save!
 
@@ -116,7 +116,7 @@ module Api::V1
         end
         after(:all) { DatabaseCleaner.clean }
 
-        before { request.env['HTTP_AUTHORIZATION'] = "Bearer #{@user_token.token}" }
+        before { request.env['HTTP_AUTHORIZATION'] = "Bearer #{@user_1_token.token}" }
 
         context "no matches" do
           it "does not return drafts that the user is not allowed to see" do
@@ -134,10 +134,10 @@ module Api::V1
 
         context "single match" do
           it "returns drafts that the user is allowed to see" do
-            @exercise_draft.publication.authors << Author.new(user: @user)
-            @exercise_draft.publication.copyright_holders << CopyrightHolder.new(user: @user)
+            @exercise_draft.publication.authors << Author.new(user: @user_1)
+            @exercise_draft.publication.copyright_holders << CopyrightHolder.new(user: @user_1)
             @exercise_draft.reload
-            @user.reload
+            @user_1.reload
             send method, :index, params: {q: 'content:draft', format: :json}
             expect(response).to have_http_status(:success)
 
@@ -218,7 +218,7 @@ module Api::V1
       end
     end
 
-    context "GET show" do
+    context "GET #show" do
       before(:all) do
         DatabaseCleaner.start
 
@@ -236,7 +236,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by group_uuid and version" do
-        api_get :show, @user_token, params: {
+        api_get :show, @user_1_token, params: {
           id: "#{@exercise.group_uuid}@#{@exercise.version}"
         }
         expect(response).to have_http_status(:success)
@@ -247,7 +247,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by uuid" do
-        api_get :show, @user_token, params: { id: @exercise.uuid }
+        api_get :show, @user_1_token, params: { id: @exercise.uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -256,7 +256,7 @@ module Api::V1
       end
 
       it "returns the Exercise requested by uid" do
-        api_get :show, @user_token, params: { id: @exercise.uid }
+        api_get :show, @user_1_token, params: { id: @exercise.uid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -265,7 +265,7 @@ module Api::V1
       end
 
       it "returns the latest published Exercise if only the group_uuid is specified" do
-        api_get :show, @user_token, params: { id: @exercise.group_uuid }
+        api_get :show, @user_1_token, params: { id: @exercise.group_uuid }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -274,7 +274,7 @@ module Api::V1
       end
 
       it "returns the latest published Exercise if only the number is specified" do
-        api_get :show, @user_token, params: { id: @exercise.number }
+        api_get :show, @user_1_token, params: { id: @exercise.number }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -283,7 +283,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"group_uuid@draft\" is requested" do
-        api_get :show, @user_token, params: { id: "#{@exercise.group_uuid}@draft" }
+        api_get :show, @user_1_token, params: { id: "#{@exercise.group_uuid}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -292,7 +292,7 @@ module Api::V1
       end
 
       it "returns the latest draft Exercise if \"number@draft\" is requested" do
-        api_get :show, @user_token, params: { id: "#{@exercise.number}@draft" }
+        api_get :show, @user_1_token, params: { id: "#{@exercise.number}@draft" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_2.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -302,7 +302,7 @@ module Api::V1
 
       it "returns the latest version of a Exercise if \"@latest\" is requested" do
         @exercise_1.publication.update_attributes(version: 1000)
-        api_get :show, @user_token, params: { id: "#{@exercise.number}@latest" }
+        api_get :show, @user_1_token, params: { id: "#{@exercise.number}@latest" }
         expect(response).to have_http_status(:success)
         expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_1.uuid))
         expect(response.body_as_hash[:versions]).to(
@@ -315,8 +315,8 @@ module Api::V1
         @exercise_2.destroy
 
         expect do
-          api_get :show, @user_token, params: { id: "#{@exercise.number}@draft" }
-        end.to change{ Exercise.count }.by(1)
+          api_get :show, @user_1_token, params: { id: "#{@exercise.number}@draft" }
+        end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
         new_exercise = Exercise.order(:created_at).last
@@ -350,7 +350,7 @@ module Api::V1
         end
 
         it "shows solutions for published exercises if the requestor is allowed to edit it" do
-          api_get :show, @user_token, params: { id: @exercise.uid }
+          api_get :show, @user_1_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first[:collaborator_solutions]).not_to be_empty
@@ -364,13 +364,13 @@ module Api::V1
           @exercise.publication.authors.destroy_all
           @exercise.publication.copyright_holders.destroy_all
           @exercise.publication.authors << FactoryBot.create(
-            :author, user: @user_1, publication: @exercise.publication
+            :author, user: @user_2, publication: @exercise.publication
           )
           @exercise.publication.copyright_holders << FactoryBot.create(
-            :copyright_holder, user: @user_1, publication: @exercise.publication
+            :copyright_holder, user: @user_2, publication: @exercise.publication
           )
 
-          api_get :show, @user_token, params: { id: @exercise.uid }
+          api_get :show, @user_1_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
 
           expect(response.body_as_hash[:questions].first['collaborator_solutions']).to be_nil
@@ -381,7 +381,7 @@ module Api::V1
         end
 
         it "includes versions of the exercise" do
-          api_get :show, @user_token, params: { id: @exercise.uid }
+          api_get :show, @user_1_token, params: { id: @exercise.uid }
           expect(response).to have_http_status(:success)
           expect(response.body_as_hash[:versions]).to(
             eq([@exercise_2.version, @exercise_1.version, @exercise.version])
@@ -390,7 +390,7 @@ module Api::V1
       end
     end
 
-    context "POST create" do
+    context "POST #create" do
       before(:all) do
         DatabaseCleaner.start
 
@@ -404,13 +404,13 @@ module Api::V1
 
       it "creates the requested Exercise and assigns the user as author and copyright holder" do
         expect do
-          api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_1_token, body: Api::V1::Exercises::Representer.new(
             @exercise
-          ).to_hash(user_options: { user: @user })
+          ).to_hash(user_options: { user: @user_1 })
         end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
-        new_exercise = Exercise.last
+        new_exercise = Exercise.order(:created_at).last
         expect(new_exercise.nickname).to eq 'MyExercise'
         expect(new_exercise.title).to eq @exercise.title
         expect(new_exercise.stimulus).to eq @exercise.stimulus
@@ -430,27 +430,58 @@ module Api::V1
 
         expect(Set.new db_solutions.map(&:content)).to eq(Set.new json_solutions.map(&:content))
 
-        expect(new_exercise.authors.first.user).to eq @user
-        expect(new_exercise.copyright_holders.first.user).to eq @user
+        expect(new_exercise.authors.first.user).to eq @user_1
+        expect(new_exercise.copyright_holders.first.user).to eq @user_1
+      end
+
+      it "assigns the author and copyright holder through delegations" do
+        user_3 = FactoryBot.create :user, :agreed_to_terms
+        FactoryBot.create :delegation, delegator: @user_2,
+                                       delegate: @user_1,
+                                       can_assign_authorship: true,
+                                       can_assign_copyright: false
+        FactoryBot.create :delegation, delegator: user_3,
+                                       delegate: @user_1,
+                                       can_assign_authorship: false,
+                                       can_assign_copyright: true
+
+        expect do
+          api_post :create, @user_1_token, body: Api::V1::Exercises::Representer.new(
+            @exercise
+          ).to_hash(user_options: { user: @user_1 })
+        end.to change { Exercise.count }.by(1)
+        expect(response).to have_http_status(:success)
+
+        new_exercise = Exercise.order(:created_at).last
+
+        authors = new_exercise.authors.map(&:user)
+        expect(authors).to include(@user_1)
+        expect(authors).to include(@user_2)
+        expect(authors).not_to include(user_3)
+
+        copyright_holders = new_exercise.copyright_holders.map(&:user)
+        expect(copyright_holders).to include(@user_1)
+        expect(copyright_holders).not_to include(@user_2)
+        expect(copyright_holders).to include(user_3)
       end
 
       it "creates the exercise with a collaborator solution" do
         exercise = FactoryBot.build(:exercise, collaborator_solutions_count: 1)
         exercise.publication.authors << FactoryBot.build(
-          :author, user: @user, publication: @exercise.publication
+          :author, user: @user_1, publication: @exercise.publication
         )
         exercise.publication.copyright_holders << FactoryBot.build(
-          :copyright_holder, user: @user, publication: @exercise.publication
+          :copyright_holder, user: @user_1, publication: @exercise.publication
         )
 
         expect do
-          api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_1_token, body: Api::V1::Exercises::Representer.new(
             exercise
-          ).to_hash(user_options: { user: @user })
+          ).to_hash(user_options: { user: @user_1 })
         end.to change { Exercise.count }.by(1)
         expect(response).to have_http_status(:success)
 
-        new_exercise = Exercise.last
+        new_exercise = Exercise.order(:created_at).last
 
         expect(new_exercise.questions.first.collaborator_solutions).not_to be_empty
       end
@@ -459,9 +490,9 @@ module Api::V1
         FactoryBot.create :publication_group, nickname: 'MyExercise'
 
         expect do
-          api_post :create, @user_token, body: Api::V1::Exercises::Representer.new(
+          api_post :create, @user_1_token, body: Api::V1::Exercises::Representer.new(
             @exercise
-          ).to_hash(user_options: { user: @user })
+          ).to_hash(user_options: { user: @user_1 })
         end.not_to change { Exercise.count }
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -470,11 +501,11 @@ module Api::V1
 
     end
 
-    context "PATCH update" do
+    context "PATCH #update" do
       before { @old_attributes = @exercise.reload.attributes }
 
       it "updates the requested Exercise" do
-        api_patch :update, @user_token, params: { id: @exercise.uid }, body: {
+        api_patch :update, @user_1_token, params: { id: @exercise.uid }, body: {
           nickname: 'MyExercise', title: "Ipsum lorem"
         }
         expect(response).to have_http_status(:success)
@@ -491,7 +522,7 @@ module Api::V1
         @exercise.publication.publish.save!
 
         expect do
-          api_patch :update, @user_token, params: { id: @exercise.uid }, body: {
+          api_patch :update, @user_1_token, params: { id: @exercise.uid }, body: {
             nickname: 'MyExercise', title: "Ipsum lorem"
           }
         end.to raise_error(SecurityTransgression)
@@ -503,7 +534,7 @@ module Api::V1
       it "fails if the nickname has already been taken" do
         FactoryBot.create :publication_group, nickname: 'MyExercise2'
 
-        api_patch :update, @user_token, params: { id: @exercise.uid }, body: {
+        api_patch :update, @user_1_token, params: { id: @exercise.uid }, body: {
           nickname: 'MyExercise2', title: "Ipsum lorem"
         }
 
@@ -521,7 +552,7 @@ module Api::V1
         exercise_2.reload
 
         id = "#{@exercise.number}@draft"
-        api_patch :update, @user_token, params: { id: id }, body: {
+        api_patch :update, @user_1_token, params: { id: id }, body: {
           nickname: 'MyExercise', title: "Ipsum lorem"
         }
         expect(response).to have_http_status(:success)
@@ -544,7 +575,7 @@ module Api::V1
 
         id = "#{@exercise.number}@draft"
         expect do
-          api_patch :update, @user_token, params: { id: id }, body: {
+          api_patch :update, @user_1_token, params: { id: id }, body: {
             nickname: 'MyExercise', title: "Ipsum lorem"
           }
         end.to change{ Exercise.count }.by(1)
@@ -567,10 +598,10 @@ module Api::V1
       end
     end
 
-    context "DELETE destroy" do
+    context "DELETE #destroy" do
       it "deletes the requested draft Exercise" do
         expect do
-          api_delete :destroy, @user_token, params: { id: @exercise.uid }
+          api_delete :destroy, @user_1_token, params: { id: @exercise.uid }
         end.to change(Exercise, :count).by(-1)
         expect(response).to have_http_status(:success)
         expect(Exercise.where(id: @exercise.id)).not_to exist

@@ -23,7 +23,7 @@ module Api::V1
 
     let(:response_hash)     { JSON.parse(response.body).deep_symbolize_keys }
 
-    context "GET index" do
+    context "GET #index" do
 
       before do
         30.times { FactoryBot.create(:user) }
@@ -173,7 +173,7 @@ module Api::V1
 
     end
 
-    context "GET show" do
+    context "GET #show" do
 
       it "returns the current User's info" do
         api_get :show, user_token
@@ -217,7 +217,7 @@ module Api::V1
 
     end
 
-    context "PATCH update" do
+    context "PATCH #update" do
 
       it "updates the current User's profile" do
         api_patch :update, user_token, body: {
@@ -244,7 +244,7 @@ module Api::V1
 
     end
 
-    context "DELETE destroy" do
+    context "DELETE #destroy" do
 
       it "deactivates the current User's account" do
         api_delete :destroy, user_token
