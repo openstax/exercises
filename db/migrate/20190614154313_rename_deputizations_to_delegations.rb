@@ -10,10 +10,10 @@ class RenameDeputizationsToDelegations < ActiveRecord::Migration[5.2]
     rename_column :delegations, :deputy_id, :delegate_id
     rename_column :delegations, :deputy_type, :delegate_type
 
-    add_column :delegations, :can_read,              :boolean, default: false, null: false
-    add_column :delegations, :can_assign_authorship, :boolean, default: false, null: false
-    add_column :delegations, :can_assign_copyright,  :boolean, default: false, null: false
-    add_column :delegations, :can_update,            :boolean, default: false, null: false
+    add_column :delegations, :can_assign_authorship, :boolean, null: false
+    add_column :delegations, :can_assign_copyright,  :boolean, null: false
+    add_column :delegations, :can_read,              :boolean, null: false
+    add_column :delegations, :can_update,            :boolean, null: false
 
     add_index :delegations, [ :delegate_id, :delegator_id, :delegate_type ],
               unique: true,

@@ -4,15 +4,25 @@
 %>
 
 <%=
-  link_to 'Delegator', '#', data: { turbolinks: false }, onclick: <<~ONCLICK
-    $('#delegator-id').val('#{user.id}');
-    $('#delegator-type').val('#{user.class.name}');
-    $('#delegator-name').val('#{user.name}');
-  ONCLICK
+  link_to(
+    'Delegator',
+    '#',
+    data: { turbolinks: false },
+    onclick: "$('#delegator-id').val('#{user.id}'); $('#delegator-name').val('#{user.name}');"
+  )
 %>
 
 <br>
 
-<%= link_to 'Delegate', '#',
+<%=
+  link_to(
+    'Delegate',
+    '#',
     data: { turbolinks: false },
-    onclick: "$('#delegate-id').val('#{user.id}'); $('#delegate-name').val('#{user.name}');" %>
+    onclick: <<~ONCLICK.gsub("\n", ' ').strip
+      $('#delegate-id').val('#{user.id}');
+      $('#delegate-type').val('#{user.class.name}');
+      $('#delegate-name').val('#{user.name}');
+    ONCLICK
+  )
+%>

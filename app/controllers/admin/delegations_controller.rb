@@ -1,8 +1,7 @@
 module Admin
   class DelegationsController < BaseController
 
-    respond_to :html
-
+    around_action :respond_to_html, except: :users
     before_action :set_delegation, only: [ :edit, :update, :destroy ]
 
     # GET /admin/delegations
@@ -54,17 +53,19 @@ module Admin
         @delegation.delegator.name} to #{@delegation.delegate.name} deleted."
     end
 
-    # GET /admin/delegations/users
+    # GET /admin/delegations/users.js
     def users
-      handle_with Admin::UsersSearch
-
-      respond_to :js
+      respond_to { |format| format.js { handle_with Admin::UsersSearch } }
     end
 
     protected
 
     def set_delegation
       @delegation = Delegation.find(params[:id])
+    end
+
+    def respond_to_html
+      respond_to { |format| format.html { yield } }
     end
 
     def delegation_params

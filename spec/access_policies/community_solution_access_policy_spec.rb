@@ -106,7 +106,7 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
 
           another_author = FactoryBot.create :author, publication: exercise.publication
           delegation = FactoryBot.create(
-            :delegation, delegator: another_author.user, delegate: user, can_update: false
+            :delegation, delegator: another_author.user, delegate: user, can_read: false
           )
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
             eq false

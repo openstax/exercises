@@ -121,10 +121,10 @@ ActiveRecord::Schema.define(version: 2019_06_21_222656) do
     t.integer "delegate_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "can_read", default: false, null: false
-    t.boolean "can_assign_authorship", default: false, null: false
-    t.boolean "can_assign_copyright", default: false, null: false
-    t.boolean "can_update", default: false, null: false
+    t.boolean "can_assign_authorship", null: false
+    t.boolean "can_assign_copyright", null: false
+    t.boolean "can_read", null: false
+    t.boolean "can_update", null: false
     t.index ["delegate_id", "delegator_id", "delegate_type"], name: "index_delegations_on_delegate_delegator", unique: true
     t.index ["delegate_id", "delegator_id", "delegate_type"], name: "index_read_delegations_on_delegate_delegator", unique: true, where: "can_read"
     t.index ["delegate_id", "delegator_id", "delegate_type"], name: "index_update_delegations_on_delegate_delegator", unique: true, where: "can_update"
