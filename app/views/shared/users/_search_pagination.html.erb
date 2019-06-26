@@ -22,7 +22,7 @@
     %>
 
     <% linked_page_numbers.each do |lpn| %>
-      <%= link_to_unless lpn == page + 1, lpn, admin_users_path(
+      <%= link_to_unless lpn == page + 1, lpn, admin_users_url(
         search: { query: @handler_result&.outputs&.query || '', page: lpn-1, per_page: per_page }),
         remote: true %>
     <% end %>

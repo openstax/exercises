@@ -22,7 +22,7 @@ module Admin
       @delegation = Delegation.new delegation_params
 
       if @delegation.save
-        redirect_to admin_delegations_path, notice: "Delegation from #{
+        redirect_to admin_delegations_url, notice: "Delegation from #{
           @delegation.delegator.name} to #{@delegation.delegate.name} created."
       else
         self.action_name = 'new'
@@ -38,7 +38,7 @@ module Admin
     # PATCH /admin/delegations/1
     def update
       if @delegation.update_attributes(delegation_params)
-        redirect_to admin_delegations_path, notice: "Delegation from #{
+        redirect_to admin_delegations_url, notice: "Delegation from #{
           @delegation.delegator.name} to #{@delegation.delegate.name} updated."
       else
         self.action_name = 'edit'
@@ -50,7 +50,7 @@ module Admin
     def destroy
       @delegation.destroy
 
-      redirect_to admin_delegations_path, notice: "Delegation from #{
+      redirect_to admin_delegations_url, notice: "Delegation from #{
         @delegation.delegator.name} to #{@delegation.delegate.name} deleted."
     end
 

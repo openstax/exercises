@@ -64,7 +64,7 @@ Exercises::Application.routes.draw do
   end
 
   namespace :admin do
-    root controller: :console, action: :index
+    get :/, controller: :console, action: :index
 
     resources :administrators, only: [:index, :create, :destroy]
 

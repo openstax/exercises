@@ -89,9 +89,8 @@ module Api::V1
       result = SearchVocabTerms.call(params, options)
       return render_api_errors(result.errors) if result.errors.any?
 
-      respond_with result.outputs, { user_options: options, location: nil }.merge(
-        represent_with: Api::V1::Vocabs::TermSearchRepresenter
-      )
+      respond_with result.outputs, status: :ok, location: nil, user_options: options,
+                                   represent_with: Api::V1::Vocabs::TermSearchRepresenter
     end
 
     ##########
