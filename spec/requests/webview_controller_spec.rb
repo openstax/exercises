@@ -29,6 +29,31 @@ RSpec.describe WebviewController, type: :request do
     end
   end
 
+  context 'as a deleted user' do
+    before do
+      sign_in registered_user
+      registered_user.delete
+    end
+
+    context 'GET /' do
+      it 'signs the user out and renders the home page' do
+        get root_url
+        expect(@controller.current_user).to eq AnonymousUser.instance
+        expect(response).to redirect_to(root_url)
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'GET /dashboard' do
+      it 'signs the user out and redirects to the home page' do
+        get dashboard_url
+        expect(@controller.current_user).to eq AnonymousUser.instance
+        expect(response).to redirect_to(root_url)
+      end
+    end
+  end
+
   context 'as a new user' do
     before { sign_in new_user }
 
