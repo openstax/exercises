@@ -53,7 +53,7 @@ RSpec.describe Exercises::Import::Xlsx, type: :routine do
       stem = question.stems.first
       expect(stem.content).not_to be_blank
       expect(stem.stem_answers).not_to be_blank
-      expect(Set.new(stem.stem_answers.map { |sa| sa.answer })).to eq Set.new(question.answers)
+      expect(Set.new(stem.stem_answers.map(&:answer))).to eq Set.new(question.answers)
       expect(stem.stem_answers.any?{ |answer| answer.correctness == 1.0 }).to eq true
 
       stem.stem_answers.each do |stem_answer|

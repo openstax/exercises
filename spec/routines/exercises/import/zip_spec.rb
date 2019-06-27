@@ -24,7 +24,7 @@ RSpec.describe Exercises::Import::Zip, type: :routine do
 
       expect(exercise.tags).not_to be_blank
       expect(exercise.tags).to satisfy do |tags|
-        tag_names = tags.map { |tag| tag.name }
+        tag_names = tags.map(&:name)
         (tag_names & ['lo:k12phys:3-1-1',
                       'lo:k12phys:3-1-2',
                       'lo:k12phys:3-2-1',
@@ -49,7 +49,7 @@ RSpec.describe Exercises::Import::Zip, type: :routine do
       stem = question.stems.first
       expect(stem.content).not_to be_blank
       expect(stem.stem_answers).not_to be_blank
-      expect(Set.new(stem.stem_answers.map { |sa| sa.answer })).to eq Set.new(question.answers)
+      expect(Set.new(stem.stem_answers.map(&:answer))).to eq Set.new(question.answers)
       expect(stem.stem_answers.any?{ |answer| answer.correctness == 1.0 }).to eq true
 
       stem.stem_answers.each do |stem_answer|

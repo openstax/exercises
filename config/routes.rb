@@ -72,8 +72,6 @@ Exercises::Application.routes.draw do
 
     resources :licenses
 
-    resources :trusted_applications, only: [:index, :create, :destroy]
-
     resources :users, only: [:index] do
       member do
         put :become

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_21_222656) do
+ActiveRecord::Schema.define(version: 2019_06_27_150411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -510,13 +510,6 @@ ActiveRecord::Schema.define(version: 2019_06_21_222656) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_tags_on_name", unique: true
-  end
-
-  create_table "trusted_applications", id: :serial, force: :cascade do |t|
-    t.integer "application_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["application_id"], name: "index_trusted_applications_on_application_id", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

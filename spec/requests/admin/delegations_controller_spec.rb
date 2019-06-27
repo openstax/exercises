@@ -72,10 +72,10 @@ RSpec.describe Admin::DelegationsController, type: :request do
       end
     end
 
-    context 'GET /admin/delegations/users' do
-      it 'redirects to the login page' do
-        get users_admin_delegations_url
-        expect(response).to redirect_to(openstax_accounts.login_url)
+    context 'GET /admin/delegations/users.js' do
+      it 'returns 403 Forbidden' do
+        get users_admin_delegations_url, xhr: true
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
@@ -131,9 +131,9 @@ RSpec.describe Admin::DelegationsController, type: :request do
       end
     end
 
-    context 'GET /admin/delegations/users' do
+    context 'GET /admin/delegations/users.js' do
       it 'raises SecurityTransgression' do
-        expect { get users_admin_delegations_url }.to raise_error(SecurityTransgression)
+        expect { get users_admin_delegations_url, xhr: true }.to raise_error(SecurityTransgression)
       end
     end
   end
