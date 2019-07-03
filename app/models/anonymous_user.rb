@@ -18,10 +18,18 @@ class AnonymousUser
     'Anonymous'
   end
 
+  def name
+    username
+  end
+
+  def casual_name
+    username
+  end
+
   def is_human?
     true
   end
-  
+
   def is_application?
     false
   end

@@ -1,19 +1,22 @@
 <h4>Administrators</h4>
-  <%= render partial: 'shared/users/index',
-             locals: {users: @administrators.map {|a| a.user},
-                      action_partial: 'admin/administrators/destroy',
-                      sign_in_as: true} %>
+  <%= render partial: 'shared/users/index', locals: {
+    users: @administrators.map(&:user),
+    action_partial: 'admin/administrators/destroy',
+    sign_in_as: true
+  } %>
 
 <br><br>
 
 <h4>Add Administrator</h4>
-<%= render partial: 'openstax/accounts/shared/accounts/search',
-           locals: { search_action_path: admin_administrators_path,
-                     method: :get,
-                     remote: true } %>
+<%= render partial: 'openstax/accounts/shared/accounts/search', locals: {
+  search_action_path: admin_administrators_url,
+  method: :get,
+  remote: true
+} %>
 
 <div id='search-results-list'>
-  <%= render partial: 'shared/users/search_results',
-             locals: {action_partial: 'admin/administrators/form',
-                      sign_in_as: true} %>
+  <%= render partial: 'shared/users/search_results', locals: {
+    action_partial: 'admin/administrators/form',
+    sign_in_as: true
+  } %>
 </div>

@@ -100,15 +100,11 @@ module Oauth
     end
 
     def user_params
-      params.require(:doorkeeper_application).permit(
-        :name, :redirect_uri, :scopes, :email_subject_prefix
-      )
+      params.require(:doorkeeper_application).permit(:name, :redirect_uri, :scopes)
     end
 
     def admin_params
-      params.require(:doorkeeper_application).permit(
-        :name, :redirect_uri, :scopes, :confidential, :email_subject_prefix
-      )
+      params.require(:doorkeeper_application).permit(:name, :redirect_uri, :scopes, :confidential)
     end
 
     # We control which attributes of Doorkeeper::Applications can be updated

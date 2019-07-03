@@ -1,0 +1,36 @@
+<h4>Delegations</h4>
+<%=
+  osu.action_list(
+    records: @delegations,
+    list: {
+      headings: [
+        'Delegator', 'Delegate', 'Author?', 'Copy?', 'Read?', 'Update/Delete?', 'Actions'
+      ],
+      widths: [ '30%', '30%', '5%', '5%', '5%', '5%', '20%' ],
+      data_procs: [
+        ->(delegation) { delegation.delegator.name },
+        ->(delegation) { delegation.delegate.name },
+        ->(delegation) { yn(delegation.can_assign_authorship) },
+        ->(delegation) { yn(delegation.can_assign_copyright) },
+        ->(delegation) { yn(delegation.can_read) },
+        ->(delegation) { yn(delegation.can_update) },
+        ->(delegation) do
+          link_to(
+            edit_admin_delegation_url(delegation)
+          ) { '<span class="glyphicon glyphicon-pencil">Edit</span>'.html_safe } + ' | ' +
+          link_to(
+            admin_delegation_url(delegation), method: :delete, data: {
+              confirm: "Are you sure you want to remove this delegation?"
+            }
+          ) { '<span class="glyphicon glyphicon-trash orange">Remove</span>'.html_safe }
+        end
+      ]
+    }
+  )
+%>
+
+<br>
+
+<%= link_to(new_admin_delegation_url) do
+  '<span class="glyphicon glyphicon-plus">Add</span>'.html_safe
+end %>

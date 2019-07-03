@@ -18,8 +18,7 @@ RSpec.describe PublicationAccessPolicy, type: :access_policy do
       end
     end
 
-    it 'can be accessed by collaborators and also ' +
-       'list owners and editors if a collaborator is a list owner' do
+    it 'can be accessed by collaborators and their delegates' do
       author = FactoryBot.create(:author, publication: publication, user: user)
       expect(described_class.action_allowed?(:publish, user, publication.reload)).to eq true
       author.destroy
@@ -28,24 +27,24 @@ RSpec.describe PublicationAccessPolicy, type: :access_policy do
       expect(described_class.action_allowed?(:publish, user, publication.reload)).to eq true
       ch.destroy
 
-      another_author = FactoryBot.create(:author, publication: publication)
-      lpg = FactoryBot.create(:list_publication_group,
-                               publication_group: publication.publication_group)
-      alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+      another_author = FactoryBot.create :author, publication: publication
+      delegation = FactoryBot.create(
+        :delegation, delegator: another_author.user, delegate: user, can_update: false
+      )
+      expect(described_class.action_allowed?(:publish, user, publication)).to eq false
 
-      lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-      expect(described_class.action_allowed?(:publish, user, publication.reload)).to eq true
-      lo.destroy
+      delegation.update_attribute :can_update, true
+      expect(described_class.action_allowed?(:publish, user, publication)).to eq true
 
-      le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-      expect(described_class.action_allowed?(:publish, user, publication.reload)).to eq true
-      le.destroy
+      another_copyright_holder = FactoryBot.create(:copyright_holder, publication: publication)
+      delegation.update_attribute :delegator, another_copyright_holder.user
+      expect(described_class.action_allowed?(:publish, user, publication)).to eq true
 
-      lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-      expect(described_class.action_allowed?(:publish, user, publication.reload)).to eq false
-      lr.destroy
+      delegation.update_attribute :can_update, false
+      expect(described_class.action_allowed?(:publish, user, publication)).to eq false
 
-      expect(described_class.action_allowed?(:publish, user, publication.reload)).to eq false
+      delegation.destroy
+      expect(described_class.action_allowed?(:publish, user, publication)).to eq false
     end
   end
 

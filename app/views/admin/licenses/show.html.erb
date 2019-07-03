@@ -25,11 +25,6 @@
   <%= @license.copyright_notice %>
 </p>
 
-<p>
-  <strong>Public Domain?</strong>
-  <%= yn(@license.is_public_domain) %>
-</p>
-
 <%= link_to(edit_admin_license_url(@license)) do
       '<span class="glyphicon glyphicon-pencil">Edit</span>'.html_safe
     end %> |

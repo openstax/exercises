@@ -27,8 +27,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
       expect(described_class.action_allowed?(:read, user, vocab_term)).to eq false
     end
 
-    it 'can be accessed by collaborators and also ' +
-       'list owners, editors and readers if a collaborator is a list owner' do
+    it 'can be accessed by collaborators and their delegates' do
       author = FactoryBot.create(:author, publication: vocab_term.publication, user: user)
       expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
       author.destroy
@@ -37,24 +36,26 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
       expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
       ch.destroy
 
-      another_author = FactoryBot.create(:author, publication: vocab_term.publication)
-      lpg = FactoryBot.create(:list_publication_group,
-                               publication_group: vocab_term.publication_group)
-      alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+      another_author = FactoryBot.create :author, publication: vocab_term.publication
+      delegation = FactoryBot.create(
+        :delegation, delegator: another_author.user, delegate: user, can_read: false
+      )
+      expect(described_class.action_allowed?(:read, user, vocab_term)).to eq false
 
-      lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-      expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
-      lo.destroy
+      delegation.update_attribute :can_read, true
+      expect(described_class.action_allowed?(:read, user, vocab_term)).to eq true
 
-      le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-      expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
-      le.destroy
+      another_copyright_holder = FactoryBot.create(
+        :copyright_holder, publication: vocab_term.publication
+      )
+      delegation.update_attribute :delegator, another_copyright_holder.user
+      expect(described_class.action_allowed?(:read, user, vocab_term)).to eq true
 
-      lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-      expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq true
-      lr.destroy
+      delegation.update_attribute :can_read, false
+      expect(described_class.action_allowed?(:read, user, vocab_term)).to eq false
 
-      expect(described_class.action_allowed?(:read, user, vocab_term.reload)).to eq false
+      delegation.destroy
+      expect(described_class.action_allowed?(:read, user, vocab_term)).to eq false
     end
   end
 
@@ -65,7 +66,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
       expect(described_class.action_allowed?(:create, app, vocab_term)).to eq false
     end
 
-    it 'can be accessed by users' do
+    it 'can be accessed by normal users' do
       expect(described_class.action_allowed?(:create, user, vocab_term)).to eq true
     end
   end
@@ -85,8 +86,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq false
       end
 
-      it 'can be accessed by collaborators and also ' +
-         'list owners and editors if a collaborator is a list owner' do
+      it 'can be accessed by collaborators and their delegates' do
         author = FactoryBot.create(:author, publication: vocab_term.publication, user: user)
         expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq true
         expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
@@ -97,27 +97,31 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
         ch.destroy
 
-        another_author = FactoryBot.create(:author, publication: vocab_term.publication)
-        lpg = FactoryBot.create(:list_publication_group,
-                                 publication_group: vocab_term.publication_group)
-        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
-
-        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-        expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq true
-        expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
-        lo.destroy
-
-        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-        expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq true
-        expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
-        le.destroy
-
-        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-        expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq false
+        another_author = FactoryBot.create :author, publication: vocab_term.publication
+        delegation = FactoryBot.create(
+          :delegation, delegator: another_author.user, delegate: user, can_update: false
+        )
+        expect(described_class.action_allowed?(:update, user, vocab_term)).to eq false
         expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq false
-        lr.destroy
 
-        expect(described_class.action_allowed?(:update, user, vocab_term.reload)).to eq false
+        delegation.update_attribute :can_update, true
+        expect(described_class.action_allowed?(:update, user, vocab_term)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
+
+        another_copyright_holder = FactoryBot.create(
+          :copyright_holder, publication: vocab_term.publication
+        )
+        delegation.update_attribute :delegator, another_copyright_holder.user
+        expect(described_class.action_allowed?(:update, user, vocab_term)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq true
+
+        delegation.update_attribute :can_update, false
+        expect(described_class.action_allowed?(:update, user, vocab_term)).to eq false
+        expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq false
+
+        delegation.destroy
+        expect(described_class.action_allowed?(:update, user, vocab_term)).to eq false
+        expect(described_class.action_allowed?(:destroy, user, vocab_term)).to eq false
       end
     end
 
@@ -158,8 +162,7 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq false
       end
 
-      it 'can be accessed by collaborators and also ' +
-         'list owners and editors if a collaborator is a list owner' do
+      it 'can be accessed by collaborators and their delegates' do
         author = FactoryBot.create(:author, publication: vocab_term.publication, user: user)
         expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq true
         author.destroy
@@ -168,24 +171,26 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq true
         ch.destroy
 
-        another_author = FactoryBot.create(:author, publication: vocab_term.publication)
-        lpg = FactoryBot.create(:list_publication_group,
-                                 publication_group: vocab_term.publication_group)
-        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+        another_author = FactoryBot.create :author, publication: vocab_term.publication
+        delegation = FactoryBot.create(
+          :delegation, delegator: another_author.user, delegate: user, can_update: false
+        )
+        expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq false
 
-        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-        expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq true
-        lo.destroy
+        delegation.update_attribute :can_update, true
+        expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq true
 
-        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-        expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq true
-        le.destroy
+        another_copyright_holder = FactoryBot.create(
+          :copyright_holder, publication: vocab_term.publication
+        )
+        delegation.update_attribute :delegator, another_copyright_holder.user
+        expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq true
 
-        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-        expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq false
-        lr.destroy
+        delegation.update_attribute :can_update, false
+        expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq false
 
-        expect(described_class.action_allowed?(:new_version, user, vocab_term.reload)).to eq false
+        delegation.destroy
+        expect(described_class.action_allowed?(:new_version, user, vocab_term)).to eq false
       end
     end
 

@@ -130,7 +130,7 @@ module Api::V1::Exercises
       it 'caches calls to #super' do
         count = 0
         expect(representer).to(
-          receive(:create_representation_with).exactly(3).times.and_wrap_original do |method, *args|
+          receive(:create_representation_with).exactly(4).times.and_wrap_original do |method, *args|
             count += 1
 
             method.call *args
@@ -149,16 +149,18 @@ module Api::V1::Exercises
         representer.to_hash(user_options: { can_view_solutions: true })
         expect(count).to eq 2
 
-        described_class.all_cache_keys_for(exercise).each { |key| Rails.cache.delete key }
+        described_class.all_cache_keys_for(
+          exercise, user_options: { can_view_solutions: true }
+        ).each { |key| Rails.cache.delete key }
 
         representer.to_hash(user_options: { can_view_solutions: true })
-        expect(count).to eq 3
+        expect(count).to eq 4
 
         representer.to_hash
-        expect(count).to eq 3
+        expect(count).to eq 4
 
         representer.to_hash(user_options: { can_view_solutions: true })
-        expect(count).to eq 3
+        expect(count).to eq 4
       end
     end
   end

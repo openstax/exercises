@@ -4,8 +4,8 @@ class User < ApplicationRecord
 
   acts_as_voter
 
-  belongs_to :account, class_name: "OpenStax::Accounts::Account",
-                       autosave: true
+  belongs_to :account, class_name: "OpenStax::Accounts::Account", autosave: true
+
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
 
@@ -14,22 +14,21 @@ class User < ApplicationRecord
   has_many :authors, dependent: :destroy
   has_many :copyright_holders, dependent: :destroy
 
-  has_many :child_deputizations, class_name: 'Deputization',
-           foreign_key: :deputizer_id, dependent: :destroy,
-           inverse_of: :deputizer
-  has_many_through_groups :groups_as_member, :deputizations,
-                          as: :deputy, dependent: :destroy
+  has_many :delegations_as_delegator, class_name: 'Delegation',
+                                      foreign_key: :delegator_id,
+                                      dependent: :destroy,
+                                      inverse_of: :delegator
+  has_many :delegations_as_delegate, class_name: 'Delegation',
+                                     as: :delegate,
+                                     dependent: :destroy
 
-  has_many_through_groups :groups_as_member, :list_owners,
-                          as: :owner, dependent: :destroy
-  has_many_through_groups :groups_as_member, :list_editors,
-                          as: :editor, dependent: :destroy
-  has_many_through_groups :groups_as_member, :list_readers,
-                          as: :reader, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_owners, as: :owner, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_editors, as: :editor, dependent: :destroy
+  has_many_through_groups :groups_as_member, :list_readers, as: :reader, dependent: :destroy
 
-  has_many_through_groups :groups_as_member, :applications,
-                          class_name: 'Doorkeeper::Application',
-                          as: :owner, dependent: :destroy
+  has_many_through_groups :groups_as_member, :applications, class_name: 'Doorkeeper::Application',
+                                                            as: :owner,
+                                                            dependent: :destroy
 
   has_many :sortings, dependent: :destroy
 
@@ -41,6 +40,14 @@ class User < ApplicationRecord
 
   def self.anonymous
     AnonymousUser.instance
+  end
+
+  def default_authors
+    [ self ] + delegations_as_delegate.to_a.select(&:can_assign_authorship).map(&:delegator)
+  end
+
+  def default_copyright_holders
+    [ self ] + delegations_as_delegate.to_a.select(&:can_assign_copyright).map(&:delegator)
   end
 
   def is_human?

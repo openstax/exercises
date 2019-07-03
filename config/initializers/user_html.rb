@@ -9,7 +9,7 @@ EMBED_URL_REGEXES = [
   /\A(?:https?:)?\/\/phet\.colorado\.edu\//
 ]
 
-embed_transformer = lambda do |env|
+embed_transformer = ->(env) do
   node      = env[:node]
   node_name = env[:node_name]
 

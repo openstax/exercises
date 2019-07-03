@@ -1,4 +1,4 @@
-<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public
+<%# Copyright 2011-2019 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
 <div id="application-header">
@@ -7,11 +7,10 @@
 
   <div id="application-header-between-bars">
 
-    <%= render  :partial  => "layouts/application_account_bar",
-                :locals   => { :icon_color => "white" } %>
+    <%= render partial: "layouts/application_account_bar", locals: { icon_color: "white" } %>
 
     <div id="application-header-logo">
-      <a href="<%= main_app.root_path %>" id="application-header-logo-link"></a>
+      <a href="<%= main_app.root_url %>" id="application-header-logo-link"></a>
     </div>
 
   </div>
@@ -22,24 +21,24 @@
         <ul>
           <li>
             <%= render 'layouts/application_top_nav_link',
-                       target_text:            'WRITE A NEW EXERCISE',
-                       target_id:              'top-nav-exercises-new-link',
-                       target_path:            'exercises/new',
-                       target_current_symbol:  :top_nav_exercises_new_current %>
+                       target_text:           'WRITE A NEW EXERCISE',
+                       target_id:             'top-nav-exercises-new-link',
+                       target_path:           'exercises/new',
+                       target_current_symbol: :top_nav_exercises_new_current %>
           </li>
           <li>
             <%= render 'layouts/application_top_nav_link',
-                       target_text:            'SEARCH',
-                       target_id:              'top-nav-exercises-link',
-                       target_path:            'search',
-                       target_current_symbol:  :top_nav_exercises_current %>
+                       target_text:           'SEARCH',
+                       target_id:             'top-nav-exercises-link',
+                       target_path:           'search',
+                       target_current_symbol: :top_nav_exercises_current %>
           </li>
           <li>
             <%= render 'layouts/application_top_nav_link',
-                       target_text:            'EXERCISE LISTS',
-                       target_id:              'top-nav-lists-link',
-                       target_path:            '',
-                       target_current_symbol:  :top_nav_lists_current %>
+                       target_text:           'EXERCISE LISTS',
+                       target_id:             'top-nav-lists-link',
+                       target_path:           '',
+                       target_current_symbol: :top_nav_lists_current %>
           </li>
 
         </ul>

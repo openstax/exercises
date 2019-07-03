@@ -1,10 +1,8 @@
-# The rake tasks in this module are used to manage trusted OpenStax
-# oauth applications.  Currently, Exercises, Tutor, Exchange and
-# Biglearn oauth applications are managed by these tasks.
-
+# The rake tasks in this module are used to manage OpenStax oauth applications.
+# Currently, only Tutor is managed by these tasks.
 namespace :openstax do
   namespace :applications do
-    DEFAULT_APP_NAMES = ['OpenStax Tutor']
+    DEFAULT_APP_NAMES = [ 'OpenStax Tutor' ]
 
     # This task creates applications based on the given parameters.
     # This task creates an user with the username `ose_app_admin` with
@@ -13,7 +11,7 @@ namespace :openstax do
     # to that group.  Once the user and the group are setup, it
     # creates each of the applications declared above.
     desc "Create the default OpenStax Applications (currently only Tutor) in OpenStax Exercises"
-    task :create, [:admin_password] => :environment do |t, args|
+    task :create, [ :admin_password ] => :environment do |t, args|
       ActiveRecord::Base.transaction do
         # Get the admin password
         password = args[:admin_password]
@@ -32,8 +30,9 @@ namespace :openstax do
             admin_user.create_administrator!
           end
 
-          app_owner_group = OpenStax::Accounts::CreateGroup[name: 'ose_app_admin_group',
-                                                            owner: admin_account]
+          app_owner_group = OpenStax::Accounts::CreateGroup[
+            name: 'ose_app_admin_group', owner: admin_account
+          ]
           app_owner_group.add_member(admin_account)
         end
 
@@ -42,9 +41,8 @@ namespace :openstax do
           Doorkeeper::Application.find_or_create_by(name: app_name) do |application|
             application.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
             application.owner = app_owner_group
-            application.trusted_application = TrustedApplication.new(application: application)
 
-            puts "Created trusted application #{app_name}."
+            puts "Created application #{app_name}."
           end
         end
       end
@@ -54,7 +52,7 @@ namespace :openstax do
     # applications.  For each application found, it returns the
     # application id and secret as a JSON object list.
     desc "Save information about known client applications"
-    task :save_json, [:filename] => :environment do |t, args|
+    task :save_json, [ :filename ] => :environment do |t, args|
       filename = args[:filename] || 'client_apps.json'
 
       apps = Doorkeeper::Application.where(name: DEFAULT_APP_NAMES)

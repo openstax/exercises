@@ -15,8 +15,8 @@ class ApplicationController < ActionController::Base
 
   def valid_user!
     return unless current_user.is_deleted?
-    sign_out
-    redirect_to home_url
-  end
 
+    sign_out!
+    redirect_to root_url
+  end
 end

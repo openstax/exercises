@@ -45,7 +45,7 @@ class SearchVocabTerms
     run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       # Block to be used for searches by name or term
 
-      name_search_block = lambda do |names|
+      name_search_block = ->(names) do
         names.each do |nm|
           sanitized_names = to_string_array(nm, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_names.empty?

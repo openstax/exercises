@@ -9,12 +9,13 @@
       widths: ['30%', '60%', '10%'],
       data_procs:
         [
-          lambda { |library| library.name || '---' },
-          lambda { |library| truncate(library.description) || '---' },
-          lambda { |library| "<span id=library-#{library.id}-actions>
-                                #{render partial: action_partial,
-                                         locals: {library: library}}
-                              </span>".html_safe }
+          ->(library) { library.name || '---' },
+          ->(library) { truncate(library.description) || '---' },
+          ->(library) do
+            "<span id=library-#{library.id}-actions>#{
+              render partial: action_partial, locals: { library: library }
+            }</span>".html_safe
+          end
         ]
     }
   ) %>

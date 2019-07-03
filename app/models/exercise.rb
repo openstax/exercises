@@ -121,7 +121,7 @@ class Exercise < ApplicationRecord
 
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
 
-    # Remove the entry below when apps are properly configured as ListReaders
+    # Modify the line below if we implement delegating to apps
     return true if user.nil?           # Application user
     return false if user.is_anonymous? # Anonymous user
 
@@ -136,7 +136,7 @@ class Exercise < ApplicationRecord
     # Check that all stems have either no answers (free response) or at least one correct answer
     questions.each do |question|
       question.stems.each do |stem|
-        next if stem.stem_answers.empty? || stem.stem_answers.any?{ |sa| sa.is_correct? }
+        next if stem.stem_answers.empty? || stem.stem_answers.any?(&:is_correct?)
         errors.add(:base, 'has a question with only incorrect answers')
         throw(:abort)
       end

@@ -1,4 +1,4 @@
-# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2019 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 module ApplicationHelper
@@ -24,32 +24,30 @@ module ApplicationHelper
   def page_heading(heading_text, options={})
     options[:take_out_site_name] = true if options[:take_out_site_name].nil?
     options[:sub_heading_text] ||= ""
-    options[:title_text] ||= heading_text + (options[:sub_heading_text].blank? ? 
-                                             "" : 
+    options[:title_text] ||= heading_text + (options[:sub_heading_text].blank? ?
+                                             "" :
                                              " [#{options[:sub_heading_text]}]")
-    
+
     @page_title = options[:title_text]
     @page_title.sub!(SITE_NAME, "").strip! if @page_title.include?(SITE_NAME) && options[:take_out_site_name]
-    
+
     return if heading_text.blank?
-    
+
     content_for :page_heading do
-      render(:partial => 'shared/page_heading', 
-             :locals => {:heading_text => heading_text, 
-                         :sub_heading_text => options[:sub_heading_text]})
+      render partial: 'shared/page_heading', locals: {
+        heading_text: heading_text, sub_heading_text: options[:sub_heading_text]
+      }
     end
   end
 
   def partial_width_block(&block)
-    content_tag :div, :class => 'partial-width-block' do
+    content_tag :div, class: 'partial-width-block' do
       (capture(&block)).html_safe
     end
   end
 
   def section(title, options={}, &block)
-    block_to_partial('shared/section', 
-                     options.merge(:title => title), 
-                     &block)
+    block_to_partial('shared/section', options.merge(title: title), &block)
   end
 
   def yn(bool)
@@ -85,47 +83,16 @@ module ApplicationHelper
     end
 
     @handler_result.errors.any? ?
-      js_refresh_alerts(options) : 
+      js_refresh_alerts(options) :
       js_refresh_alerts(options) + capture(&block).html_safe
   end
 
   def js_refresh_alerts(options={})
     options[:alerts_html_id] ||= 'local-alerts'
     options[:alerts_partial] ||= 'shared/local_alerts'
-    options[:trigger] ||= 'alerts-updated'    
+    options[:trigger] ||= 'alerts-updated'
 
     "$('##{options[:alerts_html_id]}').html('#{ j(render options[:alerts_partial]) }').trigger('#{options[:trigger]}');".html_safe
-  end
-
-  def include_codemirror
-    content_for :javascript_includes do
-      javascript_include_tag 'codemirror'
-    end
-
-    content_for :stylesheet_includes do
-      stylesheet_link_tag 'codemirror'
-    end
-  end
-
-  def activate_codemirror(options={})
-    options[:selector] ||= 'textarea'
-
-    content_for :javascript do
-      javascript_tag do
-        "$(document).ready(function() {
-           CodeMirror.fromTextArea(
-             $('#{options[:selector]}').get(0), 
-             {
-               mode: '#{options[:language]}',
-               lineNumbers: true,
-               matchBrackets: true,
-               gutters: ['CodeMirror-lint-markers'],
-               lint: true
-             }
-           );
-         });".html_safe
-      end
-    end
   end
 
 end

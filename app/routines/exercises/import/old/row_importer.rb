@@ -8,7 +8,7 @@ module Exercises
       attr_reader :skip_first_row, :author, :copyright_holder
 
       def split(text, on: ',')
-        text.split(on).map {|t| t.strip}
+        text.split(on).map(&:strip)
       end
 
       # Parses the text using Markdown

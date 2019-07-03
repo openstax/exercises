@@ -1,4 +1,4 @@
-// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// Copyright 2011-2019 Rice University. Licensed under the Affero General Public
 // License version 3 or later.  See the COPYRIGHT file for details.
 //
 //= require markitup/jquery.markitup
@@ -24,7 +24,7 @@ function bindAttachmentsDialogImages() {
   });
 }
 
-$(document).ready(function() {
+$(document).on('turbolinks:load', function() {
    enableMarkItUp();
    bindAttachmentsDialogImages();
 });

@@ -1,7 +1,7 @@
 module Api::V1
   class AttachmentsController < OpenStax::Api::V1::ApiController
 
-    include Exercises::Finders
+    include ::Exercises::Finders
 
     before_action :find_exercise_or_create_draft, only: [:create]
     before_action :find_exercise, only: [:destroy]

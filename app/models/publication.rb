@@ -38,7 +38,7 @@ class Publication < ApplicationRecord
   scope :with_id, ->(id) do
     nn, vv = id.to_s.split('@')
 
-    pub = Publication.arel_table
+    pub = arel_table
     pubg = PublicationGroup.arel_table
 
     wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
@@ -51,10 +51,9 @@ class Publication < ApplicationRecord
         wheres
       else
         wheres = wheres.and(pub[:version].eq(vv))
-    end 
+    end
 
-    joins(publication: :publication_group).where(wheres
-    ).order( [pubg[:number].asc, pub[:version].desc] )
+    joins(:publication_group).where(wheres).order(pubg[:number].asc, pub[:version].desc)
   end
 
   scope :visible_for, ->(options) do
@@ -64,35 +63,27 @@ class Publication < ApplicationRecord
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
     next all if user.administrator
+
     user_id = user.id
 
-    pub = Publication.arel_table
+    pub = arel_table
     au = Author.arel_table
     cw = CopyrightHolder.arel_table
-    pubg = PublicationGroup.arel_table
-    lpg = ListPublicationGroup.arel_table
-    l_own = ListOwner.arel_table
-    l_edit = ListEditor.arel_table
-    l_read = ListReader.arel_table
+    dg = Delegation.arel_table
 
-    me = self.arel_table
-
-    joins(me.join(pub).on(pub[:publishable_id].eq(me[:id]), pub[:publishable_type].eq(self.name))
-       .join(au).on(au[:publication_id].eq(pub[:id]))
-       .join(cw).on(cw[:publication_id].eq(pub[:id]))
-       .join(pubg).on(pub[:publication_group_id].eq(pubg[:id]))
-       .outer_join(lpg).on(lpg[:publication_group_id].eq(pubg[:id]))
-       .outer_join(l_own).on(l_own[:list_id].eq(lpg[:id]))
-       .outer_join(l_edit).on(l_edit[:list_id].eq(lpg[:id]))
-       .outer_join(l_read).on(l_read[:list_id].eq(lpg[:id])).join_sources
-       ).where(
-         pub[:published_at].not_eq(nil)
-        .or(au[:user_id].eq(user_id))
-        .or(cw[:user_id].eq(user_id))
-        .or(l_own[:owner_id].eq(user_id).and(l_own[:owner_type].eq('User')))
-        .or(l_edit[:editor_id].eq(user_id).and(l_edit[:editor_type].eq('User')))
-        .or(l_read[:reader_id].eq(user_id).and(l_read[:reader_type].eq('User'))))
-
+    left_outer_joins(:authors, :copyright_holders).where(
+      pub[:published_at].not_eq(nil).or(
+        au[:user_id].eq(user_id)
+      ).or(
+        cw[:user_id].eq(user_id)
+      ).or(
+        Delegation.where(
+          delegate_id: user_id, delegate_type: user.class.name, can_read: true
+        ).where(
+          dg[:delegator_id].eq(au[:user_id]).or(dg[:delegator_id].eq(cw[:user_id]))
+        ).arel.exists
+      )
+    )
   end
 
   # By default, returns both the latest published version and the latest draft, if any
@@ -160,35 +151,39 @@ class Publication < ApplicationRecord
   end
 
   def has_read_permission?(user)
-    has_write_permission?(user) || collaborators.any? do |collaborator|
-      ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
-        .joins(list: [:list_publication_groups, :list_readers])
-        .where(
-          list_publication_groups: { publication_group_id: publication_group_id },
-          list_readers: { reader_id: user.id, reader_type: user.class.name }
-        )
-        .exists?
-    end
+    has_collaborator?(user) ||
+    authors.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: {
+        can_read: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
+    }).exists? ||
+    copyright_holders.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: {
+        can_read: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
+    }).exists?
   end
 
   def has_write_permission?(user)
-    has_collaborator?(user) || collaborators.any? do |collaborator|
-      ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
-        .joins(list: :list_publication_groups)
-        .joins('INNER JOIN "list_owners" "lo" ON "lo"."list_id" = "lists"."id"')
-        .where(list_publication_groups: { publication_group_id: publication_group_id })
-        .where(
-          "\"lo\".\"owner_id\" = #{user.id} AND \"lo\".\"owner_type\" = '#{user.class.name}'"
-        )
-        .exists? ||
-      ListOwner.where(owner_id: collaborator.id, owner_type: collaborator.class.name)
-        .joins(list: [:list_publication_groups, :list_editors])
-        .where(
-          list_publication_groups: { publication_group_id: publication_group_id },
-          list_editors: { editor_id: user.id, editor_type: user.class.name }
-        )
-        .exists?
-    end
+    has_collaborator?(user) ||
+    authors.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: {
+        can_update: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
+    }).exists? ||
+    copyright_holders.joins(user: :delegations_as_delegator).where(user: {
+      delegations_as_delegator: {
+        can_update: true,
+        delegate_id: user.id,
+        delegate_type: user.class.name
+      }
+    }).exists?
   end
 
   def publish

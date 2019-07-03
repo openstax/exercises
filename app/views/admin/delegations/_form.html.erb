@@ -1,0 +1,85 @@
+<%#
+  Clients of this partial must provide the following variables:
+  delegation
+%>
+
+<%#
+  Remove local: true when Turbolinks adds support for the default behavior
+  (so error messages render properly)
+%>
+
+<div class='form-inline'>
+  <%=
+    render partial: 'openstax/accounts/shared/accounts/search', locals: {
+      search_action_path: users_admin_delegations_url,
+      action_partial: 'admin/delegations/actions',
+      action_heading: 'Make',
+      remote: true
+    }
+  %>
+</div>
+
+<div id='search-results-list'>
+  <%=
+    render partial: 'shared/users/search_results', locals: {
+      action_partial: 'admin/delegations/actions',
+      action_heading: 'Make'
+    }
+  %>
+</div>
+
+<%= form_with model: [:admin, delegation], local: true do |form| %>
+  <%= render partial: 'shared/error_messages', locals: { target: delegation } %>
+
+  <br>
+
+  <%= form.label :delegator_name, 'Delegator' %>
+  <%= form.text_field :delegator_name, id: 'delegator-name', disabled: true %>
+  <%= form.hidden_field :delegator_id, id: 'delegator-id' %>
+
+  <br>
+
+  <%= form.label :delegate_name, 'Delegate' %>
+  <%= form.text_field :delegate_name, id: 'delegate-name', disabled: true %>
+  <%= form.hidden_field :delegate_id, id: 'delegate-id' %>
+  <%= form.hidden_field :delegate_type, id: 'delegate-type' %>
+
+  <br>
+
+  <h5>Delegate can:</h5>
+
+  <%= form.check_box :can_assign_authorship %>
+  <%= form.label :can_assign_authorship, 'Assign authorship to Delegator' %>
+
+  <br>
+
+  <%= form.check_box :can_assign_copyright %>
+  <%= form.label :can_assign_copyright, 'Assign copyright to Delegator' %>
+
+  <br>
+
+  <%= form.check_box :can_read %>
+  <%= form.label :can_read, "Read Delegator's drafts" %>
+
+  <br>
+
+  <%= form.check_box :can_update %>
+  <%= form.label :can_update, "Update/Delete Delegator's drafts and create new versions" %>
+
+  <br><br>
+
+  <p>
+    For now, since only admins can change those, the authorship and copyright options force the
+    delegate to also assign the delegator as author/copyright holder for newly-created exercises or
+    vocab terms.
+  <p>
+  <p>
+    If users are ever given the option to create delegations themselves, make sure to add new
+    array columns to the users table to allow them to set whether or not to do this by default.
+    E.g. default_author_ids/default_copyright_holder_ids
+    This is also a way to specify the default author/copyright_holder ordering for each user.
+    Also, add a lock to work-for-hire accounts so they cannot change this setting.
+  </p>
+
+  <%= form.submit class: 'btn btn-primary' %>
+<% end %>

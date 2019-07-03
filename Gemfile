@@ -64,7 +64,6 @@ gem 'omniauth-oauth2'
 # OpenStax Accounts integration
 gem 'openstax_accounts'
 
-
 # Access control for API's
 gem 'doorkeeper'
 
@@ -108,9 +107,6 @@ gem 'deep_cloneable'
 
 # Sortable objects
 gem 'sortability'
-
-# Comments on objects
-gem 'commontator'
 
 # Comment voting
 gem 'acts_as_votable'
@@ -170,9 +166,6 @@ group :development, :test do
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-
-  # Some controller test support
-  gem 'rails-controller-testing'
 
   # Use RSpec for tests
   gem 'rspec-rails'

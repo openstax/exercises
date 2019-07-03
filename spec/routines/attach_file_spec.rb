@@ -5,14 +5,14 @@ RSpec.describe AttachFile, type: :routine do
 
   it 'attaches the file in the given path to the given attachable object' do
     result = nil
-    expect{
+    expect do
       result = described_class.call(attachable: attachable,
                                     file: 'spec/fixtures/os_exercises_logo.png')
-    }.to change{ attachable.attachments.size }.by(1)
+    end.to change { attachable.attachments.size }.by(1)
     expect(result.errors).to be_empty
     expect(attachable).to be_persisted
 
-    expect(attachable.attachments.last.asset.url).to eq result.outputs.url
+    expect(attachable.attachments.order(:created_at).last.asset.url).to eq result.outputs.url
   end
 
   it 'reuses existing attachments' do
@@ -35,7 +35,7 @@ RSpec.describe AttachFile, type: :routine do
     output = described_class.call(attachable: attachable,
                                   file: 'spec/fixtures/os_exercises_logo.png').outputs
     expect(attachable).to be_persisted
-    attachment = attachable.attachments.last
+    attachment = attachable.attachments.order(:created_at).last
     expect(output.as_json).to match(
       'attachment' => a_hash_including(
         "id"          => attachment.id,

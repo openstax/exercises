@@ -43,35 +43,37 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:read, user, community_solution)).to eq false
         end
 
-        it 'can be accessed by collaborators and also ' +
-           'list owners, editors and readers if a collaborator is a list owner' do
-          author = FactoryBot.create(:author, publication: community_solution.publication,
-                                               user: user)
+        it 'can be accessed by collaborators and their delegates' do
+          author = FactoryBot.create(
+            :author, publication: community_solution.publication, user: user
+          )
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
           author.destroy
 
-          ch = FactoryBot.create(:copyright_holder, publication: community_solution.publication,
-                                                     user: user)
+          ch = FactoryBot.create(
+            :copyright_holder, publication: community_solution.publication, user: user
+          )
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
           ch.destroy
 
-          another_author = FactoryBot.create(:author, publication: community_solution.publication)
-          lpg = FactoryBot.create(:list_publication_group,
-                                   publication_group: community_solution.publication_group)
-          alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+          another_author = FactoryBot.create :author, publication: community_solution.publication
+          delegation = FactoryBot.create(
+            :delegation, delegator: another_author.user, delegate: user, can_read: false
+          )
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
-          lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
+          delegation.update_attribute :can_read, true
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lo.destroy
 
-          le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
+          another_copyright_holder = FactoryBot.create(
+            :copyright_holder, publication: community_solution.publication
+          )
+          delegation.update_attribute :delegator, another_copyright_holder.user
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          le.destroy
 
-          lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lr.destroy
-
+          delegation.destroy
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
             eq false
           )
@@ -91,8 +93,7 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:read, user, community_solution)).to eq false
         end
 
-        it 'can be accessed by exercise collaborators and also ' +
-           'list owners, editors and readers if a collaborator is a list owner' do
+        it 'can be accessed by exercise collaborators and their delegates' do
           exercise = community_solution.question.exercise
 
           author = FactoryBot.create(:author, publication: exercise.publication, user: user)
@@ -103,30 +104,35 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
           ch.destroy
 
-          another_author = FactoryBot.create(:author, publication: exercise.publication)
-          lpg = FactoryBot.create(:list_publication_group,
-                                   publication_group: exercise.publication_group)
-          alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+          another_author = FactoryBot.create :author, publication: exercise.publication
+          delegation = FactoryBot.create(
+            :delegation, delegator: another_author.user, delegate: user, can_read: false
+          )
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
-          lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
+          delegation.update_attribute :can_read, true
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lo.destroy
 
-          le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
+          another_copyright_holder = FactoryBot.create(
+            :copyright_holder, publication: exercise.publication
+          )
+          delegation.update_attribute :delegator, another_copyright_holder.user
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          le.destroy
 
-          lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lr.destroy
+          delegation.update_attribute :can_read, false
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
+          delegation.destroy
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
             eq false
           )
         end
 
-        it 'can be accessed by community solution collaborators and also ' +
-           'list owners, editors and readers if a collaborator is a list owner' do
+        it 'can be accessed by community solution collaborators and their delegates' do
           author = FactoryBot.create(:author, publication: community_solution.publication,
                                                user: user)
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
@@ -137,23 +143,29 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
           ch.destroy
 
-          another_author = FactoryBot.create(:author, publication: community_solution.publication)
-          lpg = FactoryBot.create(:list_publication_group,
-                                   publication_group: community_solution.publication_group)
-          alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+          another_author = FactoryBot.create :author, publication: community_solution.publication
+          delegation = FactoryBot.create(
+            :delegation, delegator: another_author.user, delegate: user, can_read: false
+          )
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
-          lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
+          delegation.update_attribute :can_read, true
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lo.destroy
 
-          le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
+          another_copyright_holder = FactoryBot.create(
+            :copyright_holder, publication: community_solution.publication
+          )
+          delegation.update_attribute :delegator, another_copyright_holder.user
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          le.destroy
 
-          lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lr.destroy
+          delegation.update_attribute :can_read, false
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
+          delegation.destroy
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
             eq false
           )
@@ -169,8 +181,7 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:read, user, community_solution)).to eq false
         end
 
-        it 'can be accessed by collaborators and also ' +
-           'list owners, editors and readers if a collaborator is a list owner' do
+        it 'can be accessed by collaborators and their delegates' do
           author = FactoryBot.create(:author, publication: community_solution.publication,
                                                user: user)
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
@@ -181,23 +192,29 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
           ch.destroy
 
-          another_author = FactoryBot.create(:author, publication: community_solution.publication)
-          lpg = FactoryBot.create(:list_publication_group,
-                                   publication_group: community_solution.publication_group)
-          alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+          another_author = FactoryBot.create :author, publication: community_solution.publication
+          delegation = FactoryBot.create(
+            :delegation, delegator: another_author.user, delegate: user, can_read: false
+          )
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
-          lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
+          delegation.update_attribute :can_read, true
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lo.destroy
 
-          le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
+          another_copyright_holder = FactoryBot.create(
+            :copyright_holder, publication: community_solution.publication
+          )
+          delegation.update_attribute :delegator, another_copyright_holder.user
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          le.destroy
 
-          lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to eq true
-          lr.destroy
+          delegation.update_attribute :can_read, false
+          expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
+            eq false
+          )
 
+          delegation.destroy
           expect(described_class.action_allowed?(:read, user, community_solution.reload)).to(
             eq false
           )
@@ -222,8 +239,7 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
     end
 
     context 'unpublished exercise' do
-      it 'can be accessed by exercise collaborators and also ' +
-         'list owners, editors and readers if a collaborator is a list owner' do
+      it 'can be accessed by exercise collaborators and their delegates' do
         exercise = community_solution.question.exercise
 
         author = FactoryBot.create(:author, publication: exercise.publication, user: user)
@@ -236,27 +252,25 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:create, user, community_solution)).to eq true
         ch.destroy
 
-        another_author = FactoryBot.create(:author, publication: exercise.publication)
-        lpg = FactoryBot.create(:list_publication_group,
-                                 publication_group: exercise.publication_group)
-        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
+        another_author = FactoryBot.create :author, publication: exercise.publication
+        delegation = FactoryBot.create(
+          :delegation, delegator: another_author.user, delegate: user, can_read: false
+        )
+        expect(described_class.action_allowed?(:create, user, community_solution)).to eq false
 
-        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-        community_solution.question.reload
+        delegation.update_attribute :can_read, true
         expect(described_class.action_allowed?(:create, user, community_solution)).to eq true
-        lo.destroy
 
-        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-        community_solution.question.reload
+        another_copyright_holder = FactoryBot.create(
+          :copyright_holder, publication: exercise.publication
+        )
+        delegation.update_attribute :delegator, another_copyright_holder.user
         expect(described_class.action_allowed?(:create, user, community_solution)).to eq true
-        le.destroy
 
-        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
-        community_solution.question.reload
-        expect(described_class.action_allowed?(:create, user, community_solution)).to eq true
-        lr.destroy
+        delegation.update_attribute :can_read, false
+        expect(described_class.action_allowed?(:create, user, community_solution)).to eq false
 
-        community_solution.question.reload
+        delegation.destroy
         expect(described_class.action_allowed?(:create, user, community_solution)).to eq false
       end
 
@@ -285,8 +299,7 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:destroy, user, community_solution)).to eq false
       end
 
-      it 'can be accessed by collaborators and also ' +
-         'list owners and editors if a collaborator is a list owner' do
+      it 'can be accessed by collaborators and their delegates' do
         author = FactoryBot.create(:author, publication: community_solution.publication,
                                              user: user)
         expect(described_class.action_allowed?(:update, user, community_solution.reload)).to eq true
@@ -299,29 +312,45 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:destroy, user, community_solution)).to eq true
         ch.destroy
 
-        another_author = FactoryBot.create(:author, publication: community_solution.publication)
-        lpg = FactoryBot.create(:list_publication_group,
-                                 publication_group: community_solution.publication_group)
-        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
-
-        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-        expect(described_class.action_allowed?(:update, user, community_solution.reload)).to eq true
-        expect(described_class.action_allowed?(:destroy, user, community_solution)).to eq true
-        lo.destroy
-
-        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-        expect(described_class.action_allowed?(:update, user, community_solution.reload)).to eq true
-        expect(described_class.action_allowed?(:destroy, user, community_solution)).to eq true
-        le.destroy
-
-        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
+        another_author = FactoryBot.create :author, publication: community_solution.publication
+        delegation = FactoryBot.create(
+          :delegation, delegator: another_author.user, delegate: user, can_update: false
+        )
         expect(described_class.action_allowed?(:update, user, community_solution.reload)).to(
           eq false
         )
-        expect(described_class.action_allowed?(:destroy, user, community_solution)).to eq false
-        lr.destroy
+        expect(described_class.action_allowed?(:destroy, user, community_solution.reload)).to(
+          eq false
+        )
 
+        delegation.update_attribute :can_update, true
+        expect(described_class.action_allowed?(:update, user, community_solution.reload)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, community_solution.reload)).to(
+          eq true
+        )
+
+        another_copyright_holder = FactoryBot.create(
+          :copyright_holder, publication: community_solution.publication
+        )
+        delegation.update_attribute :delegator, another_copyright_holder.user
+        expect(described_class.action_allowed?(:update, user, community_solution.reload)).to eq true
+        expect(described_class.action_allowed?(:destroy, user, community_solution.reload)).to(
+          eq true
+        )
+
+        delegation.update_attribute :can_update, false
         expect(described_class.action_allowed?(:update, user, community_solution.reload)).to(
+          eq false
+        )
+        expect(described_class.action_allowed?(:destroy, user, community_solution.reload)).to(
+          eq false
+        )
+
+        delegation.destroy
+        expect(described_class.action_allowed?(:update, user, community_solution.reload)).to(
+          eq false
+        )
+        expect(described_class.action_allowed?(:destroy, user, community_solution.reload)).to(
           eq false
         )
       end
@@ -365,8 +394,7 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
         expect(described_class.action_allowed?(:new_version, user, community_solution)).to eq false
       end
 
-      it 'can be accessed by collaborators and also ' +
-         'list owners and editors if a collaborator is a list owner' do
+      it 'can be accessed by collaborators and their delegates' do
         author = FactoryBot.create(:author, publication: community_solution.publication,
                                              user: user)
         expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
@@ -381,29 +409,33 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
         )
         ch.destroy
 
-        another_author = FactoryBot.create(:author, publication: community_solution.publication)
-        lpg = FactoryBot.create(:list_publication_group,
-                                 publication_group: community_solution.publication_group)
-        alo = FactoryBot.create(:list_owner, list: lpg.list, owner: another_author.user)
-
-        lo = FactoryBot.create(:list_owner, list: lpg.list, owner: user)
-        expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
-          eq true
+        another_author = FactoryBot.create :author, publication: community_solution.publication
+        delegation = FactoryBot.create(
+          :delegation, delegator: another_author.user, delegate: user, can_update: false
         )
-        lo.destroy
-
-        le = FactoryBot.create(:list_editor, list: lpg.list, editor: user)
-        expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
-          eq true
-        )
-        le.destroy
-
-        lr = FactoryBot.create(:list_reader, list: lpg.list, reader: user)
         expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
           eq false
         )
-        lr.destroy
 
+        delegation.update_attribute :can_update, true
+        expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
+          eq true
+        )
+
+        another_copyright_holder = FactoryBot.create(
+          :copyright_holder, publication: community_solution.publication
+        )
+        delegation.update_attribute :delegator, another_copyright_holder.user
+        expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
+          eq true
+        )
+
+        delegation.update_attribute :can_update, false
+        expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
+          eq false
+        )
+
+        delegation.destroy
         expect(described_class.action_allowed?(:new_version, user, community_solution.reload)).to(
           eq false
         )

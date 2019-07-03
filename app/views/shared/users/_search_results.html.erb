@@ -1,15 +1,15 @@
-<% # Clients of this partial must provide the following variables:
+<%
+   # Clients of this partial must provide the following variables:
    # action_partial
-   # Additionally, they can supply the following variable:
+   # Additionally, they can supply the following variables:
    sign_in_as ||= false
+   users ||= @handler_result&.outputs&.items&.map { |ac| User.find_or_create_by(account: ac) } || []
+   action_heading ||= 'Actions'
 %>
-
-<% accounts = @handler_result.outputs[:items]
-   return '' unless accounts
-   users = accounts.map { |a| User.find_or_create_by(account: a) } %>
 
 <%= render partial: 'shared/users/search_pagination' %>
 
-<%= render partial: 'shared/users/index', locals: {users: users,
-                                                   action_partial: action_partial,
-                                                   sign_in_as: sign_in_as} %>
+<%= render partial: 'shared/users/index', locals: { users: users,
+                                                    action_partial: action_partial,
+                                                    action_heading: action_heading,
+                                                    sign_in_as: sign_in_as } %>

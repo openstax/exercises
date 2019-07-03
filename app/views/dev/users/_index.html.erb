@@ -1,6 +1,6 @@
 <h5>Create User</h5>
 <div style="width: 500px">
-  <%= lev_form_for :create, url: dev_users_path, remote: true,
+  <%= lev_form_for :create, url: dev_users_url, remote: true,
                    html: {id: 'create-user-form', class: 'form-horizontal'} do |f| %>
     <div class='form-group'>
       <label class='col-sm-3 control-label'>Username</label>
@@ -46,16 +46,16 @@
     </div>
     <div class='form-group'>
       <div class='col-sm-offset-3 col-sm-9'>
-        <%= f.submit 'Create User' %>
+        <%= f.submit 'Create User', class: 'btn btn-primary' %>
       </div>
     </div>
   <% end %>
 </div>
 
 <h5>Auto-generate Users</h5>
-<%= lev_form_for :generate, url: generate_dev_users_path, remote: true,
+<%= lev_form_for :generate, url: generate_dev_users_url, remote: true,
                  html: {id: 'generate-users-form', class: 'form-inline'} do |f| %>
-                 
+
   <div>Generate <%= f.text_field :count, style: 'width:50px' %> user(s)</div>
-  <div><%= f.submit 'Do It' %></div>
+  <div><%= f.submit 'Do It', class: 'btn btn-primary' %></div>
 <% end %>
