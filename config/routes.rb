@@ -27,13 +27,6 @@ Exercises::Application.routes.draw do
       publishable
       # Not in V1
       #has_logic
-
-      resources :questions, only: []# do
-        #resources :community_solutions, shallow: true, except: :index do
-          #publishable
-          #has_logic
-        #end
-      #end
     end
 
     resources :vocab_terms do

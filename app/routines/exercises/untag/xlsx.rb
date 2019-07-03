@@ -1,5 +1,7 @@
 # Removes Exercise tags based on an xlsx file
-
+# Row format:
+# - Exercise Number
+# - Tags...
 module Exercises
   module Untag
     class Xlsx

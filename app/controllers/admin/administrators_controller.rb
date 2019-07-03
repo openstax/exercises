@@ -13,10 +13,10 @@ module Admin
 
       respond_to do |format|
         if @administrator.save
-          format.html {
+          format.html do
             redirect_to admin_administrators_url,
                         notice: "#{@administrator.user.name} is now an Administrator."
-            }
+          end
         else
           format.html { render action: "new" }
         end
