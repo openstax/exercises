@@ -3,7 +3,7 @@ FactoryBot.define do
     deleted_at { nil }
 
     transient do
-      username   { Faker::Lorem.characters }
+      username   { [Faker::Lorem.characters, nil].sample }
       first_name { Faker::Name.first_name }
       last_name  { Faker::Name.last_name }
       full_name  { "#{first_name} #{last_name}" }
