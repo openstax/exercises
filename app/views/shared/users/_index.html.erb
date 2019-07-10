@@ -15,7 +15,7 @@
       data_procs:
         [
           ->(user) do
-            short_username = user.username.truncate(32)
+            short_username = user.username&.truncate(32)
             sign_in_as ?
               link_to(short_username, become_admin_user_url(user), method: :put) : short_username
           end,
