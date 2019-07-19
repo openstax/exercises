@@ -8,26 +8,6 @@
   (so error messages render properly)
 %>
 
-<div class='form-inline'>
-  <%=
-    render partial: 'openstax/accounts/shared/accounts/search', locals: {
-      search_action_path: users_admin_delegations_url,
-      action_partial: 'admin/delegations/actions',
-      action_heading: 'Make',
-      remote: true
-    }
-  %>
-</div>
-
-<div id='search-results-list'>
-  <%=
-    render partial: 'shared/users/search_results', locals: {
-      action_partial: 'admin/delegations/actions',
-      action_heading: 'Make'
-    }
-  %>
-</div>
-
 <%= form_with model: [:admin, delegation], local: true do |form| %>
   <%= render partial: 'shared/error_messages', locals: { target: delegation } %>
 
@@ -83,3 +63,25 @@
 
   <%= form.submit class: 'btn btn-primary' %>
 <% end %>
+
+<br>
+
+<div class='form-inline'>
+  <%=
+    render partial: 'openstax/accounts/shared/accounts/search', locals: {
+      search_action_path: users_admin_delegations_url,
+      action_partial: 'admin/delegations/actions',
+      action_heading: 'Make',
+      remote: true
+    }
+  %>
+</div>
+
+<div id='search-results-list'>
+  <%=
+    render partial: 'shared/users/search_results', locals: {
+      action_partial: 'admin/delegations/actions',
+      action_heading: 'Make'
+    }
+  %>
+</div>
