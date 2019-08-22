@@ -218,7 +218,6 @@ group :test do
 
   # Rubocop
   gem 'rubocop-rails'
-
 end
 
 group :production do
