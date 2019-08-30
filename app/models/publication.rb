@@ -108,6 +108,10 @@ class Publication < ApplicationRecord
     )
   end
 
+  def delegations
+    Delegation.where(delegator_id: (authors + copyright_holders).map(&:user_id))
+  end
+
   def uid
     "#{number}@#{version}"
   end

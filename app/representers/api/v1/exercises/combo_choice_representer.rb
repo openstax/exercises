@@ -10,7 +10,7 @@ module Api::V1::Exercises
                schema_info: {
                  required: true
                },
-               if: NOT_SOLUTIONS_ONLY
+               if: CACHED_PUBLIC_FIELDS
 
     property :correctness,
              type: Float,
@@ -19,7 +19,7 @@ module Api::V1::Exercises
              schema_info: {
                type: 'number'
              },
-             if: SOLUTIONS
+             if: CACHED_PRIVATE_FIELDS
 
   end
 end

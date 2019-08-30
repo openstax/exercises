@@ -2,7 +2,6 @@ module Publishable
   module Roar
     module Decorator
       def publishable(options = {})
-
         property :uuid,
                  {
                    type: String,
@@ -79,6 +78,14 @@ module Publishable
                      readable: true
                    }.merge(options)
 
+        collection :delegations,
+                   {
+                     class: Delegation,
+                     extend: Api::V1::DelegationRepresenter,
+                     writeable: false,
+                     readable: true
+                   }.merge(options)
+
         collection :derivations,
                    {
                      as: :derived_from,
@@ -88,7 +95,6 @@ module Publishable
                      readable: true,
                      setter: AR_COLLECTION_SETTER
                    }.merge(options)
-
       end
     end
   end

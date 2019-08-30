@@ -3,43 +3,45 @@ module Api::V1::Exercises
 
     # Attachments may (for a while) contain collaborator solution attachments, so
     # only show them to those who can see solutions
-    has_attachments(if: SOLUTIONS)
+    has_attachments(if: CACHED_PRIVATE_FIELDS)
 
-    has_logic(if: NOT_SOLUTIONS_ONLY)
-    has_tags(if: NOT_SOLUTIONS_ONLY)
+    has_logic(if: CACHED_PUBLIC_FIELDS)
+    has_tags(if: CACHED_PUBLIC_FIELDS)
 
-    publishable(if: NOT_SOLUTIONS_ONLY)
+    publishable(if: CACHED_PUBLIC_FIELDS)
+
+    collection :delegations, inherit: true, if: UNCACHED_FIELDS
 
     property :is_vocab?,
              as: :is_vocab,
              writeable: false,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :vocab_term_uid,
              type: Integer,
              writeable: false,
              readable: true,
              getter: ->(*) { vocab_term.try!(:uid) },
-             if: SOLUTIONS
+             if: CACHED_PRIVATE_FIELDS
 
     property :title,
              type: String,
              writeable: true,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :stimulus,
              as: :stimulus_html,
              type: String,
              writeable: true,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     collection :questions,
                instance: ->(*) { Question.new(exercise: self) },
                extend: ->(input:, **) {
-                 input.nil? || input.stems.length > 1 ? \
+                 input.nil? || input.stems.length > 1 ?
                    QuestionRepresenter : SimpleQuestionRepresenter
                },
                writeable: true,
@@ -53,16 +55,24 @@ module Api::V1::Exercises
              type: Array,
              writeable: false,
              readable: true,
-             getter: ->(user_options:, **) do
-               visible_versions(can_view_solutions: SOLUTIONS.call(user_options: user_options))
-             end
+             getter: ->(user_options:, represented:, **) do
+               visible_versions(
+                 can_view_solutions: Api::V1::Exercises::Representer.can_view_solutions?(
+                   user_options, represented
+                 )
+               )
+             end,
+             if: UNCACHED_FIELDS
+
+    def self.can_view_solutions?(user_options, represented)
+      user_options[:can_view_solutions] || represented.can_view_solutions?(user_options[:user])
+    end
 
     def self.cache_key_types_for(represented, options = {})
       user_options = options.fetch(:user_options, {})
 
       [ 'no_solutions' ].tap do |types|
-        types << 'solutions_only' if user_options[:can_view_solutions] ||
-                                     represented.can_view_solutions?(user_options[:user])
+        types << 'solutions_only' if can_view_solutions?(user_options, represented)
       end
     end
 
@@ -99,18 +109,21 @@ module Api::V1::Exercises
     def to_hash(options = {})
       user_options = options.fetch(:user_options, {})
 
-      no_solutions = Rails.cache.fetch(
+      public_hash = Rails.cache.fetch(
         self.class.cache_key_for(represented, 'no_solutions'), expires_in: NEVER_EXPIRES
-      ) { super(options.merge(user_options: user_options.merge(no_solutions: true))) }
+      ) { super(options.merge(user_options: user_options.merge(render: :cached_public))) }
 
-      return no_solutions unless user_options[:can_view_solutions] ||
-                                 represented.can_view_solutions?(user_options[:user])
+      public_hash = recursive_merge(
+        public_hash, super(options.merge(user_options: user_options.merge(render: :uncached)))
+      )
 
-      solutions_only = Rails.cache.fetch(
+      return public_hash unless self.class.can_view_solutions?(user_options, represented)
+
+      private_hash = Rails.cache.fetch(
         self.class.cache_key_for(represented, 'solutions_only'), expires_in: NEVER_EXPIRES
-      ) { super(options.merge(user_options: user_options.merge(solutions_only: true))) }
+      ) { super(options.merge(user_options: user_options.merge(render: :cached_private))) }
 
-      recursive_merge(no_solutions.except(:versions), solutions_only)
+      recursive_merge(public_hash, private_hash)
     end
 
   end

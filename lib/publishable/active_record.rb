@@ -13,8 +13,8 @@ module Publishable
           has_many :derivations, through: :publication
 
           delegate :uuid, :group_uuid, :number, :version, :uid, :published_at, :license,
-                   :authors, :copyright_holders, :derivations, :is_yanked?, :is_published?,
-                   :is_embargoed?, :is_public?, :is_chainable_latest?, :is_latest?,
+                   :authors, :copyright_holders, :delegations, :derivations, :is_yanked?,
+                   :is_published?, :is_embargoed?, :is_public?, :is_chainable_latest?, :is_latest?,
                    :has_collaborator?, :has_read_permission?, :has_write_permission?,
                    :license=, :authors=, :copyright_holders=, :derivations=, :nickname, :nickname=,
                    to: :publication
