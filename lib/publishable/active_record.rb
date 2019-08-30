@@ -49,8 +49,6 @@ module Publishable
           end
 
           scope :visible_for, ->(options) do
-            next all if options[:can_view_solutions]
-
             user = options[:user]
             user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
             next published if !user.is_a?(User) || user.is_anonymous?
@@ -107,10 +105,9 @@ module Publishable
 
           # Retrieves all versions of this publishable visible for the given user
           def visible_versions(can_view_solutions:)
-            publication.publication_group
-                       .publications
-                       .visible_for(can_view_solutions: can_view_solutions)
-                       .pluck(:version)
+            publications = publication.publication_group.publications.to_a
+            publications = publications.select(&:is_published?) unless can_view_solutions
+            publications.map(&:version)
           end
 
           def before_publication

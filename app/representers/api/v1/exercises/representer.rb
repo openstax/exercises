@@ -55,16 +55,14 @@ module Api::V1::Exercises
              type: Array,
              writeable: false,
              readable: true,
-             getter: ->(user_options:, represented:, **) do
-               visible_versions(
-                 can_view_solutions: Api::V1::Exercises::Representer.can_view_solutions?(
-                   user_options, represented
-                 )
+             getter: ->(decorator:, represented:, user_options:, **) do
+               represented.visible_versions(
+                 can_view_solutions: decorator.class.can_view_solutions?(represented, user_options)
                )
              end,
              if: UNCACHED_FIELDS
 
-    def self.can_view_solutions?(user_options, represented)
+    def self.can_view_solutions?(represented, user_options)
       user_options[:can_view_solutions] || represented.can_view_solutions?(user_options[:user])
     end
 
@@ -72,7 +70,7 @@ module Api::V1::Exercises
       user_options = options.fetch(:user_options, {})
 
       [ 'no_solutions' ].tap do |types|
-        types << 'solutions_only' if can_view_solutions?(user_options, represented)
+        types << 'solutions_only' if can_view_solutions?(represented, user_options)
       end
     end
 
@@ -117,7 +115,7 @@ module Api::V1::Exercises
         public_hash, super(options.merge(user_options: user_options.merge(render: :uncached)))
       )
 
-      return public_hash unless self.class.can_view_solutions?(user_options, represented)
+      return public_hash unless self.class.can_view_solutions?(represented, user_options)
 
       private_hash = Rails.cache.fetch(
         self.class.cache_key_for(represented, 'solutions_only'), expires_in: NEVER_EXPIRES

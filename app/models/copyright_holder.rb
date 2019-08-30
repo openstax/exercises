@@ -6,6 +6,6 @@ class CopyrightHolder < ApplicationRecord
 
   validates :user, uniqueness: { scope: :publication_id }
 
-  delegate :name, to: :user
+  delegate :name, :delegations_as_delegator, :delegations_as_delegate, to: :user
 
 end

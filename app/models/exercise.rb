@@ -59,12 +59,11 @@ class Exercise < ApplicationRecord
     }
   ]
 
-  PRELOAD_ASSOCIATIONS = [
+  CACHEABLE_ASSOCIATIONS = [
     :attachments,
     :logic,
     :tags,
     publication: [
-      :publication_group,
       :derivations,
       authors: { user: :account },
       copyright_holders: { user: :account }
@@ -75,6 +74,14 @@ class Exercise < ApplicationRecord
       :community_solutions,
       answers: :stem_answers,
       stems: [ :stylings, :combo_choices ]
+    ]
+  ]
+
+  UNCACHEABLE_ASSOCIATIONS = [
+    publication: [
+      publication_group: :publications,
+      authors: { user: :delegations_as_delegator },
+      copyright_holders: { user: :delegations_as_delegator }
     ]
   ]
 

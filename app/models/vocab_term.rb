@@ -29,13 +29,20 @@ class VocabTerm < ApplicationRecord
     ]
   ]
 
-  PRELOAD_ASSOCIATIONS = [
+  CACHEABLE_ASSOCIATIONS = [
     :tags,
     :vocab_distractors,
     publication: [
-      :publication_group,
       authors: { user: :account },
       copyright_holders: { user: :account }
+    ]
+  ]
+
+  UNCACHEABLE_ASSOCIATIONS = [
+    publication: [
+      publication_group: :publications,
+      authors: { user: :delegations_as_delegate },
+      copyright_holders: { user: :delegations_as_delegate }
     ]
   ]
 
