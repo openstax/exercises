@@ -111,17 +111,17 @@ module Api::V1::Exercises
         self.class.cache_key_for(represented, 'no_solutions'), expires_in: NEVER_EXPIRES
       ) { super(options.merge(user_options: user_options.merge(render: :cached_public))) }
 
-      public_hash = recursive_merge(
-        public_hash, super(options.merge(user_options: user_options.merge(render: :uncached)))
-      )
+      uncached_hash = super(options.merge(user_options: user_options.merge(render: :uncached)))
 
-      return public_hash unless self.class.can_view_solutions?(represented, user_options)
+      return recursive_merge(
+        public_hash, uncached_hash
+      ) unless self.class.can_view_solutions?(represented, user_options)
 
       private_hash = Rails.cache.fetch(
         self.class.cache_key_for(represented, 'solutions_only'), expires_in: NEVER_EXPIRES
       ) { super(options.merge(user_options: user_options.merge(render: :cached_private))) }
 
-      recursive_merge(public_hash, private_hash)
+      recursive_merge(recursive_merge(public_hash, private_hash), uncached_hash)
     end
 
   end
