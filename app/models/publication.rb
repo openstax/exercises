@@ -107,7 +107,7 @@ class Publication < ApplicationRecord
   end
 
   def delegations
-    (authors + copyright_holders).flat_map(&:delegations_as_delegator)
+    (authors + copyright_holders).map(&:user).uniq.flat_map(&:delegations_as_delegator)
   end
 
   def uid
