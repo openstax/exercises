@@ -28,7 +28,7 @@ module Api::V1
 
     property :can_assign_authorship,
              type: :boolean,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true
@@ -36,7 +36,7 @@ module Api::V1
 
     property :can_assign_copyright,
              type: :boolean,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true
@@ -44,7 +44,7 @@ module Api::V1
 
     property :can_read,
              type: :boolean,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true
@@ -52,7 +52,7 @@ module Api::V1
 
     property :can_update,
              type: :boolean,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true
