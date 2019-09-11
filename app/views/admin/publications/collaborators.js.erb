@@ -1,0 +1,27 @@
+$("#collaborator-id").val("");
+
+$("#commit").attr("disabled", true);
+
+$("#collaborators-search-results").html("<%= j(
+  render partial: 'collaborators_search_results', locals: {
+    collaborators: @collaborators
+  }
+) %>");
+
+$("#collaborators-query").blur(function() {
+  if (!$("#collaborators-search-results a:focus")) {
+    $("#collaborators-search-results").html("");
+
+    if (!$("#collaborator-id").val()) {
+      $("#collaborators-query").val("");
+    }
+  }
+});
+
+$("#collaborators-search-results a").click(function(event) {
+  $("#collaborator-id").val(this.getAttribute("data-id"));
+  $("#collaborators-query").val(this.textContent);
+  $("#collaborators-search-results").html("");
+  $("#commit").attr("disabled", false);
+  event.preventDefault();
+});

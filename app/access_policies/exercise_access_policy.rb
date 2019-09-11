@@ -8,7 +8,7 @@ class ExerciseAccessPolicy
     when :create
       !requestor.is_anonymous? && requestor.is_human?
     when :read
-      exercise.is_public? || exercise.has_read_permission?(requestor)
+      exercise.is_public? || exercise.has_read_permission?(requestor) || requestor.is_administrator?
     when :update, :destroy
       !exercise.is_published? && exercise.has_write_permission?(requestor)
     when :new_version

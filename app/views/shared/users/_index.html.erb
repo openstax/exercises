@@ -6,7 +6,8 @@
    sign_in_as ||= false
 %>
 
-<%= osu.action_list(
+<%=
+  osu.action_list(
     records: users,
     list: {
       headings: ["Username#{' (click to sign in as)' if sign_in_as}",
@@ -29,4 +30,5 @@
           end
         ]
     }
-  ) %>
+  )
+%>

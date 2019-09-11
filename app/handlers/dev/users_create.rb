@@ -9,7 +9,7 @@ module Dev
       attribute :last_name, type: String
       attribute :full_name, type: String
       attribute :title, type: String
-      attribute :administrator, type: boolean
+      attribute :is_administrator, type: boolean
       attribute :agreed_to_terms, type: boolean
 
       validates :username, presence: true
@@ -23,12 +23,11 @@ module Dev
 
     def handle
       create_symbols = []
-      create_symbols << :administrator if create_params.administrator
+      create_symbols << :administrator if create_params.is_administrator
       create_symbols << :agreed_to_terms if create_params.agreed_to_terms
-      create_hash = create_params.as_hash(:username, :first_name, :last_name,
-                                          :full_name, :title)
+      create_hash = create_params.as_hash(:username, :first_name, :last_name, :full_name, :title)
       outputs[:user] = FactoryBot.create(:user, *create_symbols, create_hash)
     end
 
-  end 
+  end
 end

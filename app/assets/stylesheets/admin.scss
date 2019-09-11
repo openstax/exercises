@@ -1,0 +1,34 @@
+#publications-form {
+  input[type='search'] {
+    width: 300px;
+  }
+
+  select {
+    width: 150px;
+  }
+
+  #collaborators-search {
+    display: inline-block;
+
+    #collaborators-search-results {
+      width: 300px;
+      position: absolute;
+      margin-top: -2px;
+      background-color: white;
+      overflow: hidden;
+
+      ul {
+        list-style-type: none;
+
+        li {
+          border: 1px solid #ccc;
+        }
+
+        a {
+          display: block;
+          width: 100%;
+        }
+      }
+    }
+  }
+}

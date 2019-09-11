@@ -1,0 +1,12 @@
+<%
+  # Clients of this partial may override the following variable:
+  collaborators ||= []
+%>
+
+<ul>
+  <% collaborators.each do |collaborator| %>
+    <li>
+      <%= link_to collaborator.name, '#', data: { id: collaborator.id } %>
+    </li>
+  <% end %>
+</ul>

@@ -1,0 +1,41 @@
+<%# Copyright 2011-2019 Rice University. Licensed under the Affero General Public
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% content_for :stylesheet_includes do %>
+  <%= stylesheet_link_tag "admin", 'data-turbolinks-track': 'reload' %>
+<% end %>
+
+<% content_for :javascript_includes do %>
+  <%= javascript_include_tag "admin", 'data-turbolinks-track': 'reload' %>
+<% end %>
+
+<% content_for :application_body do %>
+
+  <div id="admin">
+
+    <div id="admin-global-alerts">
+      <%= render  partial: "shared/global_alerts" %>
+    </div>
+
+    <div id="admin-body-frame">
+
+      <div id="admin-local-alerts">
+        <%= render  partial: "shared/local_alerts" %>
+      </div>
+
+      <div id="admin-body-content">
+        <% if content_for?(:page_heading) %>
+          <%= yield :page_heading %>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </div>
+
+    <div style="clear:both; margin-bottom: 12px"></div>
+
+  </div>
+
+<% end %>
+
+<%= render template: "layouts/application" %>

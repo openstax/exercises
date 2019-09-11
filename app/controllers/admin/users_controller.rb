@@ -20,8 +20,9 @@ module Admin
     def update
       respond_to do |format|
         if @user.update_attributes(user_params)
-          format.html { redirect_to user_url(@user),
-                        notice: 'User profile was successfully updated.' }
+          format.html do
+            redirect_to user_url(@user), notice: 'User profile was successfully updated.'
+          end
         else
           format.html { render action: "edit" }
         end

@@ -1,0 +1,26 @@
+<%
+  # Clients of this partial may override the following variables:
+  query        ||= ''
+  total_count  ||= 0
+  page         ||= 1
+  per_page     ||= 20
+
+  num_pages = (total_count.to_f/per_page).ceil
+%>
+
+<%= pluralize(total_count, 'publication') %> found.
+
+<% if num_pages > 0 %>
+  Page:
+
+  <%
+    [ 1, page-1, page, page+1, page+2, num_pages ].reject do |page|
+      page < 1 || page > num_pages
+    end.uniq.each do |lpn| %>
+      <%=
+        link_to_unless lpn == page, lpn, admin_publications_url(
+          search: { query: query, page: lpn, per_page: per_page }
+        ), remote: true
+      %>
+  <% end %>
+<% end %>

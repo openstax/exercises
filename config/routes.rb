@@ -77,6 +77,13 @@ Exercises::Application.routes.draw do
       get :users, on: :collection
     end
 
+    resources :publications, only: :index do
+      collection do
+        patch :update
+        get :collaborators
+      end
+    end
+
     resources :a15k, only: [] do
       get :preview, on: :member
       get :format, on: :collection

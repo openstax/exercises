@@ -54,7 +54,7 @@ module Publishable
             user = options[:user]
             user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
             next published if !user.is_a?(User) || user.is_anonymous?
-            next all if user.administrator
+            next all if user.is_administrator?
             user_id = user.id
 
             pub = Publication.arel_table
