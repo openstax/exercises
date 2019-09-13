@@ -13,6 +13,8 @@ module Api::V1::Vocabs
 
     collection :copyright_holders, inherit: true, writeable: false
 
+    collection :delegations, inherit: true, writeable: false
+
     collection :derivations, inherit: true, writeable: false
 
     property :group_uuid, inherit: true, writeable: true, schema_info: { required: true }

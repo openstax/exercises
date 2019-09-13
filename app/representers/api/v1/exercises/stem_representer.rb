@@ -1,7 +1,7 @@
 module Api::V1::Exercises
   class StemRepresenter < BaseRepresenter
 
-    stylable(if: NOT_SOLUTIONS_ONLY)
+    stylable(if: CACHED_PUBLIC_FIELDS)
 
     property :content,
              as: :content_html,
@@ -11,7 +11,7 @@ module Api::V1::Exercises
              schema_info: {
                required: true
              },
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     collection :stem_answers,
                class: StemAnswer,

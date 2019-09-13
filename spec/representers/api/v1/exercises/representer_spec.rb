@@ -120,8 +120,8 @@ module Api::V1::Exercises
       let!(:real_exercise) { FactoryBot.create(:exercise, questions_count: 1)}
       let!(:user) { FactoryBot.create :user }
 
-      it 'only calls can_view_solutions? one time' do
-        expect_any_instance_of(Exercise).to receive(:can_view_solutions?).once.and_call_original
+      it 'only calls can_view_solutions? twice' do
+        expect_any_instance_of(Exercise).to receive(:can_view_solutions?).twice.and_call_original
         described_class.new(real_exercise).as_json
       end
     end
@@ -130,37 +130,37 @@ module Api::V1::Exercises
       it 'caches calls to #super' do
         count = 0
         expect(representer).to(
-          receive(:create_representation_with).exactly(4).times.and_wrap_original do |method, *args|
+          receive(:create_representation_with).exactly(11).times.and_wrap_original do |mtd, *args|
             count += 1
 
-            method.call *args
+            mtd.call *args
           end
         )
 
         representer.to_hash
-        expect(count).to eq 1
+        expect(count).to eq 2
 
         representer.to_hash(user_options: { can_view_solutions: true })
-        expect(count).to eq 2
+        expect(count).to eq 4
 
         representer.to_hash
-        expect(count).to eq 2
+        expect(count).to eq 5
 
         representer.to_hash(user_options: { can_view_solutions: true })
-        expect(count).to eq 2
+        expect(count).to eq 6
 
         described_class.all_cache_keys_for(
           exercise, user_options: { can_view_solutions: true }
         ).each { |key| Rails.cache.delete key }
 
         representer.to_hash(user_options: { can_view_solutions: true })
-        expect(count).to eq 4
+        expect(count).to eq 9
 
         representer.to_hash
-        expect(count).to eq 4
+        expect(count).to eq 10
 
         representer.to_hash(user_options: { can_view_solutions: true })
-        expect(count).to eq 4
+        expect(count).to eq 11
       end
     end
   end

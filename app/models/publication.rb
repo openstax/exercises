@@ -57,8 +57,6 @@ class Publication < ApplicationRecord
   end
 
   scope :visible_for, ->(options) do
-    next all if options[:can_view_solutions]
-
     user = options[:user]
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
@@ -106,6 +104,10 @@ class Publication < ApplicationRecord
           OR "publications"."version" = "publication_groups"."latest_version"
       WHERE_SQL
     )
+  end
+
+  def delegations
+    (authors + copyright_holders).map(&:user).uniq.flat_map(&:delegations_as_delegator)
   end
 
   def uid

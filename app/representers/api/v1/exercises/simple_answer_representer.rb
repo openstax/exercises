@@ -5,7 +5,7 @@ module Api::V1::Exercises
              type: Integer,
              writeable: false,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :content,
              as: :content_html,
@@ -15,7 +15,7 @@ module Api::V1::Exercises
              schema_info: {
                required: true
              },
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :correctness,
              type: Float,
@@ -36,7 +36,7 @@ module Api::V1::Exercises
              schema_info: {
                type: 'number'
              },
-             if: SOLUTIONS
+             if: CACHED_PRIVATE_FIELDS
 
     property :feedback,
              as: :feedback_html,
@@ -55,7 +55,7 @@ module Api::V1::Exercises
 
                stem_answers.first.feedback = input
              end,
-             if: SOLUTIONS
+             if: CACHED_PRIVATE_FIELDS
 
   end
 end

@@ -6,7 +6,7 @@ module Api::V1::Exercises
              writeable: true,
              readable: true,
              setter: ->(input:, **) { self.temp_id = input },
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :answer_order_matters,
              as: :is_answer_order_important,
@@ -15,14 +15,14 @@ module Api::V1::Exercises
              schema_info: {
                type: 'boolean'
              },
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :stimulus,
              as: :stimulus_html,
              type: String,
              writeable: true,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     collection :stems,
                class: Stem,
@@ -43,7 +43,7 @@ module Api::V1::Exercises
                schema_info: {
                  required: true
                },
-               if: NOT_SOLUTIONS_ONLY
+               if: CACHED_PUBLIC_FIELDS
 
     collection :collaborator_solutions,
                class: CollaboratorSolution,
@@ -51,14 +51,14 @@ module Api::V1::Exercises
                writeable: true,
                readable: true,
                setter: AR_COLLECTION_SETTER,
-               if: SOLUTIONS
+               if: CACHED_PRIVATE_FIELDS
 
     collection :community_solutions,
                class: CommunitySolution,
                extend: CommunitySolutionRepresenter,
                writeable: false,
                readable: true,
-               if: SOLUTIONS
+               if: CACHED_PRIVATE_FIELDS
 
     collection :hints,
                type: String,
@@ -74,7 +74,7 @@ module Api::V1::Exercises
                  required: true,
                  description: 'Author-supplied hints for the question'
                },
-               if: NOT_SOLUTIONS_ONLY
+               if: CACHED_PUBLIC_FIELDS
 
     collection :parent_dependencies,
                as: :dependencies,
@@ -86,7 +86,7 @@ module Api::V1::Exercises
                schema_info: {
                  required: true
                },
-               if: NOT_SOLUTIONS_ONLY
+               if: CACHED_PUBLIC_FIELDS
 
   end
 end

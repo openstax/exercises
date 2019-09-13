@@ -1,6 +1,5 @@
 module Api::V1
   class DelegationRepresenter < Roar::Decorator
-
     include Roar::JSON
 
     property :delegator_id,
@@ -13,7 +12,7 @@ module Api::V1
 
     property :delegate_id,
              type: Integer,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true
@@ -21,11 +20,42 @@ module Api::V1
 
     property :delegate_type,
              type: String,
-             writeable: true,
+             writeable: false,
              readable: true,
              schema_info: {
                required: true
              }
 
+    property :can_assign_authorship,
+             type: :boolean,
+             writeable: false,
+             readable: true,
+             schema_info: {
+               required: true
+             }
+
+    property :can_assign_copyright,
+             type: :boolean,
+             writeable: false,
+             readable: true,
+             schema_info: {
+               required: true
+             }
+
+    property :can_read,
+             type: :boolean,
+             writeable: false,
+             readable: true,
+             schema_info: {
+               required: true
+             }
+
+    property :can_update,
+             type: :boolean,
+             writeable: false,
+             readable: true,
+             schema_info: {
+               required: true
+             }
   end
 end

@@ -12,7 +12,7 @@ class VocabDistractor < ApplicationRecord
 
   delegate :group_uuid, :number, to: :distractor_publication_group, allow_nil: true
   delegate :tags, :uuid, :version, :uid, :published_at, :license, :authors, :copyright_holders,
-           :derivations, :nickname, :name, :definition, to: :distractor_term
+           :delegations, :derivations, :nickname, :name, :definition, to: :distractor_term
 
   def reload
     @distractor_term = nil

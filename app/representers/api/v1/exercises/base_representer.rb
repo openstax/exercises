@@ -3,8 +3,15 @@ module Api::V1::Exercises
 
     include Roar::JSON
 
-    SOLUTIONS =          ->(user_options:, **) { !user_options[:no_solutions]   }
-    NOT_SOLUTIONS_ONLY = ->(user_options:, **) { !user_options[:solutions_only] }
+    CACHED_PUBLIC_FIELDS  = ->(user_options:, **) do
+      user_options[:render].blank? || user_options[:render] == :cached_public
+    end
+    CACHED_PRIVATE_FIELDS = ->(user_options:, **) do
+      user_options[:render].blank? || user_options[:render] == :cached_private
+    end
+    UNCACHED_FIELDS       = ->(user_options:, **) do
+      user_options[:render].blank? || user_options[:render] == :uncached
+    end
 
   end
 end

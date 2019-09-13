@@ -5,7 +5,7 @@ module Api::V1::Exercises
              type: Integer,
              writeable: false,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :answer_order_matters,
              as: :is_answer_order_important,
@@ -14,14 +14,14 @@ module Api::V1::Exercises
              schema_info: {
                type: 'boolean'
              },
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :stimulus,
              as: :stimulus_html,
              type: String,
              writeable: true,
              readable: true,
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     property :stem,
              as: :stem_html,
@@ -41,7 +41,7 @@ module Api::V1::Exercises
              schema_info: {
                required: true
              },
-             if: NOT_SOLUTIONS_ONLY
+             if: CACHED_PUBLIC_FIELDS
 
     collection :answers,
                instance: ->(*) { Answer.new(question: self) },
@@ -59,14 +59,14 @@ module Api::V1::Exercises
                writeable: true,
                readable: true,
                setter: AR_COLLECTION_SETTER,
-               if: SOLUTIONS
+               if: CACHED_PRIVATE_FIELDS
 
     collection :community_solutions,
                class: CommunitySolution,
                extend: CommunitySolutionRepresenter,
                writeable: false,
                readable: true,
-               if: SOLUTIONS
+               if: CACHED_PRIVATE_FIELDS
 
     collection :hints,
                type: String,
@@ -82,7 +82,7 @@ module Api::V1::Exercises
                  required: true,
                  description: 'Author-supplied hints for the question'
                },
-               if: NOT_SOLUTIONS_ONLY
+               if: CACHED_PUBLIC_FIELDS
 
     collection :formats,
                type: String,
@@ -103,7 +103,7 @@ module Api::V1::Exercises
                  required: true,
                  description: 'The formats allowed for this object'
                },
-               if: NOT_SOLUTIONS_ONLY
+               if: CACHED_PUBLIC_FIELDS
 
     collection :combo_choices,
                class: ComboChoice,
