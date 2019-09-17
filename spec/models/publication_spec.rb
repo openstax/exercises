@@ -19,6 +19,50 @@ RSpec.describe Publication, type: :model do
 
   it { is_expected.to validate_numericality_of(:version).only_integer.is_greater_than(0) }
 
+  context 'with a new version available' do
+    before            { publication.publish.save! }
+    let(:new_version) { publication.publishable.new_version.tap(&:save!).publication }
+
+    it 'can return publications by id' do
+      new_version
+      expect(described_class.with_id(publication.number)).to eq [ publication ]
+      expect(described_class.with_id(publication.publication_group.uuid)).to eq [ publication ]
+      expect(described_class.with_id(publication.uuid)).to eq [ publication ]
+      expect(described_class.with_id(publication.uid)).to eq [ publication ]
+      expect(described_class.with_id("#{publication.number}@draft")).to eq [ new_version ]
+      expect(described_class.with_id("#{publication.number}@d")).to eq [ new_version ]
+      expect(described_class.with_id("#{publication.number}@latest")).to(
+        eq [ new_version, publication ]
+      )
+    end
+
+    it 'knows which users can view it' do
+      user = FactoryBot.create :user
+      admin = FactoryBot.create :user, :administrator
+      author = FactoryBot.create(:author, publication: publication).user
+      copyright_holder = FactoryBot.create(:copyright_holder, publication: publication).user
+      author_delegate = FactoryBot.create(:delegation, delegator: author, can_read: true).delegate
+      copyright_delegate = FactoryBot.create(
+        :delegation, delegator: copyright_holder, can_read: true
+      ).delegate
+      new_version
+
+      expect(described_class.visible_for(user: nil)).to eq [ publication ]
+      expect(described_class.visible_for(user: user)).to eq [ publication ]
+      expect(described_class.visible_for(user: admin)).to match_array [ publication, new_version ]
+      expect(described_class.visible_for(user: author)).to match_array [ publication, new_version ]
+      expect(described_class.visible_for(user: copyright_holder)).to(
+        match_array [ publication, new_version ]
+      )
+      expect(described_class.visible_for(user: author_delegate)).to(
+        match_array [ publication, new_version ]
+      )
+      expect(described_class.visible_for(user: copyright_delegate)).to(
+        match_array [ publication, new_version ]
+      )
+    end
+  end
+
   it 'requires a unique publishable' do
     publication_2 = FactoryBot.build :publication, publishable: publication.publishable
     expect(publication_2).not_to be_valid

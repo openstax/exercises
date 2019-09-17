@@ -32,20 +32,21 @@ module Publishable
             pubg = PublicationGroup.arel_table
 
             wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
+            latest = false
             case vv
-              when NilClass
-                wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
-              when 'draft', 'd'
-                wheres = wheres.and(pub[:published_at].eq(nil))
-              when 'latest'
-                wheres
-              else
-                wheres = wheres.and(pub[:version].eq(vv))
+            when NilClass
+              wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
+            when 'draft', 'd'
+              wheres = wheres.and(pub[:published_at].eq(nil))
+            when 'latest'
+              latest = true
+            else
+              wheres = wheres.and(pub[:version].eq(vv))
             end
 
-            joins(publication: :publication_group)
-              .where(wheres)
-              .order(pubg[:number].asc, pub[:version].desc)
+            rel = joins(publication: :publication_group).where(wheres)
+            rel = rel.chainable_latest if latest
+            rel.order(pubg[:number].asc, pub[:version].desc)
           end
 
           scope :visible_for, ->(options) do
