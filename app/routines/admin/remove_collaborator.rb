@@ -2,7 +2,8 @@ class Admin::RemoveCollaborator
   lev_routine
 
   def exec(publishables:, user:, collaborator_type:)
-    publishables.find_in_batches do |publishables|
+    args = publishables.respond_to?(:find_in_batches) ? [ :find_in_batches ] : [ :each_slice, 1000 ]
+    publishables.send(*args) do |publishables|
       author_ids = []
       copyright_holder_ids = []
 
@@ -25,6 +26,8 @@ class Admin::RemoveCollaborator
           copyright_holder_ids << copyright_holder.id unless copyright_holder.nil?
         end
       end
+
+      outputs.total_count = author_ids.size + copyright_holder_ids.size
 
       Author.where(id: author_ids).delete_all unless author_ids.empty?
       CopyrightHolder.where(id: copyright_holder_ids).delete_all unless copyright_holder_ids.empty?

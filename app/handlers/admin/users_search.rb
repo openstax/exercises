@@ -5,8 +5,9 @@ module Admin
     paramify :search do
       attribute :type, type: String
       attribute :query, type: String
-      attribute :page, type: Integer
+      attribute :order_by, type: String
       attribute :per_page, type: Integer
+      attribute :page, type: Integer
     end
 
     uses_routine OpenStax::Accounts::SearchAccounts,
@@ -31,7 +32,7 @@ module Admin
       names = (search_params.query || '').split(/\s/)
       query = names.map { |name| "#{prefix}#{name}" }.join(' ').to_s
 
-      run(:search_users, query)
+      run(:search_users, query, search_params.order_by, search_params.per_page, search_params.page)
     end
   end
 end
