@@ -62,7 +62,8 @@
         <%=
           form.submit @collaborator_action, id: 'commit',
                                             class: 'btn btn-primary',
-                                            disabled: @collaborator.nil?
+                                            disabled: @collaborator.nil?,
+                                            data: { disable_with: 'Processing...' }
         %>
       </div>
 

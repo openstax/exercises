@@ -8,14 +8,16 @@ $("#collaborators-search-results").html("<%= j(
   }
 ) %>");
 
-$("#collaborators-query").blur(function() {
-  if (!$("#collaborators-search-results a:focus")) {
-    $("#collaborators-search-results").html("");
+$("#collaborators-query, #collaborators-search-results a").blur(function() {
+  window.requestAnimationFrame(function () {
+    if (!$("#collaborators-query, #collaborators-search-results a").is(":focus")) {
+      $("#collaborators-search-results").html("");
 
-    if (!$("#collaborator-id").val()) {
-      $("#collaborators-query").val("");
+      if (!$("#collaborator-id").val()) {
+        $("#collaborators-query").val("");
+      }
     }
-  }
+  });
 });
 
 $("#collaborators-search-results a").click(function(event) {

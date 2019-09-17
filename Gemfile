@@ -151,6 +151,9 @@ gem 'openstax_healthcheck'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '~> 1.4.0', require: false
 
+# Bulk inserts and upserts
+gem 'activerecord-import'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
