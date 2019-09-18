@@ -119,6 +119,9 @@ RSpec.describe Admin::PublicationsController, type: :request do
 
           FactoryBot.create :author, user: @user, publication: @exercise.publication
           FactoryBot.create :copyright_holder, user: @user, publication: @exercise.publication
+          @exercise.publication.reload
+          FactoryBot.create :author, publication: @exercise.publication
+          FactoryBot.create :copyright_holder, publication: @exercise.publication
         end
         after(:all)  { DatabaseCleaner.clean }
 

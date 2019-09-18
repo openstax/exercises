@@ -10,7 +10,8 @@ class Admin::RemoveCollaborator
       publishables.each do |publishable|
         publication = publishable.publication
 
-        if collaborator_type == 'Author' || collaborator_type == 'Both'
+        if (collaborator_type == 'Author' || collaborator_type == 'Both') &&
+           publication.authors.length > 1
           author = publication.authors.find do |author|
             author.user_id == user.id
           end
@@ -18,7 +19,8 @@ class Admin::RemoveCollaborator
           author_ids << author.id unless author.nil?
         end
 
-        if collaborator_type == 'Copyright Holder' || collaborator_type == 'Both'
+        if (collaborator_type == 'Copyright Holder' || collaborator_type == 'Both') &&
+           publication.copyright_holders.length > 1
           copyright_holder = publication.copyright_holders.find do |copyright_holder|
             copyright_holder.user_id == user.id
           end
