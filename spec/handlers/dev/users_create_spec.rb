@@ -29,7 +29,7 @@ RSpec.describe Dev::UsersCreate do
     expect do
       described_class.handle params: params
     end.to  change { User.count }.by(1)
-       .and change { FinePrint::Signature.count }.by(1)
+       .and change { FinePrint::Signature.count }.by(FinePrint::Contract.published.count)
 
     user = User.order(:created_at).last
 

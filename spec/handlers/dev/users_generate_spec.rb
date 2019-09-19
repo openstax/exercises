@@ -11,7 +11,7 @@ RSpec.describe Dev::UsersGenerate do
     expect do
       described_class.handle params: params
     end.to  change { User.count }.by(count)
-       .and change { FinePrint::Signature.count }.by(count)
+       .and change { FinePrint::Signature.count }.by(count * FinePrint::Contract.published.count)
 
     User.order(:created_at).last(count).each { |user| expect(contract.signed_by?(user)).to eq true }
   end
