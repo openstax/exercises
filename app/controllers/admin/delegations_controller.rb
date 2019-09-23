@@ -1,6 +1,5 @@
 module Admin
   class DelegationsController < BaseController
-
     around_action :respond_to_html, except: :users
     before_action :set_delegation, only: [ :edit, :update, :destroy ]
 
@@ -74,6 +73,5 @@ module Admin
         :can_assign_authorship, :can_assign_copyright, :can_update
       )
     end
-
   end
 end

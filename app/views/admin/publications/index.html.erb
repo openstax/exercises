@@ -1,0 +1,77 @@
+<%
+  form_html = { id: 'publications-form', class: 'form-inline' }
+  actions = [ 'Add', 'Remove' ]
+  collaborator_types = [ 'Both', 'Author', 'Copyright Holder' ]
+%>
+
+<h4>Mass Update</h4>
+<%= form_with url: admin_publications_url, local: true, method: :patch, html: form_html do |form| %>
+  <div class="form-group">
+    <%= form.label :query, 'Search for' %>&nbsp;
+    <%=
+      form.search_field :query, value: @query,
+                                autofocus: @query.blank?,
+                                placeholder: 'Example: tag:"book:stax-phys"'
+    %>&nbsp;
+    <%= form.label :type, 'in' %>&nbsp;
+    <%= form.select :type, ['Exercises', 'Vocab Terms'], { selected: @type } %>&nbsp;
+
+    <%= form.submit 'Search', id: 'search', class: 'btn btn-primary' %>
+  </div>
+
+  <br><br>
+
+  <div id="publications">
+    <% unless @query.blank? %>
+      <div id="publication-search-pagination">
+        <%=
+          render partial: 'search_results_pagination', locals: {
+            query: @query,
+            total_count: @total_count,
+            page: @page,
+            per_page: @per_page
+          }
+        %>
+      </div>
+
+      <br>
+
+      <h4>Update All Publications Found...</h4>
+      <div class="form-group">
+        <%=
+          form.select :collaborator_action, actions, { selected: @collaborator_action },
+                                                     id: 'collaborator-action'
+        %>&nbsp;
+        <div id="collaborators-search">
+          <%=
+            form.search_field :collaborators_query, value: @collaborators_query,
+                                                    autofocus: true,
+                                                    id: 'collaborators-query'
+          %>
+
+          <div id="collaborators-search-results">
+            <%= render partial: 'collaborators_search_results' %>
+          </div>&nbsp;
+        </div>
+        <%= form.hidden_field :collaborator_id, id: 'collaborator-id', value: @collaborator&.id %>
+        <%= form.label :collaborator_type, 'as' %>&nbsp;
+        <%=
+          form.select :collaborator_type, collaborator_types, { selected: @collaborator_type }
+        %>&nbsp;
+
+        <%=
+          form.submit @collaborator_action, id: 'commit',
+                                            class: 'btn btn-primary',
+                                            disabled: @collaborator.nil?,
+                                            data: { disable_with: 'Processing...' }
+        %>
+      </div>
+
+      <br>
+
+      <div id="publication-search-results">
+        <%= render partial: 'search_results_list', locals: { publishables: @publishables } %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

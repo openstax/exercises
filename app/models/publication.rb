@@ -42,25 +42,28 @@ class Publication < ApplicationRecord
     pubg = PublicationGroup.arel_table
 
     wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
+    latest = false
     case vv
-      when NilClass
-        wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
-      when 'draft', 'd'
-        wheres = wheres.and(pub[:published_at].eq(nil))
-      when 'latest'
-        wheres
-      else
-        wheres = wheres.and(pub[:version].eq(vv))
+    when NilClass
+      wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
+    when 'draft', 'd'
+      wheres = wheres.and(pub[:published_at].eq(nil))
+    when 'latest'
+      latest = true
+    else
+      wheres = wheres.and(pub[:version].eq(vv))
     end
 
-    joins(:publication_group).where(wheres).order(pubg[:number].asc, pub[:version].desc)
+    rel = joins(:publication_group).where(wheres)
+    rel = rel.chainable_latest if latest
+    rel.order(pubg[:number].asc, pub[:version].desc)
   end
 
   scope :visible_for, ->(options) do
     user = options[:user]
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
     next published if !user.is_a?(User) || user.is_anonymous?
-    next all if user.administrator
+    next all if user.is_administrator?
 
     user_id = user.id
 

@@ -1,0 +1,20 @@
+<%
+  # Clients of this partial may override the following variable:
+  publishables ||= []
+%>
+
+<%=
+  osu.action_list(
+    records: publishables,
+    list: {
+      headings: [ 'Type', 'ID', 'Authors', 'Copyright Holders' ],
+      widths: [ '20%', '20%', '30%', '30%' ],
+      data_procs: [
+        ->(publishable) { publishable.class.name },
+        ->(publishable) { publishable.uid },
+        ->(publishable) { publishable.authors.map(&:name).join(', ') },
+        ->(publishable) { publishable.copyright_holders.map(&:name).join(', ') }
+      ]
+    }
+  )
+%>

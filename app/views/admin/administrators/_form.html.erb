@@ -1,4 +1,4 @@
-<%= user.administrator ? \
+<%= user.is_administrator? ? \
       render(partial: 'admin/administrators/destroy',
              locals: {user: user}) : \
       link_to(admin_administrators_url(administrator: {user_id: user.id}), method: :post) do
