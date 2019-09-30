@@ -1,22 +1,33 @@
-# Copyright 2011-2014 Rice University. Licensed under the Affero General Public
+# Copyright 2011-2019 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
-sudo: false
-language: ruby
-rvm: 2.6.1
-cache: bundler
-bundler_args: --without production --retry=6
-addons:
-  postgresql: 9.6
-services: redis-server
-script: bundle exec parallel_rspec ./spec
+
 branches:
   only:
     - master
-before_script:
-  - export OXE_DB_USER=postgres
-  - export OXE_DB_PASS=
-  - export OXE_TEST_DB=travis_ci_test
-  - export PARALLEL_TEST_PROCESSORS=2
-  - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
+dist: xenial
+language: ruby
+addons:
+  postgresql: 9.6
+services: redis-server
+env:
+  global:
+    - OXE_DB_USER=postgres
+    - OXE_DB_PASS=
+    - OXE_TEST_DB=travis_ci_test
+    - PARALLEL_TEST_PROCESSORS=2
+  matrix:
+    - ASSETS=true
+    - TAG=speed:fast
+    - TAG=~speed:fast
+rvm: 2.6.1
+cache: bundler
 before_install:
   - gem install bundler:2.0.1
+bundler_args: --without production --retry=6
+before_script:
+  - bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
+script:
+  - "[[ -n $ASSETS ]] && bundle exec rake assets:precompile || [[ -z $ASSETS ]] && true"
+  - >-
+      [[ -n $TAG ]] && bundle exec parallel_rspec ./spec --test-options "--tag $TAG" ||
+      [[ -z $TAG ]] && true
