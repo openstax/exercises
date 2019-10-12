@@ -3,6 +3,9 @@ class Admin::AddCollaborator
 
   def exec(publishables:, user:, collaborator_type:)
     args = publishables.respond_to?(:find_in_batches) ? [ :find_in_batches ] : [ :each_slice, 1000 ]
+
+    outputs.total_count = 0
+
     publishables.send(*args) do |publishables|
       authors = []
       copyright_holders = []
@@ -25,10 +28,12 @@ class Admin::AddCollaborator
              publication.copyright_holders.none? { |ch| ch.user_id == user.id }
       end
 
-      outputs.total_count = authors.size + copyright_holders.size
+      outputs.total_count += authors.size + copyright_holders.size
 
       Author.import(authors, validate: false) unless authors.empty?
       CopyrightHolder.import(copyright_holders, validate: false) unless copyright_holders.empty?
     end
+
+    publishables.respond_to?(:touch_all) ? publishables.touch_all : publishables.each(&:touch)
   end
 end

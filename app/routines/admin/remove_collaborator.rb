@@ -3,6 +3,9 @@ class Admin::RemoveCollaborator
 
   def exec(publishables:, user:, collaborator_type:)
     args = publishables.respond_to?(:find_in_batches) ? [ :find_in_batches ] : [ :each_slice, 1000 ]
+
+    outputs.total_count = 0
+
     publishables.send(*args) do |publishables|
       author_ids = []
       copyright_holder_ids = []
@@ -29,10 +32,12 @@ class Admin::RemoveCollaborator
         end
       end
 
-      outputs.total_count = author_ids.size + copyright_holder_ids.size
+      outputs.total_count += author_ids.size + copyright_holder_ids.size
 
       Author.where(id: author_ids).delete_all unless author_ids.empty?
       CopyrightHolder.where(id: copyright_holder_ids).delete_all unless copyright_holder_ids.empty?
     end
+
+    publishables.respond_to?(:touch_all) ? publishables.touch_all : publishables.each(&:touch)
   end
 end
