@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe VocabTerms::Import::Xlsx, type: :routine do
+RSpec.describe VocabTerms::Import::Xlsx, type: :routine, speed: :slow do
   let(:fixture_path) { 'spec/fixtures/sample_vocab_terms.xlsx' }
 
   let(:expected_names) {
@@ -67,10 +67,10 @@ RSpec.describe VocabTerms::Import::Xlsx, type: :routine do
   it 'skips vocab_terms with no changes' do
     expect {
       described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
-    }.to change{ VocabTerm.count }.by(8)
+    }.to change { VocabTerm.count }.by(8)
 
     expect {
       described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
-    }.not_to change{ VocabTerm.count }
+    }.not_to change { VocabTerm.count }
   end
 end

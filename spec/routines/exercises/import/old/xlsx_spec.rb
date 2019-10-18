@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Exercises::Import
-  RSpec.describe Old::Xlsx, type: :routine do
+  RSpec.describe Old::Xlsx, type: :routine, speed: :slow do
     let(:fixture_path) { 'spec/fixtures/old/sample_exercises.xlsx' }
 
     let(:expected_los) {
@@ -60,11 +60,11 @@ module Exercises::Import
     it 'skips exercises with no changes' do
       expect {
         described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
-      }.to change{ Exercise.count }.by(128)
+      }.to change { Exercise.count }.by(128)
 
       expect {
         described_class.call(filename: fixture_path, author_id: author.id, ch_id: ch.id)
-      }.not_to change{ Exercise.count }
+      }.not_to change { Exercise.count }
     end
   end
 end
