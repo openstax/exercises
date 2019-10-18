@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Admin::RemoveCollaborator, type: :routine do
   before(:all) { @user = FactoryBot.create :user }
 
-  let(:args) { { publishables: @publishables, user: @user, collaborator_type: collaborator_type } }
+  let(:args) { { publishables: @pub_relation, user: @user, collaborator_type: collaborator_type } }
   subject    { described_class.call args }
 
   [ Exercise, VocabTerm ].each do |publishable_class|
@@ -11,27 +11,31 @@ RSpec.describe Admin::RemoveCollaborator, type: :routine do
       before(:all) do
         DatabaseCleaner.start
 
-        publishables = 4.times.map { FactoryBot.create publishable_class.name.underscore.to_sym }
-        FactoryBot.create :author, user: @user, publication: publishables.first.publication
-        FactoryBot.create :author, user: @user, publication: publishables.second.publication
-        FactoryBot.create :author, user: @user, publication: publishables.last.publication
+        @publishables = 4.times.map { FactoryBot.create publishable_class.name.underscore.to_sym }
+        FactoryBot.create :author, user: @user, publication: @publishables.first.publication
+        FactoryBot.create :author, user: @user, publication: @publishables.second.publication
+        FactoryBot.create :author, user: @user, publication: @publishables.last.publication
         FactoryBot.create :copyright_holder, user: @user,
-                                             publication: publishables.second.publication
+                                             publication: @publishables.second.publication
         FactoryBot.create :copyright_holder, user: @user,
-                                             publication: publishables.third.publication
+                                             publication: @publishables.third.publication
         FactoryBot.create :copyright_holder, user: @user,
-                                             publication: publishables.last.publication
+                                             publication: @publishables.last.publication
 
         # Need some other collaborators to be able to remove the user
-        publishables[0..-2].each do |publishable|
+        @changed_publishables = @publishables[0..-2]
+        @unchanged_publishable = @publishables[-1]
+        @changed_publishables.each do |publishable|
           publication = publishable.publication.reload
           FactoryBot.create :author, publication: publication
           FactoryBot.create :copyright_holder, publication: publication
         end
 
-        @publishables = publishable_class.where id: publishables.map(&:id)
+        @pub_relation = publishable_class.where id: @publishables.map(&:id)
       end
       after(:all)  { DatabaseCleaner.clean }
+
+      before { @publishables.each(&:reload) }
 
       context 'Author' do
         let(:collaborator_type) { 'Author' }
@@ -40,10 +44,10 @@ RSpec.describe Admin::RemoveCollaborator, type: :routine do
           expect { subject }.to  change { Author.count }.by(-2)
                             .and not_change { CopyrightHolder.count }
 
-          @publishables[0..-2].each do |publishable|
+          @changed_publishables.each do |publishable|
             expect(publishable.authors.map(&:user)).not_to include @user
           end
-          expect(@publishables.last.authors.map(&:user)).to include @user
+          expect(@unchanged_publishable.authors.map(&:user)).to include @user
         end
       end
 
@@ -54,10 +58,10 @@ RSpec.describe Admin::RemoveCollaborator, type: :routine do
           expect { subject }.to  not_change { Author.count }
                             .and change { CopyrightHolder.count }.by(-2)
 
-          @publishables[0..-2].each do |publishable|
+          @changed_publishables.each do |publishable|
             expect(publishable.copyright_holders.map(&:user)).not_to include @user
           end
-          expect(@publishables.last.copyright_holders.map(&:user)).to include @user
+          expect(@unchanged_publishable.copyright_holders.map(&:user)).to include @user
         end
       end
 
@@ -68,12 +72,12 @@ RSpec.describe Admin::RemoveCollaborator, type: :routine do
           expect { subject }.to  change { Author.count }.by(-2)
                             .and change { CopyrightHolder.count }.by(-2)
 
-          @publishables[0..-2].each do |publishable|
+          @changed_publishables.each do |publishable|
             expect(publishable.authors.map(&:user)).not_to include @user
             expect(publishable.copyright_holders.map(&:user)).not_to include @user
           end
-          expect(@publishables.last.authors.map(&:user)).to include @user
-          expect(@publishables.last.copyright_holders.map(&:user)).to include @user
+          expect(@unchanged_publishable.authors.map(&:user)).to include @user
+          expect(@unchanged_publishable.copyright_holders.map(&:user)).to include @user
         end
       end
     end
