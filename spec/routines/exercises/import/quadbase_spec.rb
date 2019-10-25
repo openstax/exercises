@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Import::Quadbase, type: :routine do
+RSpec.describe Exercises::Import::Quadbase, type: :routine, speed: :slow do
   let(:fixture_path) { 'spec/fixtures/quadbase.json' }
 
   let(:expected_exercise_stimuli) {
@@ -59,10 +59,10 @@ RSpec.describe Exercises::Import::Quadbase, type: :routine do
   it 'skips exercises with no changes' do
     expect {
       described_class.call(filename: fixture_path, book_name: 'physics')
-    }.to change{ Exercise.count }.by(2)
+    }.to change { Exercise.count }.by(2)
 
     expect {
       described_class.call(filename: fixture_path, book_name: 'physics')
-    }.not_to change{ Exercise.count }
+    }.not_to change { Exercise.count }
   end
 end
