@@ -2,11 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Admin::PublicationsController, type: :request do
   before(:all) do
+    DatabaseCleaner.start
+
     @user = FactoryBot.create :user, :agreed_to_terms
     @admin = FactoryBot.create :user, :administrator, :agreed_to_terms
 
     @exercise = FactoryBot.create :exercise
   end
+  after(:all)  { DatabaseCleaner.clean }
 
   let(:valid_publications_search_params) { { query: "id:#{@exercise.id}" } }
 

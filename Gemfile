@@ -90,9 +90,6 @@ gem 'mimemagic'
 # Image editing
 gem 'mini_magick'
 
-# Markdown parsing
-gem 'kramdown'
-
 # Read Excel xlsx spreadsheet files
 gem 'roo'
 

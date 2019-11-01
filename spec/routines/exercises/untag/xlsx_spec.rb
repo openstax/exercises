@@ -12,7 +12,6 @@ RSpec.describe Exercises::Untag::Xlsx, type: :routine do
     Exercises::Tag::Xlsx.call(filename: @fixture_path)
     @exercises.each { |exercise| exercise.reload.publication.update_attribute :published_at, nil }
   end
-
   after(:all) { DatabaseCleaner.clean }
 
   it 'removes exercise tags based on the sample spreadsheet' do
