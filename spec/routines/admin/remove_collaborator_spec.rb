@@ -1,7 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Admin::RemoveCollaborator, type: :routine do
-  before(:all) { @user = FactoryBot.create :user }
+  before(:all) do
+    DatabaseCleaner.start
+
+    @user = FactoryBot.create :user
+  end
+  after(:all)  { DatabaseCleaner.clean }
 
   let(:args) { { publishables: @pub_relation, user: @user, collaborator_type: collaborator_type } }
   subject    { described_class.call args }

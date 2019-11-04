@@ -1,6 +1,5 @@
 # Common methods for reading spreadsheets
 module RowParser
-
   def split(text, on: /,|\r?\n/)
     text.to_s.split(on).map(&:strip)
   end
@@ -16,5 +15,4 @@ module RowParser
       failures.each { |key, value| Rails.logger.error "Row #{key}: #{value}" }
     end
   end
-
 end

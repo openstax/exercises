@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Publication, type: :model do
-
   subject(:publication) { FactoryBot.create :publication }
 
   it { is_expected.to belong_to(:publication_group) }
@@ -158,5 +157,4 @@ RSpec.describe Publication, type: :model do
     expect(publication.publication_group.reload.latest_version).to eq new_version.version
     expect(publication.publication_group.latest_published_version).to eq publication.version
   end
-
 end

@@ -14,11 +14,9 @@ require 'has_logic'
 require 'has_tags'
 
 require 'row_parser'
-require 'xlsx'
 
 require 'publishable'
 require 'exercises'
-require 'vocab_terms'
 
 require 'solution'
 require 'stylable'
