@@ -6,10 +6,10 @@ SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 
 SimpleCov.start 'rails'
 
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 
 require 'spec_helper'
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 

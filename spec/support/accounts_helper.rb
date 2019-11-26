@@ -1,6 +1,6 @@
 module AccountsHelper
   def sign_in(user)
-    post openstax_accounts.become_dev_account_url(user.account.openstax_uid)
+    post openstax_accounts.become_dev_account_url(user.account_id)
     follow_redirect!
   end
 

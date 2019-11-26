@@ -4,7 +4,7 @@ class User < ApplicationRecord
 
   acts_as_voter
 
-  belongs_to :account, class_name: "OpenStax::Accounts::Account", autosave: true
+  belongs_to :account, class_name: 'OpenStax::Accounts::Account', autosave: true
 
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
@@ -22,15 +22,9 @@ class User < ApplicationRecord
                                      as: :delegate,
                                      dependent: :destroy
 
-  has_many_through_groups :groups_as_member, :list_owners, as: :owner, dependent: :destroy
-  has_many_through_groups :groups_as_member, :list_editors, as: :editor, dependent: :destroy
-  has_many_through_groups :groups_as_member, :list_readers, as: :reader, dependent: :destroy
-
-  has_many_through_groups :groups_as_member, :applications, class_name: 'Doorkeeper::Application',
-                                                            as: :owner,
-                                                            dependent: :destroy
-
   has_many :sortings, dependent: :destroy
+
+  has_many :applications, as: :owner, class_name: 'Doorkeeper::Application', dependent: :destroy
 
   validates :account, uniqueness: true
 

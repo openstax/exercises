@@ -15,32 +15,18 @@ namespace :openstax do
       ActiveRecord::Base.transaction do
         # Get the admin password
         password = args[:admin_password]
+
         # Create application owner if needed
-
-        app_owner_group = OpenStax::Accounts::Group.find_by(name: 'ose_app_admin_group')
-
-        if app_owner_group.nil?
-          admin_account = OpenStax::Accounts::Account.find_by(username: 'ose_app_admin')
-
-          if admin_account.nil?
-            admin_account = OpenStax::Accounts::FindOrCreateAccount.call(
-              username: 'ose_app_admin', password: password
-            ).outputs.account
-            admin_user = User.create!(account: admin_account)
-            admin_user.create_administrator!
-          end
-
-          app_owner_group = OpenStax::Accounts::CreateGroup[
-            name: 'ose_app_admin_group', owner: admin_account
-          ]
-          app_owner_group.add_member(admin_account)
-        end
+        admin_account = OpenStax::Accounts::FindOrCreateAccount.call(
+          username: 'ose_app_admin', password: password
+        ).outputs.account
+        admin_user = User.find_or_create_by account: admin_account
 
         DEFAULT_APP_NAMES.each do |app_name|
           # Create the app if it doesn't exist
           Doorkeeper::Application.find_or_create_by(name: app_name) do |application|
             application.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
-            application.owner = app_owner_group
+            application.owner = admin_user
 
             puts "Created application #{app_name}."
           end

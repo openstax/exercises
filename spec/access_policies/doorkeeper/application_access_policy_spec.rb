@@ -8,23 +8,15 @@ RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
   let(:another_app) { FactoryBot.create(:doorkeeper_application) }
 
   context 'read, update' do
-    it 'can be accessed by admins and members of the application owner group' do
+    it 'can be accessed by admins and application owners' do
       expect(OSU::AccessPolicy.action_allowed?(:read, admin, app)).to eq true
       expect(OSU::AccessPolicy.action_allowed?(:update, admin, app)).to eq true
 
-      go = app.owner.add_owner(user.account)
-      app.owner.reload
+      app.owner = user
       expect(OSU::AccessPolicy.action_allowed?(:read, user, app)).to eq true
       expect(OSU::AccessPolicy.action_allowed?(:update, user, app)).to eq true
-      go.destroy
 
-      gm = app.owner.add_member(user.account)
-      app.owner.reload
-      expect(OSU::AccessPolicy.action_allowed?(:read, user, app)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:update, user, app)).to eq true
-      gm.destroy
-
-      app.owner.reload
+      app.reload
       expect(OSU::AccessPolicy.action_allowed?(:read, user, app)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:update, user, app)).to eq false
     end
@@ -51,9 +43,6 @@ RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
     end
 
     it 'cannot be accessed by anyone else' do
-      app.owner.add_owner(user.account)
-      app.owner.add_member(user.account)
-
       expect(described_class.action_allowed?(:create, anon, app)).to eq false
       expect(described_class.action_allowed?(:destroy, anon, app)).to eq false
 
