@@ -8,23 +8,6 @@ GIT
       json
       typhoeus (~> 1.0, >= 1.0.1)
 
-PATH
-  remote: ../accounts-rails
-  specs:
-    openstax_accounts (9.0.1)
-      action_interceptor
-      keyword_search
-      lev
-      oauth2
-      omniauth
-      omniauth-oauth2
-      openstax_api
-      openstax_utilities
-      pg
-      rails (< 6.0)
-      representable
-      roar
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -282,6 +265,19 @@ GEM
     omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
+    openstax_accounts (9.0.1)
+      action_interceptor
+      keyword_search
+      lev
+      oauth2
+      omniauth
+      omniauth-oauth2
+      openstax_api
+      openstax_utilities
+      pg
+      rails (< 6.0)
+      representable
+      roar
     openstax_api (9.0.1)
       doorkeeper (>= 2.0)
       exception_notification (>= 4.0)
@@ -548,7 +544,7 @@ DEPENDENCIES
   oj
   oj_mimic_json
   omniauth-oauth2
-  openstax_accounts!
+  openstax_accounts (~> 9.0.1)
   openstax_api
   openstax_healthcheck
   openstax_rescue_from
