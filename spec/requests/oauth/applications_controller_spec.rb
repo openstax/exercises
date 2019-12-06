@@ -1,26 +1,14 @@
 require "rails_helper"
 
 RSpec.describe Oauth::ApplicationsController, type: :request do
-
   let(:user_1) { FactoryBot.create :user }
   let(:user_2) { FactoryBot.create :user }
   let(:admin)  { FactoryBot.create(:administrator).user }
 
-  let(:user_group_1) do
-    FactoryBot.create(:openstax_accounts_group).tap do |ug|
-      ug.add_member(user_1.account)
-      ug.add_member(user_2.account)
-    end
-  end
-
-  let(:user_group_2) do
-    FactoryBot.create(:openstax_accounts_group).tap { |ug| ug.add_member(user_2.account) }
-  end
-
-  let!(:group_1_application_1) { FactoryBot.create :doorkeeper_application, owner: user_group_1 }
-  let!(:group_1_application_2) { FactoryBot.create :doorkeeper_application, owner: user_group_1 }
-  let!(:group_2_application_1) { FactoryBot.create :doorkeeper_application, owner: user_group_2 }
-  let!(:group_2_application_2) { FactoryBot.create :doorkeeper_application, owner: user_group_2 }
+  let!(:user_1_application_1) { FactoryBot.create :doorkeeper_application, owner: user_1 }
+  let!(:user_1_application_2) { FactoryBot.create :doorkeeper_application, owner: user_1 }
+  let!(:user_2_application_1) { FactoryBot.create :doorkeeper_application, owner: user_2 }
+  let!(:user_2_application_2) { FactoryBot.create :doorkeeper_application, owner: user_2 }
 
   context "GET /oauth/applications" do
     it "renders a list of the user's applications" do
@@ -28,10 +16,10 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
       get oauth_applications_url
 
       expect(response).to have_http_status(:ok)
-      expect(css_select("#application_#{group_1_application_1.id}")).not_to be_empty
-      expect(css_select("#application_#{group_1_application_2.id}")).not_to be_empty
-      expect(css_select("#application_#{group_2_application_1.id}")).to be_empty
-      expect(css_select("#application_#{group_2_application_2.id}")).to be_empty
+      expect(css_select("#application_#{user_1_application_1.id}")).not_to be_empty
+      expect(css_select("#application_#{user_1_application_2.id}")).not_to be_empty
+      expect(css_select("#application_#{user_2_application_1.id}")).to be_empty
+      expect(css_select("#application_#{user_2_application_2.id}")).to be_empty
     end
 
     it "renders a list of all applications for admins" do
@@ -39,10 +27,10 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
       get oauth_applications_url
 
       expect(response).to have_http_status(:ok)
-      expect(css_select("#application_#{group_1_application_1.id}")).not_to be_empty
-      expect(css_select("#application_#{group_1_application_2.id}")).not_to be_empty
-      expect(css_select("#application_#{group_2_application_1.id}")).not_to be_empty
-      expect(css_select("#application_#{group_2_application_2.id}")).not_to be_empty
+      expect(css_select("#application_#{user_1_application_1.id}")).not_to be_empty
+      expect(css_select("#application_#{user_1_application_2.id}")).not_to be_empty
+      expect(css_select("#application_#{user_2_application_1.id}")).not_to be_empty
+      expect(css_select("#application_#{user_2_application_2.id}")).not_to be_empty
     end
   end
 
@@ -50,14 +38,14 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
     before { sign_in user_1 }
 
     it "renders the requested application" do
-      get oauth_application_url(group_1_application_1)
+      get oauth_application_url(user_1_application_1)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(group_1_application_1.id.to_s)
-      expect(response.body).to include(group_1_application_1.name)
-      expect(response.body).to include(group_1_application_1.uid)
-      expect(response.body).to include(group_1_application_1.secret)
-      expect(response.body).to include(group_1_application_1.redirect_uri)
+      expect(response.body).to include(user_1_application_1.id.to_s)
+      expect(response.body).to include(user_1_application_1.name)
+      expect(response.body).to include(user_1_application_1.uid)
+      expect(response.body).to include(user_1_application_1.secret)
+      expect(response.body).to include(user_1_application_1.redirect_uri)
     end
   end
 
@@ -77,11 +65,11 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
     before { sign_in user_1 }
 
     it "renders a form for the requested application" do
-      get edit_oauth_application_url(group_1_application_1)
+      get edit_oauth_application_url(user_1_application_1)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(group_1_application_1.name)
-      expect(response.body).to include(group_1_application_1.redirect_uri)
+      expect(response.body).to include(user_1_application_1.name)
+      expect(response.body).to include(user_1_application_1.redirect_uri)
     end
   end
 
@@ -125,18 +113,18 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
           receive(:update_attributes).with(dummy_params).and_call_original
         )
 
-        patch oauth_application_url(group_1_application_1),
+        patch oauth_application_url(user_1_application_1),
               params: { doorkeeper_application: dummy_params.to_h }
 
-        expect(group_1_application_1.reload.name).to eq 'Dummy'
-        expect(response).to redirect_to oauth_application_url(group_1_application_1)
+        expect(user_1_application_1.reload.name).to eq 'Dummy'
+        expect(response).to redirect_to oauth_application_url(user_1_application_1)
       end
     end
 
     context "with invalid params" do
       it "displays the error" do
         # Trigger the behavior that occurs when invalid params are submitted
-        patch oauth_application_url(group_1_application_1),
+        patch oauth_application_url(user_1_application_1),
               params: { doorkeeper_application: { redirect_uri: "invalid" } }
 
         expect(css_select('#doorkeeper_application_redirect_uri.is-invalid')).not_to be_empty
@@ -149,11 +137,10 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
 
     it "destroys the requested application and redirects to the applications list" do
       expect do
-        delete oauth_application_url(group_1_application_1)
+        delete oauth_application_url(user_1_application_1)
       end.to change(Doorkeeper::Application, :count).by(-1)
 
       expect(response).to redirect_to(oauth_applications_url)
     end
   end
-
 end
