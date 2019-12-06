@@ -3,16 +3,9 @@ class DropAccountsGroups < ActiveRecord::Migration[5.2]
   def change
     reversible do |dir|
       dir.up do
-        Doorkeeper::Application.update_all(
-          <<~UPDATE_SQL
-            "owner_type" = 'User', "owner_id" = "users"."id"
-            FROM "openstax_accounts_group_members"
-              INNER JOIN "users"
-                ON "users"."account_id" = "openstax_accounts_group_members"."user_id"
-            WHERE "openstax_accounts_group_members"."group_id" = "oauth_applications"."owner_id"
-              AND "oauth_applications"."owner_type" = 'OpenStax::Accounts::Group'
-          UPDATE_SQL
-        )
+        app_admin = User.joins(:account).find_by(account: { username: 'ose_app_admin' })
+
+        Doorkeeper::Application.update_all(owner: app_admin) if app_admin.present?
       end
     end
 
