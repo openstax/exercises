@@ -5,7 +5,9 @@ class DropAccountsGroups < ActiveRecord::Migration[5.2]
       dir.up do
         app_admin = User.joins(:account).find_by(account: { username: 'ose_app_admin' })
 
-        Doorkeeper::Application.update_all(owner: app_admin) if app_admin.present?
+        Doorkeeper::Application.where(owner_type: 'OpenStax::Accounts::Group').update_all(
+          owner_id: app_admin.id, owner_type: 'User'
+        ) if app_admin.present?
       end
     end
 
