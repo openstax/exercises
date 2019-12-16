@@ -566,7 +566,7 @@ DEPENDENCIES
   rubocop-rails
   sanitize
   sass-rails (~> 5.0)
-  scout_apm (~> 3.0.x)
+  scout_apm (~> 3.0.pre28)
   sentry-raven
   shoulda-matchers
   sortability
