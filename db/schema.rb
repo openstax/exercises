@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_26_001003) do
+ActiveRecord::Schema.define(version: 2020_04_23_162731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -364,6 +364,7 @@ ActiveRecord::Schema.define(version: 2019_11_26_001003) do
     t.citext "support_identifier"
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
+    t.boolean "is_kip"
     t.index ["access_token"], name: "index_openstax_accounts_accounts_on_access_token", unique: true
     t.index ["faculty_status"], name: "index_openstax_accounts_accounts_on_faculty_status"
     t.index ["first_name"], name: "index_openstax_accounts_accounts_on_first_name"

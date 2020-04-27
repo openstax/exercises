@@ -265,7 +265,7 @@ GEM
     omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
-    openstax_accounts (9.0.1)
+    openstax_accounts (9.0.3)
       action_interceptor
       keyword_search
       lev
@@ -544,7 +544,7 @@ DEPENDENCIES
   oj
   oj_mimic_json
   omniauth-oauth2
-  openstax_accounts (~> 9.0.1)
+  openstax_accounts (~> 9.0.3)
   openstax_api
   openstax_healthcheck
   openstax_rescue_from
@@ -580,4 +580,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   2.0.1
+   2.1.1
