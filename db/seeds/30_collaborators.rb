@@ -1,3 +1,5 @@
+OpenStax::Accounts::Account.reset_column_information
+
 # Output logging info to stdout
 original_logger = Rails.logger
 begin

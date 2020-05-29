@@ -1,5 +1,4 @@
 class CreateDefaultCollaborators
-
   lev_routine
 
   uses_routine OpenStax::Accounts::FindOrCreateAccount,
@@ -30,5 +29,4 @@ class CreateDefaultCollaborators
     account = find_or_create_account(username: username, name: name)
     User.find_or_create_by(account: account)
   end
-
 end

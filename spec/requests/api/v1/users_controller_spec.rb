@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1 do
-
   let!(:application)      { FactoryBot.create :doorkeeper_application }
 
   let!(:user)             { FactoryBot.create :user, :agreed_to_terms, first_name: 'U',
@@ -23,7 +22,6 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
   let(:response_hash)     { JSON.parse(response.body).deep_symbolize_keys }
 
   context "GET /api/users" do
-
     before do
       30.times { FactoryBot.create(:user) }
 
@@ -79,7 +77,8 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
             uuid: @john_doe.uuid,
             support_identifier: @john_doe.support_identifier,
             is_test: true,
-            school_type: 'unknown_school_type'
+            school_type: 'unknown_school_type',
+            school_location: 'unknown_school_location'
           }
         ]
       }
@@ -106,7 +105,8 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
             uuid: @jane_doe.uuid,
             support_identifier: @jane_doe.support_identifier,
             is_test: true,
-            school_type: 'unknown_school_type'
+            school_type: 'unknown_school_type',
+            school_location: 'unknown_school_location'
           },
           {
             id: @john_doe.account.openstax_uid,
@@ -120,7 +120,8 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
             uuid: @john_doe.uuid,
             support_identifier: @john_doe.support_identifier,
             is_test: true,
-            school_type: 'unknown_school_type'
+            school_type: 'unknown_school_type',
+            school_location: 'unknown_school_location'
           }
         ]
       }
@@ -147,7 +148,8 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
             uuid: @john_doe.uuid,
             support_identifier: @john_doe.support_identifier,
             is_test: true,
-            school_type: 'unknown_school_type'
+            school_type: 'unknown_school_type',
+            school_location: 'unknown_school_location'
           },
           {
             id: @jane_doe.account.openstax_uid,
@@ -161,18 +163,17 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
             uuid: @jane_doe.uuid,
             support_identifier: @jane_doe.support_identifier,
             is_test: true,
-            school_type: 'unknown_school_type'
+            school_type: 'unknown_school_type',
+            school_location: 'unknown_school_location'
           }
         ]
       }
 
       expect(response_hash).to match(expected_response)
     end
-
   end
 
   context "GET /api/user" do
-
     it "returns the current User's info" do
       api_get api_user_url, user_token
       expect(response).to have_http_status(:ok)
@@ -219,7 +220,6 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
   end
 
   context "PATCH /api/user" do
-
     it "updates the current User's profile" do
       api_patch api_user_url, user_token, params: {
         first_name: "Jerry", last_name: "Mouse"
@@ -249,7 +249,6 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
   end
 
   context "DELETE /api/user" do
-
     it "deactivates the current User's account" do
       api_delete api_user_url, user_token
       expect(response).to have_http_status(:ok)
@@ -268,7 +267,5 @@ RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1
       expect(user.is_deleted?).to eq true
       expect(admin.is_deleted?).to eq false
     end
-
   end
-
 end
