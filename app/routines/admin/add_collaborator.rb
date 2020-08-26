@@ -16,14 +16,14 @@ class Admin::AddCollaborator
         authors << Author.new(
           user_id: user.id,
           publication_id: publication.id,
-          sort_position: publication.authors.map(&:sort_position).max + 1
+          sort_position: (publication.authors.map(&:sort_position).max || 0) + 1
         ) if (collaborator_type == 'Author' || collaborator_type == 'Both') &&
              publication.authors.none? { |author| author.user_id == user.id }
 
         copyright_holders << CopyrightHolder.new(
           user_id: user.id,
           publication_id: publication.id,
-          sort_position: publication.copyright_holders.map(&:sort_position).max + 1
+          sort_position: (publication.copyright_holders.map(&:sort_position).max || 0) + 1
         ) if (collaborator_type == 'Copyright Holder' || collaborator_type == 'Both') &&
              publication.copyright_holders.none? { |ch| ch.user_id == user.id }
       end
