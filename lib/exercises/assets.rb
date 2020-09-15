@@ -3,7 +3,7 @@ module Exercises
 
     def self.[](asset, ext)
       if @manifest.present? # if it's in manifest it's minimized
-        asset = @manifest["#{asset}.min.#{ext}"]
+        asset = @manifest[asset][ext].first
       else
         asset = "#{asset}.#{ext}"
       end
@@ -13,11 +13,11 @@ module Exercises
     # called by assets initializer as it boots
     def self.read_manifest
       begin
-        @manifest = JSON.parse Rails.root.join('public', 'assets', 'rev-manifest.json').read
+        @manifest = JSON.parse(Rails.root.join('public', 'assets', 'manifest.json').read)['entrypoints']
         @manifest.default_proc = proc do |_, asset|
           raise("Asset #{asset} does not exist")
         end
-      rescue Errno::ENOENT
+      rescue StandardError
         @manifest = nil
       end
     end
