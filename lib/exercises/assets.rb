@@ -13,7 +13,7 @@ module Exercises
     # called by assets initializer as it boots
     def self.read_manifest
       begin
-        @manifest = JSON.parse(Rails.root.join('public', 'assets', 'manifest.json').read)['entrypoints']
+        @manifest = JSON.parse(Rails.root.join('public', 'assets', 'assets.json').read)['entrypoints']
         @manifest.default_proc = proc do |_, asset|
           raise("Asset #{asset} does not exist")
         end
