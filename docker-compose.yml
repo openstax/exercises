@@ -1,0 +1,54 @@
+version: "3.7"
+services:
+  api:
+    build: .
+    networks:
+      - exercises
+    ports:
+      - "3000:3000"
+    command: bash -c "bin/rake about && bin/rails server -b '0.0.0.0' -p 3000"
+    environment:
+      - OXE_DEV_DB_HOST=postgres
+      - OXE_TEST_DB_HOST=postgres_test
+      - OXE_DB_USER=ox_exercises
+      - OXE_DB_PASS=ox_exercises
+      - OXE_DEV_DB=ox_exercises_dev
+      - OXE_TEST_DB=ox_exercises_test
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/code
+      - /code/tmp
+      - /code/log
+  postgres:
+    image: "postgres:9.5"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - exercises
+    environment:
+      - POSTGRES_USER=ox_exercises
+      - POSTGRES_PASSWORD=ox_exercises
+      - POSTGRES_DB=ox_exercises_dev
+  postgres_test:
+    image: "postgres:9.5"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - exercises
+    environment:
+      - POSTGRES_USER=ox_exercises
+      - POSTGRES_PASSWORD=ox_exercises
+      - POSTGRES_DB=ox_exercises_test
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    volumes:
+      - 'redis:/data'
+    networks:
+      - exercises
+
+networks:
+  exercises:
+volumes:
+  pgdata:
+  redis:

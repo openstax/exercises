@@ -54,11 +54,31 @@ Here's how to contribute to Exercises:
 Development Quick Start
 -----------------------
 
-### Use swerve
+### Use Docker
 
-We provide a virtual environment that you can use for development. It has everything you need to get going.
+```bash
+$> docker-compose up
+```
 
-See [OpenStax Swerve](http://github.com/openstax/swerve) for more information.
+Or use `docker-compose up -d` for a daemonized run.
+
+Drop into a bash shell with
+
+```bash
+$> docker-compose run api bash
+```
+
+To run tests, make sure the test database is ready:
+
+```bash
+$> docker-compose run api bundle exec rake db:test:prepare
+```
+
+Then
+
+```bash
+$> docker-compose run api bundle exec rspec
+```
 
 ### Install everything yourself
 
