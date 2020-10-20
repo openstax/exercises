@@ -151,10 +151,10 @@ gem 'bootsnap', '~> 1.4.0', require: false
 # Bulk inserts and upserts
 gem 'activerecord-import'
 
-group :development, :test do
-  # Get env variables from .env file
-  gem 'dotenv-rails'
+# Get env variables from .env file
+gem 'dotenv-rails'
 
+group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'
 
