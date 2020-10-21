@@ -1,13 +1,3 @@
-GIT
-  remote: https://github.com/a15k/mothership.git
-  revision: c627052493d59e147969257f245f4093990ae357
-  branch: master
-  glob: clients/1.0.0/ruby/*gemspec
-  specs:
-    a15k_client (1.0.0)
-      json
-      typhoeus (~> 1.0, >= 1.0.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -145,8 +135,6 @@ GEM
     eco-source (1.1.0.rc.1)
     ejs (1.1.1)
     erubi (1.9.0)
-    ethon (0.12.0)
-      ffi (>= 1.3.0)
     eventmachine (1.2.7)
     exception_notification (4.3.0)
       actionmailer (>= 4.0, < 6)
@@ -477,8 +465,6 @@ GEM
     turbolinks (5.2.0)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    typhoeus (1.3.1)
-      ethon (>= 0.9.0)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uber (0.0.15)
@@ -507,7 +493,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  a15k_client!
   activerecord-import
   acts_as_votable
   addressable

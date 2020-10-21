@@ -83,11 +83,6 @@ Exercises::Application.routes.draw do
         get :collaborators
       end
     end
-
-    resources :a15k, only: [] do
-      get :preview, on: :member
-      get :format, on: :collection
-    end
   end
 
   namespace :dev do
