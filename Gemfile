@@ -114,6 +114,12 @@ gem 'scout_apm', '~> 3.0.pre28'
 # PostgreSQL database
 gem 'pg'
 
+# Use the puma webserver
+gem 'puma'
+
+# Prevent server memory from growing until OOM
+gem 'puma_worker_killer'
+
 # HTTP requests
 gem 'httparty'
 
