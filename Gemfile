@@ -222,11 +222,8 @@ group :test do
 end
 
 group :production do
-  # Unicorn production server
-  gem 'unicorn'
-
-  # Unicorn worker killer
-  gem 'unicorn-worker-killer'
+  # Used to fetch secrets from the parameter store
+  gem 'aws-sdk-ssm', require: false
 
   # AWS SES
   gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
