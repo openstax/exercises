@@ -4,7 +4,7 @@ default: &default
   port: <%= ENV['OXE_DB_PORT'] || 5432 %>
   username: <%= ENV['OXE_DB_USER'] || 'ox_exercises' %>
   password: <%= ENV['OXE_DB_PASS'] || 'ox_exercises' %>
-  pool: <%= ENV.fetch('PUMA_MAX_THREADS', 5).to_i %>
+  pool: <%= ENV.fetch('RAILS_MAX_THREADS', 5).to_i %>
 
 development:
   <<: *default
@@ -28,4 +28,4 @@ production:
   username: <%= ENV['RDS_USERNAME'] %>
   password: <%= ENV['RDS_PASSWORD'] %>
   database: <%= ENV['RDS_DATABASE'] %>
-  pool: <%= ENV['PUMA_MAX_THREADS'] %>
+  pool: <%= ENV['RAILS_MAX_THREADS'] %>
