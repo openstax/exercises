@@ -79,17 +79,25 @@ Rails.application.configure do
   # Disable automatic flushing of the log to improve performance.
   # config.autoflush_log = false
 
+  # Use default logging formatter so that PID and timestamp are not suppressed.
+  config.log_formatter = ::Logger::Formatter.new
+
+  # Log to STDOUT and let systemd/journald handle the logs
+  logger           = ActiveSupport::Logger.new(STDOUT)
+  logger.formatter = config.log_formatter
+  config.logger    = ActiveSupport::TaggedLogging.new(logger)
+
   # Lograge configuration (one-line logs in production)
   config.lograge.enabled = true
-  config.log_tags = [:remote_ip]
+  config.log_tags = [ :remote_ip ]
   config.lograge.custom_options = ->(event) do
-    params = event.payload[:params].reject do |k|
-      ['controller', 'action', 'format'].include? k
-    end
-    { "params" => params }
+    {
+      'params' => event.payload[:params].reject do |k|
+        ['controller', 'action', 'format'].include? k
+      end
+    }
   end
-  config.lograge.ignore_actions = ["static_pages#status"]
-
+  config.lograge.ignore_actions = ['static_pages#status']
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false

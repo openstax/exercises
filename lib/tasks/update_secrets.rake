@@ -14,7 +14,6 @@ task :update_secrets do
   secrets = {
     RAILS_MAX_THREADS: 16,
     PRELOAD_APP: true,
-    REDIRECT_STDOUT: true,
     SOCKET: Rails.root.join('tmp', 'sockets', 'puma.sock')
   }
 
