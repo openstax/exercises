@@ -1,6 +1,6 @@
 require 'user_mapper'
 
-secrets = Rails.application.secrets[:openstax][:accounts]
+secrets = Rails.application.secrets.openstax[:accounts]
 
 # By default, stub unless in the production environment
 stub = secrets[:stub].nil? ? !Rails.env.production? : secrets[:stub]
