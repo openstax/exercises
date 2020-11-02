@@ -222,8 +222,9 @@ group :test do
 end
 
 group :production do
-  # Used to fetch secrets from the parameter store
+  # Used to fetch secrets from the AWS parameter store and secrets manager
   gem 'aws-sdk-ssm', require: false
+  gem 'aws-sdk-secretsmanager', require: false
 
   # AWS SES
   gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
