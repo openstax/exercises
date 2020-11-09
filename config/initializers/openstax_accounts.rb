@@ -12,4 +12,4 @@ OpenStax::Accounts.configure do |config|
   config.enable_stubbing = stub
   config.logout_via = :delete
   config.account_user_mapper = UserMapper
-end
+end if secrets[:url]
