@@ -40,7 +40,7 @@ module Exercises
     ActiveSupport.escape_html_entities_in_json = false
 
     redis_secrets = secrets.redis
-    redis_secrets[:url] ||= "redis://#{
+    redis_secrets[:url] ||= "rediss://#{
       ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
       redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
       "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
