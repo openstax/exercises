@@ -114,6 +114,9 @@ gem 'scout_apm', '~> 3.0.pre28'
 # PostgreSQL database
 gem 'pg'
 
+# Support systemd Type=notify services for puma
+gem 'sd_notify', require: false
+
 # Use the puma webserver
 gem 'puma'
 
