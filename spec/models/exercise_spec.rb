@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Exercise, type: :model do
-
   subject(:exercise) { FactoryBot.create :exercise }
 
   it { is_expected.to have_many(:questions).dependent(:destroy).autosave(true) }
@@ -74,5 +73,4 @@ RSpec.describe Exercise, type: :model do
       expect(exercise.can_view_solutions?(user)).to eq false
     end
   end
-
 end
