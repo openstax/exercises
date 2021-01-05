@@ -1,3 +1,5 @@
+# bundle cache method: https://dev.to/k_penguin_sato/cache-rails-gems-using-docker-compose-3o3f
+
 version: "3.7"
 services:
   api:
@@ -6,7 +8,7 @@ services:
       - exercises
     ports:
       - "3000:3000"
-    command: bash -c "bin/rake about && bin/rails server -b '0.0.0.0' -p 3000"
+    command: bash -c "bundle exec rails server -b '0.0.0.0' -p 3000"
     environment:
       - OXE_DEV_DB_HOST=postgres
       - OXE_TEST_DB_HOST=postgres_test
@@ -15,10 +17,15 @@ services:
       - OXE_DEV_DB=ox_exercises_dev
       - OXE_TEST_DB=ox_exercises_test
       - REDIS_URL=redis://redis:6379/0
+      - BUNDLE_PATH=/bundle/vendor
     volumes:
       - .:/code
       - /code/tmp
       - /code/log
+      - bundle_path:/bundle
+    depends_on:
+      - postgres
+      - postgres_test
   postgres:
     image: "postgres:9.5"
     volumes:
@@ -49,6 +56,8 @@ services:
 
 networks:
   exercises:
+
 volumes:
   pgdata:
   redis:
+  bundle_path:
