@@ -4,9 +4,9 @@
 OpenStax Exercises
 ==================
 
-[![Build Status](https://travis-ci.org/openstax/exercises.svg?branch=master)](https://travis-ci.org/openstax/exercises)
-[![Code Climate](https://codeclimate.com/github/openstax/exercises.png)](https://codeclimate.com/github/openstax/exercises)
-[![Coverage Status](https://img.shields.io/codecov/c/github/openstax/exercises.svg)](https://codecov.io/gh/openstax/exercises)
+[![Tests](https://github.com/openstax/exercises/workflows/Tests/badge.svg)](https://github.com/openstax/exercises/actions?query=workflow:Tests)
+[![Migrations](https://github.com/openstax/exercises/workflows/Migrations/badge.svg)](https://github.com/openstax/exercises/actions?query=workflow:Migrations)
+[![Coverage](https://img.shields.io/codecov/c/github/openstax/exercises.svg)](https://codecov.io/gh/openstax/exercises)
 
 OpenStax Exercises is an open homework and test question bank, where questions are written
 by the community and access is free. Successor to Quadbase.
