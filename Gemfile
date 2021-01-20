@@ -55,9 +55,6 @@ gem 'sanitize'
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
 
-# Cron job scheduling
-gem 'whenever'
-
 # Talks to Accounts (latest version is broken)
 gem 'omniauth-oauth2'
 
