@@ -7,4 +7,7 @@ Raven.configure do |config|
   # Send POST data and cookies to Sentry
   config.processors -= [ Raven::Processor::Cookies, Raven::Processor::PostData ]
   config.release = sentry_secrets[:release]
+
+  # Don't log "Sentry is ready" message
+  config.silence_ready = true
 end if Rails.env.production?
