@@ -10,9 +10,7 @@ Exercises::Application.routes.draw do
     get :developers
     get :help
     get :privacy
-    get :publishing
     get :share
-    get :status
     get :terms
   end
 
@@ -51,6 +49,7 @@ Exercises::Application.routes.draw do
 
   mount OpenStax::Accounts::Engine => :accounts
   mount FinePrint::Engine => :fine_print
+  mount OpenStax::Utilities::Engine => :status
 
   use_doorkeeper do
     controllers applications: :'oauth/applications'
