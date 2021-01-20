@@ -68,7 +68,7 @@ class AssetUploader < CarrierWave::Uploader::Base
   end
 
   def store_dir
-    'attachments'
+    Rails.application.secrets.environment_name
   end
 
   def filename
