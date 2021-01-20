@@ -47,6 +47,8 @@ Exercises::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy]
+
+    get :swagger, to: 'swagger#json'
   end
 
   mount OpenStax::Accounts::Engine => :accounts

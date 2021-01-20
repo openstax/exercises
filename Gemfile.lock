@@ -8,6 +8,17 @@ GIT
       json
       typhoeus (~> 1.0, >= 1.0.1)
 
+GIT
+  remote: https://github.com/openstax/swagger-rails.git
+  revision: 9bff4962b31e142debbc62390f1fd3adab3af055
+  ref: 9bff4962b31e142debbc62390f1fd3adab3af055
+  specs:
+    openstax_swagger (0.1.0)
+      oj
+      oj_mimic_json
+      rails (~> 5.2.3)
+      swagger-blocks
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -456,6 +467,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    swagger-blocks (3.0.0)
     test_xml (0.1.8)
       diffy (~> 3.0)
       nokogiri (>= 1.3.2)
@@ -551,6 +563,7 @@ DEPENDENCIES
   openstax_api
   openstax_healthcheck
   openstax_rescue_from
+  openstax_swagger!
   openstax_utilities
   parallel_tests
   pg

@@ -80,6 +80,14 @@ Then
 $> docker-compose run api bundle exec rspec
 ```
 
+If you update the Gemfile...
+
+```bash
+$> docker-compose down
+$> docker-compose run api bundle install
+$> docker-compose up
+```
+
 ### Install everything yourself
 
 1. Install a ruby version manager on your machine, such as rbenv or rvm

@@ -151,6 +151,9 @@ gem 'bootsnap', '~> 1.4.0', require: false
 # Bulk inserts and upserts
 gem 'activerecord-import'
 
+# Swagger API
+gem "openstax_swagger", github: 'openstax/swagger-rails', ref: '9bff4962b31e142debbc62390f1fd3adab3af055'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
