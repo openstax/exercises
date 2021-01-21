@@ -475,7 +475,8 @@ GEM
     sassc (2.0.1)
       ffi (~> 1.9)
       rake
-    scout_apm (3.0.0.pre28)
+    scout_apm (4.0.3)
+      parser
     sd_notify (0.1.0)
     sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
@@ -598,7 +599,7 @@ DEPENDENCIES
   rubocop-rails
   sanitize
   sass-rails (~> 5.0)
-  scout_apm (~> 3.0.pre28)
+  scout_apm
   sd_notify
   sentry-raven
   shoulda-matchers

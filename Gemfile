@@ -100,7 +100,7 @@ gem 'sortability'
 gem 'acts_as_votable'
 
 # Real time application monitoring
-gem 'scout_apm', '~> 3.0.pre28'
+gem 'scout_apm'
 
 # PostgreSQL database
 gem 'pg'
