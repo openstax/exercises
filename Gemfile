@@ -220,9 +220,6 @@ group :production do
   gem 'aws-sdk-ssm', require: false
   gem 'aws-sdk-secretsmanager', require: false
 
-  # AWS SES
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
-
   # Fog AWS
   gem 'fog-aws'
 
