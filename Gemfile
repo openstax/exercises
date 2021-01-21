@@ -55,9 +55,6 @@ gem 'sanitize'
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
 
-# Cron job scheduling
-gem 'whenever'
-
 # Talks to Accounts (latest version is broken)
 gem 'omniauth-oauth2'
 
@@ -114,13 +111,17 @@ gem 'scout_apm', '~> 3.0.pre28'
 # PostgreSQL database
 gem 'pg'
 
+# Support systemd Type=notify services for puma
+gem 'sd_notify', require: false
+
+# Use the puma webserver
+gem 'puma'
+
+# Prevent server memory from growing until OOM
+gem 'puma_worker_killer'
+
 # HTTP requests
 gem 'httparty'
-
-gem 'a15k_client',
-    git: 'https://github.com/a15k/mothership.git',
-    glob: 'clients/1.0.0/ruby/*gemspec',
-    branch: 'master'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from'
@@ -151,10 +152,10 @@ gem 'bootsnap', '~> 1.4.0', require: false
 # Bulk inserts and upserts
 gem 'activerecord-import'
 
-group :development, :test do
-  # Get env variables from .env file
-  gem 'dotenv-rails'
+# Get env variables from .env file
+gem 'dotenv-rails'
 
+group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'
 
@@ -221,11 +222,9 @@ group :test do
 end
 
 group :production do
-  # Unicorn production server
-  gem 'unicorn'
-
-  # Unicorn worker killer
-  gem 'unicorn-worker-killer'
+  # Used to fetch secrets from the AWS parameter store and secrets manager
+  gem 'aws-sdk-ssm', require: false
+  gem 'aws-sdk-secretsmanager', require: false
 
   # AWS SES
   gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'

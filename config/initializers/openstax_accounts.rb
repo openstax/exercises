@@ -1,6 +1,6 @@
 require 'user_mapper'
 
-secrets = Rails.application.secrets[:openstax][:accounts]
+secrets = Rails.application.secrets.openstax[:accounts]
 
 # By default, stub unless in the production environment
 stub = secrets[:stub].nil? ? !Rails.env.production? : secrets[:stub]
@@ -12,4 +12,4 @@ OpenStax::Accounts.configure do |config|
   config.enable_stubbing = stub
   config.logout_via = :delete
   config.account_user_mapper = UserMapper
-end
+end if secrets[:url]

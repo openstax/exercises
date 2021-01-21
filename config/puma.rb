@@ -1,56 +1,87 @@
+require 'rails'
+require 'active_model'
+require 'dotenv/rails-now'
+
+APP_DIR = File.expand_path('..', __dir__)
+directory APP_DIR
+
+tag 'OpenStax Exercises Puma'
+
+NUM_WORKERS = ENV.fetch('WEB_CONCURRENCY') { Etc.nprocessors }.to_i
+
+worker_timeout ENV.fetch('WORKER_TIMEOUT', 60).to_i
+
+stdout_redirect(
+  ENV.fetch('STDOUT_LOGFILE', "#{APP_DIR}/log/puma.stdout.log"),
+  ENV.fetch('STDERR_LOGFILE', "#{APP_DIR}/log/puma.stderr.log"),
+  true
+) if ActiveModel::Type::Boolean.new.cast(ENV.fetch('REDIRECT_STDOUT', false))
+
+before_fork do
+  require 'puma_worker_killer'
+
+  PumaWorkerKiller.config do |config|
+    # Restart workers when they start consuming more than 1G each
+    config.ram = ENV.fetch('MAX_MEMORY') do
+      ENV.fetch('MAX_WORKER_MEMORY', 256).to_i * NUM_WORKERS
+    end.to_i
+
+    config.frequency = 10
+
+    config.percent_usage = 0.75
+
+    config.rolling_restart_frequency = false
+
+    config.reaper_status_logs = false
+  end
+
+  PumaWorkerKiller.start
+end
+
+# https://github.com/rails/rails/blob/master/railties/lib/rails/generators/rails/app/templates/config/puma.rb.tt
+
 # Puma can serve each request in a thread from an internal thread pool.
 # The `threads` method setting takes two numbers: a minimum and maximum.
 # Any libraries that use thread pools should be configured to match
 # the maximum value specified for Puma. Default is set to 5 threads for minimum
 # and maximum; this matches the default thread size of Active Record.
 #
-threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
-threads threads_count, threads_count
+max_threads = ENV.fetch('RAILS_MAX_THREADS', 5).to_i
+threads ENV.fetch('RAILS_MIN_THREADS', max_threads).to_i, max_threads
 
-# Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-#
-port        ENV.fetch("PORT") { 3000 }
+if ENV['SOCKET']
+  # Specifies the `socket` to which Puma will bind to receive requests.
+  #
+  bind ENV['SOCKET']
+else
+  # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
+  #
+  port ENV.fetch('PORT', 3000)
+end
 
 # Specifies the `environment` that Puma will run in.
 #
-environment ENV.fetch("RAILS_ENV") { "development" }
+environment ENV.fetch('RAILS_ENV', 'development')
+
+# Specifies the `pidfile` that Puma will use.
+#
+pidfile ENV.fetch('PIDFILE', 'tmp/pids/puma.pid')
 
 # Specifies the number of `workers` to boot in clustered mode.
-# Workers are forked webserver processes. If using threads and workers together
+# Workers are forked web server processes. If using threads and workers together
 # the concurrency of the application would be max `threads` * `workers`.
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-# workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+workers NUM_WORKERS
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
 # before forking the application. This takes advantage of Copy On Write
-# process behavior so workers use less memory. If you use this option
-# you need to make sure to reconnect any threads in the `on_worker_boot`
-# block.
+# process behavior so workers use less memory.
 #
-# preload_app!
-
-# If you are preloading your application and using Active Record, it's
-# recommended that you close any connections to the database before workers
-# are forked to prevent connection leakage.
-#
-# before_fork do
-#   ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
-# end
-
-# The code in the `on_worker_boot` will be called if you are using
-# clustered mode by specifying a number of `workers`. After each worker
-# process is booted, this block will be run. If you are using the `preload_app!`
-# option, you will want to use this block to reconnect to any threads
-# or connections that may have been created at application boot, as Ruby
-# cannot share connections between processes.
-#
-# on_worker_boot do
-#   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-# end
-#
+preload_app! if ActiveModel::Type::Boolean.new.cast(ENV.fetch('PRELOAD_APP', false))
 
 # Allow puma to be restarted by `rails restart` command.
+#
 plugin :tmp_restart

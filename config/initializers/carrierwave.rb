@@ -5,29 +5,31 @@ CarrierWave.configure do |config|
   config.enable_processing = !Rails.env.test?
 
   # Upload to AWS only in the production environment
-  config.storage = if Rails.env.production?
-    secrets = Rails.application.secrets[:aws][:s3]
-
-    config.asset_host = secrets[:asset_host]
-
+  if Rails.env.development? || ActiveModel::Type::Boolean.new.cast(ENV.fetch('DISABLE_S3', false))
+    config.storage = :file
+  else
     config.fog_attributes = { 'Cache-Control' => 'max-age=31536000' }
-
-    config.fog_directory  = secrets[:bucket_name]
-
     config.fog_provider = 'fog/aws'
+    config.fog_public = false
+    config.fog_authenticated_url_expiration = 1.hour
 
-    fog_credentials = secrets[:access_key_id].blank? ? \
-                        { use_iam_profile: true } : \
-                        { aws_access_key_id:     secrets[:access_key_id],
-                          aws_secret_access_key: secrets[:secret_access_key] }
+    s3_secrets = Rails.application.secrets.aws[:s3]
+
+    config.asset_host = "https://#{s3_secrets[:uploads_bucket_name]}.s3.amazonaws.com"
+    config.fog_directory = s3_secrets[:uploads_bucket_name]
+
+    fog_credentials = s3_secrets[:access_key_id].blank? ?
+      { use_iam_profile: true } :
+      {
+        aws_access_key_id:     s3_secrets[:access_key_id],
+        aws_secret_access_key: s3_secrets[:secret_access_key]
+      }
     config.fog_credentials = fog_credentials.merge(
       provider: 'AWS',
-      region:   secrets[:region],
-      endpoint: secrets[:endpoint_server]
+      region:   s3_secrets[:region]
     )
 
-    :fog
-  else
-    :file
+    # This line must be after config.fog_credentials=
+    config.storage = Rails.env.production? ? :fog : :file
   end
 end
