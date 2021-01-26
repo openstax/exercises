@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.3'
+gem 'rails', '6.0'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -124,7 +124,7 @@ gem 'puma_worker_killer'
 gem 'httparty'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from'
+gem 'openstax_rescue_from', path: '../rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'

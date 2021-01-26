@@ -61,11 +61,11 @@ end
 
 # Specifies the `environment` that Puma will run in.
 #
-environment ENV.fetch('RAILS_ENV', 'development')
+environment ENV.fetch("RAILS_ENV") { "development" }
 
 # Specifies the `pidfile` that Puma will use.
 #
-pidfile ENV.fetch('PIDFILE', 'tmp/pids/puma.pid')
+pidfile ENV.fetch("PIDFILE") { "tmp/pids/puma.pid" }
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked web server processes. If using threads and workers together
@@ -83,5 +83,4 @@ workers NUM_WORKERS
 preload_app! if ActiveModel::Type::Boolean.new.cast(ENV.fetch('PRELOAD_APP', false))
 
 # Allow puma to be restarted by `rails restart` command.
-#
 plugin :tmp_restart
