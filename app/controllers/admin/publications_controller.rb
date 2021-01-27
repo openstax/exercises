@@ -1,5 +1,5 @@
 class Admin::PublicationsController < Admin::BaseController
-  around_action :respond_to_html, except: :users
+  around_action :respond_to_html, except: [ :users, :collaborators ]
   before_action :set_variables, except: :users
 
   # GET /admin/publications

@@ -59,7 +59,7 @@ module Oauth
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
 
       app_params = application_params(@user)
-      if @application.update_attributes(app_params)
+      if @application.update(app_params)
         flash[:notice] = I18n.t(
           :notice, scope: %i[doorkeeper flash applications update]
         )

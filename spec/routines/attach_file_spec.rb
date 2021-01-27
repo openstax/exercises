@@ -42,11 +42,16 @@ RSpec.describe AttachFile, type: :routine do
         "parent_id"   => attachment.parent.id,
         "parent_type" => "Exercise"
       ),
-      'large_url'  => a_string_starting_with("/attachments/large_"),
-      'medium_url' => a_string_starting_with("/attachments/medium_"),
-      'small_url'  => a_string_starting_with("/attachments/small_"),
-      'url'        => a_string_starting_with("/attachments/")
+      'large_url'  => a_string_starting_with(
+        "https://not-a-real-bucket.s3.amazonaws.com/test/large_"
+      ),
+      'medium_url' => a_string_starting_with(
+        "https://not-a-real-bucket.s3.amazonaws.com/test/medium_"
+      ),
+      'small_url'  => a_string_starting_with(
+        "https://not-a-real-bucket.s3.amazonaws.com/test/small_"
+      ),
+      'url'        => a_string_starting_with("https://not-a-real-bucket.s3.amazonaws.com/test/")
     )
-
   end
 end

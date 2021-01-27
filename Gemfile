@@ -23,9 +23,6 @@ gem 'compass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2.2'
-
 gem 'mini_racer'
 
 # Use jquery as the JavaScript library
@@ -66,7 +63,7 @@ gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
-gem 'openstax_api'
+gem 'openstax_api', path: '../openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 
@@ -74,7 +71,7 @@ gem 'maruku'
 gem 'lev'
 
 # Contract management
-gem 'fine_print'
+gem 'fine_print', path: '../fine_print'
 
 # Keyword search
 gem 'keyword_search'
@@ -92,9 +89,6 @@ gem 'roo'
 
 # Embedded JavaScript templates
 gem 'ejs'
-
-# Embedded CoffeeScript templates
-gem 'eco'
 
 # Object cloning
 gem 'deep_cloneable'
@@ -184,6 +178,9 @@ group :development, :test do
 end
 
 group :development do
+  # Listen for file changes in development
+  gem 'listen'
+
   # Automated security checks
   gem 'brakeman'
 
@@ -199,9 +196,6 @@ group :development do
   # Class diagrams
   gem 'rails-erd'
   gem 'railroady'
-
-  # CoffeeScript source maps
-  gem 'coffee-rails-source-maps'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console'

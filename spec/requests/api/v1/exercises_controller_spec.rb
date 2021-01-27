@@ -310,7 +310,7 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
     end
 
     it "returns the latest version of a Exercise if \"@latest\" is requested" do
-      @exercise_1.publication.update_attributes(version: 1000)
+      @exercise_1.publication.update(version: 1000)
       api_get api_exercise_url("#{@exercise.number}@latest"), @user_1_token
       expect(response).to have_http_status(:ok)
       expect(response.body_as_hash).to match(a_hash_including(uuid: @exercise_1.uuid))

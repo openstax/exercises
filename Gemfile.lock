@@ -1,4 +1,28 @@
 PATH
+  remote: ../fine_print
+  specs:
+    fine_print (6.0.0)
+      action_interceptor
+      jquery-rails
+      rails
+      responders
+
+PATH
+  remote: ../openstax_api
+  specs:
+    openstax_api (9.4.0)
+      doorkeeper
+      exception_notification
+      lev
+      openstax_utilities
+      rails (>= 5.2, < 7)
+      representable
+      responders
+      roar
+      roar-rails
+      uber
+
+PATH
   remote: ../rescue_from
   specs:
     openstax_rescue_from (4.1.0)
@@ -72,8 +96,8 @@ GEM
       tzinfo (~> 1.1)
       zeitwerk (~> 2.1, >= 2.1.8)
     acts_as_votable (0.12.0)
-    addressable (2.6.0)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     apipie-rails (0.5.16)
       rails (>= 4.1)
     ast (2.4.0)
@@ -124,15 +148,6 @@ GEM
     codecov (0.2.11)
       json
       simplecov
-    coffee-rails (4.2.2)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0)
-    coffee-rails-source-maps (1.4.0)
-      coffee-script-source (>= 1.6.1)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     compass (1.0.3)
       chunky_png (~> 1.2)
       compass-core (~> 1.0.2)
@@ -156,7 +171,7 @@ GEM
     declarative (0.0.20)
     deep_cloneable (3.0.0)
       activerecord (>= 3.1.0, < 7)
-    diff-lcs (1.3)
+    diff-lcs (1.4.4)
     diffy (3.4.0)
     docile (1.1.5)
     doorkeeper (5.4.0)
@@ -165,11 +180,6 @@ GEM
     dotenv-rails (2.7.2)
       dotenv (= 2.7.2)
       railties (>= 3.2, < 6.1)
-    eco (1.0.0)
-      coffee-script
-      eco-source
-      execjs
-    eco-source (1.1.0.rc.1)
     ejs (1.1.1)
     erubi (1.10.0)
     eventmachine (1.2.7)
@@ -190,11 +200,6 @@ GEM
     faraday-http-cache (2.2.0)
       faraday (>= 0.8)
     ffi (1.11.1)
-    fine_print (5.0.0)
-      action_interceptor
-      jquery-rails
-      rails
-      responders
     fog-aws (3.5.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
@@ -225,7 +230,7 @@ GEM
     ipaddress (0.8.3)
     jaro_winkler (1.5.2)
     jmespath (1.4.0)
-    jquery-rails (4.3.3)
+    jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
@@ -244,6 +249,10 @@ GEM
       transaction_isolation
       transaction_retry
     libv8 (7.3.492.27.1)
+    listen (3.1.5)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+      ruby_dep (~> 1.2)
     lograge (0.11.1)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -307,17 +316,6 @@ GEM
       rails (> 5.0)
       representable
       roar
-    openstax_api (9.0.1)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1)
-      representable (>= 2.4, < 4.0)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
-      uber (< 0.1.0)
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
     openstax_utilities (4.5.1)
@@ -335,7 +333,7 @@ GEM
     parser (2.6.3.0)
       ast (~> 2.4.0)
     pg (1.2.3)
-    public_suffix (3.1.0)
+    public_suffix (4.0.6)
     puma (5.1.0)
       nio4r (~> 2.0)
     puma_worker_killer (0.3.1)
@@ -423,29 +421,29 @@ GEM
     roo (2.8.2)
       nokogiri (~> 1)
       rubyzip (>= 1.2.1, < 2.0.0)
-    rspec (3.8.0)
-      rspec-core (~> 3.8.0)
-      rspec-expectations (~> 3.8.0)
-      rspec-mocks (~> 3.8.0)
-    rspec-core (3.8.0)
-      rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.3)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.1)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.8.0)
+      rspec-support (~> 3.10.0)
     rspec-instafail (1.0.0)
       rspec
-    rspec-mocks (3.8.0)
+    rspec-mocks (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.8.0)
-    rspec-rails (3.8.2)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      railties (>= 3.0)
-      rspec-core (~> 3.8.0)
-      rspec-expectations (~> 3.8.0)
-      rspec-mocks (~> 3.8.0)
-      rspec-support (~> 3.8.0)
-    rspec-support (3.8.0)
+      rspec-support (~> 3.10.0)
+    rspec-rails (4.0.2)
+      actionpack (>= 4.2)
+      activesupport (>= 4.2)
+      railties (>= 4.2)
+      rspec-core (~> 3.10)
+      rspec-expectations (~> 3.10)
+      rspec-mocks (~> 3.10)
+      rspec-support (~> 3.10)
+    rspec-support (3.10.2)
     rubocop (0.71.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -458,6 +456,7 @@ GEM
       rubocop (>= 0.70.0)
     ruby-graphviz (1.2.4)
     ruby-progressbar (1.10.1)
+    ruby_dep (1.5.0)
     rubyzip (1.3.0)
     sanitize (5.2.1)
       crass (~> 1.0.2)
@@ -549,24 +548,22 @@ DEPENDENCIES
   cheat
   codeclimate-test-reporter
   codecov
-  coffee-rails (~> 4.2.2)
-  coffee-rails-source-maps
   compass-rails
   database_cleaner
   deep_cloneable
   doorkeeper
   dotenv-rails
-  eco
   ejs
   factory_bot_rails
   faker
-  fine_print
+  fine_print!
   fog-aws
   httparty
   jquery-rails
   jquery-ui-rails
   keyword_search
   lev
+  listen
   lograge
   maruku
   mimemagic
@@ -577,7 +574,7 @@ DEPENDENCIES
   oj_mimic_json
   omniauth-oauth2
   openstax_accounts (~> 9.5.1)
-  openstax_api
+  openstax_api!
   openstax_healthcheck
   openstax_rescue_from!
   openstax_utilities

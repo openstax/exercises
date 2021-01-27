@@ -35,7 +35,7 @@ module Admin
 
     # PATCH /admin/delegations/1
     def update
-      if @delegation.update_attributes(delegation_params)
+      if @delegation.update(delegation_params)
         redirect_to admin_delegations_url, notice: "Delegation from #{
           @delegation.delegator.name} to #{@delegation.delegate.name} updated."
       else
