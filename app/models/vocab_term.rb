@@ -129,9 +129,10 @@ class VocabTerm < ApplicationRecord
 
   def after_publication
     last_def = VocabTerm.joins(publication: :publication_group)
-                        .where(publication: {publication_group: {number: number}})
+                        .where(publication_group: {number: number})
                         .where.not(id: id)
-                        .order(Publication.arel_table[:version].desc)
+                        .where.not(publication: { id: nil }) # Workaround for Rails 6.1 table alias
+                        .order('"publication"."version" DESC')
                         .limit(1)
                         .pluck(:definition)
     return if definition == last_def

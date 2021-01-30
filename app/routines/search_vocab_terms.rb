@@ -9,14 +9,14 @@ class SearchVocabTerms
                translations: { outputs: { type: :verbatim } }
 
   SORTABLE_FIELDS = {
-    'number' => PublicationGroup.arel_table[:number],
-    'uuid' => PublicationGroup.arel_table[:uuid],
-    'version' => Publication.arel_table[:version],
+    'number' => '"publication_group"."number"',
+    'uuid' => '"publication_group"."uuid"',
+    'version' => '"publication"."version"',
     'name' => :name,
     'definition' => :definition,
     'created_at' => :created_at,
     'updated_at' => :updated_at,
-    'published_at' => Publication.arel_table[:published_at]
+    'published_at' => '"publication"."published_at"'
   }
 
   protected
@@ -28,6 +28,9 @@ class SearchVocabTerms
     ].min rescue MAX_PER_PAGE
     relation = VocabTerm.visible_for(options).joins(publication: :publication_group)
 
+    # Rails 6.1 workaround to force consistent table aliases
+    relation = relation.where.not(publication: { id: nil }, publication_group: { id: nil })
+
     # By default, only return the latest exercises visible to the user.
     # If either versions, uids or a publication date are specified,
     # this "latest_visible" condition is disabled.
@@ -37,10 +40,10 @@ class SearchVocabTerms
     pubg = PublicationGroup.arel_table
     pub = Publication.arel_table
     acct = OpenStax::Accounts::Account.arel_table
-    # NB: this encapsulates magic knowledge of how ActiveRecord will alias the second join of accounts
+
+    # NB: this encapsulates magic knowledge of how ActiveRecord will alias second join of accounts
     acct_author = OpenStax::Accounts::Account.arel_table
     acct_copyright = OpenStax::Accounts::Account.arel_table.alias('accounts_users')
-
 
     run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
       # Block to be used for searches by name or term
@@ -50,7 +53,7 @@ class SearchVocabTerms
           sanitized_names = to_string_array(nm, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_names.empty?
 
-          @items = @items.where( vt[:name].matches_any(sanitized_names ))
+          @items = @items.where(vt[:name].matches_any(sanitized_names))
         end
       end
 
@@ -78,26 +81,30 @@ class SearchVocabTerms
           latest_visible = false unless sanitized_versions.empty?
 
           if sanitized_numbers.empty?
-            @items = @items.where(publications: { version: sanitized_versions })
+            @items = @items.where(publication: { version: sanitized_versions })
           elsif sanitized_versions.empty?
-            @items = @items.where(publication_groups: { number: sanitized_numbers })
+            @items = @items.where(publication_group: { number: sanitized_numbers })
           else
             only_numbers = sanitized_uids.select { |suid| suid.second.blank? }.map(&:first)
             only_versions = sanitized_uids.select { |suid| suid.first.blank? }.map(&:second)
             full_uids = sanitized_uids.reject { |suid| suid.first.blank? || suid.second.blank? }
 
-            cumulative_query = pubg[:number].in(only_numbers).or(
-                               pub[:version].in(only_versions))
+            rel = @items.where(publication_group: { number: only_numbers }).or(
+              @items.where(publication: { version: only_versions })
+            )
 
             full_uids.each do |full_uid|
               sanitized_number = full_uid.first
               sanitized_version = full_uid.second
-              query = pubg[:number].eq(sanitized_number).and(
-                      pub[:version].eq(sanitized_version))
-              cumulative_query = cumulative_query.or(query)
-              end
 
-            @items = @items.where(cumulative_query)
+              rel = rel.or(
+                @items.where(
+                  publication_group: { number: sanitized_number },
+                  publication: { version: sanitized_version })
+              )
+            end
+
+            @items = rel
           end
         end
       end
@@ -107,7 +114,7 @@ class SearchVocabTerms
           sanitized_uuids = to_string_array(uuid)
           next @items = @items.none if sanitized_uuids.empty?
 
-          @items = @items.where(publications: { uuid: sanitized_uuids })
+          @items = @items.where(publication: { uuid: sanitized_uuids })
         end
 
         # Since we are returning specific uuids, disable "latest_visible"
@@ -119,7 +126,7 @@ class SearchVocabTerms
           sanitized_uuids = to_string_array(uuid)
           next @items = @items.none if sanitized_uuids.empty?
 
-          @items = @items.where(publication_groups: { uuid: sanitized_uuids })
+          @items = @items.where(publication_group: { uuid: sanitized_uuids })
         end
       end
 
@@ -128,7 +135,7 @@ class SearchVocabTerms
           sanitized_numbers = to_string_array(number)
           next @items = @items.none if sanitized_numbers.empty?
 
-          @items = @items.where(publication_groups: { number: sanitized_numbers })
+          @items = @items.where(publication_group: { number: sanitized_numbers })
         end
       end
 
@@ -137,7 +144,7 @@ class SearchVocabTerms
           sanitized_versions = to_string_array(version)
           next @items = @items.none if sanitized_versions.empty?
 
-          @items = @items.where(publications: { version: sanitized_versions })
+          @items = @items.where(publication: { version: sanitized_versions })
         end
 
         # Since we are returning specific versions, disable "latest_visible"
@@ -149,7 +156,7 @@ class SearchVocabTerms
           sanitized_nicknames = to_string_array(nickname)
           next @items = @items.none if sanitized_nicknames.empty?
 
-          @items = @items.where(publication_groups: { nickname: sanitized_nicknames })
+          @items = @items.where(publication_group: { nickname: sanitized_nicknames })
         end
       end
 
@@ -171,7 +178,7 @@ class SearchVocabTerms
           sanitized_definitions = to_string_array(df, append_wildcard: true, prepend_wildcard: true)
           next @items = @items.none if sanitized_definitions.empty?
 
-          @items = @items.where( vt[:definition].matches_any(sanitized_definitions) )
+          @items = @items.where(vt[:definition].matches_any(sanitized_definitions))
         end
       end
 
@@ -217,8 +224,9 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins(publication: { authors: { user: :account } })
-                         .joins(publication: { copyright_holders: { user: :account } }).where(
+          @items = @items.joins(
+            publication: { authors: { user: :account }, copyright_holders: { user: :account } }
+          ).where(
                 acct_author[:username].matches_any(sn)
             .or(acct_author[:first_name].matches_any(sn))
             .or(acct_author[:last_name].matches_any(sn))
@@ -234,10 +242,10 @@ class SearchVocabTerms
     outputs.items = outputs.items.select(
       [
         vt[ Arel.star ],
-        pubg[:uuid],
-        pubg[:number],
-        pub[:version],
-        pub[:published_at]
+        '"publication_group"."uuid"',
+        '"publication_group"."number"',
+        '"publication"."version"',
+        '"publication"."published_at"'
       ]
     ).distinct
 

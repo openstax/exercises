@@ -105,6 +105,7 @@ class Admin::PublicationsController < Admin::BaseController
 
     params[:search] = { query: @collaborators_query, order_by: :created_at, per_page: 10 }
     handle_with Admin::UsersSearch, success: -> do
+      puts @handler_result.outputs.items.map(&:id).inspect
       @collaborators = User.joins(:account).where(
         account: { id: @handler_result.outputs.items.map(&:id) }
       )

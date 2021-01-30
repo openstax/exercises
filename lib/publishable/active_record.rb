@@ -28,25 +28,23 @@ module Publishable
           scope :with_id, ->(id) do
             nn, vv = id.to_s.split('@')
 
-            pub = Publication.arel_table
-            pubg = PublicationGroup.arel_table
+            join_rel = joins(publication: :publication_group)
+            or_rel = join_rel.where(publication_group: { uuid: nn }).or(
+              join_rel.where(publication_group: { number: nn })
+            )
 
-            wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
-            latest = false
-            case vv
+            rel = case vv
             when NilClass
-              wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
+              join_rel.where(publication: { uuid: nn }).or(or_rel.published)
             when 'draft', 'd'
-              wheres = wheres.and(pub[:published_at].eq(nil))
+              or_rel.unpublished
             when 'latest'
-              latest = true
+              or_rel.chainable_latest
             else
-              wheres = wheres.and(pub[:version].eq(vv))
+              or_rel.where(publication: { version: vv })
             end
 
-            rel = joins(publication: :publication_group).where(wheres)
-            rel = rel.chainable_latest if latest
-            rel.order(pubg[:number].asc, pub[:version].desc)
+            rel.order('"publication_group"."number" ASC').order('"publication"."version" DESC')
           end
 
           scope :visible_for, ->(options) do
@@ -54,20 +52,20 @@ module Publishable
             user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
             next published if !user.is_a?(User) || user.is_anonymous?
             next all if user.is_administrator?
+
             user_id = user.id
 
-            pub = Publication.arel_table
+            dg = Delegation.arel_table
             au = Author.arel_table
             cw = CopyrightHolder.arel_table
-            dg = Delegation.arel_table
-            me = arel_table
 
-            joins(:publication).left_outer_joins(publication: [:authors, :copyright_holders]).where(
-              pub[:published_at].not_eq(nil).or(
-                au[:user_id].eq(user_id)
-              ).or(
-                cw[:user_id].eq(user_id)
-              ).or(
+            rel = joins(:publication).left_outer_joins(publication: [:authors, :copyright_holders])
+            rel = rel.where.not(publication: { published_at: nil }).or(
+              rel.where(authors: { user_id: user_id })
+            ).or(
+              rel.where(copyright_holders: { user_id: user_id })
+            ).or(
+              rel.where(
                 Delegation.where(
                   delegate_id: user_id, delegate_type: user.class.name, can_read: true
                 ).where(
@@ -80,10 +78,12 @@ module Publishable
           # By default, returns both the latest published version and the latest draft, if any
           # Chain to the published, unpublished or visible_for scopes
           scope :chainable_latest, -> do
-            joins(publication: :publication_group).where(
+            joins(publication: :publication_group).where.not(
+              publication: { id: nil }, publication_group: { id: nil } # Rails 6.1 workaround
+            ).where(
               <<-WHERE_SQL.strip_heredoc
-                "publication_groups"."latest_published_version" IS NULL
-                  OR "publications"."version" >= "publication_groups"."latest_published_version"
+                "publication_group"."latest_published_version" IS NULL
+                  OR "publication"."version" >= "publication_group"."latest_published_version"
               WHERE_SQL
             )
           end
@@ -91,10 +91,12 @@ module Publishable
           # Returns only the latest version (published or draft) for each PublicationGroup
           # Do not chain to published, unpublished or visible_for scopes
           scope :latest, -> do
-            joins(publication: :publication_group).where(
+            joins(publication: :publication_group).where.not(
+              publication: { id: nil }, publication_group: { id: nil } # Rails 6.1 workaround
+            ).where(
               <<-WHERE_SQL.strip_heredoc
-                "publication_groups"."latest_version" IS NULL
-                  OR "publications"."version" = "publication_groups"."latest_version"
+                "publication_group"."latest_version" IS NULL
+                  OR "publication"."version" = "publication_group"."latest_version"
               WHERE_SQL
             )
           end

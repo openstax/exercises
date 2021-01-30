@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.0'
+gem 'rails'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -68,7 +68,7 @@ gem 'apipie-rails'
 gem 'maruku'
 
 # Lev framework
-gem 'lev'
+gem 'lev', path: '../lev'
 
 # Contract management
 gem 'fine_print', path: '../fine_print'

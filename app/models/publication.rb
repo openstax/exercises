@@ -38,25 +38,23 @@ class Publication < ApplicationRecord
   scope :with_id, ->(id) do
     nn, vv = id.to_s.split('@')
 
-    pub = arel_table
-    pubg = PublicationGroup.arel_table
+    join_rel = joins(:publication_group)
+    or_rel = join_rel.where(publication_group: { uuid: nn }).or(
+      join_rel.where(publication_group: { number: nn })
+    )
 
-    wheres = pubg[:uuid].eq(nn).or(pubg[:number].eq(nn))
-    latest = false
-    case vv
+    rel = case vv
     when NilClass
-      wheres = wheres.or(pub[:uuid].eq(nn)).and(pub[:published_at].not_eq(nil))
+      join_rel.where(uuid: nn).or(or_rel.published)
     when 'draft', 'd'
-      wheres = wheres.and(pub[:published_at].eq(nil))
+      or_rel.unpublished
     when 'latest'
-      latest = true
+      or_rel.chainable_latest
     else
-      wheres = wheres.and(pub[:version].eq(vv))
+      or_rel.where(version: vv)
     end
 
-    rel = joins(:publication_group).where(wheres)
-    rel = rel.chainable_latest if latest
-    rel.order(pubg[:number].asc, pub[:version].desc)
+    rel.order('"publication_group"."number" ASC').order(version: :desc)
   end
 
   scope :visible_for, ->(options) do
@@ -67,17 +65,17 @@ class Publication < ApplicationRecord
 
     user_id = user.id
 
-    pub = arel_table
+    dg = Delegation.arel_table
     au = Author.arel_table
     cw = CopyrightHolder.arel_table
-    dg = Delegation.arel_table
 
-    left_outer_joins(:authors, :copyright_holders).where(
-      pub[:published_at].not_eq(nil).or(
-        au[:user_id].eq(user_id)
-      ).or(
-        cw[:user_id].eq(user_id)
-      ).or(
+    rel = left_outer_joins(:authors, :copyright_holders)
+    rel = rel.where.not(published_at: nil).or(
+      rel.where(authors: { user_id: user_id })
+    ).or(
+      rel.where(copyright_holders: { user_id: user_id })
+    ).or(
+      rel.where(
         Delegation.where(
           delegate_id: user_id, delegate_type: user.class.name, can_read: true
         ).where(
@@ -90,10 +88,12 @@ class Publication < ApplicationRecord
   # By default, returns both the latest published version and the latest draft, if any
   # Chain to the published, unpublished or visible_for scopes
   scope :chainable_latest, -> do
-    joins(:publication_group).where(
+    joins(:publication_group).where.not(
+      publication_group: { id: nil } # Rails 6.1 workaround
+    ).where(
       <<-WHERE_SQL.strip_heredoc
-        "publication_groups"."latest_published_version" IS NULL
-          OR "publications"."version" >= "publication_groups"."latest_published_version"
+        "publication_group"."latest_published_version" IS NULL
+          OR "publications"."version" >= "publication_group"."latest_published_version"
       WHERE_SQL
     )
   end
@@ -101,10 +101,12 @@ class Publication < ApplicationRecord
   # Returns only the latest version (published or draft) for each PublicationGroup
   # Do not chain to published, unpublished or visible_for scopes
   scope :latest, -> do
-    joins(:publication_group).where(
+    joins(:publication_group).where.not(
+      publication_group: { id: nil } # Rails 6.1 workaround
+    ).where(
       <<-WHERE_SQL.strip_heredoc
-        "publication_groups"."latest_version" IS NULL
-          OR "publications"."version" = "publication_groups"."latest_version"
+        "publication_group"."latest_version" IS NULL
+          OR "publications"."version" = "publication_group"."latest_version"
       WHERE_SQL
     )
   end
@@ -157,37 +159,29 @@ class Publication < ApplicationRecord
 
   def has_read_permission?(user)
     has_collaborator?(user) ||
-    authors.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: {
-        can_read: true,
-        delegate_id: user.id,
-        delegate_type: user.class.name
-      }
+    authors.joins(user: :delegations_as_delegator).where(delegations_as_delegator: {
+      can_read: true,
+      delegate_id: user.id,
+      delegate_type: user.class.name
     }).exists? ||
-    copyright_holders.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: {
-        can_read: true,
-        delegate_id: user.id,
-        delegate_type: user.class.name
-      }
+    copyright_holders.joins(user: :delegations_as_delegator).where(delegations_as_delegator: {
+      can_read: true,
+      delegate_id: user.id,
+      delegate_type: user.class.name
     }).exists?
   end
 
   def has_write_permission?(user)
     has_collaborator?(user) ||
-    authors.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: {
-        can_update: true,
-        delegate_id: user.id,
-        delegate_type: user.class.name
-      }
+    authors.joins(user: :delegations_as_delegator).where(delegations_as_delegator: {
+      can_update: true,
+      delegate_id: user.id,
+      delegate_type: user.class.name
     }).exists? ||
-    copyright_holders.joins(user: :delegations_as_delegator).where(user: {
-      delegations_as_delegator: {
-        can_update: true,
-        delegate_id: user.id,
-        delegate_type: user.class.name
-      }
+    copyright_holders.joins(user: :delegations_as_delegator).where(delegations_as_delegator: {
+      can_update: true,
+      delegate_id: user.id,
+      delegate_type: user.class.name
     }).exists?
   end
 
@@ -231,7 +225,7 @@ class Publication < ApplicationRecord
 
     errors.add(:publication_group, "is invalid for #{publishable_type}") \
       if publication_group.publishable_type != publishable_type
-    publication_group.errors.each { |attribute, error| errors.add attribute, error }
+    publication_group.errors.each { |error| errors.add error.attribute, error.message }
     throw(:abort)
   end
 
