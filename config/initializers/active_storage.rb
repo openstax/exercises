@@ -1,3 +1,5 @@
+Rails.application.config.active_storage.resolve_model_to_route = :rails_storage_proxy
+
 Rails.application.config.after_initialize do
   ActiveStorage::Blob.class_exec do
     # To prevent problems with case-insensitive filesystems, especially in combination
