@@ -22,8 +22,6 @@ Rails.application.routes.draw do
     resources :exercises do
       match :search, action: :index, via: [:get, :post], on: :collection
 
-      resource :attachments, only: [:create, :destroy]
-
       publishable
       # Not in V1
       #has_logic
@@ -51,6 +49,7 @@ Rails.application.routes.draw do
 
   mount OpenStax::Accounts::Engine => :accounts
   mount FinePrint::Engine => :fine_print
+  mount ActiveStorage::Engine, at: '/rails/active_storage'
   mount OpenStax::Utilities::Engine => :status
 
   use_doorkeeper do
