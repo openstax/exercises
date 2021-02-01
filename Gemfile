@@ -63,15 +63,15 @@ gem 'doorkeeper'
 
 # API versioning and documentation
 gem 'representable', '~> 3.0.0'
-gem 'openstax_api', path: '../openstax_api'
+gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 
 # Lev framework
-gem 'lev', path: '../lev'
+gem 'lev'
 
 # Contract management
-gem 'fine_print', path: '../fine_print'
+gem 'fine_print'
 
 # Keyword search
 gem 'keyword_search'
@@ -118,7 +118,7 @@ gem 'puma_worker_killer'
 gem 'httparty'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', path: '../rescue_from'
+gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
