@@ -37,23 +37,5 @@ module Exercises
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     ActiveSupport.escape_html_entities_in_json = false
-
-    redis_secrets = secrets.redis
-    redis_secrets[:url] ||= "rediss://#{
-      ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
-      redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
-      "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
-
-    # Set the default cache store to Redis
-    # This setting cannot be set from an initializer
-    # See https://github.com/rails/rails/issues/10908
-    config.cache_store = :redis_store, {
-      url: redis_secrets[:url],
-      namespace: redis_secrets[:namespaces][:cache],
-      expires_in: 1.day,
-      compress: true,
-      compress_threshold: 1.kilobyte
-    }
-
   end
 end

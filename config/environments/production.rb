@@ -50,8 +50,20 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id, :remote_ip ]
 
+  redis_secrets = secrets.redis
+  redis_secrets[:url] ||= "rediss://#{
+    ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
+    redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
+    "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
+
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :redis_cache_store, {
+    url: redis_secrets[:url],
+    namespace: redis_secrets[:namespaces][:cache],
+    expires_in: 1.day,
+    compress: true,
+    compress_threshold: 1.kilobyte
+  }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
