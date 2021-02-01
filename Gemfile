@@ -100,7 +100,7 @@ gem 'sortability'
 gem 'acts_as_votable'
 
 # Real time application monitoring
-gem 'scout_apm', '~> 3.0.pre28'
+gem 'scout_apm'
 
 # PostgreSQL database
 gem 'pg'
@@ -219,9 +219,6 @@ group :production do
   # Used to fetch secrets from the AWS parameter store and secrets manager
   gem 'aws-sdk-ssm', require: false
   gem 'aws-sdk-secretsmanager', require: false
-
-  # AWS SES
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 
   # Fog AWS
   gem 'fog-aws'
