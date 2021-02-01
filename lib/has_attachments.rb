@@ -24,7 +24,7 @@ module HasAttachments
                    {
                      extend: Api::V1::ImageRepresenter,
                      readable: true,
-                     writeable: false
+                     writeable: true
                    }.merge(options)
       end
     end
