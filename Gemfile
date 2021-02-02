@@ -49,6 +49,12 @@ gem 'rinku'
 # Sanitizes user content
 gem 'sanitize'
 
+# ActiveStorage variants
+gem 'image_processing'
+
+# ActiveStorage S3 support
+gem 'aws-sdk-s3'
+
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
 
@@ -76,13 +82,10 @@ gem 'fine_print'
 # Keyword search
 gem 'keyword_search'
 
-# File uploads
+# File uploads (old)
 gem 'remotipart'
 gem 'carrierwave'
 gem 'mimemagic'
-
-# Image editing
-gem 'mini_magick'
 
 # Read Excel xlsx spreadsheet files
 gem 'roo'
