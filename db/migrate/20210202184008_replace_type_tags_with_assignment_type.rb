@@ -4,7 +4,7 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
     old_hw_tag_id = Tag.find_by(name: 'type:practice').id
 
     exercise_ids = ExerciseTag.where(tag_id: old_hw_tag_id).distinct.pluck(:exercise_id)
-    Exercise.where(id: exercise_ids).preload(:exercise_tags).find_each do |exercise|
+    Exercise.where(id: exercise_ids).preload(:exercise_tags, :publication).find_each do |exercise|
       if exercise.is_published?
         exercise = exercise.new_version
         exercise.save!
@@ -17,7 +17,9 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
     end
 
     vocab_term_ids = VocabTermTag.where(tag_id: old_hw_tag_id).distinct.pluck(:vocab_term_id)
-    VocabTerm.where(id: vocab_term_ids).preload(:vocab_term_tags).find_each do |vocab_term|
+    VocabTerm.where(id: vocab_term_ids).preload(
+      :vocab_term_tags, :publication
+    ).find_each do |vocab_term|
       if vocab_term.is_published?
         vocab_term = vocab_term.new_version
         vocab_term.save!
