@@ -79,10 +79,10 @@ GEM
       execjs
     aws-eventstream (1.1.0)
     aws-partitions (1.422.0)
-    aws-sdk-autoscaling (1.53.0)
-      aws-sdk-core (~> 3, >= 3.109.0)
+    aws-sdk-autoscaling (1.54.0)
+      aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.111.2)
+    aws-sdk-core (3.112.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
@@ -199,7 +199,7 @@ GEM
     httparty (0.17.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.8.7)
+    i18n (1.8.8)
       concurrent-ruby (~> 1.0)
     ipaddress (0.8.3)
     jaro_winkler (1.5.2)
@@ -305,7 +305,7 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.1.0)
       rails (>= 3.1, < 7.0)
-    openstax_utilities (4.5.1)
+    openstax_utilities (4.5.2)
       aws-sdk-autoscaling
       faraday
       faraday-http-cache
