@@ -1,22 +1,22 @@
 class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
   def up
     new_hw_tag = Tag.find_or_create_by name: 'assignment-type:homework'
-    old_hw_tag_id = Tag.find_by(name: 'type:practice').id
+    old_hw_tag_ids = Tag.where(name: 'type:practice').pluck(:id)
 
-    exercise_ids = ExerciseTag.where(tag_id: old_hw_tag_id).distinct.pluck(:exercise_id)
+    exercise_ids = ExerciseTag.where(tag_id: old_hw_tag_ids).distinct.pluck(:exercise_id)
     Exercise.where(id: exercise_ids).preload(:exercise_tags, :publication).find_each do |exercise|
       if exercise.is_published?
         exercise = exercise.new_version
         exercise.save!
       end
       exercise.exercise_tags = exercise.exercise_tags.reject do |et|
-        old_hw_tag_id == et.tag_id
+        old_hw_tag_ids.include? et.tag_id
       end
       exercise.exercise_tags << ExerciseTag.new(exercise: exercise, tag: new_hw_tag)
       exercise.publication.publish.save!
     end
 
-    vocab_term_ids = VocabTermTag.where(tag_id: old_hw_tag_id).distinct.pluck(:vocab_term_id)
+    vocab_term_ids = VocabTermTag.where(tag_id: old_hw_tag_ids).distinct.pluck(:vocab_term_id)
     VocabTerm.where(id: vocab_term_ids).preload(
       :vocab_term_tags, :publication
     ).find_each do |vocab_term|
@@ -25,7 +25,7 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
         vocab_term.save!
       end
       vocab_term.vocab_term_tags = vocab_term.vocab_term_tags.reject do |vtt|
-        old_hw_tag_id == vtt.tag_id
+        old_hw_tag_ids.include? vtt.tag_id
       end
       vocab_term.vocab_term_tags << VocabTermTag.new(vocab_term: vocab_term, tag: new_hw_tag)
       vocab_term.publication.publish.save!
