@@ -10,9 +10,16 @@ class CopyAttachmentsToActiveStorage < ActiveRecord::Migration[6.1]
 
       exercise.attachments.each do |attachment|
         filename = attachment.read_attribute :asset
-        tempfile = open("#{ASSET_BASE}/#{filename}") rescue next # Asset not found etc
 
-        exercise.images.attach io: tempfile, filename: filename
+        blob = ActiveStorage::Blob.find_by filename: filename
+
+        if blob.nil?
+          tempfile = open("#{ASSET_BASE}/#{filename}") rescue next # HTTP errors etc
+
+          exercise.images.attach io: tempfile, filename: filename
+        else
+          exercise.images.attach blob
+        end
       end
 
       exercise.save!
