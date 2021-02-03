@@ -49,6 +49,7 @@ module Api::V1::Exercises
         expect(exercise).not_to receive(:license=)
         described_class.new(exercise).from_hash('license' => { 'name' => 'BGPLv4' })
       end
+
     end
 
     context 'vocab_term_uid' do
@@ -85,6 +86,22 @@ module Api::V1::Exercises
         expect(exercise).to receive(:stimulus=).with('This exercise is cool.')
         described_class.new(exercise).from_hash('stimulus_html' => 'This exercise is cool.')
       end
+    end
+
+    context 'images' do
+      it 'are included' do
+        exercise.images.attach(io: File.open(Rails.root.join('public', 'favicon.ico')), filename: 'favicon.ico', content_type: 'image/jpeg')
+        expect(representation).to(
+          including(
+            'images' => [a_hash_including(
+                           'url' => a_string_starting_with('/rails/active_storage/blobs'),
+                           'signed_id' => a_string_matching(/\w/),
+                           'created_at' => a_string_matching(/\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])/),
+                        )]
+          )
+        )
+      end
+
     end
 
     context 'questions' do
