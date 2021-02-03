@@ -6,11 +6,16 @@ class CopyAttachmentsToActiveStorage < ActiveRecord::Migration[6.1]
 
   def up
     Exercise.joins(:attachments).preload(:attachments).find_each do |exercise|
-      exercise.attachments.each do |attachment|
-        filename = attachment.read_attribute :asset
-        tempfile = open("#{ASSET_BASE}/#{filename}") rescue next # Asset not found
+      Exercise.transaction do
+        next unless exercise.images.empty?
 
-        exercise.images.attach io: open("#{ASSET_BASE}/#{filename}"), filename: filename
+        exercise.attachments.each do |attachment|
+          filename = attachment.read_attribute :asset
+          tempfile = open("#{ASSET_BASE}/#{filename}") rescue next # Asset not found etc
+
+          exercise.images.attach io: tempfile, filename: filename
+        end
+
         exercise.save!
       end
     end
