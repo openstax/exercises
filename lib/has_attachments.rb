@@ -31,7 +31,9 @@ module HasAttachments
           getter: ->(*) {
             self.images.map do |i|
               i.as_json(only: [:created_at], methods: [:signed_id]).merge(
-                'url' => Rails.application.routes.url_helpers.rails_blob_path(i, only_path: true)
+                'url' => Rails.application.routes.url_helpers.rails_blob_url(i, {
+                  host: Rails.application.secrets.attachments_url
+                })
               )
             end
           }

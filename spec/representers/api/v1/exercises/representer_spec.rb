@@ -94,7 +94,12 @@ module Api::V1::Exercises
         expect(representation).to(
           including(
             'images' => [a_hash_including(
-                           'url' => a_string_starting_with('/rails/active_storage/blobs'),
+                           'url' => a_string_matching(
+                             Rails.application.routes.url_helpers.rails_blob_url(
+                              exercise.images.first, {
+                                host: Rails.application.secrets.attachments_url
+                              })
+                           ),
                            'signed_id' => a_string_matching(/\w/),
                            'created_at' => a_string_matching(/\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])/),
                         )]
