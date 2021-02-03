@@ -20,12 +20,23 @@ module HasAttachments
   module Roar
     module Decorator
       def has_attachments(options={})
-        collection :images,
-                   {
-                     extend: Api::V1::ImageRepresenter,
-                     readable: true,
-                     writeable: true
-                   }.merge(options)
+        property :images,
+          readable: true,
+          writeable: true,
+          setter: ->(req) {
+            req[:doc]['images'].each do |img|
+              self.images.attach(img['signed_id'])
+            end
+          },
+          getter: ->(*) {
+            self.images.map do |i|
+              i.as_json(only: [:created_at], methods: [:signed_id]).merge(
+                'url' => Rails.application.routes.url_helpers.rails_blob_url(i, {
+                  host: Rails.application.secrets.attachments_url
+                })
+              )
+            end
+          }
       end
     end
   end
