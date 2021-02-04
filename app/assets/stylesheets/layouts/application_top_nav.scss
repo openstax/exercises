@@ -1,6 +1,4 @@
 @import "common";
-@import "compass/css3";
-@import "compass/utilities";
 
 #top-nav-frame {
   height: $application_top_nav_height;
@@ -20,7 +18,7 @@
     float: right;
     font-size:11px;
     border: none;
-    @include border-radius(0px);
+    border-radius: 0px;
     background: 186px 5px image-url('search_lens.png') no-repeat  rgb(234,232,232) ;
   }
 
