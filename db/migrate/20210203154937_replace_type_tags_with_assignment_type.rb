@@ -8,7 +8,8 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
     exercise_ids = ExerciseTag.where(tag_id: old_hw_tag_ids).distinct.pluck(:exercise_id)
     Exercise.where(id: exercise_ids)
             .latest
-            .preload(:exercise_tags, :publication).find_each do |exercise|
+            .preload(:exercise_tags, :publication)
+            .find_each(batch_size: 100) do |exercise|
       Exercise.transaction do
         if exercise.is_published?
           exercise = exercise.new_version
@@ -25,7 +26,8 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
     vocab_term_ids = VocabTermTag.where(tag_id: old_hw_tag_ids).distinct.pluck(:vocab_term_id)
     VocabTerm.where(id: vocab_term_ids)
              .latest
-             .preload(:vocab_term_tags, :publication).find_each do |vocab_term|
+             .preload(:vocab_term_tags, :publication)
+             .find_each(batch_size: 100) do |vocab_term|
       VocabTerm.transaction do
         if vocab_term.is_published?
           vocab_term = vocab_term.new_version
@@ -45,7 +47,10 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
     ).pluck(:id)
 
     exercise_ids = ExerciseTag.where(tag_id: old_rd_tag_ids).distinct.pluck(:exercise_id)
-    Exercise.where(id: exercise_ids).latest.preload(:exercise_tags).find_each do |exercise|
+    Exercise.where(id: exercise_ids)
+            .latest
+            .preload(:exercise_tags)
+            .find_each(batch_size: 100) do |exercise|
       Exercise.transaction do
         if exercise.is_published?
           exercise = exercise.new_version
@@ -60,7 +65,10 @@ class ReplaceTypeTagsWithAssignmentType < ActiveRecord::Migration[6.1]
     end
 
     vocab_term_ids = VocabTermTag.where(tag_id: old_rd_tag_ids).distinct.pluck(:vocab_term_id)
-    VocabTerm.where(id: vocab_term_ids).latest.preload(:vocab_term_tags).find_each do |vocab_term|
+    VocabTerm.where(id: vocab_term_ids)
+             .latest
+             .preload(:vocab_term_tags)
+             .find_each(batch_size: 100) do |vocab_term|
       VocabTerm.transaction do
         if vocab_term.is_published?
           vocab_term = vocab_term.new_version
