@@ -62,7 +62,8 @@ gem 'openstax_utilities'
 gem 'omniauth-oauth2'
 
 # OpenStax Accounts integration
-gem 'openstax_accounts', '~> 9.5.1'
+# DO NOT UPGRADE until it's updated to work with Rails 6.x
+gem 'openstax_accounts', '9.6.0'
 
 # Access control for API's
 gem 'doorkeeper'
