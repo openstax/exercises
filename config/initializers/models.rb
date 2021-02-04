@@ -24,7 +24,7 @@ ActiveRecord::Base.class_exec do
         next if objects.nil?
 
         if objects.respond_to?(:collect)
-          hash[name.to_s] = objects.map do |object|
+          hash[name.to_s] = objects.collect do |object|
             object.association_attributes(
               subtree,
               slice: slice,

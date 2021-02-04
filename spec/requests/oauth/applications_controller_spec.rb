@@ -110,7 +110,7 @@ RSpec.describe Oauth::ApplicationsController, type: :request do
 
       it "updates the requested application and redirects to it" do
         expect_any_instance_of(Doorkeeper::Application).to(
-          receive(:update_attributes).with(dummy_params).and_call_original
+          receive(:update).with(dummy_params).and_call_original
         )
 
         patch oauth_application_url(user_1_application_1),

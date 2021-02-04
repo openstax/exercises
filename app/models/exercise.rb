@@ -1,7 +1,6 @@
 class Exercise < ApplicationRecord
 
   EQUALITY_ASSOCIATIONS = [
-    :attachments,
     :logic,
     :tags,
     publication: [
@@ -27,7 +26,6 @@ class Exercise < ApplicationRecord
 
   # deep_clone does not iterate through hashes, so each hash must have only 1 key
   NEW_VERSION_DUPED_ASSOCIATIONS = [
-    :attachments,
     :logic,
     :tags,
     {
@@ -43,7 +41,6 @@ class Exercise < ApplicationRecord
         :answers,
         {
           collaborator_solutions: [
-            :attachments,
             :logic,
             :stylings
           ]
@@ -60,7 +57,6 @@ class Exercise < ApplicationRecord
   ]
 
   CACHEABLE_ASSOCIATIONS = [
-    :attachments,
     :logic,
     :tags,
     publication: [
@@ -119,6 +115,7 @@ class Exercise < ApplicationRecord
     nv.publication.yanked_at = nil
     nv.publication.embargoed_until = nil
     nv.publication.major_change = false
+    images.each { |image| nv.images.attach image.blob }
     nv
   end
 

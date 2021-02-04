@@ -14,6 +14,5 @@ class AttachmentAccessPolicy
       # all other types of attachments are currently denied
       false
     end
-
   end
 end

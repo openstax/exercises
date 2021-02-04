@@ -50,30 +50,32 @@ bower.json
 # Ignore Byebug command history file.
 .byebug_history
 
-# Ignore node_modules
-node_modules/
-
-# Ignore precompiled javascript packs
+# Ignore public precompiled assets, packs, uploaded files, exports and test files
+/public/assets
+/public/uploads
+/public/exports
 /public/packs
 /public/packs-test
-/public/assets
+/public/test
+
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
+
+# Ignore node_modules
+node_modules/
 
 # Ignore yarn files
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
 
-# Ignore uploaded files in development
-/storage/*
-!/storage/.keep
-/public/uploads
-
-# Ignore attached files in development
-/public/attachments
-
 # Ignore Cucumber and RSpec failure information
 cucumber_rerun.txt
-rspec.failures
+.rspec_last_failures
+
+# Ignore brakeman reports
+brakeman.html
 
 # Ignore webdrivers lock file
 .webdrivers_update

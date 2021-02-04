@@ -1,4 +1,6 @@
-Exercises::Application.routes.draw do
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
   root controller: :webview, action: :home
 
   get :dashboard, controller: :webview, action: :index
@@ -19,8 +21,6 @@ Exercises::Application.routes.draw do
   api :v1, default: true do
     resources :exercises do
       match :search, action: :index, via: [:get, :post], on: :collection
-
-      resource :attachments, only: [:create, :destroy]
 
       publishable
       # Not in V1
@@ -49,6 +49,7 @@ Exercises::Application.routes.draw do
 
   mount OpenStax::Accounts::Engine => :accounts
   mount FinePrint::Engine => :fine_print
+  mount ActiveStorage::Engine, at: '/rails/active_storage'
   mount OpenStax::Utilities::Engine => :status
 
   use_doorkeeper do
@@ -90,5 +91,10 @@ Exercises::Application.routes.draw do
     end
   end
 
-  get :'*path', controller: :webview, action: :index
+  # Catch-all frontend route, excluding active_storage
+  # https://github.com/rails/rails/issues/31228
+  get :'*path', controller: :webview, action: :index, constraints: ->(req) do
+    req.path.exclude? 'rails/active_storage'
+  end
+
 end

@@ -2,8 +2,16 @@ module HasAttachments
   module ActiveRecord
     module Base
       def has_attachments
-        class_exec do
-          has_many :attachments, as: :parent, dependent: :destroy, inverse_of: :parent
+        has_many :attachments, as: :parent, dependent: :destroy, inverse_of: :parent
+
+        Rails.application.config.after_initialize do
+          class_exec do
+            has_many_attached :images do |image|
+              image.variant :large,  resize_to_limit: '720x1080'
+              image.variant :medium, resize_to_limit: '360x540'
+              image.variant :small,  resize_to_limit: '180x270'
+            end
+          end
         end
       end
     end
@@ -12,13 +20,23 @@ module HasAttachments
   module Roar
     module Decorator
       def has_attachments(options={})
-        collection :attachments,
-                   {
-                     class: Attachment,
-                     extend: Api::V1::AttachmentRepresenter,
-                     writeable: false,
-                     readable: true
-                   }.merge(options)
+        property :images,
+          readable: true,
+          writeable: true,
+          setter: ->(req) {
+            req[:doc]['images'].each do |img|
+              self.images.attach(img['signed_id'])
+            end
+          },
+          getter: ->(*) {
+            self.images.map do |i|
+              i.as_json(only: [:created_at], methods: [:signed_id]).merge(
+                'url' => Rails.application.routes.url_helpers.rails_blob_url(i, {
+                  host: Rails.application.secrets.attachments_url
+                })
+              )
+            end
+          }
       end
     end
   end

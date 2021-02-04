@@ -9,7 +9,7 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.3'
+gem 'rails'
 
 # Bootstrap
 gem 'bootstrap-sass'
@@ -22,9 +22,6 @@ gem 'compass-rails'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2.2'
 
 gem 'mini_racer'
 
@@ -51,6 +48,12 @@ gem 'rinku'
 
 # Sanitizes user content
 gem 'sanitize'
+
+# ActiveStorage variants
+gem 'image_processing'
+
+# ActiveStorage S3 support
+gem 'aws-sdk-s3'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
@@ -79,22 +82,16 @@ gem 'fine_print'
 # Keyword search
 gem 'keyword_search'
 
-# File uploads
+# File uploads (old)
 gem 'remotipart'
 gem 'carrierwave'
 gem 'mimemagic'
-
-# Image editing
-gem 'mini_magick'
 
 # Read Excel xlsx spreadsheet files
 gem 'roo'
 
 # Embedded JavaScript templates
 gem 'ejs'
-
-# Embedded CoffeeScript templates
-gem 'eco'
 
 # Object cloning
 gem 'deep_cloneable'
@@ -106,7 +103,7 @@ gem 'sortability'
 gem 'acts_as_votable'
 
 # Real time application monitoring
-gem 'scout_apm', '~> 3.0.pre28'
+gem 'scout_apm'
 
 # PostgreSQL database
 gem 'pg'
@@ -141,7 +138,7 @@ gem 'oj'
 gem 'oj_mimic_json'
 
 # Key-value store for caching
-gem 'redis-rails'
+gem 'redis'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
@@ -184,6 +181,9 @@ group :development, :test do
 end
 
 group :development do
+  # Listen for file changes in development
+  gem 'listen'
+
   # Automated security checks
   gem 'brakeman'
 
@@ -199,9 +199,6 @@ group :development do
   # Class diagrams
   gem 'rails-erd'
   gem 'railroady'
-
-  # CoffeeScript source maps
-  gem 'coffee-rails-source-maps'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console'
@@ -225,9 +222,6 @@ group :production do
   # Used to fetch secrets from the AWS parameter store and secrets manager
   gem 'aws-sdk-ssm', require: false
   gem 'aws-sdk-secretsmanager', require: false
-
-  # AWS SES
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 
   # Fog AWS
   gem 'fog-aws'
