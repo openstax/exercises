@@ -121,26 +121,11 @@ GEM
     cheat (1.3.3)
       pager (~> 1.0)
     choice (0.2.0)
-    chunky_png (1.4.0)
     codeclimate-test-reporter (1.0.9)
       simplecov (<= 0.13)
     codecov (0.2.12)
       json
       simplecov
-    compass (1.0.3)
-      chunky_png (~> 1.2)
-      compass-core (~> 1.0.2)
-      compass-import-once (~> 1.0.5)
-      rb-fsevent (>= 0.9.3)
-      rb-inotify (>= 0.9)
-      sass (>= 3.3.13, < 3.5)
-    compass-core (1.0.3)
-      multi_json (~> 1.0)
-      sass (>= 3.3.0, < 3.5)
-    compass-import-once (1.0.5)
-      sass (>= 3.2, < 3.5)
-    compass-rails (2.0.1)
-      compass (~> 1.0.0)
     concurrent-ruby (1.1.8)
     crass (1.0.6)
     daemons (1.3.1)
@@ -541,7 +526,6 @@ DEPENDENCIES
   cheat
   codeclimate-test-reporter
   codecov
-  compass-rails
   database_cleaner
   deep_cloneable
   doorkeeper

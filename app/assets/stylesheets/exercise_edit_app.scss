@@ -1,6 +1,4 @@
 @import "common";
-@import "compass/css3/opacity";
-@import "compass/css3/user-interface";
 
 $edit_app_light_gray: lighten($os_gray,50%);
 
@@ -59,7 +57,7 @@ $edit_app_light_gray: lighten($os_gray,50%);
   }
 
   .gray-out {
-    @include opacity(0.2);
+    opacity: 0.2;
   }
 
   .question {
