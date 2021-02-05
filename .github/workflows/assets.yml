@@ -45,5 +45,4 @@ jobs:
           gem install bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-          bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
-          bundle exec parallel_rspec ./spec
+          bundle exec rake assets:precompile
