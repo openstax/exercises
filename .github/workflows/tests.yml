@@ -20,7 +20,6 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           POSTGRES_USER: postgres
-          POSTGRES_DB: ci_test
           POSTGRES_PASSWORD: postgres
 
     steps:
@@ -37,9 +36,8 @@ jobs:
       - name: Test
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          OXT_DB_USER: postgres
-          OXT_TEST_DB: ci_test
-          OXT_DB_PASS: postgres
+          OXE_DB_USER: postgres
+          OXE_DB_PASS: postgres
           RAILS_ENV: test
         run: |
           gem install bundler
