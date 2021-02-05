@@ -5,7 +5,7 @@ class CopyAttachmentsToActiveStorage < ActiveRecord::Migration[6.1]
   disable_ddl_transaction!
 
   def up
-    Exercise.joins(:attachments).preload(:attachments).find_each do |exercise|
+    Exercise.joins(:attachments).preload(:attachments).find_each(batch_size: 100) do |exercise|
       next unless exercise.images.empty?
 
       exercise.attachments.each do |attachment|
