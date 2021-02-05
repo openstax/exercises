@@ -97,7 +97,7 @@ module Api::V1::Exercises
           including(
             'images' => [a_hash_including(
                            'url' => a_string_matching(
-                             Rails.application.routes.url_helpers.rails_blob_url(
+                             Rails.application.routes.url_helpers.rails_storage_proxy_url(
                               exercise.images.first, {
                                 host: Rails.application.secrets.attachments_url
                               })
