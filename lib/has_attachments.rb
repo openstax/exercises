@@ -25,7 +25,9 @@ module HasAttachments
           writeable: true,
           setter: ->(req) {
             req[:doc]['images'].each do |img|
-              self.images.attach(img['signed_id'])
+              unless self.images.detect{|i| i.signed_id == img['signed_id'] }
+                self.images.attach(img['signed_id'])
+              end
             end
           },
           getter: ->(*) {

@@ -89,8 +89,10 @@ module Api::V1::Exercises
     end
 
     context 'images' do
-      it 'are included' do
+      before(:each) do
         exercise.images.attach(io: File.open(Rails.root.join('public', 'favicon.ico')), filename: 'favicon.ico', content_type: 'image/jpeg')
+      end
+      it 'are included' do
         expect(representation).to(
           including(
             'images' => [a_hash_including(
@@ -105,6 +107,20 @@ module Api::V1::Exercises
                         )]
           )
         )
+      end
+
+      it 'only attaches when not already attached' do
+        expect {
+          # attempt to attach an image that is already attached
+          representer = described_class.new(exercise)
+          expect {
+            representer.from_hash('images' => [
+                                    { 'signed_id' => exercise.images[0].signed_id },
+                                    { 'signed_id' => exercise.images[0].signed_id },
+                                  ]
+                                 )
+            exercise.save
+          }.not_to change { exercise.images.count }
       end
 
     end
