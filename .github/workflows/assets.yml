@@ -1,4 +1,4 @@
-name: Tests
+name: Assets
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * 0' # weekly
 
 jobs:
-  tests:
+  assets:
     timeout-minutes: 30
     runs-on: ubuntu-18.04
     services:
@@ -36,7 +36,6 @@ jobs:
             ${{ runner.os }}-gems-pr-
       - name: Test
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           OXT_DB_USER: postgres
           OXT_TEST_DB: ci_test
           OXT_DB_PASS: postgres
