@@ -26,22 +26,23 @@ module Publishable
           scope :unpublished, -> { joins(:publication).where(publication: { published_at: nil }) }
 
           scope :with_id, ->(id) do
-            nn, vv = id.to_s.split('@')
+            number_or_uuid, version = id.to_s.split('@')
+            number = Integer(number_or_uuid) rescue nil
 
             join_rel = joins(publication: :publication_group)
-            or_rel = join_rel.where(publication_group: { uuid: nn }).or(
-              join_rel.where(publication_group: { number: nn })
-            )
+            or_rel = join_rel.where(publication_group: { uuid: number_or_uuid })
+            or_rel = or_rel.or(join_rel.where(publication_group: { number: number })) \
+              unless number.nil?
 
-            rel = case vv
+            rel = case version
             when NilClass
-              join_rel.where(publication: { uuid: nn }).or(or_rel.published)
+              join_rel.where(publication: { uuid: number_or_uuid }).or(or_rel.published)
             when 'draft', 'd'
               or_rel.unpublished
             when 'latest'
               or_rel.chainable_latest
             else
-              or_rel.where(publication: { version: vv })
+              or_rel.where(publication: { version: version })
             end
 
             rel.order('"publication_group"."number" ASC').order('"publication"."version" DESC')

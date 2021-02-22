@@ -1,4 +1,4 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Publication, type: :model do
   subject(:publication) { FactoryBot.create :publication }
