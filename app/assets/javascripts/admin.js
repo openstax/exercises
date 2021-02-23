@@ -18,15 +18,22 @@ $(document).on('turbolinks:load', function() {
 
   $("#collaborators-query").on("input", function() {
     const xhr = new XMLHttpRequest();
+
+    xhr.open(
+      "GET",
+      "/admin/publications/collaborators?collaborators_query=" + $("#collaborators-query").val(),
+      true
+    );
+
+    // required, otherwise Rails fails with a CORS error even if the request is from the same origin
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
     xhr.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         eval(xhr.responseText);
       }
     };
-    xhr.open(
-      "GET",
-      "/admin/publications/collaborators?collaborators_query=" + $("#collaborators-query").val(), true
-    );
+
     xhr.send();
   });
 
