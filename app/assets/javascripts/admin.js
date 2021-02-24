@@ -17,24 +17,19 @@ $(document).on('turbolinks:load', function() {
   });
 
   $("#collaborators-query").on("input", function() {
-    const xhr = new XMLHttpRequest();
+    req = `/admin/publications/collaborators?collaborators_query=${
+      $("#collaborators-query").val()
+    }`
 
-    xhr.open(
-      "GET",
-      "/admin/publications/collaborators?collaborators_query=" + $("#collaborators-query").val(),
-      true
-    );
-
-    // required, otherwise Rails fails with a CORS error even if the request is from the same origin
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-    xhr.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        eval(xhr.responseText);
+    fetch(req, { headers: { "X-Requested-With": "XMLHttpRequest" } }).then(response => {
+      if (response.status == 200) {
+        return response.text();
+      } else {
+        return Promise.reject(
+          new Error(`Invalid response status code ${response.status} for request ${req}`)
+        );
       }
-    };
-
-    xhr.send();
+    }, error => console.log(error)).then(text => eval(text), error => console.log(error));
   });
 
   $("#commit").click(function() {
