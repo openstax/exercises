@@ -29,7 +29,7 @@ $(document).on('turbolinks:load', function() {
           new Error(`Invalid response status code ${response.status} for request ${req}`)
         );
       }
-    }, error => console.log(error)).then(text => eval(text), error => console.log(error));
+    }).then(text => eval(text));
   });
 
   $("#commit").click(function() {
