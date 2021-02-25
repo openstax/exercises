@@ -81,11 +81,6 @@ gem 'fine_print'
 # Keyword search
 gem 'keyword_search'
 
-# File uploads (old)
-gem 'remotipart'
-gem 'carrierwave'
-gem 'mimemagic'
-
 # Read Excel xlsx spreadsheet files
 gem 'roo'
 
