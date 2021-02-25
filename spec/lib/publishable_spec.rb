@@ -1,31 +1,56 @@
 require 'rails_helper'
 
 RSpec.describe Publishable, type: :lib do
-  pending "add more examples to #{__FILE__}"
+  subject(:publishable)    { FactoryBot.create :exercise }
 
-  subject(:publishable) { FactoryBot.create :exercise }
+  let(:author)             { FactoryBot.create :user }
+  let(:copyright_holder)   { FactoryBot.create :user }
+  let(:user)               { FactoryBot.create :user }
+  let(:admin)              { FactoryBot.create :user, :administrator }
+  let(:author_delegate)    do
+    FactoryBot.create(:delegation, delegator: author, can_read: true).delegate
+  end
+  let(:copyright_delegate) do
+    FactoryBot.create(:delegation, delegator: copyright_holder, can_read: true).delegate
+  end
 
-  let(:author) { FactoryBot.create :user }
-  let(:coyright_holder) { FactoryBot.create :user }
-  let(:user)   { FactoryBot.create :user }
+  before do
+    publishable.authors << Author.new(user: author)
+    publishable.copyright_holders << CopyrightHolder.new(user: copyright_holder)
+  end
 
-  before { publishable.authors << Author.new(user: author)
-           publishable.copyright_holders << CopyrightHolder.new(user: author) }
+  context 'with a new version available' do
+    before             { publishable.publication.publish.save! }
+    let!(:new_version) { publishable.new_version.tap(&:save!) }
 
-  it 'can determine versions visible for a user' do
-    p1 = publishable
-    p1.publication.publish.save!
-    p2 = publishable.new_version
-    p2.save!
-    p2.publication.publish.save!
-    draft = publishable.new_version
-    draft.save!
+    it 'can return publishables by id' do
+      expect(publishable.class.with_id(publishable.number)).to eq [ publishable ]
+      expect(publishable.class.with_id(publishable.publication_group.uuid)).to eq [ publishable ]
+      expect(publishable.class.with_id(publishable.uuid)).to eq [ publishable ]
+      expect(publishable.class.with_id(publishable.uid)).to eq [ publishable ]
+      expect(publishable.class.with_id("#{publishable.number}@draft")).to eq [ new_version ]
+      expect(publishable.class.with_id("#{publishable.number}@d")).to eq [ new_version ]
+      expect(publishable.class.with_id("#{publishable.number}@latest")).to(
+        eq [ new_version, publishable ]
+      )
+    end
 
-    expect(publishable.visible_versions(can_view_solutions: false)).to(
-      eq [p2.version, p1.version]
-    )
-    expect(publishable.visible_versions(can_view_solutions: true)).to(
-      eq [draft.version, p2.version, p1.version]
-    )
+    it 'can determine versions visible for a user' do
+      expect(publishable.class.visible_for(user: nil)).to eq [ publishable ]
+      expect(publishable.class.visible_for(user: user)).to eq [ publishable ]
+      expect(publishable.class.visible_for(user: admin)).to match_array [ publishable, new_version ]
+      expect(publishable.class.visible_for(user: author)).to(
+        match_array [ publishable, new_version ]
+      )
+      expect(publishable.class.visible_for(user: copyright_holder)).to(
+        match_array [ publishable, new_version ]
+      )
+      expect(publishable.class.visible_for(user: author_delegate)).to(
+        match_array [ publishable, new_version ]
+      )
+      expect(publishable.class.visible_for(user: copyright_delegate)).to(
+        match_array [ publishable, new_version ]
+      )
+    end
   end
 end

@@ -36,7 +36,9 @@ module Publishable
 
             rel = case version
             when NilClass
-              join_rel.where(publication: { uuid: number_or_uuid }).or(or_rel.published)
+              join_rel.where(publication: { uuid: number_or_uuid }).or(
+                or_rel.where.not(publication: { published_at: nil })
+              )
             when 'draft', 'd'
               or_rel.unpublished
             when 'latest'

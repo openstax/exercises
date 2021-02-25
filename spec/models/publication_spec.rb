@@ -24,8 +24,8 @@ RSpec.describe Publication, type: :model do
 
     it 'can return publications by id' do
       new_version
-      #expect(described_class.with_id(publication.number)).to eq [ publication ]
-      #expect(described_class.with_id(publication.publication_group.uuid)).to eq [ publication ]
+      expect(described_class.with_id(publication.number)).to eq [ publication ]
+      expect(described_class.with_id(publication.publication_group.uuid)).to eq [ publication ]
       expect(described_class.with_id(publication.uuid)).to eq [ publication ]
       expect(described_class.with_id(publication.uid)).to eq [ publication ]
       expect(described_class.with_id("#{publication.number}@draft")).to eq [ new_version ]
@@ -35,7 +35,7 @@ RSpec.describe Publication, type: :model do
       )
     end
 
-    it 'knows which users can view it' do
+    it 'can determine versions visible for a user' do
       user = FactoryBot.create :user
       admin = FactoryBot.create :user, :administrator
       author = FactoryBot.create(:author, publication: publication).user
