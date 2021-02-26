@@ -17,17 +17,19 @@ $(document).on('turbolinks:load', function() {
   });
 
   $("#collaborators-query").on("input", function() {
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        eval(xhr.responseText);
+    req = `/admin/publications/collaborators?collaborators_query=${
+      $("#collaborators-query").val()
+    }`
+
+    fetch(req, { headers: { "X-Requested-With": "XMLHttpRequest" } }).then(response => {
+      if (response.status == 200) {
+        return response.text();
+      } else {
+        return Promise.reject(
+          new Error(`Invalid response status code ${response.status} for request ${req}`)
+        );
       }
-    };
-    xhr.open(
-      "GET",
-      "/admin/publications/collaborators?collaborators_query=" + $("#collaborators-query").val(), true
-    );
-    xhr.send();
+    }).then(text => eval(text));
   });
 
   $("#commit").click(function() {
