@@ -111,14 +111,6 @@ GEM
     brakeman (5.0.0)
     builder (3.2.4)
     byebug (11.1.3)
-    carrierwave (2.1.1)
-      activemodel (>= 5.0.0)
-      activesupport (>= 5.0.0)
-      addressable (~> 2.6)
-      image_processing (~> 1.1)
-      mimemagic (>= 0.3.0)
-      mini_mime (>= 0.1.3)
-      ssrf_filter (~> 1.0)
     cheat (1.3.3)
       pager (~> 1.0)
     choice (0.2.0)
@@ -374,7 +366,6 @@ GEM
       ffi (~> 1.0)
     redis (4.2.5)
     regexp_parser (2.0.3)
-    remotipart (1.4.4)
     representable (3.0.0)
       declarative (~> 0.0.5)
       uber (~> 0.0.15)
@@ -476,7 +467,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    ssrf_filter (1.0.7)
     test_xml (0.1.8)
       diffy (~> 3.0)
       nokogiri (>= 1.3.2)
@@ -528,7 +518,6 @@ DEPENDENCIES
   bootstrap-sass
   brakeman
   byebug
-  carrierwave
   cheat
   codeclimate-test-reporter
   codecov
@@ -550,7 +539,6 @@ DEPENDENCIES
   listen
   lograge
   maruku
-  mimemagic
   mini_racer
   nifty-generators
   oj
@@ -570,7 +558,6 @@ DEPENDENCIES
   rails-erd
   rails-html-sanitizer
   redis
-  remotipart
   representable (~> 3.0.0)
   rinku
   roar (= 1.0.3)

@@ -1,9 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Attachment, type: :model do
-
   subject(:attachment) { FactoryBot.create :attachment }
-  let(:asset_path)     { attachment.asset.path }
+  let(:asset_path)     { attachment.asset }
 
   after(:each) { attachment.destroy }
 
@@ -24,12 +23,12 @@ RSpec.describe Attachment, type: :model do
     attachment_2.parent = attachment.parent
     expect(attachment_2).not_to be_valid
 
-    attachment_2.asset = File.open('spec/fixtures/rails.png')
+    attachment_2.asset = 'spec/fixtures/rails.png'
     expect(attachment_2).to be_valid
   end
 
   it 'raises ActiveRecord::ReadOnlyRecord on update' do
-    attachment.asset = File.open('spec/fixtures/rails.png')
+    attachment.asset = 'spec/fixtures/rails.png'
     expect{ attachment.save! }.to raise_error(ActiveRecord::ReadOnlyRecord)
   end
 
@@ -40,20 +39,4 @@ RSpec.describe Attachment, type: :model do
 
     expect { FactoryBot.create :attachment, parent: parent }.to change { parent.reload.updated_at }
   end
-
-  context 'on destroy' do
-    it 'does not remove the asset when there are other references left' do
-      attachment_2 = FactoryBot.create :attachment, asset: attachment.asset
-      attachment_2.destroy
-
-      expect(File.exist?(asset_path)).to eq true
-    end
-
-    it 'removes the asset when there are no references left' do
-      attachment.destroy
-
-      expect(File.exist?(asset_path)).to eq false
-    end
-  end
-
 end
