@@ -71,6 +71,9 @@ gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 
+# Retry failed database transactions
+gem 'transaction_retry', github: 'openstax/transaction_retry'
+
 # Lev framework
 gem 'lev'
 
