@@ -23,7 +23,7 @@ before_fork do
   PumaWorkerKiller.config do |config|
     # Restart workers when they start consuming more than 1G each
     config.ram = ENV.fetch('MAX_MEMORY') do
-      ENV.fetch('MAX_WORKER_MEMORY', 256).to_i * NUM_WORKERS
+      ENV.fetch('MAX_WORKER_MEMORY', 512).to_i * NUM_WORKERS
     end.to_i
 
     config.frequency = 10
