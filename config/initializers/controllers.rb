@@ -1,5 +1,4 @@
 ActionController::Base.class_exec do
-
   protect_from_forgery
 
   layout "layouts/application_body_only"
@@ -18,7 +17,4 @@ ActionController::Base.class_exec do
   def authenticate_administrator!
     current_administrator || raise(SecurityTransgression)
   end
-
 end
-
-FinePrint::ApplicationController.send :layout, "application_body_only"

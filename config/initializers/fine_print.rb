@@ -1,10 +1,9 @@
 FinePrint.configure do |config|
-
   # Engine Configuration: Must be set in an initializer
 
   # Layout to be used for FinePrint's controllers
   # Default: 'application'
-  config.layout = 'application'
+  config.layout = 'application_body_only'
 
   # Array of custom helpers for FinePrint's controllers
   # Default: [] (no custom helpers)
@@ -57,5 +56,4 @@ FinePrint.configure do |config|
   config.redirect_to_contracts_proc = ->(user, contracts) do
     redirect_to(fine_print.new_contract_signature_path(contract_id: contracts.first.id))
   end
-
 end
