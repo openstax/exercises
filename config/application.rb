@@ -26,7 +26,8 @@ NEVER_EXPIRES = 68.years
 module Exercises
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    # TODO: Figure out what breaks VocabDistractor when flipping this to 6.1.
+    # TODO: load_defaults 6.1 turns on config.active_record.has_many_inversing
+    #       which breaks VocabDistractor tests
     config.load_defaults 6.0
 
     # Configuration for the application, engines, and railties goes here.
