@@ -15,7 +15,8 @@ class Publication < ApplicationRecord
                          dependent: :destroy,
                          inverse_of: :source_publication
 
-  delegate :group_uuid, :number, :nickname, :nickname=, to: :publication_group
+  delegate :group_uuid, :number, :nickname, :nickname=,
+           :solutions_are_public, :solutions_are_public=, to: :publication_group
 
   validates :publishable_id, uniqueness: { scope: :publishable_type }
   validates :uuid, presence: true, uniqueness: true
@@ -193,7 +194,7 @@ class Publication < ApplicationRecord
   def build_publication_group
     return if publishable_type.nil?
 
-    self.publication_group = PublicationGroup.new(publishable_type: publishable_type)
+    self.publication_group = PublicationGroup.new publishable_type: publishable_type
   end
 
   def assign_uuid_and_version

@@ -17,7 +17,7 @@ module Publishable
                    :is_published?, :is_embargoed?, :is_public?, :is_chainable_latest?, :is_latest?,
                    :has_collaborator?, :has_read_permission?, :has_write_permission?,
                    :license=, :authors=, :copyright_holders=, :derivations=, :nickname, :nickname=,
-                   to: :publication
+                   :solutions_are_public, :solutions_are_public=, to: :publication
 
           scope :published,   -> do
             joins(:publication).where.not(publication: { published_at: nil })
