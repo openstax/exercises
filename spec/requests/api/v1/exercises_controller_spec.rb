@@ -423,6 +423,7 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
       expect(new_exercise.nickname).to eq 'MyExercise'
       expect(new_exercise.title).to eq @exercise.title
       expect(new_exercise.stimulus).to eq @exercise.stimulus
+      expect(new_exercise.solutions_are_public).to eq @exercise.solutions_are_public
 
       expect(new_exercise.questions.first.stimulus)
         .to eq @exercise.questions.first.stimulus
@@ -513,9 +514,11 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
   context "PATCH /api/exercises/:id" do
     before { @old_attributes = @exercise.reload.attributes }
 
+    let(:new_solutions_are_public) { !@exercise.solutions_are_public }
+
     it "updates the requested Exercise" do
       api_patch api_exercise_url(@exercise.uid), @user_1_token, params: {
-        nickname: 'MyExercise', title: "Ipsum lorem"
+        nickname: 'MyExercise', title: "Ipsum lorem", solutions_are_public: new_solutions_are_public
       }.to_json
       expect(response).to have_http_status(:ok)
       @exercise.reload
@@ -523,8 +526,9 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
 
       expect(@exercise.nickname).to eq 'MyExercise'
       expect(@exercise.title).to eq "Ipsum lorem"
-      expect(new_attributes.except('title', 'updated_at'))
-        .to eq(@old_attributes.except('title', 'updated_at'))
+      expect(@exercise.solutions_are_public).to eq new_solutions_are_public
+      expect(new_attributes.except('title', 'updated_at', 'solutions_are_public'))
+        .to eq(@old_attributes.except('title', 'updated_at', 'solutions_are_public'))
     end
 
     it "fails if the exercise is published and \"@draft\" was not requested" do
