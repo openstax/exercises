@@ -52,6 +52,9 @@ gem 'image_processing'
 # ActiveStorage S3 support
 gem 'aws-sdk-s3'
 
+# Fetch and parse OpenStax book content
+gem 'openstax_content'
+
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
 

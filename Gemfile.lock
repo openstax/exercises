@@ -304,6 +304,10 @@ GEM
       roar
       roar-rails
       uber
+    openstax_content (0.0.2)
+      aws-sdk-s3
+      faraday
+      nokogiri
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
     openstax_rescue_from (4.1.0)
@@ -549,6 +553,7 @@ DEPENDENCIES
   omniauth-oauth2
   openstax_accounts (= 9.6.0)
   openstax_api
+  openstax_content
   openstax_healthcheck
   openstax_rescue_from
   openstax_utilities
@@ -583,4 +588,4 @@ DEPENDENCIES
   web-console
 
 BUNDLED WITH
-   2.2.15
+   2.2.19

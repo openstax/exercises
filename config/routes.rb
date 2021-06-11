@@ -45,6 +45,8 @@ Rails.application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy]
+
+    resources :books, only: [:index, :show]
   end
 
   mount OpenStax::Accounts::Engine => :accounts
