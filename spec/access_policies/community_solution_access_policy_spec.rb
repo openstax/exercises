@@ -455,13 +455,13 @@ RSpec.describe CommunitySolutionAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, CommunitySolution)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, CommunitySolution)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, CommunitySolution)).to eq false
+      expect(described_class.action_allowed?(:other, anon, CommunitySolution)).to eq false
+      expect(described_class.action_allowed?(:other, user, CommunitySolution)).to eq false
+      expect(described_class.action_allowed?(:other, app, CommunitySolution)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, community_solution)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, community_solution)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, community_solution)).to eq false
+      expect(described_class.action_allowed?(:other, anon, community_solution)).to eq false
+      expect(described_class.action_allowed?(:other, user, community_solution)).to eq false
+      expect(described_class.action_allowed?(:other, app, community_solution)).to eq false
     end
   end
 end

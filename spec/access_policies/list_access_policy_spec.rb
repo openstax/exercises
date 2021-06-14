@@ -207,13 +207,13 @@ RSpec.describe ListAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, List)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, List)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, List)).to eq false
+      expect(described_class.action_allowed?(:other, anon, List)).to eq false
+      expect(described_class.action_allowed?(:other, user, List)).to eq false
+      expect(described_class.action_allowed?(:other, app, List)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, list)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, list)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, list)).to eq false
+      expect(described_class.action_allowed?(:other, anon, list)).to eq false
+      expect(described_class.action_allowed?(:other, user, list)).to eq false
+      expect(described_class.action_allowed?(:other, app, list)).to eq false
     end
   end
 end

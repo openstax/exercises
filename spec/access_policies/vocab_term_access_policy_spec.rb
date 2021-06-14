@@ -207,13 +207,13 @@ RSpec.describe VocabTermAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, VocabTerm)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, VocabTerm)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, VocabTerm)).to eq false
+      expect(described_class.action_allowed?(:other, anon, VocabTerm)).to eq false
+      expect(described_class.action_allowed?(:other, user, VocabTerm)).to eq false
+      expect(described_class.action_allowed?(:other, app, VocabTerm)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, vocab_term)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, vocab_term)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, vocab_term)).to eq false
+      expect(described_class.action_allowed?(:other, anon, vocab_term)).to eq false
+      expect(described_class.action_allowed?(:other, user, vocab_term)).to eq false
+      expect(described_class.action_allowed?(:other, app, vocab_term)).to eq false
     end
   end
 end
