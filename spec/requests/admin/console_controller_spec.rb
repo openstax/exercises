@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Admin::ConsoleController, type: :request do
-
   let(:user)  { FactoryBot.create(:user, :agreed_to_terms) }
   let(:admin) { FactoryBot.create(:user, :administrator, :agreed_to_terms) }
 

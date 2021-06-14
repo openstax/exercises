@@ -1,4 +1,4 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version: :v1 do
   before(:all) do

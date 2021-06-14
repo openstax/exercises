@@ -207,6 +207,12 @@ group :test do
   # Spec helpers
   gem 'shoulda-matchers', require: false
 
+  # Stubs HTTP requests
+  gem 'webmock'
+
+  # Records HTTP requests
+  gem 'vcr'
+
   # Code Climate integration
   gem "codeclimate-test-reporter", require: false
 

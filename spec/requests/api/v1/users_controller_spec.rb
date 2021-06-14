@@ -1,4 +1,4 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :request, api: true, version: :v1 do
   let!(:application)      { FactoryBot.create :doorkeeper_application }
