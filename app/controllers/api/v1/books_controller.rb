@@ -12,13 +12,27 @@ module Api::V1
     # index #
     #########
 
-    api :GET, '/books', 'Returns a list of books in the some archive version or latest'
-    description 'Returns a list of books in the some archive version (defaults to latest version)'
+    api :GET, '/books', 'Returns a list of books in both the ABL and some archive version or latest'
+    description 'Returns a list of books in both the ABL and some archive version (default: latest)'
     param :archive_version, String, desc: 'Archive code pipeline version (default: latest version)'
     def index
       OSU::AccessPolicy.require_action_allowed! :index, current_api_user, OpenStax::Content::Book
 
-      render json: available_book_versions_by_uuid.to_h
+      books = abl.approved_books.flat_map do |approved_book|
+        approved_book[:books].map do |book|
+          uuid = book[:uuid]
+          versions = available_book_versions_by_uuid[uuid]
+          next if versions.empty?
+
+          {
+            uuid: uuid,
+            versions: versions,
+            title: book[:slug].underscore.humanize
+          }
+        end.compact
+      end
+
+      render json: books
     end
 
     ########
@@ -44,6 +58,10 @@ module Api::V1
 
     protected
 
+    def abl
+      @abl ||= OpenStax::Content::Abl.new
+    end
+
     def s3
       @s3 ||= OpenStax::Content::S3.new
     end
@@ -59,7 +77,7 @@ module Api::V1
     end
 
     def available_book_versions_by_uuid
-      Hash.new { |hash, key| hash[key] = [] }.tap do |hash|
+      @available_book_versions_by_uuid ||= Hash.new { |hash, key| hash[key] = [] }.tap do |hash|
         s3.ls(archive_version).each do |book|
           uuid, version = book.split('@')
           hash[uuid] << version
