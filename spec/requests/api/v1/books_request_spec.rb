@@ -16,14 +16,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
             "versions" => [
               "8.46"
             ],
-            "title" => "College physics courseware"
+            "title" => "College Physics Courseware"
           },
           {
             "uuid" => "36004586-651c-4ded-af87-203aca22d946",
             "versions" => [
               "14.3"
             ],
-            "title" => "Life liberty and pursuit happiness"
+            "title" => "Life Liberty And Pursuit Happiness"
           },
           {
             "uuid" => "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
@@ -31,14 +31,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "31.2",
               "33.3"
             ],
-            "title" => "Algebra and trigonometry"
+            "title" => "Algebra And Trigonometry"
           },
           {
             "uuid" => "5bcc0e59-7345-421d-8507-a1e4608685e8",
             "versions" => [
               "19.1"
             ],
-            "title" => "American government"
+            "title" => "American Government"
           },
           {
             "uuid" => "9d8df601-4f12-4ac1-8224-b450bf739e5f",
@@ -46,7 +46,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "6.5",
               "6.7"
             ],
-            "title" => "American government 2e"
+            "title" => "American Government 2e"
           },
           {
             "uuid" => "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
@@ -54,7 +54,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "22.7",
               "22.8"
             ],
-            "title" => "Anatomy and physiology"
+            "title" => "Anatomy And Physiology"
           },
           {
             "uuid" => "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
@@ -85,14 +85,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "26.6",
               "26.26"
             ],
-            "title" => "Biology ap courses"
+            "title" => "Biology Ap Courses"
           },
           {
             "uuid" => "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
             "versions" => [
               "5.14"
             ],
-            "title" => "Business ethics"
+            "title" => "Business Ethics"
           },
           {
             "uuid" => "464a3fba-68c1-426a-99f9-597e739dc911",
@@ -100,7 +100,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "8.8",
               "8.9"
             ],
-            "title" => "Business law i essentials"
+            "title" => "Business Law I Essentials"
           },
           {
             "uuid" => "8b89d172-2927-466f-8661-01abc7ccdba4",
@@ -108,7 +108,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "22.1",
               "22.2"
             ],
-            "title" => "Calculus volume 1"
+            "title" => "Calculus Volume 1"
           },
           {
             "uuid" => "1d39a348-071f-4537-85b6-c98912458c3c",
@@ -116,7 +116,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.1",
               "22.1"
             ],
-            "title" => "Calculus volume 2"
+            "title" => "Calculus Volume 2"
           },
           {
             "uuid" => "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
@@ -124,7 +124,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.1",
               "22.1"
             ],
-            "title" => "Calculus volume 3"
+            "title" => "Calculus Volume 3"
           },
           {
             "uuid" => "85abf193-2bd2-4908-8563-90b8a7ac8df6",
@@ -147,14 +147,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "14.26",
               "14.36"
             ],
-            "title" => "Chemistry atoms first 2e"
+            "title" => "Chemistry Atoms First 2e"
           },
           {
             "uuid" => "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
             "versions" => [
               "10.1"
             ],
-            "title" => "Chemistry atoms first"
+            "title" => "Chemistry Atoms First"
           },
           {
             "uuid" => "9b08c294-057f-4201-9f48-5d6ad992740d",
@@ -163,7 +163,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "31.1",
               "32.2"
             ],
-            "title" => "College algebra"
+            "title" => "College Algebra"
           },
           {
             "uuid" => "507feb1e-cfff-4b54-bc07-d52636cecfe3",
@@ -171,7 +171,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.12",
               "10.2"
             ],
-            "title" => "College algebra corequisite support"
+            "title" => "College Algebra Corequisite Support"
           },
           {
             "uuid" => "031da8d3-b525-429c-80cf-6c8ed997733a",
@@ -179,7 +179,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "23.16",
               "23.18"
             ],
-            "title" => "College physics"
+            "title" => "College Physics"
           },
           {
             "uuid" => "8d04a686-d5e8-4798-a27d-c608e4d0e187",
@@ -187,7 +187,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "34.4",
               "35.2"
             ],
-            "title" => "College physics ap courses"
+            "title" => "College Physics Ap Courses"
           },
           {
             "uuid" => "e8668a14-9a7d-4d74-b58c-3681f8351224",
@@ -195,7 +195,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "10.1",
               "10.2"
             ],
-            "title" => "College success"
+            "title" => "College Success"
           },
           {
             "uuid" => "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
@@ -203,7 +203,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "17.18",
               "17.23"
             ],
-            "title" => "Concepts biology"
+            "title" => "Concepts Biology"
           },
           {
             "uuid" => "0889907c-f0ef-496a-bcb8-2a5bb121717f",
@@ -211,14 +211,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.2",
               "9.3"
             ],
-            "title" => "Elementary algebra"
+            "title" => "Elementary Algebra"
           },
           {
             "uuid" => "55931856-c627-418b-a56f-1dd0007683a8",
             "versions" => [
               "9.3"
             ],
-            "title" => "Elementary algebra 2e"
+            "title" => "Elementary Algebra 2e"
           },
           {
             "uuid" => "d380510e-6145-4625-b19a-4fa68204b6b1",
@@ -233,7 +233,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
             "versions" => [
               "14.1"
             ],
-            "title" => "Intermediate algebra"
+            "title" => "Intermediate Algebra"
           },
           {
             "uuid" => "4664c267-cd62-4a99-8b28-1cb9b3aee347",
@@ -241,7 +241,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "6.5",
               "7.2"
             ],
-            "title" => "Intermediate algebra 2e"
+            "title" => "Intermediate Algebra 2e"
           },
           {
             "uuid" => "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
@@ -249,7 +249,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.7",
               "9.8"
             ],
-            "title" => "Introduction business"
+            "title" => "Introduction Business"
           },
           {
             "uuid" => "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
@@ -259,14 +259,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "6.3",
               "6.21"
             ],
-            "title" => "Introduction intellectual property"
+            "title" => "Introduction Intellectual Property"
           },
           {
             "uuid" => "afe4332a-c97f-4fc4-be27-4e4d384a32d8",
             "versions" => [
               "18.1"
             ],
-            "title" => "Introduction sociology"
+            "title" => "Introduction Sociology"
           },
           {
             "uuid" => "02040312-72c8-441e-a685-20e9333f3e1d",
@@ -276,7 +276,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.7",
               "15.10"
             ],
-            "title" => "Introduction sociology 2e"
+            "title" => "Introduction Sociology 2e"
           },
           {
             "uuid" => "746f171e-0d6a-4ef2-b69d-367880872f4a",
@@ -286,7 +286,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "3.10",
               "3.17"
             ],
-            "title" => "Introduction to sociology 3e"
+            "title" => "Introduction To Sociology 3e"
           },
           {
             "uuid" => "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
@@ -294,14 +294,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "38.22",
               "38.24"
             ],
-            "title" => "Introductory business statistics"
+            "title" => "Introductory Business Statistics"
           },
           {
             "uuid" => "30189442-6998-4686-ac05-ed152b91b9de",
             "versions" => [
               "25.23"
             ],
-            "title" => "Introductory statistics"
+            "title" => "Introductory Statistics"
           },
           {
             "uuid" => "e42bd376-624b-4c0f-972f-e0c57998e765",
@@ -317,7 +317,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.1",
               "9.8"
             ],
-            "title" => "Organizational behavior"
+            "title" => "Organizational Behavior"
           },
           {
             "uuid" => "cce64fde-f448-43b8-ae88-27705cceb0da",
@@ -355,7 +355,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "7.7",
               "7.8"
             ],
-            "title" => "Principles financial accounting"
+            "title" => "Principles Financial Accounting"
           },
           {
             "uuid" => "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
@@ -363,14 +363,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "17.5",
               "18.1"
             ],
-            "title" => "Principles managerial accounting"
+            "title" => "Principles Managerial Accounting"
           },
           {
             "uuid" => "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
             "versions" => [
               "12.4"
             ],
-            "title" => "Principles economics"
+            "title" => "Principles Economics"
           },
           {
             "uuid" => "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
@@ -378,14 +378,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "10.7",
               "12.4"
             ],
-            "title" => "Principles economics 2e"
+            "title" => "Principles Economics 2e"
           },
           {
             "uuid" => "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
             "versions" => [
               "13.2"
             ],
-            "title" => "Principles macroeconomics"
+            "title" => "Principles Macroeconomics"
           },
           {
             "uuid" => "27f59064-990e-48f1-b604-5188b9086c29",
@@ -393,14 +393,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.1",
               "16.1"
             ],
-            "title" => "Principles macroeconomics 2e"
+            "title" => "Principles Macroeconomics 2e"
           },
           {
             "uuid" => "33076054-ec1d-4417-8824-ce354efe42d0",
             "versions" => [
               "4.2"
             ],
-            "title" => "Principles macroeconomics ap courses"
+            "title" => "Principles Macroeconomics Ap Courses"
           },
           {
             "uuid" => "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
@@ -408,7 +408,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "14.1",
               "15.1"
             ],
-            "title" => "Principles macroeconomics ap courses 2e"
+            "title" => "Principles Macroeconomics Ap Courses 2e"
           },
           {
             "uuid" => "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
@@ -416,14 +416,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "12.1",
               "12.8"
             ],
-            "title" => "Principles management"
+            "title" => "Principles Management"
           },
           {
             "uuid" => "ea2f225e-6063-41ca-bcd8-36482e15ef65",
             "versions" => [
               "13.3"
             ],
-            "title" => "Principles microeconomics"
+            "title" => "Principles Microeconomics"
           },
           {
             "uuid" => "5c09762c-b540-47d3-9541-dda1f44f16e5",
@@ -431,14 +431,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "18.1",
               "19.1"
             ],
-            "title" => "Principles microeconomics 2e"
+            "title" => "Principles Microeconomics 2e"
           },
           {
             "uuid" => "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
             "versions" => [
               "7.1"
             ],
-            "title" => "Principles microeconomics ap courses"
+            "title" => "Principles Microeconomics Ap Courses"
           },
           {
             "uuid" => "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
@@ -446,7 +446,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "14.1",
               "15.1"
             ],
-            "title" => "Principles microeconomics ap courses 2e"
+            "title" => "Principles Microeconomics Ap Courses 2e"
           },
           {
             "uuid" => "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
@@ -477,7 +477,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "10.18",
               "10.21"
             ],
-            "title" => "Us history"
+            "title" => "Us History"
           },
           {
             "uuid" => "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
@@ -485,7 +485,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "21.4",
               "22.3"
             ],
-            "title" => "University physics volume 1"
+            "title" => "University Physics Volume 1"
           },
           {
             "uuid" => "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
@@ -493,7 +493,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "24.2",
               "27.1"
             ],
-            "title" => "University physics volume 2"
+            "title" => "University Physics Volume 2"
           },
           {
             "uuid" => "af275420-6050-4707-995c-57b9cc13c358",
@@ -501,7 +501,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "20.1",
               "22.5"
             ],
-            "title" => "University physics volume 3"
+            "title" => "University Physics Volume 3"
           }
         ]
       )
@@ -518,28 +518,28 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
             "versions" => [
               "8.46"
             ],
-            "title" => "College physics courseware"
+            "title" => "College Physics Courseware"
           },
           {
             "uuid" => "4eaa8f03-88a8-485a-a777-dd3602f6c13e",
             "versions" => [
               "4.14"
             ],
-            "title" => "Fizyka dla szkół wyższych tom 1"
+            "title" => "Fizyka Dla Szkół Wyższych Tom 1"
           },
           {
             "uuid" => "16ab5b96-4598-45f9-993c-b8d78d82b0c6",
             "versions" => [
               "5.1"
             ],
-            "title" => "Fizyka dla szkół wyższych tom 2"
+            "title" => "Fizyka Dla Szkół Wyższych Tom 2"
           },
           {
             "uuid" => "bb62933e-f20a-4ffc-90aa-97b36c296c3e",
             "versions" => [
               "6.23"
             ],
-            "title" => "Fizyka dla szkół wyższych tom 3"
+            "title" => "Fizyka Dla Szkół Wyższych Tom 3"
           },
           {
             "uuid" => "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
@@ -548,14 +548,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "32.2",
               "33.3"
             ],
-            "title" => "Algebra and trigonometry"
+            "title" => "Algebra And Trigonometry"
           },
           {
             "uuid" => "5bcc0e59-7345-421d-8507-a1e4608685e8",
             "versions" => [
               "19.1"
             ],
-            "title" => "American government"
+            "title" => "American Government"
           },
           {
             "uuid" => "9d8df601-4f12-4ac1-8224-b450bf739e5f",
@@ -563,7 +563,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "6.5",
               "6.7"
             ],
-            "title" => "American government 2e"
+            "title" => "American Government 2e"
           },
           {
             "uuid" => "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
@@ -571,7 +571,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "22.7",
               "22.8"
             ],
-            "title" => "Anatomy and physiology"
+            "title" => "Anatomy And Physiology"
           },
           {
             "uuid" => "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
@@ -602,14 +602,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "26.6",
               "26.26"
             ],
-            "title" => "Biology ap courses"
+            "title" => "Biology Ap Courses"
           },
           {
             "uuid" => "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
             "versions" => [
               "5.14"
             ],
-            "title" => "Business ethics"
+            "title" => "Business Ethics"
           },
           {
             "uuid" => "464a3fba-68c1-426a-99f9-597e739dc911",
@@ -617,7 +617,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "8.8",
               "8.9"
             ],
-            "title" => "Business law i essentials"
+            "title" => "Business Law I Essentials"
           },
           {
             "uuid" => "8b89d172-2927-466f-8661-01abc7ccdba4",
@@ -625,7 +625,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "22.1",
               "22.2"
             ],
-            "title" => "Calculus volume 1"
+            "title" => "Calculus Volume 1"
           },
           {
             "uuid" => "1d39a348-071f-4537-85b6-c98912458c3c",
@@ -633,7 +633,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.1",
               "22.1"
             ],
-            "title" => "Calculus volume 2"
+            "title" => "Calculus Volume 2"
           },
           {
             "uuid" => "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
@@ -641,7 +641,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.1",
               "22.1"
             ],
-            "title" => "Calculus volume 3"
+            "title" => "Calculus Volume 3"
           },
           {
             "uuid" => "85abf193-2bd2-4908-8563-90b8a7ac8df6",
@@ -664,14 +664,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "14.26",
               "14.36"
             ],
-            "title" => "Chemistry atoms first 2e"
+            "title" => "Chemistry Atoms First 2e"
           },
           {
             "uuid" => "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
             "versions" => [
               "10.1"
             ],
-            "title" => "Chemistry atoms first"
+            "title" => "Chemistry Atoms First"
           },
           {
             "uuid" => "9b08c294-057f-4201-9f48-5d6ad992740d",
@@ -680,7 +680,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "31.1",
               "32.2"
             ],
-            "title" => "College algebra"
+            "title" => "College Algebra"
           },
           {
             "uuid" => "507feb1e-cfff-4b54-bc07-d52636cecfe3",
@@ -688,7 +688,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.12",
               "10.2"
             ],
-            "title" => "College algebra corequisite support"
+            "title" => "College Algebra Corequisite Support"
           },
           {
             "uuid" => "031da8d3-b525-429c-80cf-6c8ed997733a",
@@ -696,7 +696,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "23.16",
               "23.18"
             ],
-            "title" => "College physics"
+            "title" => "College Physics"
           },
           {
             "uuid" => "8d04a686-d5e8-4798-a27d-c608e4d0e187",
@@ -704,7 +704,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "34.4",
               "35.2"
             ],
-            "title" => "College physics ap courses"
+            "title" => "College Physics Ap Courses"
           },
           {
             "uuid" => "e8668a14-9a7d-4d74-b58c-3681f8351224",
@@ -712,7 +712,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "10.1",
               "10.2"
             ],
-            "title" => "College success"
+            "title" => "College Success"
           },
           {
             "uuid" => "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
@@ -720,7 +720,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "17.18",
               "17.23"
             ],
-            "title" => "Concepts biology"
+            "title" => "Concepts Biology"
           },
           {
             "uuid" => "0889907c-f0ef-496a-bcb8-2a5bb121717f",
@@ -728,7 +728,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.2",
               "9.3"
             ],
-            "title" => "Elementary algebra"
+            "title" => "Elementary Algebra"
           },
           {
             "uuid" => "55931856-c627-418b-a56f-1dd0007683a8",
@@ -736,7 +736,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "8.5",
               "9.3"
             ],
-            "title" => "Elementary algebra 2e"
+            "title" => "Elementary Algebra 2e"
           },
           {
             "uuid" => "d380510e-6145-4625-b19a-4fa68204b6b1",
@@ -751,7 +751,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
             "versions" => [
               "14.1"
             ],
-            "title" => "Intermediate algebra"
+            "title" => "Intermediate Algebra"
           },
           {
             "uuid" => "4664c267-cd62-4a99-8b28-1cb9b3aee347",
@@ -759,7 +759,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "6.5",
               "7.2"
             ],
-            "title" => "Intermediate algebra 2e"
+            "title" => "Intermediate Algebra 2e"
           },
           {
             "uuid" => "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
@@ -767,7 +767,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.7",
               "9.8"
             ],
-            "title" => "Introduction business"
+            "title" => "Introduction Business"
           },
           {
             "uuid" => "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
@@ -777,14 +777,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "6.3",
               "6.21"
             ],
-            "title" => "Introduction intellectual property"
+            "title" => "Introduction Intellectual Property"
           },
           {
             "uuid" => "afe4332a-c97f-4fc4-be27-4e4d384a32d8",
             "versions" => [
               "18.1"
             ],
-            "title" => "Introduction sociology"
+            "title" => "Introduction Sociology"
           },
           {
             "uuid" => "02040312-72c8-441e-a685-20e9333f3e1d",
@@ -794,7 +794,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.7",
               "15.10"
             ],
-            "title" => "Introduction sociology 2e"
+            "title" => "Introduction Sociology 2e"
           },
           {
             "uuid" => "746f171e-0d6a-4ef2-b69d-367880872f4a",
@@ -804,7 +804,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "3.10",
               "3.17"
             ],
-            "title" => "Introduction to sociology 3e"
+            "title" => "Introduction To Sociology 3e"
           },
           {
             "uuid" => "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
@@ -812,7 +812,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "38.22",
               "38.24"
             ],
-            "title" => "Introductory business statistics"
+            "title" => "Introductory Business Statistics"
           },
           {
             "uuid" => "30189442-6998-4686-ac05-ed152b91b9de",
@@ -822,7 +822,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "25.18",
               "25.23"
             ],
-            "title" => "Introductory statistics"
+            "title" => "Introductory Statistics"
           },
           {
             "uuid" => "e42bd376-624b-4c0f-972f-e0c57998e765",
@@ -838,7 +838,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "9.1",
               "9.8"
             ],
-            "title" => "Organizational behavior"
+            "title" => "Organizational Behavior"
           },
           {
             "uuid" => "cce64fde-f448-43b8-ae88-27705cceb0da",
@@ -876,7 +876,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "7.7",
               "7.8"
             ],
-            "title" => "Principles financial accounting"
+            "title" => "Principles Financial Accounting"
           },
           {
             "uuid" => "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
@@ -884,14 +884,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "17.5",
               "18.1"
             ],
-            "title" => "Principles managerial accounting"
+            "title" => "Principles Managerial Accounting"
           },
           {
             "uuid" => "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
             "versions" => [
               "12.4"
             ],
-            "title" => "Principles economics"
+            "title" => "Principles Economics"
           },
           {
             "uuid" => "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
@@ -899,14 +899,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "10.7",
               "12.4"
             ],
-            "title" => "Principles economics 2e"
+            "title" => "Principles Economics 2e"
           },
           {
             "uuid" => "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
             "versions" => [
               "13.2"
             ],
-            "title" => "Principles macroeconomics"
+            "title" => "Principles Macroeconomics"
           },
           {
             "uuid" => "27f59064-990e-48f1-b604-5188b9086c29",
@@ -914,14 +914,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "15.1",
               "16.1"
             ],
-            "title" => "Principles macroeconomics 2e"
+            "title" => "Principles Macroeconomics 2e"
           },
           {
             "uuid" => "33076054-ec1d-4417-8824-ce354efe42d0",
             "versions" => [
               "4.2"
             ],
-            "title" => "Principles macroeconomics ap courses"
+            "title" => "Principles Macroeconomics Ap Courses"
           },
           {
             "uuid" => "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
@@ -929,7 +929,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "14.1",
               "15.1"
             ],
-            "title" => "Principles macroeconomics ap courses 2e"
+            "title" => "Principles Macroeconomics Ap Courses 2e"
           },
           {
             "uuid" => "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
@@ -937,14 +937,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "12.1",
               "12.8"
             ],
-            "title" => "Principles management"
+            "title" => "Principles Management"
           },
           {
             "uuid" => "ea2f225e-6063-41ca-bcd8-36482e15ef65",
             "versions" => [
               "13.3"
             ],
-            "title" => "Principles microeconomics"
+            "title" => "Principles Microeconomics"
           },
           {
             "uuid" => "5c09762c-b540-47d3-9541-dda1f44f16e5",
@@ -952,14 +952,14 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "18.1",
               "19.1"
             ],
-            "title" => "Principles microeconomics 2e"
+            "title" => "Principles Microeconomics 2e"
           },
           {
             "uuid" => "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
             "versions" => [
               "7.1"
             ],
-            "title" => "Principles microeconomics ap courses"
+            "title" => "Principles Microeconomics Ap Courses"
           },
           {
             "uuid" => "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
@@ -967,7 +967,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "14.1",
               "15.1"
             ],
-            "title" => "Principles microeconomics ap courses 2e"
+            "title" => "Principles Microeconomics Ap Courses 2e"
           },
           {
             "uuid" => "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
@@ -998,7 +998,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "10.18",
               "10.21"
             ],
-            "title" => "Us history"
+            "title" => "Us History"
           },
           {
             "uuid" => "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
@@ -1006,7 +1006,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "21.4",
               "22.3"
             ],
-            "title" => "University physics volume 1"
+            "title" => "University Physics Volume 1"
           },
           {
             "uuid" => "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
@@ -1014,7 +1014,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "24.2",
               "27.1"
             ],
-            "title" => "University physics volume 2"
+            "title" => "University Physics Volume 2"
           },
           {
             "uuid" => "af275420-6050-4707-995c-57b9cc13c358",
@@ -1022,7 +1022,7 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
               "20.1",
               "22.5"
             ],
-            "title" => "University physics volume 3"
+            "title" => "University Physics Volume 3"
           }
         ]
       )

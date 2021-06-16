@@ -24,11 +24,7 @@ module Api::V1
           versions = available_book_versions_by_uuid[uuid]
           next if versions.empty?
 
-          {
-            uuid: uuid,
-            versions: versions,
-            title: book[:slug].underscore.humanize
-          }
+          { uuid: uuid, versions: versions, title: book[:slug].titleize }
         end.compact
       end
 
