@@ -120,16 +120,17 @@ class Exercise < ApplicationRecord
   end
 
   def can_view_solutions?(user)
-    return false if user.nil?          # User not given
-    return true if new_record?         # Exercise being created
+    return true if solutions_are_public # Public solutions
+    return false if user.nil?           # User not given
+    return true if new_record?          # Exercise being created
 
     user = user.human_user if user.is_a?(OpenStax::Api::ApiUser)
 
     # Modify the line below if we implement delegating to apps
-    return true if user.nil?           # Application user
-    return false if user.is_anonymous? # Anonymous user
+    return true if user.nil?            # Application user
+    return false if user.is_anonymous?  # Anonymous user
 
-    has_read_permission?(user)         # Regular user
+    has_read_permission?(user)          # Regular user
   end
 
   def is_vocab?

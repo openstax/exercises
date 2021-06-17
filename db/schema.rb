@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_03_154937) do
+ActiveRecord::Schema.define(version: 2021_06_07_163430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -419,6 +419,7 @@ ActiveRecord::Schema.define(version: 2021_02_03_154937) do
     t.integer "latest_version", null: false
     t.integer "latest_published_version"
     t.string "nickname"
+    t.boolean "solutions_are_public", default: false, null: false
     t.index ["id", "latest_published_version"], name: "index_publication_groups_on_id_and_latest_published_version"
     t.index ["id", "latest_version"], name: "index_publication_groups_on_id_and_latest_version"
     t.index ["nickname"], name: "index_publication_groups_on_nickname", unique: true

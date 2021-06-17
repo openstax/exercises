@@ -62,6 +62,12 @@ module Publishable
                    setter: ->(input:, **) { self.license = input if input.persisted? }
                  }.merge(options)
 
+        property :solutions_are_public,
+                 {
+                   writeable: true,
+                   readable: true
+                 }.merge(options)
+
         collection :authors,
                    {
                      class: Author,
