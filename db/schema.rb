@@ -419,7 +419,7 @@ ActiveRecord::Schema.define(version: 2021_06_07_163430) do
     t.integer "latest_version", null: false
     t.integer "latest_published_version"
     t.string "nickname"
-    t.boolean "solutions_are_public", null: false
+    t.boolean "solutions_are_public", default: false, null: false
     t.index ["id", "latest_published_version"], name: "index_publication_groups_on_id_and_latest_published_version"
     t.index ["id", "latest_version"], name: "index_publication_groups_on_id_and_latest_version"
     t.index ["nickname"], name: "index_publication_groups_on_nickname", unique: true
