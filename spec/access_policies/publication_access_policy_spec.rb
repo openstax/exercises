@@ -12,9 +12,9 @@ RSpec.describe PublicationAccessPolicy, type: :access_policy do
       before{ publication.publish.save! }
 
       it 'cannot be accessed by anyone' do
-        expect(OSU::AccessPolicy.action_allowed?(:publish, anon, publication)).to eq false
-        expect(OSU::AccessPolicy.action_allowed?(:publish, user, publication)).to eq false
-        expect(OSU::AccessPolicy.action_allowed?(:publish, app, publication)).to eq false
+        expect(described_class.action_allowed?(:publish, anon, publication)).to eq false
+        expect(described_class.action_allowed?(:publish, user, publication)).to eq false
+        expect(described_class.action_allowed?(:publish, app, publication)).to eq false
       end
     end
 
@@ -50,13 +50,13 @@ RSpec.describe PublicationAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, Publication)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, Publication)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, Publication)).to eq false
+      expect(described_class.action_allowed?(:other, anon, Publication)).to eq false
+      expect(described_class.action_allowed?(:other, user, Publication)).to eq false
+      expect(described_class.action_allowed?(:other, app, Publication)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, publication)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, publication)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, publication)).to eq false
+      expect(described_class.action_allowed?(:other, anon, publication)).to eq false
+      expect(described_class.action_allowed?(:other, user, publication)).to eq false
+      expect(described_class.action_allowed?(:other, app, publication)).to eq false
     end
   end
 end

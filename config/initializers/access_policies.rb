@@ -12,6 +12,7 @@ OSU::AccessPolicy.register(List, ListAccessPolicy)
 OSU::AccessPolicy.register(ListPublicationGroup, ListPublicationGroupAccessPolicy)
 OSU::AccessPolicy.register(Publication, PublicationAccessPolicy)
 OSU::AccessPolicy.register(CommunitySolution, CommunitySolutionAccessPolicy)
+OSU::AccessPolicy.register(OpenStax::Content::Book, BookAccessPolicy)
 
 # Doorkeeper
 OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

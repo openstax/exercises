@@ -45,6 +45,8 @@ Rails.application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update, :destroy]
+
+    resources :books, only: [:index, :show], param: :uuid
   end
 
   mount OpenStax::Accounts::Engine => :accounts
@@ -96,5 +98,4 @@ Rails.application.routes.draw do
   get :'*path', controller: :webview, action: :index, constraints: ->(req) do
     req.path.exclude? 'rails/active_storage'
   end
-
 end

@@ -58,13 +58,13 @@ RSpec.describe ListPublicationGroupAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, ListPublicationGroup)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, ListPublicationGroup)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, ListPublicationGroup)).to eq false
+      expect(described_class.action_allowed?(:other, anon, ListPublicationGroup)).to eq false
+      expect(described_class.action_allowed?(:other, user, ListPublicationGroup)).to eq false
+      expect(described_class.action_allowed?(:other, app, ListPublicationGroup)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, list_publication_group)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, list_publication_group)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, list_publication_group)).to eq false
+      expect(described_class.action_allowed?(:other, anon, list_publication_group)).to eq false
+      expect(described_class.action_allowed?(:other, user, list_publication_group)).to eq false
+      expect(described_class.action_allowed?(:other, app, list_publication_group)).to eq false
     end
   end
 end

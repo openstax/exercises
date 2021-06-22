@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Admin::ExceptionsController, type: :request do
-
   EXCEPTIONS = [[SecurityTransgression],
                 [ActiveRecord::RecordNotFound],
                 [ActionController::RoutingError, '/blah/blah/blah'.inspect],

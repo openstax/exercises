@@ -9,16 +9,16 @@ RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
 
   context 'read, update' do
     it 'can be accessed by admins and application owners' do
-      expect(OSU::AccessPolicy.action_allowed?(:read, admin, app)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:update, admin, app)).to eq true
+      expect(described_class.action_allowed?(:read, admin, app)).to eq true
+      expect(described_class.action_allowed?(:update, admin, app)).to eq true
 
       app.owner = user
-      expect(OSU::AccessPolicy.action_allowed?(:read, user, app)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:update, user, app)).to eq true
+      expect(described_class.action_allowed?(:read, user, app)).to eq true
+      expect(described_class.action_allowed?(:update, user, app)).to eq true
 
       app.reload
-      expect(OSU::AccessPolicy.action_allowed?(:read, user, app)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:update, user, app)).to eq false
+      expect(described_class.action_allowed?(:read, user, app)).to eq false
+      expect(described_class.action_allowed?(:update, user, app)).to eq false
     end
 
     it 'cannot be accessed by anonymous users, applications or users without roles' do
@@ -38,8 +38,8 @@ RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
 
   context 'create, destroy' do
     it 'can be accessed by admins' do
-      expect(OSU::AccessPolicy.action_allowed?(:create, admin, app)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:destroy, admin, app)).to eq true
+      expect(described_class.action_allowed?(:create, admin, app)).to eq true
+      expect(described_class.action_allowed?(:destroy, admin, app)).to eq true
     end
 
     it 'cannot be accessed by anyone else' do
@@ -59,19 +59,19 @@ RSpec.describe Doorkeeper::ApplicationAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, Doorkeeper::Application)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, Doorkeeper::Application)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, Doorkeeper::Application)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, another_app, Doorkeeper::Application)).to(
+      expect(described_class.action_allowed?(:other, anon, Doorkeeper::Application)).to eq false
+      expect(described_class.action_allowed?(:other, user, Doorkeeper::Application)).to eq false
+      expect(described_class.action_allowed?(:other, app, Doorkeeper::Application)).to eq false
+      expect(described_class.action_allowed?(:other, another_app, Doorkeeper::Application)).to(
         eq false
       )
-      expect(OSU::AccessPolicy.action_allowed?(:other, admin, Doorkeeper::Application)).to eq false
+      expect(described_class.action_allowed?(:other, admin, Doorkeeper::Application)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, app)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, app)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, app)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, another_app, app)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, admin, app)).to eq false
+      expect(described_class.action_allowed?(:other, anon, app)).to eq false
+      expect(described_class.action_allowed?(:other, user, app)).to eq false
+      expect(described_class.action_allowed?(:other, app, app)).to eq false
+      expect(described_class.action_allowed?(:other, another_app, app)).to eq false
+      expect(described_class.action_allowed?(:other, admin, app)).to eq false
     end
   end
 end

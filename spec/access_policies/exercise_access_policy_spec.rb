@@ -286,13 +286,13 @@ RSpec.describe ExerciseAccessPolicy, type: :access_policy do
 
   context 'other actions' do
     it 'cannot be accessed' do
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, Exercise)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, Exercise)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, Exercise)).to eq false
+      expect(described_class.action_allowed?(:other, anon, Exercise)).to eq false
+      expect(described_class.action_allowed?(:other, user, Exercise)).to eq false
+      expect(described_class.action_allowed?(:other, app, Exercise)).to eq false
 
-      expect(OSU::AccessPolicy.action_allowed?(:other, anon, exercise)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, user, exercise)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:other, app, exercise)).to eq false
+      expect(described_class.action_allowed?(:other, anon, exercise)).to eq false
+      expect(described_class.action_allowed?(:other, user, exercise)).to eq false
+      expect(described_class.action_allowed?(:other, app, exercise)).to eq false
     end
   end
 end

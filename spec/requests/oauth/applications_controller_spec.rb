@@ -1,4 +1,4 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Oauth::ApplicationsController, type: :request do
   let(:user_1) { FactoryBot.create :user }
