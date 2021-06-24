@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/openstax/content-ruby.git
+  revision: eba7cfa94761d0758614f9f8852715982b8d119a
+  ref: find_page
+  specs:
+    openstax_content (0.0.2)
+      aws-sdk-s3
+      faraday
+      nokogiri
+
+GIT
   remote: https://github.com/openstax/transaction_retry.git
   revision: 5a148396c3b332a7e6a1ad5c7e6eb86b68f09829
   specs:
@@ -307,10 +317,6 @@ GEM
       roar
       roar-rails
       uber
-    openstax_content (0.0.2)
-      aws-sdk-s3
-      faraday
-      nokogiri
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
     openstax_rescue_from (4.1.0)
@@ -561,7 +567,7 @@ DEPENDENCIES
   omniauth-oauth2
   openstax_accounts (= 9.6.0)
   openstax_api
-  openstax_content
+  openstax_content!
   openstax_healthcheck
   openstax_rescue_from
   openstax_utilities

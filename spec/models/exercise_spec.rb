@@ -1,24 +1,32 @@
-require 'rails_helper'
+require 'vcr_helper'
 
-RSpec.describe Exercise, type: :model do
+RSpec.describe Exercise, type: :model, vcr: VCR_OPTS do
   subject(:exercise) { FactoryBot.create :exercise }
 
   it { is_expected.to have_many(:questions).dependent(:destroy).autosave(true) }
 
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
+  it 'automatically sets the context based on cnxmod and cnxfeature tags' do
+    exercise.tags = [
+      'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61',
+      'context-cnxfeature:fs-id2371798'
+    ]
+    exercise.save!
+
+    expect(exercise.context).to include '<img'
+  end
+
   it 'can check for the presence of questions' do
-    exercise = FactoryBot.create :exercise
     exercise.send :has_questions
     expect(exercise.errors).to be_empty
 
     exercise.questions = []
     expect { exercise.send :has_questions }.to throw_symbol(:abort)
-    expect(exercise.errors[:questions]).to include("can't be blank")
+    expect(exercise.errors[:questions]).to include "can't be blank"
   end
 
   it 'ensures that no questions have all incorrect answers before publication' do
-    exercise = FactoryBot.create :exercise
     exercise.before_publication
     expect(exercise.errors).to be_empty
 
@@ -26,15 +34,15 @@ RSpec.describe Exercise, type: :model do
       stem_answer.update_attribute :correctness, 0.0
     end
     expect { exercise.before_publication }.to throw_symbol(:abort)
-    expect(exercise.errors[:base]).to include('has a question with only incorrect answers')
+    expect(exercise.errors[:base]).to include 'has a question with only incorrect answers'
   end
 
   context 'can_view_solutions?' do
-    let(:anonymous)        { AnonymousUser.instance                     }
+    let(:anonymous)         { AnonymousUser.instance                     }
 
-    let(:user)             { FactoryBot.create :user                   }
-    let(:author)           { FactoryBot.create :user                   }
-    let(:copyright_holder) { FactoryBot.create :user                   }
+    let(:user)              { FactoryBot.create :user                   }
+    let(:author)            { FactoryBot.create :user                   }
+    let(:copyright_holder)  { FactoryBot.create :user                   }
 
     let(:application_token) { FactoryBot.create :doorkeeper_access_token, resource_owner_id: nil }
     let(:application_user)  { OpenStax::Api::ApiUser.new(application_token, ->(*) { nil }) }

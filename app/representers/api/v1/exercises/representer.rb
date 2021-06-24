@@ -31,6 +31,12 @@ module Api::V1::Exercises
              readable: true,
              if: CACHED_PUBLIC_FIELDS
 
+    property :context,
+             type: String,
+             writeable: true,
+             readable: false,
+             if: CACHED_PUBLIC_FIELDS
+
     property :stimulus,
              as: :stimulus_html,
              type: String,
