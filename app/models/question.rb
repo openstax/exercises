@@ -1,5 +1,4 @@
 class Question < ApplicationRecord
-
   attr_accessor :temp_id
 
   user_html :stimulus
@@ -23,4 +22,7 @@ class Question < ApplicationRecord
            foreign_key: :parent_question_id, dependent: :destroy,
            inverse_of: :parent_question
 
+  def flattened_content
+    ([ stimulus ] + stems.map(&:flattened_content)).join("\n")
+  end
 end

@@ -85,6 +85,10 @@ Rails.application.routes.draw do
         get :collaborators
       end
     end
+
+    resources :exercises, only: [] do
+      get :invalid, on: :collection
+    end
   end
 
   namespace :dev do
