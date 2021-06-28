@@ -34,7 +34,7 @@ module Api::V1::Exercises
     property :context,
              type: String,
              writeable: true,
-             readable: false,
+             readable: true,
              if: CACHED_PUBLIC_FIELDS
 
     property :stimulus,
