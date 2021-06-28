@@ -1,12 +1,12 @@
 module Admin
   class ExercisesController < BaseController
     def invalid
-      invalid_exercise_ids = FindInvalidExercises[].map(&:id)
-      if invalid_exercise_ids.empty?
+      invalid_exercise_uids = FindInvalidExercises[].map(&:uid)
+      if invalid_exercise_uids.empty?
         flash[:notice] = 'No invalid exercises found'
         redirect_to root_url
       else
-        redirect_to "/exercises/search?q=id:\"#{invalid_exercise_ids.join(',')}\""
+        redirect_to "/exercises/search?q=uid:\"#{invalid_exercise_uids.join(',')}\""
       end
     end
   end

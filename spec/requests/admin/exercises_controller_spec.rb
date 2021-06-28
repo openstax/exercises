@@ -63,7 +63,7 @@ RSpec.describe Admin::ExercisesController, type: :request do
         it 'redirects to the search page listing all invalid exercises' do
           get invalid_admin_exercises_url
           expect(response).to redirect_to(
-            "/exercises/search?q=id:\"#{invalid_exercises.map(&:id).join(',')}\""
+            "/exercises/search?q=uid:\"#{invalid_exercises.map(&:uid).join(',')}\""
           )
         end
       end
