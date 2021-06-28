@@ -33,7 +33,7 @@ module Api::V1::Exercises
 
     property :context,
              type: String,
-             writeable: true,
+             writeable: false,
              readable: true,
              if: CACHED_PUBLIC_FIELDS
 
