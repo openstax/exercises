@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_07_163430) do
+ActiveRecord::Schema.define(version: 2021_06_24_145906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -190,6 +190,7 @@ ActiveRecord::Schema.define(version: 2021_06_07_163430) do
     t.string "a15k_identifier"
     t.integer "a15k_version"
     t.boolean "release_to_a15k"
+    t.text "context"
     t.index ["title"], name: "index_exercises_on_title"
     t.index ["vocab_term_id"], name: "index_exercises_on_vocab_term_id"
   end
