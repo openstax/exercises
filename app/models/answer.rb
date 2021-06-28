@@ -1,5 +1,4 @@
 class Answer < ApplicationRecord
-
   attr_accessor :temp_id
 
   user_html :content
@@ -11,5 +10,4 @@ class Answer < ApplicationRecord
   has_many :combo_choice_answers, dependent: :destroy
 
   validates :content, presence: true
-
 end

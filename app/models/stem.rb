@@ -1,5 +1,4 @@
 class Stem < ApplicationRecord
-
   user_html :content
   stylable
 
@@ -14,4 +13,7 @@ class Stem < ApplicationRecord
   validates :stylings, presence: true
   validates :content, presence: true
 
+  def flattened_content
+    ([ content ] + stem_answers.map { |sa| sa.answer.content } ).join("\n")
+  end
 end

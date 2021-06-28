@@ -6,7 +6,7 @@ RSpec.describe Admin::ConsoleController, type: :request do
 
   context 'for anonymous' do
     context 'GET /admin' do
-      it 'redirects to the login page' do
+      it 'returns 403 Forbidden' do
         get admin_url, xhr: true
         expect(response).to have_http_status(:forbidden)
       end

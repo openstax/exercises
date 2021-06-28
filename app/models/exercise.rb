@@ -137,6 +137,10 @@ class Exercise < ApplicationRecord
     attrs == other_attrs
   end
 
+  def flattened_content
+    ([ context, stimulus ] + questions.map(&:flattened_content)).join("\n")
+  end
+
   def new_version
     nv = deep_clone include: NEW_VERSION_DUPED_ASSOCIATIONS, use_dictionary: true
     nv.publication.uuid = nil
