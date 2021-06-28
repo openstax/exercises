@@ -6,7 +6,7 @@ module Admin
         flash[:notice] = 'No invalid exercises found'
         redirect_to root_url
       else
-        redirect_to "/exercises/search?q=uid:\"#{invalid_exercise_uids.join(',')}\""
+        redirect_to "/exercises/search?q=uid:#{invalid_exercise_uids.join(',')}"
       end
     end
   end
