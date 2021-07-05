@@ -7,14 +7,16 @@ RSpec.describe Exercise, type: :model, vcr: VCR_OPTS do
 
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
-  it 'automatically sets the context based on cnxmod and cnxfeature tags' do
+  it 'automatically sets the context based on tags and rewrites image links' do
     exercise.tags = [
       'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61',
       'context-cnxfeature:fs-id2371798'
     ]
     exercise.save!
 
-    expect(exercise.context).to include '<img'
+    expect(exercise.context).to include(
+      '<img src="https://openstax.org/apps/archive/20210514.171726/resources/af928eb129c65a18bffdc32353f1ffeeaf081157"'
+    )
   end
 
   it 'can check for the presence of questions' do

@@ -65,11 +65,7 @@ RSpec.describe WebviewController, type: :request do
 
     context 'GET /dashboard' do
       it 'requires agreement to contracts' do
-        begin
         get dashboard_url
-      rescue Exception => e
-        debugger
-      end
         expect(response).to redirect_to(fine_print.new_contract_signature_url(contract))
       end
     end

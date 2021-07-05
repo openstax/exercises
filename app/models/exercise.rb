@@ -1,5 +1,4 @@
 class Exercise < ApplicationRecord
-
   EQUALITY_ASSOCIATIONS = [
     :logic,
     :tags,
@@ -97,34 +96,6 @@ class Exercise < ApplicationRecord
 
   before_validation :set_context
 
-  def set_context(archive_version: nil)
-    return unless context.nil?
-
-    tag_names = tags.map(&:name)
-    cnxfeature_tags = tag_names.filter { |name| name.starts_with? 'context-cnxfeature:' }
-    cnxmod_tags = tag_names.filter     { |name| name.starts_with? 'context-cnxmod:' }
-    return if cnxfeature_tags.empty? || cnxmod_tags.empty?
-
-    s3 = OpenStax::Content::S3.new
-    archive_version ||= s3.ls.last
-    archive = OpenStax::Content::Archive.new archive_version
-    cnxmod_tags.each do |cnxmod_tag|
-      page_uuid = cnxmod_tag.sub 'context-cnxmod:', ''
-      page = s3.find_page page_uuid, archive_version: archive_version
-      next if page.nil?
-
-      node = Nokogiri::HTML.parse archive.json(page)['content']
-      cnxfeature_tags.each do |cnxfeature_tag|
-        feature_id = cnxfeature_tag.sub 'context-cnxfeature:', ''
-        feature = node.at_css "##{feature_id}"
-        next if feature.nil?
-
-        self.context = feature.to_html
-        return
-      end
-    end
-  end
-
   def content_equals?(other_exercise)
     return false unless other_exercise.is_a? ActiveRecord::Base
 
@@ -190,4 +161,79 @@ class Exercise < ApplicationRecord
     throw(:abort)
   end
 
+  def rewrite_feature_link(link, webview_uri, archive)
+    begin
+      uri = Addressable::URI.parse link
+    rescue InvalidURIError
+      Rails.logger.warn { "Invalid url: \"#{link}\" in page: #{current_uri.to_s}" }
+      return link
+    end
+
+    if uri.absolute?
+      # Force absolute URLs to be https
+      uri.scheme = 'https'
+      return uri.to_s
+    end
+
+    # Fragment-only URLs (links to the same page)
+    if uri.path.blank?
+      if current_url.nil?
+        # Keep fragment-only URLs relative
+        return link
+      else
+        # Absolutize fragment-only URLs
+        uri.scheme = webview_uri.scheme
+        uri.host = webview_uri.host
+        uri.path = webview_uri.path
+        return uri.to_s
+      end
+    end
+
+    if uri.path.starts_with?('./')
+      # Link to another book/page
+      # The user might not have access to the book locally, so it's safer to send them to REX
+      archive.webview_uri_for uri
+    else
+      # Resource link or other unknown relative link
+      # Delegate to OpenStax::Content::Archive
+      archive.url_for link
+    end
+  end
+
+  def set_context(archive_version: nil)
+    return unless context.nil?
+
+    tag_names = tags.map(&:name)
+    cnxfeature_tags = tag_names.filter { |name| name.starts_with? 'context-cnxfeature:' }
+    cnxmod_tags = tag_names.filter     { |name| name.starts_with? 'context-cnxmod:' }
+    return if cnxfeature_tags.empty? || cnxmod_tags.empty?
+
+    s3 = OpenStax::Content::S3.new
+    archive_version ||= s3.ls.last
+    archive = OpenStax::Content::Archive.new archive_version
+    cnxmod_tags.each do |cnxmod_tag|
+      page_uuid = cnxmod_tag.sub 'context-cnxmod:', ''
+      page = s3.find_page page_uuid, archive_version: archive_version
+      next if page.nil?
+
+      node = Nokogiri::HTML.parse archive.json(page)['content']
+      cnxfeature_tags.each do |cnxfeature_tag|
+        feature_id = cnxfeature_tag.sub 'context-cnxfeature:', ''
+        feature = node.at_css "##{feature_id}"
+        next if feature.nil?
+
+        webview_uri = archive.webview_uri_for page
+
+        [ 'src', 'href' ].each do |attribute_name|
+          feature.css("[#{attribute_name}]").each do |link|
+            attribute = link.attributes[attribute_name]
+            attribute.value = rewrite_feature_link attribute.value, webview_uri, archive
+          end
+        end
+
+        self.context = feature.to_html
+        return
+      end
+    end
+  end
 end
