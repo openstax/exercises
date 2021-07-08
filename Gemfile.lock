@@ -172,7 +172,7 @@ GEM
     faraday-http-cache (2.2.0)
       faraday (>= 0.8)
     faraday-net_http (1.0.1)
-    ffi (1.14.2)
+    ffi (1.15.3)
     fine_print (6.0.0)
       action_interceptor
       jquery-rails
