@@ -18,12 +18,14 @@ jobs:
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7
+      # Get OS version - https://github.com/actions/cache/issues/543
+      - run: echo "OS_VERSION=`lsb_release -sr`" >> $GITHUB_ENV
       - uses: actions/cache@v2
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gems-pr-
+            ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-
       - name: Build assets
         run: |
           gem install bundler
