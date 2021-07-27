@@ -201,6 +201,8 @@ class Exercise < ApplicationRecord
   end
 
   def set_context(archive_version: nil)
+    return if context_changed?
+
     tag_names = tags.map(&:name)
     cnxfeature_tags = tag_names.filter { |name| name.starts_with? 'context-cnxfeature:' }
     cnxmod_tags = tag_names.filter     { |name| name.starts_with? 'context-cnxmod:' }
