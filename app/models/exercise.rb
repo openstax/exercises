@@ -165,7 +165,7 @@ class Exercise < ApplicationRecord
     begin
       uri = Addressable::URI.parse link
     rescue InvalidURIError
-      Rails.logger.warn { "Invalid url: \"#{link}\" in page: #{current_uri.to_s}" }
+      Rails.logger.warn { "Invalid url: \"#{link}\" in page: #{webview_uri.to_s}" }
       return link
     end
 
@@ -177,14 +177,14 @@ class Exercise < ApplicationRecord
 
     # Fragment-only URLs (links to the same page)
     if uri.path.blank?
-      if current_url.nil?
+      if webview_uri.nil?
         # Keep fragment-only URLs relative
         return link
       else
         # Absolutize fragment-only URLs
-        uri.scheme = webview_uri.scheme
-        uri.host = webview_uri.host
         uri.path = webview_uri.path
+        uri.host = webview_uri.host
+        uri.scheme = webview_uri.scheme
         return uri.to_s
       end
     end
@@ -201,12 +201,15 @@ class Exercise < ApplicationRecord
   end
 
   def set_context(archive_version: nil)
-    return unless context.nil?
+    return if context_changed?
 
     tag_names = tags.map(&:name)
     cnxfeature_tags = tag_names.filter { |name| name.starts_with? 'context-cnxfeature:' }
     cnxmod_tags = tag_names.filter     { |name| name.starts_with? 'context-cnxmod:' }
-    return if cnxfeature_tags.empty? || cnxmod_tags.empty?
+    if cnxfeature_tags.empty? || cnxmod_tags.empty?
+      self.context = nil
+      return
+    end
 
     s3 = OpenStax::Content::S3.new
     archive_version ||= s3.ls.last
@@ -235,5 +238,8 @@ class Exercise < ApplicationRecord
         return
       end
     end
+
+    self.context = nil
+    return
   end
 end
