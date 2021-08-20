@@ -213,9 +213,6 @@ group :test do
   # Records HTTP requests
   gem 'vcr'
 
-  # Code Climate integration
-  gem "codeclimate-test-reporter", require: false
-
   # Codecov integration
   gem 'codecov', require: false
 
