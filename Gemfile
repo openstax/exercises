@@ -17,9 +17,10 @@ gem 'bootstrap-sass'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 
-# Use Uglifier as compressor for JavaScript assets
+# Use Uglifier as compressor for JS assets
 gem 'uglifier', '>= 1.3.0'
 
+# V8 bindings to precompile JS assets
 gem 'mini_racer'
 
 # Use jquery as the JavaScript library
@@ -220,9 +221,11 @@ group :test do
 end
 
 group :production do
-  # Used to fetch secrets from the AWS parameter store and secrets manager
-  gem 'aws-sdk-ssm', require: false
-  gem 'aws-sdk-secretsmanager', require: false
+  # Used to backup the database before migrations
+  gem 'aws-sdk-rds', require: false
+
+  # Used to record a lifecycle action heartbeat after creating the RDS snapshot before migrating
+  gem 'aws-sdk-autoscaling', require: false
 
   # Fog AWS
   gem 'fog-aws'
