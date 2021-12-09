@@ -98,15 +98,12 @@ GEM
     aws-sdk-kms (1.42.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-rds (1.131.0)
+      aws-sdk-core (~> 3, >= 3.122.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.88.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sdk-kms (~> 1)
-      aws-sigv4 (~> 1.1)
-    aws-sdk-secretsmanager (1.44.0)
-      aws-sdk-core (~> 3, >= 3.112.0)
-      aws-sigv4 (~> 1.1)
-    aws-sdk-ssm (1.104.0)
-      aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.4.0)
       aws-eventstream (~> 1, >= 1.0.2)
@@ -540,9 +537,9 @@ DEPENDENCIES
   addressable
   apipie-rails
   autoprefixer-rails
+  aws-sdk-autoscaling
+  aws-sdk-rds
   aws-sdk-s3
-  aws-sdk-secretsmanager
-  aws-sdk-ssm
   bootsnap (~> 1.4.0)
   bootstrap-sass
   brakeman
