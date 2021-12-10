@@ -19,6 +19,8 @@ module Api::V1
       OSU::AccessPolicy.require_action_allowed! :index, current_api_user, OpenStax::Content::Book
 
       books = abl.approved_books.flat_map do |approved_book|
+        next [] if approved_book[:books].nil?
+
         approved_book[:books].map do |book|
           uuid = book[:uuid]
           versions = available_book_versions_by_uuid[uuid]
