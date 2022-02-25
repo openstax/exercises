@@ -18,16 +18,8 @@ module Api::V1
     def index
       OSU::AccessPolicy.require_action_allowed! :index, current_api_user, OpenStax::Content::Book
 
-      books = abl.approved_books.flat_map do |approved_book|
-        next [] if approved_book[:books].nil?
-
-        approved_book[:books].map do |book|
-          uuid = book[:uuid]
-          versions = available_book_versions_by_uuid[uuid]
-          next if versions.empty?
-
-          { uuid: uuid, versions: versions, title: book[:slug].titleize }
-        end.compact
+      books = abl.approved_books(archive: archive).map do |book|
+        { uuid: book.uuid, version: book.version, title: book.slug.titleize }
       end
 
       render json: books
@@ -41,16 +33,18 @@ module Api::V1
     description 'Returns a list of pages in some book version (default: latest version)'
     param :archive_version, String, desc: 'Archive code pipeline version (default: latest version)'
     param :uuid, String, desc: 'Book uuid'
-    param :version, String, desc: 'Book version (defaults to latest version)'
+    param :version, String, desc: 'Book version (defaults to latest version in S3 bucket)'
     def show
       OSU::AccessPolicy.require_action_allowed! :read, current_api_user, OpenStax::Content::Book
 
       uuid = params[:uuid]
       version = params[:version] || available_book_versions_by_uuid[uuid].last
 
-      render json: OpenStax::Content::Book.new(
-        archive_version: archive_version, uuid: uuid, version: version
-      ).tree['contents']
+      tree = OpenStax::Content::Book.new(
+        archive: archive, uuid: uuid, version: version
+      ).tree['contents'] rescue []
+
+      render json: tree
     end
 
 
@@ -72,6 +66,10 @@ module Api::V1
 
     def archive_version
       @archive_version ||= params[:archive_version] || s3.ls.last
+    end
+
+    def archive
+      @archive ||= OpenStax::Content::Archive.new(version: archive_version)
     end
 
     def available_book_versions_by_uuid

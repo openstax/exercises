@@ -54,7 +54,7 @@ gem 'image_processing'
 gem 'aws-sdk-s3'
 
 # Fetch and parse OpenStax book content
-gem 'openstax_content'
+gem 'openstax_content', path: '../content-ruby'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities'
