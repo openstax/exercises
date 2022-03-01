@@ -181,7 +181,7 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
-    ffi (1.15.3)
+    ffi (1.15.5)
     fine_print (6.0.0)
       action_interceptor
       jquery-rails
@@ -215,7 +215,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
-    image_processing (1.12.1)
+    image_processing (1.12.2)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
     ipaddress (0.8.3)
@@ -452,8 +452,8 @@ GEM
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.11.0)
-    ruby-vips (2.0.17)
-      ffi (~> 1.9)
+    ruby-vips (2.1.4)
+      ffi (~> 1.12)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.0)
     sanitize (6.0.0)
