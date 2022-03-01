@@ -213,7 +213,7 @@ class Exercise < ApplicationRecord
 
     s3 = OpenStax::Content::S3.new
     archive_version ||= s3.ls.last
-    archive = OpenStax::Content::Archive.new archive_version
+    archive = OpenStax::Content::Archive.new version: archive_version
     cnxmod_tags.each do |cnxmod_tag|
       page_uuid = cnxmod_tag.sub 'context-cnxmod:', ''
       page = s3.find_page page_uuid, archive_version: archive_version
