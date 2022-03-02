@@ -317,7 +317,7 @@ GEM
       roar
       roar-rails (>= 1)
       uber
-    openstax_content (0.2.0)
+    openstax_content (1.0.0)
       aws-sdk-s3
       faraday
       nokogiri
@@ -608,4 +608,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.2.19
+   2.3.7

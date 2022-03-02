@@ -13,494 +13,337 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
         [
           {
             "uuid" => "405335a3-7cff-4df2-a9ad-29062a4af261",
-            "versions" => [
-              "8.46"
-            ],
+            "version" => "8.46",
             "title" => "College Physics Courseware"
           },
           {
             "uuid" => "36004586-651c-4ded-af87-203aca22d946",
-            "versions" => [
-              "14.3"
-            ],
+            "version" => "14.3",
             "title" => "Life Liberty And Pursuit Happiness"
           },
           {
+            "uuid"=>"728df0bb-e07f-489d-91e3-4734a5932f92",
+            "version"=>"1.17",
+            "title"=>"Psychologia"
+          },
+          {
+            "uuid"=>"4eaa8f03-88a8-485a-a777-dd3602f6c13e",
+            "version"=>"4.14",
+            "title"=>"Fizyka Dla Szkół Wyższych Tom 1"
+          },
+          {
+            "uuid"=>"16ab5b96-4598-45f9-993c-b8d78d82b0c6",
+            "version"=>"5.1",
+            "title"=>"Fizyka Dla Szkół Wyższych Tom 2"
+          },
+          {
+            "uuid"=>"bb62933e-f20a-4ffc-90aa-97b36c296c3e",
+            "version"=>"6.23",
+            "title"=>"Fizyka Dla Szkół Wyższych Tom 3"
+          },
+          {
             "uuid" => "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
-            "versions" => [
-              "31.2",
-              "33.3"
-            ],
+            "version" => "33.3",
             "title" => "Algebra And Trigonometry"
           },
           {
             "uuid" => "5bcc0e59-7345-421d-8507-a1e4608685e8",
-            "versions" => [
-              "19.1"
-            ],
+            "version" => "19.1",
             "title" => "American Government"
           },
           {
             "uuid" => "9d8df601-4f12-4ac1-8224-b450bf739e5f",
-            "versions" => [
-              "6.5",
-              "6.7"
-            ],
+            "version" => "6.7",
             "title" => "American Government 2e"
           },
           {
             "uuid" => "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
-            "versions" => [
-              "22.7",
-              "22.8"
-            ],
+            "version" => "22.8",
             "title" => "Anatomy And Physiology"
           },
           {
             "uuid" => "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
-            "versions" => [
-              "22.20",
-              "22.49"
-            ],
+            "version" => "22.49",
             "title" => "Astronomy"
           },
           {
             "uuid" => "185cbf87-c72e-48f5-b51e-f14f21b5eabd",
-            "versions" => [
-              "14.1"
-            ],
+            "version" => "14.1",
             "title" => "Biology"
           },
           {
             "uuid" => "8d50a0af-948b-4204-a71d-4826cba765b8",
-            "versions" => [
-              "16.174",
-              "16.179"
-            ],
+            "version" => "16.179",
             "title" => "Biology 2e"
           },
           {
             "uuid" => "6c322e32-9fb0-4c4d-a1d7-20c95c5c7af2",
-            "versions" => [
-              "26.6",
-              "26.26"
-            ],
+            "version" => "26.26",
             "title" => "Biology Ap Courses"
           },
           {
             "uuid" => "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
-            "versions" => [
-              "5.14"
-            ],
+            "version" => "5.14",
             "title" => "Business Ethics"
           },
           {
             "uuid" => "464a3fba-68c1-426a-99f9-597e739dc911",
-            "versions" => [
-              "8.8",
-              "8.9"
-            ],
+            "version" => "8.9",
             "title" => "Business Law I Essentials"
           },
           {
             "uuid" => "8b89d172-2927-466f-8661-01abc7ccdba4",
-            "versions" => [
-              "22.1",
-              "22.2"
-            ],
+            "version" => "22.2",
             "title" => "Calculus Volume 1"
           },
           {
             "uuid" => "1d39a348-071f-4537-85b6-c98912458c3c",
-            "versions" => [
-              "15.1",
-              "22.1"
-            ],
+            "version" => "22.1",
             "title" => "Calculus Volume 2"
           },
           {
             "uuid" => "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
-            "versions" => [
-              "15.1",
-              "22.1"
-            ],
+            "version" => "22.1",
             "title" => "Calculus Volume 3"
           },
           {
             "uuid" => "85abf193-2bd2-4908-8563-90b8a7ac8df6",
-            "versions" => [
-              "13.1"
-            ],
+            "version" => "13.1",
             "title" => "Chemistry"
           },
           {
             "uuid" => "7fccc9cf-9b71-44f6-800b-f9457fd64335",
-            "versions" => [
-              "18.26",
-              "18.36"
-            ],
+            "version" => "18.36",
             "title" => "Chemistry 2e"
           },
           {
             "uuid" => "d9b85ee6-c57f-4861-8208-5ddf261e9c5f",
-            "versions" => [
-              "14.26",
-              "14.36"
-            ],
+            "version" => "14.36",
             "title" => "Chemistry Atoms First 2e"
           },
           {
             "uuid" => "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
-            "versions" => [
-              "10.1"
-            ],
+            "version" => "10.1",
             "title" => "Chemistry Atoms First"
           },
           {
             "uuid" => "9b08c294-057f-4201-9f48-5d6ad992740d",
-            "versions" => [
-              "29.3",
-              "31.1",
-              "32.2"
-            ],
+            "version" => "32.2",
             "title" => "College Algebra"
           },
           {
             "uuid" => "507feb1e-cfff-4b54-bc07-d52636cecfe3",
-            "versions" => [
-              "9.12",
-              "10.2"
-            ],
+            "version" => "10.2",
             "title" => "College Algebra Corequisite Support"
           },
           {
             "uuid" => "031da8d3-b525-429c-80cf-6c8ed997733a",
-            "versions" => [
-              "23.16",
-              "23.18"
-            ],
+            "version" => "23.18",
             "title" => "College Physics"
           },
           {
             "uuid" => "8d04a686-d5e8-4798-a27d-c608e4d0e187",
-            "versions" => [
-              "34.4",
-              "35.2"
-            ],
+            "version" => "35.2",
             "title" => "College Physics Ap Courses"
           },
           {
             "uuid" => "e8668a14-9a7d-4d74-b58c-3681f8351224",
-            "versions" => [
-              "10.1",
-              "10.2"
-            ],
+            "version" => "10.2",
             "title" => "College Success"
           },
           {
             "uuid" => "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
-            "versions" => [
-              "17.18",
-              "17.23"
-            ],
+            "version" => "17.23",
             "title" => "Concepts Biology"
           },
           {
             "uuid" => "0889907c-f0ef-496a-bcb8-2a5bb121717f",
-            "versions" => [
-              "9.2",
-              "9.3"
-            ],
+            "version" => "9.3",
             "title" => "Elementary Algebra"
           },
           {
             "uuid" => "55931856-c627-418b-a56f-1dd0007683a8",
-            "versions" => [
-              "9.3"
-            ],
+            "version" => "9.3",
             "title" => "Elementary Algebra 2e"
           },
           {
             "uuid" => "d380510e-6145-4625-b19a-4fa68204b6b1",
-            "versions" => [
-              "11.1",
-              "12.7"
-            ],
+            "version" => "12.7",
             "title" => "Entrepreneurship"
           },
           {
             "uuid" => "02776133-d49d-49cb-bfaa-67c7f61b25a1",
-            "versions" => [
-              "14.1"
-            ],
+            "version" => "14.1",
             "title" => "Intermediate Algebra"
           },
           {
             "uuid" => "4664c267-cd62-4a99-8b28-1cb9b3aee347",
-            "versions" => [
-              "6.5",
-              "7.2"
-            ],
+            "version" => "7.2",
             "title" => "Intermediate Algebra 2e"
           },
           {
             "uuid" => "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
-            "versions" => [
-              "9.7",
-              "9.8"
-            ],
+            "version" => "9.8",
             "title" => "Introduction Business"
           },
           {
             "uuid" => "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
-            "versions" => [
-              "6.1",
-              "6.2",
-              "6.3",
-              "6.21"
-            ],
+            "version" => "6.21",
             "title" => "Introduction Intellectual Property"
           },
           {
             "uuid" => "afe4332a-c97f-4fc4-be27-4e4d384a32d8",
-            "versions" => [
-              "18.1"
-            ],
+            "version" => "18.1",
             "title" => "Introduction Sociology"
           },
           {
             "uuid" => "02040312-72c8-441e-a685-20e9333f3e1d",
-            "versions" => [
-              "14.4",
-              "14.5",
-              "15.7",
-              "15.10"
-            ],
+            "version" => "15.10",
             "title" => "Introduction Sociology 2e"
           },
           {
             "uuid" => "746f171e-0d6a-4ef2-b69d-367880872f4a",
-            "versions" => [
-              "1.3",
-              "3.7",
-              "3.10",
-              "3.17"
-            ],
+            "version" => "3.19",
             "title" => "Introduction To Sociology 3e"
           },
           {
             "uuid" => "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
-            "versions" => [
-              "38.22",
-              "38.24"
-            ],
+            "version" => "38.24",
             "title" => "Introductory Business Statistics"
           },
           {
             "uuid" => "30189442-6998-4686-ac05-ed152b91b9de",
-            "versions" => [
-              "25.23"
-            ],
+            "version" => "25.23",
             "title" => "Introductory Statistics"
           },
           {
             "uuid" => "e42bd376-624b-4c0f-972f-e0c57998e765",
-            "versions" => [
-              "9.12",
-              "9.13"
-            ],
+            "version" => "9.13",
             "title" => "Microbiology"
           },
           {
             "uuid" => "2d941ab9-ac5b-4eb8-b21c-965d36a4f296",
-            "versions" => [
-              "9.1",
-              "9.8"
-            ],
+            "version" => "9.8",
             "title" => "Organizational Behavior"
           },
           {
             "uuid" => "cce64fde-f448-43b8-ae88-27705cceb0da",
-            "versions" => [
-              "14.7",
-              "14.21"
-            ],
+            "version" => "14.21",
             "title" => "Physics"
           },
           {
             "uuid" => "caa57dab-41c7-455e-bd6f-f443cda5519c",
-            "versions" => [
-              "21.1"
-            ],
+            "version" => "21.1",
             "title" => "Prealgebra"
           },
           {
             "uuid" => "f0fa90be-fca8-43c9-9aad-715c0a2cee2b",
-            "versions" => [
-              "10.5",
-              "11.2"
-            ],
+            "version" => "11.2",
             "title" => "Prealgebra 2e"
           },
           {
             "uuid" => "fd53eae1-fa23-47c7-bb1b-972349835c3c",
-            "versions" => [
-              "36.3"
-            ],
+            "version" => "36.3",
             "title" => "Precalculus"
           },
           {
             "uuid" => "9ab4ba6d-1e48-486d-a2de-38ae1617ca84",
-            "versions" => [
-              "7.7",
-              "7.8"
-            ],
+            "version" => "7.8",
             "title" => "Principles Financial Accounting"
           },
           {
             "uuid" => "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
-            "versions" => [
-              "17.5",
-              "18.1"
-            ],
+            "version" => "18.1",
             "title" => "Principles Managerial Accounting"
           },
           {
             "uuid" => "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
-            "versions" => [
-              "12.4"
-            ],
+            "version" => "12.4",
             "title" => "Principles Economics"
           },
           {
             "uuid" => "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
-            "versions" => [
-              "10.7",
-              "12.4"
-            ],
+            "version" => "12.4",
             "title" => "Principles Economics 2e"
           },
           {
             "uuid" => "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
-            "versions" => [
-              "13.2"
-            ],
+            "version" => "13.2",
             "title" => "Principles Macroeconomics"
           },
           {
             "uuid" => "27f59064-990e-48f1-b604-5188b9086c29",
-            "versions" => [
-              "15.1",
-              "16.1"
-            ],
+            "version" => "16.1",
             "title" => "Principles Macroeconomics 2e"
           },
           {
             "uuid" => "33076054-ec1d-4417-8824-ce354efe42d0",
-            "versions" => [
-              "4.2"
-            ],
+            "version" => "4.2",
             "title" => "Principles Macroeconomics Ap Courses"
           },
           {
             "uuid" => "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
-            "versions" => [
-              "14.1",
-              "15.1"
-            ],
+            "version" => "15.1",
             "title" => "Principles Macroeconomics Ap Courses 2e"
           },
           {
             "uuid" => "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
-            "versions" => [
-              "12.1",
-              "12.8"
-            ],
+            "version" => "12.8",
             "title" => "Principles Management"
           },
           {
             "uuid" => "ea2f225e-6063-41ca-bcd8-36482e15ef65",
-            "versions" => [
-              "13.3"
-            ],
+            "version" => "13.3",
             "title" => "Principles Microeconomics"
           },
           {
             "uuid" => "5c09762c-b540-47d3-9541-dda1f44f16e5",
-            "versions" => [
-              "18.1",
-              "19.1"
-            ],
+            "version" => "19.1",
             "title" => "Principles Microeconomics 2e"
           },
           {
             "uuid" => "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
-            "versions" => [
-              "7.1"
-            ],
+            "version" => "7.1",
             "title" => "Principles Microeconomics Ap Courses"
           },
           {
             "uuid" => "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
-            "versions" => [
-              "14.1",
-              "15.1"
-            ],
+            "version" => "15.1",
             "title" => "Principles Microeconomics Ap Courses 2e"
           },
           {
             "uuid" => "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
-            "versions" => [
-              "13.2"
-            ],
+            "version" => "13.2",
             "title" => "Psychology"
           },
           {
             "uuid" => "06aba565-9432-40f6-97ee-b8a361f118a8",
-            "versions" => [
-              "4.15",
-              "4.18"
-            ],
+            "version" => "4.18",
             "title" => "Psychology 2e"
           },
           {
             "uuid" => "394a1101-fd8f-4875-84fa-55f15b06ba66",
-            "versions" => [
-              "8.13",
-              "8.19"
-            ],
+            "version" => "8.19",
             "title" => "Statistics"
           },
           {
             "uuid" => "a7ba2fb8-8925-4987-b182-5f4429d48daa",
-            "versions" => [
-              "10.18",
-              "10.21"
-            ],
+            "version" => "10.21",
             "title" => "Us History"
           },
           {
             "uuid" => "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
-            "versions" => [
-              "21.4",
-              "22.3"
-            ],
+            "version" => "22.3",
             "title" => "University Physics Volume 1"
           },
           {
             "uuid" => "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
-            "versions" => [
-              "24.2",
-              "27.1"
-            ],
+            "version" => "27.1",
             "title" => "University Physics Volume 2"
           },
           {
             "uuid" => "af275420-6050-4707-995c-57b9cc13c358",
-            "versions" => [
-              "20.1",
-              "22.5"
-            ],
+            "version" => "22.5",
             "title" => "University Physics Volume 3"
           }
         ]
@@ -515,513 +358,337 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
         [
           {
             "uuid" => "405335a3-7cff-4df2-a9ad-29062a4af261",
-            "versions" => [
-              "8.46"
-            ],
+            "version" => "8.46",
             "title" => "College Physics Courseware"
           },
           {
-            "uuid" => "4eaa8f03-88a8-485a-a777-dd3602f6c13e",
-            "versions" => [
-              "4.14"
-            ],
-            "title" => "Fizyka Dla Szkół Wyższych Tom 1"
+            "uuid" => "36004586-651c-4ded-af87-203aca22d946",
+            "version" => "14.3",
+            "title" => "Life Liberty And Pursuit Happiness"
           },
           {
-            "uuid" => "16ab5b96-4598-45f9-993c-b8d78d82b0c6",
-            "versions" => [
-              "5.1"
-            ],
-            "title" => "Fizyka Dla Szkół Wyższych Tom 2"
+            "uuid"=>"728df0bb-e07f-489d-91e3-4734a5932f92",
+            "version"=>"1.17",
+            "title"=>"Psychologia"
           },
           {
-            "uuid" => "bb62933e-f20a-4ffc-90aa-97b36c296c3e",
-            "versions" => [
-              "6.23"
-            ],
-            "title" => "Fizyka Dla Szkół Wyższych Tom 3"
+            "uuid"=>"4eaa8f03-88a8-485a-a777-dd3602f6c13e",
+            "version"=>"4.14",
+            "title"=>"Fizyka Dla Szkół Wyższych Tom 1"
+          },
+          {
+            "uuid"=>"16ab5b96-4598-45f9-993c-b8d78d82b0c6",
+            "version"=>"5.1",
+            "title"=>"Fizyka Dla Szkół Wyższych Tom 2"
+          },
+          {
+            "uuid"=>"bb62933e-f20a-4ffc-90aa-97b36c296c3e",
+            "version"=>"6.23",
+            "title"=>"Fizyka Dla Szkół Wyższych Tom 3"
           },
           {
             "uuid" => "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
-            "versions" => [
-              "31.2",
-              "32.2",
-              "33.3"
-            ],
+            "version" => "33.3",
             "title" => "Algebra And Trigonometry"
           },
           {
             "uuid" => "5bcc0e59-7345-421d-8507-a1e4608685e8",
-            "versions" => [
-              "19.1"
-            ],
+            "version" => "19.1",
             "title" => "American Government"
           },
           {
             "uuid" => "9d8df601-4f12-4ac1-8224-b450bf739e5f",
-            "versions" => [
-              "6.5",
-              "6.7"
-            ],
+            "version" => "6.7",
             "title" => "American Government 2e"
           },
           {
             "uuid" => "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
-            "versions" => [
-              "22.7",
-              "22.8"
-            ],
+            "version" => "22.8",
             "title" => "Anatomy And Physiology"
           },
           {
             "uuid" => "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
-            "versions" => [
-              "22.20",
-              "22.49"
-            ],
+            "version" => "22.49",
             "title" => "Astronomy"
           },
           {
             "uuid" => "185cbf87-c72e-48f5-b51e-f14f21b5eabd",
-            "versions" => [
-              "14.1"
-            ],
+            "version" => "14.1",
             "title" => "Biology"
           },
           {
             "uuid" => "8d50a0af-948b-4204-a71d-4826cba765b8",
-            "versions" => [
-              "16.174",
-              "16.179"
-            ],
+            "version" => "16.179",
             "title" => "Biology 2e"
           },
           {
             "uuid" => "6c322e32-9fb0-4c4d-a1d7-20c95c5c7af2",
-            "versions" => [
-              "26.6",
-              "26.26"
-            ],
+            "version" => "26.26",
             "title" => "Biology Ap Courses"
           },
           {
             "uuid" => "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
-            "versions" => [
-              "5.14"
-            ],
+            "version" => "5.14",
             "title" => "Business Ethics"
           },
           {
             "uuid" => "464a3fba-68c1-426a-99f9-597e739dc911",
-            "versions" => [
-              "8.8",
-              "8.9"
-            ],
+            "version" => "8.9",
             "title" => "Business Law I Essentials"
           },
           {
             "uuid" => "8b89d172-2927-466f-8661-01abc7ccdba4",
-            "versions" => [
-              "22.1",
-              "22.2"
-            ],
+            "version" => "22.2",
             "title" => "Calculus Volume 1"
           },
           {
             "uuid" => "1d39a348-071f-4537-85b6-c98912458c3c",
-            "versions" => [
-              "15.1",
-              "22.1"
-            ],
+            "version" => "22.1",
             "title" => "Calculus Volume 2"
           },
           {
             "uuid" => "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
-            "versions" => [
-              "15.1",
-              "22.1"
-            ],
+            "version" => "22.1",
             "title" => "Calculus Volume 3"
           },
           {
             "uuid" => "85abf193-2bd2-4908-8563-90b8a7ac8df6",
-            "versions" => [
-              "13.1"
-            ],
+            "version" => "13.1",
             "title" => "Chemistry"
           },
           {
             "uuid" => "7fccc9cf-9b71-44f6-800b-f9457fd64335",
-            "versions" => [
-              "18.26",
-              "18.36"
-            ],
+            "version" => "18.36",
             "title" => "Chemistry 2e"
           },
           {
             "uuid" => "d9b85ee6-c57f-4861-8208-5ddf261e9c5f",
-            "versions" => [
-              "14.26",
-              "14.36"
-            ],
+            "version" => "14.36",
             "title" => "Chemistry Atoms First 2e"
           },
           {
             "uuid" => "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
-            "versions" => [
-              "10.1"
-            ],
+            "version" => "10.1",
             "title" => "Chemistry Atoms First"
           },
           {
             "uuid" => "9b08c294-057f-4201-9f48-5d6ad992740d",
-            "versions" => [
-              "29.3",
-              "31.1",
-              "32.2"
-            ],
+            "version" => "32.2",
             "title" => "College Algebra"
           },
           {
             "uuid" => "507feb1e-cfff-4b54-bc07-d52636cecfe3",
-            "versions" => [
-              "9.12",
-              "10.2"
-            ],
+            "version" => "10.2",
             "title" => "College Algebra Corequisite Support"
           },
           {
             "uuid" => "031da8d3-b525-429c-80cf-6c8ed997733a",
-            "versions" => [
-              "23.16",
-              "23.18"
-            ],
+            "version" => "23.18",
             "title" => "College Physics"
           },
           {
             "uuid" => "8d04a686-d5e8-4798-a27d-c608e4d0e187",
-            "versions" => [
-              "34.4",
-              "35.2"
-            ],
+            "version" => "35.2",
             "title" => "College Physics Ap Courses"
           },
           {
             "uuid" => "e8668a14-9a7d-4d74-b58c-3681f8351224",
-            "versions" => [
-              "10.1",
-              "10.2"
-            ],
+            "version" => "10.2",
             "title" => "College Success"
           },
           {
             "uuid" => "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
-            "versions" => [
-              "17.18",
-              "17.23"
-            ],
+            "version" => "17.23",
             "title" => "Concepts Biology"
           },
           {
             "uuid" => "0889907c-f0ef-496a-bcb8-2a5bb121717f",
-            "versions" => [
-              "9.2",
-              "9.3"
-            ],
+            "version" => "9.3",
             "title" => "Elementary Algebra"
           },
           {
             "uuid" => "55931856-c627-418b-a56f-1dd0007683a8",
-            "versions" => [
-              "8.5",
-              "9.3"
-            ],
+            "version" => "9.3",
             "title" => "Elementary Algebra 2e"
           },
           {
             "uuid" => "d380510e-6145-4625-b19a-4fa68204b6b1",
-            "versions" => [
-              "11.1",
-              "12.7"
-            ],
+            "version" => "12.7",
             "title" => "Entrepreneurship"
           },
           {
             "uuid" => "02776133-d49d-49cb-bfaa-67c7f61b25a1",
-            "versions" => [
-              "14.1"
-            ],
+            "version" => "14.1",
             "title" => "Intermediate Algebra"
           },
           {
             "uuid" => "4664c267-cd62-4a99-8b28-1cb9b3aee347",
-            "versions" => [
-              "6.5",
-              "7.2"
-            ],
+            "version" => "7.2",
             "title" => "Intermediate Algebra 2e"
           },
           {
             "uuid" => "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
-            "versions" => [
-              "9.7",
-              "9.8"
-            ],
+            "version" => "9.8",
             "title" => "Introduction Business"
           },
           {
             "uuid" => "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
-            "versions" => [
-              "6.1",
-              "6.2",
-              "6.3",
-              "6.21"
-            ],
+            "version" => "6.21",
             "title" => "Introduction Intellectual Property"
           },
           {
             "uuid" => "afe4332a-c97f-4fc4-be27-4e4d384a32d8",
-            "versions" => [
-              "18.1"
-            ],
+            "version" => "18.1",
             "title" => "Introduction Sociology"
           },
           {
             "uuid" => "02040312-72c8-441e-a685-20e9333f3e1d",
-            "versions" => [
-              "14.4",
-              "14.5",
-              "15.7",
-              "15.10"
-            ],
+            "version" => "15.10",
             "title" => "Introduction Sociology 2e"
           },
           {
             "uuid" => "746f171e-0d6a-4ef2-b69d-367880872f4a",
-            "versions" => [
-              "1.3",
-              "3.7",
-              "3.10",
-              "3.17"
-            ],
+            "version" => "3.19",
             "title" => "Introduction To Sociology 3e"
           },
           {
             "uuid" => "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
-            "versions" => [
-              "38.22",
-              "38.24"
-            ],
+            "version" => "38.24",
             "title" => "Introductory Business Statistics"
           },
           {
             "uuid" => "30189442-6998-4686-ac05-ed152b91b9de",
-            "versions" => [
-              "25.1",
-              "25.17",
-              "25.18",
-              "25.23"
-            ],
+            "version" => "25.23",
             "title" => "Introductory Statistics"
           },
           {
             "uuid" => "e42bd376-624b-4c0f-972f-e0c57998e765",
-            "versions" => [
-              "9.12",
-              "9.13"
-            ],
+            "version" => "9.13",
             "title" => "Microbiology"
           },
           {
             "uuid" => "2d941ab9-ac5b-4eb8-b21c-965d36a4f296",
-            "versions" => [
-              "9.1",
-              "9.8"
-            ],
+            "version" => "9.8",
             "title" => "Organizational Behavior"
           },
           {
             "uuid" => "cce64fde-f448-43b8-ae88-27705cceb0da",
-            "versions" => [
-              "14.7",
-              "14.21"
-            ],
+            "version" => "14.21",
             "title" => "Physics"
           },
           {
             "uuid" => "caa57dab-41c7-455e-bd6f-f443cda5519c",
-            "versions" => [
-              "21.1"
-            ],
+            "version" => "21.1",
             "title" => "Prealgebra"
           },
           {
             "uuid" => "f0fa90be-fca8-43c9-9aad-715c0a2cee2b",
-            "versions" => [
-              "10.5",
-              "11.2"
-            ],
+            "version" => "11.2",
             "title" => "Prealgebra 2e"
           },
           {
             "uuid" => "fd53eae1-fa23-47c7-bb1b-972349835c3c",
-            "versions" => [
-              "36.3"
-            ],
+            "version" => "36.3",
             "title" => "Precalculus"
           },
           {
             "uuid" => "9ab4ba6d-1e48-486d-a2de-38ae1617ca84",
-            "versions" => [
-              "7.7",
-              "7.8"
-            ],
+            "version" => "7.8",
             "title" => "Principles Financial Accounting"
           },
           {
             "uuid" => "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
-            "versions" => [
-              "17.5",
-              "18.1"
-            ],
+            "version" => "18.1",
             "title" => "Principles Managerial Accounting"
           },
           {
             "uuid" => "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
-            "versions" => [
-              "12.4"
-            ],
+            "version" => "12.4",
             "title" => "Principles Economics"
           },
           {
             "uuid" => "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
-            "versions" => [
-              "10.7",
-              "12.4"
-            ],
+            "version" => "12.4",
             "title" => "Principles Economics 2e"
           },
           {
             "uuid" => "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
-            "versions" => [
-              "13.2"
-            ],
+            "version" => "13.2",
             "title" => "Principles Macroeconomics"
           },
           {
             "uuid" => "27f59064-990e-48f1-b604-5188b9086c29",
-            "versions" => [
-              "15.1",
-              "16.1"
-            ],
+            "version" => "16.1",
             "title" => "Principles Macroeconomics 2e"
           },
           {
             "uuid" => "33076054-ec1d-4417-8824-ce354efe42d0",
-            "versions" => [
-              "4.2"
-            ],
+            "version" => "4.2",
             "title" => "Principles Macroeconomics Ap Courses"
           },
           {
             "uuid" => "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
-            "versions" => [
-              "14.1",
-              "15.1"
-            ],
+            "version" => "15.1",
             "title" => "Principles Macroeconomics Ap Courses 2e"
           },
           {
             "uuid" => "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
-            "versions" => [
-              "12.1",
-              "12.8"
-            ],
+            "version" => "12.8",
             "title" => "Principles Management"
           },
           {
             "uuid" => "ea2f225e-6063-41ca-bcd8-36482e15ef65",
-            "versions" => [
-              "13.3"
-            ],
+            "version" => "13.3",
             "title" => "Principles Microeconomics"
           },
           {
             "uuid" => "5c09762c-b540-47d3-9541-dda1f44f16e5",
-            "versions" => [
-              "18.1",
-              "19.1"
-            ],
+            "version" => "19.1",
             "title" => "Principles Microeconomics 2e"
           },
           {
             "uuid" => "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
-            "versions" => [
-              "7.1"
-            ],
+            "version" => "7.1",
             "title" => "Principles Microeconomics Ap Courses"
           },
           {
             "uuid" => "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
-            "versions" => [
-              "14.1",
-              "15.1"
-            ],
+            "version" => "15.1",
             "title" => "Principles Microeconomics Ap Courses 2e"
           },
           {
             "uuid" => "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
-            "versions" => [
-              "13.2"
-            ],
+            "version" => "13.2",
             "title" => "Psychology"
           },
           {
             "uuid" => "06aba565-9432-40f6-97ee-b8a361f118a8",
-            "versions" => [
-              "4.15",
-              "4.18"
-            ],
+            "version" => "4.18",
             "title" => "Psychology 2e"
           },
           {
             "uuid" => "394a1101-fd8f-4875-84fa-55f15b06ba66",
-            "versions" => [
-              "8.13",
-              "8.19"
-            ],
+            "version" => "8.19",
             "title" => "Statistics"
           },
           {
             "uuid" => "a7ba2fb8-8925-4987-b182-5f4429d48daa",
-            "versions" => [
-              "10.18",
-              "10.21"
-            ],
+            "version" => "10.21",
             "title" => "Us History"
           },
           {
             "uuid" => "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
-            "versions" => [
-              "21.4",
-              "22.3"
-            ],
+            "version" => "22.3",
             "title" => "University Physics Volume 1"
           },
           {
             "uuid" => "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
-            "versions" => [
-              "24.2",
-              "27.1"
-            ],
+            "version" => "27.1",
             "title" => "University Physics Volume 2"
           },
           {
             "uuid" => "af275420-6050-4707-995c-57b9cc13c358",
-            "versions" => [
-              "20.1",
-              "22.5"
-            ],
+            "version" => "22.5",
             "title" => "University Physics Volume 3"
           }
         ]
