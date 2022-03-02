@@ -1,3 +1,5 @@
+require 'content'
+
 class Exercise < ApplicationRecord
   EQUALITY_ASSOCIATIONS = [
     :logic,
@@ -94,7 +96,7 @@ class Exercise < ApplicationRecord
   scope :can_release_to_a15k, -> { where(release_to_a15k: true) }
   scope :not_released_to_a15k, -> { where(a15k_identifier: nil) }
 
-  before_validation :set_context
+  before_validation :set_context, :set_slug_tags
 
   def content_equals?(other_exercise)
     return false unless other_exercise.is_a? ActiveRecord::Base
@@ -241,5 +243,42 @@ class Exercise < ApplicationRecord
 
     self.context = nil
     return
+  end
+
+  def set_slug_tags
+    existing_book_slug_tags, other_tags = tags.partition do |tag|
+      tag.name.starts_with? 'book-slug:'
+    end
+    existing_page_slug_tags, non_slug_tags = other_tags.partition do |tag|
+      tag.name.starts_with? 'module-slug:'
+    end
+
+    page_uuids = non_slug_tags.map(&:name).filter do |name|
+      name.starts_with? 'context-cnxmod:'
+    end.map { |cnxmod| cnxmod.sub 'context-cnxmod:', '' }
+
+    desired_slug_hashes = page_uuids.flat_map { |page_uuid| Content.slugs_by_page_uuid[page_uuid] }
+
+    desired_book_slugs = desired_slug_hashes.map { |slug| "book-slug:#{slug[:book]}" }
+    desired_page_slugs = desired_slug_hashes.map do |slug|
+      "module-slug:#{slug[:book]}:#{slug[:page]}"
+    end
+
+    kept_book_slug_tags = existing_book_slug_tags.filter do |tag|
+      desired_book_slugs.include? tag.name
+    end
+    kept_page_slug_tags = existing_page_slug_tags.filter do |tag|
+      desired_page_slugs.include? tag.name
+    end
+
+    existing_book_slugs = existing_book_slug_tags.map(&:name)
+    existing_page_slugs = existing_page_slug_tags.map(&:name)
+
+    new_book_slugs = desired_book_slugs.reject { |slug| existing_book_slugs.include? slug }
+    new_page_slugs = desired_page_slugs.reject { |slug| existing_page_slugs.include? slug }
+
+    self.tags = non_slug_tags +
+                kept_book_slug_tags + kept_page_slug_tags +
+                new_book_slugs + new_page_slugs
   end
 end
