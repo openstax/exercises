@@ -6,14 +6,6 @@ GIT
       activerecord (>= 3.0.11)
       transaction_isolation (>= 1.0.2)
 
-PATH
-  remote: ../content-ruby
-  specs:
-    openstax_content (1.1.0)
-      aws-sdk-s3
-      faraday
-      nokogiri
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -325,6 +317,10 @@ GEM
       roar
       roar-rails (>= 1)
       uber
+    openstax_content (1.1.0)
+      aws-sdk-s3
+      faraday
+      nokogiri
     openstax_healthcheck (0.0.3)
       rails (>= 3.0)
     openstax_rescue_from (4.1.0)
@@ -575,7 +571,7 @@ DEPENDENCIES
   omniauth-oauth2
   openstax_accounts
   openstax_api
-  openstax_content!
+  openstax_content
   openstax_healthcheck
   openstax_rescue_from
   openstax_utilities
