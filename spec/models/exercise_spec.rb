@@ -8,6 +8,8 @@ RSpec.describe Exercise, type: :model, vcr: VCR_OPTS do
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
   it 'automatically sets the context based on tags and rewrites image links' do
+    expect_any_instance_of(Exercise).to receive(:set_slug_tags).twice
+
     exercise.tags = [
       'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61',
       'context-cnxfeature:fs-id2371798'
@@ -16,6 +18,19 @@ RSpec.describe Exercise, type: :model, vcr: VCR_OPTS do
 
     expect(exercise.context).to include(
       '<img src="https://openstax.org/apps/archive/20210514.171726/resources/af928eb129c65a18bffdc32353f1ffeeaf081157"'
+    )
+  end
+
+  it 'automatically sets slug tags' do
+    exercise.tags = [ 'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61' ]
+    exercise.save!
+
+    expect(exercise.tags.map(&:name)).to eq(
+      [
+        'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61',
+        'book-slug:introduction-sociology-2e',
+        'module-slug:introduction-sociology-2e:3-3-pop-culture-subculture-and-cultural-change'
+      ]
     )
   end
 

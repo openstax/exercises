@@ -9,342 +9,409 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
       api_get api_books_url, user_token
       expect(response).to have_http_status(:ok)
 
-      expect(JSON.parse body).to eq (
+      expect(JSON.parse body).to eq(
         [
           {
             "uuid" => "405335a3-7cff-4df2-a9ad-29062a4af261",
             "version" => "8.46",
-            "title" => "College Physics Courseware"
+            "title" => "College Physics Courseware",
+            "slug" => "college-physics-courseware"
           },
           {
             "uuid" => "36004586-651c-4ded-af87-203aca22d946",
             "version" => "14.3",
-            "title" => "Life Liberty And Pursuit Happiness"
+            "title" => "Life Liberty And Pursuit Happiness",
+            "slug" => "life-liberty-and-pursuit-happiness"
           },
           {
-            "uuid"=>"728df0bb-e07f-489d-91e3-4734a5932f92",
-            "version"=>"1.17",
-            "title"=>"Psychologia"
+            "uuid" => "728df0bb-e07f-489d-91e3-4734a5932f92",
+            "version" => "1.17",
+            "title" => "Psychologia",
+            "slug" => "Psychologia"
           },
           {
-            "uuid"=>"4eaa8f03-88a8-485a-a777-dd3602f6c13e",
-            "version"=>"4.14",
-            "title"=>"Fizyka Dla Szkół Wyższych Tom 1"
+            "uuid" => "4eaa8f03-88a8-485a-a777-dd3602f6c13e",
+            "version" => "4.14",
+            "title" => "Fizyka Dla Szkół Wyższych Tom 1",
+            "slug" => "fizyka-dla-szkół-wyższych-tom-1"
           },
           {
-            "uuid"=>"16ab5b96-4598-45f9-993c-b8d78d82b0c6",
-            "version"=>"5.1",
-            "title"=>"Fizyka Dla Szkół Wyższych Tom 2"
+            "uuid" => "16ab5b96-4598-45f9-993c-b8d78d82b0c6",
+            "version" => "5.1",
+            "title" => "Fizyka Dla Szkół Wyższych Tom 2",
+            "slug" => "fizyka-dla-szkół-wyższych-tom-2"
           },
           {
-            "uuid"=>"bb62933e-f20a-4ffc-90aa-97b36c296c3e",
-            "version"=>"6.23",
-            "title"=>"Fizyka Dla Szkół Wyższych Tom 3"
+            "uuid" => "bb62933e-f20a-4ffc-90aa-97b36c296c3e",
+            "version" => "6.23",
+            "title" => "Fizyka Dla Szkół Wyższych Tom 3",
+            "slug" => "fizyka-dla-szkół-wyższych-tom-3"
           },
           {
             "uuid" => "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
             "version" => "33.3",
-            "title" => "Algebra And Trigonometry"
+            "title" => "Algebra And Trigonometry",
+            "slug" => "algebra-and-trigonometry"
           },
           {
             "uuid" => "5bcc0e59-7345-421d-8507-a1e4608685e8",
             "version" => "19.1",
-            "title" => "American Government"
+            "title" => "American Government",
+            "slug" => "american-government"
           },
           {
             "uuid" => "9d8df601-4f12-4ac1-8224-b450bf739e5f",
             "version" => "6.7",
-            "title" => "American Government 2e"
+            "title" => "American Government 2e",
+            "slug" => "american-government-2e"
           },
           {
             "uuid" => "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
             "version" => "22.8",
-            "title" => "Anatomy And Physiology"
+            "title" => "Anatomy And Physiology",
+            "slug" => "anatomy-and-physiology"
           },
           {
             "uuid" => "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
             "version" => "22.49",
-            "title" => "Astronomy"
+            "title" => "Astronomy",
+            "slug" => "astronomy"
           },
           {
             "uuid" => "185cbf87-c72e-48f5-b51e-f14f21b5eabd",
             "version" => "14.1",
-            "title" => "Biology"
+            "title" => "Biology",
+            "slug" => "biology"
           },
           {
             "uuid" => "8d50a0af-948b-4204-a71d-4826cba765b8",
             "version" => "16.179",
-            "title" => "Biology 2e"
+            "title" => "Biology 2e",
+            "slug" => "biology-2e"
           },
           {
             "uuid" => "6c322e32-9fb0-4c4d-a1d7-20c95c5c7af2",
             "version" => "26.26",
-            "title" => "Biology Ap Courses"
+            "title" => "Biology Ap Courses",
+            "slug" => "biology-ap-courses"
           },
           {
             "uuid" => "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
             "version" => "5.14",
-            "title" => "Business Ethics"
+            "title" => "Business Ethics",
+            "slug" => "business-ethics"
           },
           {
             "uuid" => "464a3fba-68c1-426a-99f9-597e739dc911",
             "version" => "8.9",
-            "title" => "Business Law I Essentials"
+            "title" => "Business Law I Essentials",
+            "slug" => "business-law-i-essentials"
           },
           {
             "uuid" => "8b89d172-2927-466f-8661-01abc7ccdba4",
             "version" => "22.2",
-            "title" => "Calculus Volume 1"
+            "title" => "Calculus Volume 1",
+            "slug" => "calculus-volume-1"
           },
           {
             "uuid" => "1d39a348-071f-4537-85b6-c98912458c3c",
             "version" => "22.1",
-            "title" => "Calculus Volume 2"
+            "title" => "Calculus Volume 2",
+            "slug" => "calculus-volume-2"
           },
           {
             "uuid" => "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
             "version" => "22.1",
-            "title" => "Calculus Volume 3"
+            "title" => "Calculus Volume 3",
+            "slug" => "calculus-volume-3"
           },
           {
             "uuid" => "85abf193-2bd2-4908-8563-90b8a7ac8df6",
             "version" => "13.1",
-            "title" => "Chemistry"
+            "title" => "Chemistry",
+            "slug" => "chemistry"
           },
           {
             "uuid" => "7fccc9cf-9b71-44f6-800b-f9457fd64335",
             "version" => "18.36",
-            "title" => "Chemistry 2e"
+            "title" => "Chemistry 2e",
+            "slug" => "chemistry-2e"
           },
           {
             "uuid" => "d9b85ee6-c57f-4861-8208-5ddf261e9c5f",
             "version" => "14.36",
-            "title" => "Chemistry Atoms First 2e"
+            "title" => "Chemistry Atoms First 2e",
+            "slug" => "chemistry-atoms-first-2e"
           },
           {
             "uuid" => "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
             "version" => "10.1",
-            "title" => "Chemistry Atoms First"
+            "title" => "Chemistry Atoms First",
+            "slug" => "chemistry-atoms-first"
           },
           {
             "uuid" => "9b08c294-057f-4201-9f48-5d6ad992740d",
             "version" => "32.2",
-            "title" => "College Algebra"
+            "title" => "College Algebra",
+            "slug" => "college-algebra"
           },
           {
             "uuid" => "507feb1e-cfff-4b54-bc07-d52636cecfe3",
             "version" => "10.2",
-            "title" => "College Algebra Corequisite Support"
+            "title" => "College Algebra Corequisite Support",
+            "slug" => "college-algebra-corequisite-support"
           },
           {
             "uuid" => "031da8d3-b525-429c-80cf-6c8ed997733a",
             "version" => "23.18",
-            "title" => "College Physics"
+            "title" => "College Physics",
+            "slug" => "college-physics"
           },
           {
             "uuid" => "8d04a686-d5e8-4798-a27d-c608e4d0e187",
             "version" => "35.2",
-            "title" => "College Physics Ap Courses"
+            "title" => "College Physics Ap Courses",
+            "slug" => "college-physics-ap-courses"
           },
           {
             "uuid" => "e8668a14-9a7d-4d74-b58c-3681f8351224",
             "version" => "10.2",
-            "title" => "College Success"
+            "title" => "College Success",
+            "slug" => "college-success"
           },
           {
             "uuid" => "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
             "version" => "17.23",
-            "title" => "Concepts Biology"
+            "title" => "Concepts Biology",
+            "slug" => "concepts-biology"
           },
           {
             "uuid" => "0889907c-f0ef-496a-bcb8-2a5bb121717f",
             "version" => "9.3",
-            "title" => "Elementary Algebra"
+            "title" => "Elementary Algebra",
+            "slug" => "elementary-algebra"
           },
           {
             "uuid" => "55931856-c627-418b-a56f-1dd0007683a8",
             "version" => "9.3",
-            "title" => "Elementary Algebra 2e"
+            "title" => "Elementary Algebra 2e",
+            "slug" => "elementary-algebra-2e"
           },
           {
             "uuid" => "d380510e-6145-4625-b19a-4fa68204b6b1",
             "version" => "12.7",
-            "title" => "Entrepreneurship"
+            "title" => "Entrepreneurship",
+            "slug" => "entrepreneurship"
           },
           {
             "uuid" => "02776133-d49d-49cb-bfaa-67c7f61b25a1",
             "version" => "14.1",
-            "title" => "Intermediate Algebra"
+            "title" => "Intermediate Algebra",
+            "slug" => "intermediate-algebra"
           },
           {
             "uuid" => "4664c267-cd62-4a99-8b28-1cb9b3aee347",
             "version" => "7.2",
-            "title" => "Intermediate Algebra 2e"
+            "title" => "Intermediate Algebra 2e",
+            "slug" => "intermediate-algebra-2e"
           },
           {
             "uuid" => "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
             "version" => "9.8",
-            "title" => "Introduction Business"
+            "title" => "Introduction Business",
+            "slug" => "introduction-business"
           },
           {
             "uuid" => "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
             "version" => "6.21",
-            "title" => "Introduction Intellectual Property"
+            "title" => "Introduction Intellectual Property",
+            "slug" => "introduction-intellectual-property"
           },
           {
             "uuid" => "afe4332a-c97f-4fc4-be27-4e4d384a32d8",
             "version" => "18.1",
-            "title" => "Introduction Sociology"
+            "title" => "Introduction Sociology",
+            "slug" => "introduction-sociology"
           },
           {
             "uuid" => "02040312-72c8-441e-a685-20e9333f3e1d",
             "version" => "15.10",
-            "title" => "Introduction Sociology 2e"
+            "title" => "Introduction Sociology 2e",
+            "slug" => "introduction-sociology-2e"
           },
           {
             "uuid" => "746f171e-0d6a-4ef2-b69d-367880872f4a",
             "version" => "3.19",
-            "title" => "Introduction To Sociology 3e"
+            "title" => "Introduction To Sociology 3e",
+            "slug" => "introduction-to-sociology-3e"
           },
           {
             "uuid" => "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
             "version" => "38.24",
-            "title" => "Introductory Business Statistics"
+            "title" => "Introductory Business Statistics",
+            "slug" => "introductory-business-statistics"
           },
           {
             "uuid" => "30189442-6998-4686-ac05-ed152b91b9de",
             "version" => "25.23",
-            "title" => "Introductory Statistics"
+            "title" => "Introductory Statistics",
+            "slug" => "introductory-statistics"
           },
           {
             "uuid" => "e42bd376-624b-4c0f-972f-e0c57998e765",
             "version" => "9.13",
-            "title" => "Microbiology"
+            "title" => "Microbiology",
+            "slug" => "microbiology"
           },
           {
             "uuid" => "2d941ab9-ac5b-4eb8-b21c-965d36a4f296",
             "version" => "9.8",
-            "title" => "Organizational Behavior"
+            "title" => "Organizational Behavior",
+            "slug" => "organizational-behavior"
           },
           {
             "uuid" => "cce64fde-f448-43b8-ae88-27705cceb0da",
             "version" => "14.21",
-            "title" => "Physics"
+            "title" => "Physics",
+            "slug" => "physics"
           },
           {
             "uuid" => "caa57dab-41c7-455e-bd6f-f443cda5519c",
             "version" => "21.1",
-            "title" => "Prealgebra"
+            "title" => "Prealgebra",
+            "slug" => "prealgebra"
           },
           {
             "uuid" => "f0fa90be-fca8-43c9-9aad-715c0a2cee2b",
             "version" => "11.2",
-            "title" => "Prealgebra 2e"
+            "title" => "Prealgebra 2e",
+            "slug" => "prealgebra-2e"
           },
           {
             "uuid" => "fd53eae1-fa23-47c7-bb1b-972349835c3c",
             "version" => "36.3",
-            "title" => "Precalculus"
+            "title" => "Precalculus",
+            "slug" => "precalculus"
           },
           {
             "uuid" => "9ab4ba6d-1e48-486d-a2de-38ae1617ca84",
             "version" => "7.8",
-            "title" => "Principles Financial Accounting"
+            "title" => "Principles Financial Accounting",
+            "slug" => "principles-financial-accounting"
           },
           {
             "uuid" => "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
             "version" => "18.1",
-            "title" => "Principles Managerial Accounting"
+            "title" => "Principles Managerial Accounting",
+            "slug" => "principles-managerial-accounting"
           },
           {
             "uuid" => "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
             "version" => "12.4",
-            "title" => "Principles Economics"
+            "title" => "Principles Economics",
+            "slug" => "principles-economics"
           },
           {
             "uuid" => "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
             "version" => "12.4",
-            "title" => "Principles Economics 2e"
+            "title" => "Principles Economics 2e",
+            "slug" => "principles-economics-2e"
           },
           {
             "uuid" => "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
             "version" => "13.2",
-            "title" => "Principles Macroeconomics"
+            "title" => "Principles Macroeconomics",
+            "slug" => "principles-macroeconomics"
           },
           {
             "uuid" => "27f59064-990e-48f1-b604-5188b9086c29",
             "version" => "16.1",
-            "title" => "Principles Macroeconomics 2e"
+            "title" => "Principles Macroeconomics 2e",
+            "slug" => "principles-macroeconomics-2e"
           },
           {
             "uuid" => "33076054-ec1d-4417-8824-ce354efe42d0",
             "version" => "4.2",
-            "title" => "Principles Macroeconomics Ap Courses"
+            "title" => "Principles Macroeconomics Ap Courses",
+            "slug" => "principles-macroeconomics-ap-courses"
           },
           {
             "uuid" => "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
             "version" => "15.1",
-            "title" => "Principles Macroeconomics Ap Courses 2e"
+            "title" => "Principles Macroeconomics Ap Courses 2e",
+            "slug" => "principles-macroeconomics-ap-courses-2e"
           },
           {
             "uuid" => "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
             "version" => "12.8",
-            "title" => "Principles Management"
+            "title" => "Principles Management",
+            "slug" => "principles-management"
           },
           {
             "uuid" => "ea2f225e-6063-41ca-bcd8-36482e15ef65",
             "version" => "13.3",
-            "title" => "Principles Microeconomics"
+            "title" => "Principles Microeconomics",
+            "slug" => "principles-microeconomics"
           },
           {
             "uuid" => "5c09762c-b540-47d3-9541-dda1f44f16e5",
             "version" => "19.1",
-            "title" => "Principles Microeconomics 2e"
+            "title" => "Principles Microeconomics 2e",
+            "slug" => "principles-microeconomics-2e"
           },
           {
             "uuid" => "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
             "version" => "7.1",
-            "title" => "Principles Microeconomics Ap Courses"
+            "title" => "Principles Microeconomics Ap Courses",
+            "slug" => "principles-microeconomics-ap-courses"
           },
           {
             "uuid" => "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
             "version" => "15.1",
-            "title" => "Principles Microeconomics Ap Courses 2e"
+            "title" => "Principles Microeconomics Ap Courses 2e",
+            "slug" => "principles-microeconomics-ap-courses-2e"
           },
           {
             "uuid" => "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
             "version" => "13.2",
-            "title" => "Psychology"
+            "title" => "Psychology",
+            "slug" => "psychology"
           },
           {
             "uuid" => "06aba565-9432-40f6-97ee-b8a361f118a8",
             "version" => "4.18",
-            "title" => "Psychology 2e"
+            "title" => "Psychology 2e",
+            "slug" => "psychology-2e"
           },
           {
             "uuid" => "394a1101-fd8f-4875-84fa-55f15b06ba66",
             "version" => "8.19",
-            "title" => "Statistics"
+            "title" => "Statistics",
+            "slug" => "statistics"
           },
           {
             "uuid" => "a7ba2fb8-8925-4987-b182-5f4429d48daa",
             "version" => "10.21",
-            "title" => "Us History"
+            "title" => "Us History",
+            "slug" => "us-history"
           },
           {
             "uuid" => "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
             "version" => "22.3",
-            "title" => "University Physics Volume 1"
+            "title" => "University Physics Volume 1",
+            "slug" => "university-physics-volume-1"
           },
           {
             "uuid" => "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
             "version" => "27.1",
-            "title" => "University Physics Volume 2"
+            "title" => "University Physics Volume 2",
+            "slug" => "university-physics-volume-2"
           },
           {
             "uuid" => "af275420-6050-4707-995c-57b9cc13c358",
             "version" => "22.5",
-            "title" => "University Physics Volume 3"
+            "title" => "University Physics Volume 3",
+            "slug" => "university-physics-volume-3"
           }
         ]
       )
@@ -359,337 +426,404 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
           {
             "uuid" => "405335a3-7cff-4df2-a9ad-29062a4af261",
             "version" => "8.46",
-            "title" => "College Physics Courseware"
+            "title" => "College Physics Courseware",
+            "slug" => "college-physics-courseware"
           },
           {
             "uuid" => "36004586-651c-4ded-af87-203aca22d946",
             "version" => "14.3",
-            "title" => "Life Liberty And Pursuit Happiness"
+            "title" => "Life Liberty And Pursuit Happiness",
+            "slug" => "life-liberty-and-pursuit-happiness"
           },
           {
-            "uuid"=>"728df0bb-e07f-489d-91e3-4734a5932f92",
-            "version"=>"1.17",
-            "title"=>"Psychologia"
+            "uuid" => "728df0bb-e07f-489d-91e3-4734a5932f92",
+            "version" => "1.17",
+            "title" => "Psychologia",
+            "slug" => "Psychologia"
           },
           {
-            "uuid"=>"4eaa8f03-88a8-485a-a777-dd3602f6c13e",
-            "version"=>"4.14",
-            "title"=>"Fizyka Dla Szkół Wyższych Tom 1"
+            "uuid" => "4eaa8f03-88a8-485a-a777-dd3602f6c13e",
+            "version" => "4.14",
+            "title" => "Fizyka Dla Szkół Wyższych Tom 1",
+            "slug" => "fizyka-dla-szkół-wyższych-tom-1"
           },
           {
-            "uuid"=>"16ab5b96-4598-45f9-993c-b8d78d82b0c6",
-            "version"=>"5.1",
-            "title"=>"Fizyka Dla Szkół Wyższych Tom 2"
+            "uuid" => "16ab5b96-4598-45f9-993c-b8d78d82b0c6",
+            "version" => "5.1",
+            "title" => "Fizyka Dla Szkół Wyższych Tom 2",
+            "slug" => "fizyka-dla-szkół-wyższych-tom-2"
           },
           {
-            "uuid"=>"bb62933e-f20a-4ffc-90aa-97b36c296c3e",
-            "version"=>"6.23",
-            "title"=>"Fizyka Dla Szkół Wyższych Tom 3"
+            "uuid" => "bb62933e-f20a-4ffc-90aa-97b36c296c3e",
+            "version" => "6.23",
+            "title" => "Fizyka Dla Szkół Wyższych Tom 3",
+            "slug" => "fizyka-dla-szkół-wyższych-tom-3"
           },
           {
             "uuid" => "13ac107a-f15f-49d2-97e8-60ab2e3b519c",
             "version" => "33.3",
-            "title" => "Algebra And Trigonometry"
+            "title" => "Algebra And Trigonometry",
+            "slug" => "algebra-and-trigonometry"
           },
           {
             "uuid" => "5bcc0e59-7345-421d-8507-a1e4608685e8",
             "version" => "19.1",
-            "title" => "American Government"
+            "title" => "American Government",
+            "slug" => "american-government"
           },
           {
             "uuid" => "9d8df601-4f12-4ac1-8224-b450bf739e5f",
             "version" => "6.7",
-            "title" => "American Government 2e"
+            "title" => "American Government 2e",
+            "slug" => "american-government-2e"
           },
           {
             "uuid" => "14fb4ad7-39a1-4eee-ab6e-3ef2482e3e22",
             "version" => "22.8",
-            "title" => "Anatomy And Physiology"
+            "title" => "Anatomy And Physiology",
+            "slug" => "anatomy-and-physiology"
           },
           {
             "uuid" => "2e737be8-ea65-48c3-aa0a-9f35b4c6a966",
             "version" => "22.49",
-            "title" => "Astronomy"
+            "title" => "Astronomy",
+            "slug" => "astronomy"
           },
           {
             "uuid" => "185cbf87-c72e-48f5-b51e-f14f21b5eabd",
             "version" => "14.1",
-            "title" => "Biology"
+            "title" => "Biology",
+            "slug" => "biology"
           },
           {
             "uuid" => "8d50a0af-948b-4204-a71d-4826cba765b8",
             "version" => "16.179",
-            "title" => "Biology 2e"
+            "title" => "Biology 2e",
+            "slug" => "biology-2e"
           },
           {
             "uuid" => "6c322e32-9fb0-4c4d-a1d7-20c95c5c7af2",
             "version" => "26.26",
-            "title" => "Biology Ap Courses"
+            "title" => "Biology Ap Courses",
+            "slug" => "biology-ap-courses"
           },
           {
             "uuid" => "914ac66e-e1ec-486d-8a9c-97b0f7a99774",
             "version" => "5.14",
-            "title" => "Business Ethics"
+            "title" => "Business Ethics",
+            "slug" => "business-ethics"
           },
           {
             "uuid" => "464a3fba-68c1-426a-99f9-597e739dc911",
             "version" => "8.9",
-            "title" => "Business Law I Essentials"
+            "title" => "Business Law I Essentials",
+            "slug" => "business-law-i-essentials"
           },
           {
             "uuid" => "8b89d172-2927-466f-8661-01abc7ccdba4",
             "version" => "22.2",
-            "title" => "Calculus Volume 1"
+            "title" => "Calculus Volume 1",
+            "slug" => "calculus-volume-1"
           },
           {
             "uuid" => "1d39a348-071f-4537-85b6-c98912458c3c",
             "version" => "22.1",
-            "title" => "Calculus Volume 2"
+            "title" => "Calculus Volume 2",
+            "slug" => "calculus-volume-2"
           },
           {
             "uuid" => "a31cd793-2162-4e9e-acb5-6e6bbd76a5fa",
             "version" => "22.1",
-            "title" => "Calculus Volume 3"
+            "title" => "Calculus Volume 3",
+            "slug" => "calculus-volume-3"
           },
           {
             "uuid" => "85abf193-2bd2-4908-8563-90b8a7ac8df6",
             "version" => "13.1",
-            "title" => "Chemistry"
+            "title" => "Chemistry",
+            "slug" => "chemistry"
           },
           {
             "uuid" => "7fccc9cf-9b71-44f6-800b-f9457fd64335",
             "version" => "18.36",
-            "title" => "Chemistry 2e"
+            "title" => "Chemistry 2e",
+            "slug" => "chemistry-2e"
           },
           {
             "uuid" => "d9b85ee6-c57f-4861-8208-5ddf261e9c5f",
             "version" => "14.36",
-            "title" => "Chemistry Atoms First 2e"
+            "title" => "Chemistry Atoms First 2e",
+            "slug" => "chemistry-atoms-first-2e"
           },
           {
             "uuid" => "4539ae23-1ccc-421e-9b25-843acbb6c4b0",
             "version" => "10.1",
-            "title" => "Chemistry Atoms First"
+            "title" => "Chemistry Atoms First",
+            "slug" => "chemistry-atoms-first"
           },
           {
             "uuid" => "9b08c294-057f-4201-9f48-5d6ad992740d",
             "version" => "32.2",
-            "title" => "College Algebra"
+            "title" => "College Algebra",
+            "slug" => "college-algebra"
           },
           {
             "uuid" => "507feb1e-cfff-4b54-bc07-d52636cecfe3",
             "version" => "10.2",
-            "title" => "College Algebra Corequisite Support"
+            "title" => "College Algebra Corequisite Support",
+            "slug" => "college-algebra-corequisite-support"
           },
           {
             "uuid" => "031da8d3-b525-429c-80cf-6c8ed997733a",
             "version" => "23.18",
-            "title" => "College Physics"
+            "title" => "College Physics",
+            "slug" => "college-physics"
           },
           {
             "uuid" => "8d04a686-d5e8-4798-a27d-c608e4d0e187",
             "version" => "35.2",
-            "title" => "College Physics Ap Courses"
+            "title" => "College Physics Ap Courses",
+            "slug" => "college-physics-ap-courses"
           },
           {
             "uuid" => "e8668a14-9a7d-4d74-b58c-3681f8351224",
             "version" => "10.2",
-            "title" => "College Success"
+            "title" => "College Success",
+            "slug" => "college-success"
           },
           {
             "uuid" => "b3c1e1d2-839c-42b0-a314-e119a8aafbdd",
             "version" => "17.23",
-            "title" => "Concepts Biology"
+            "title" => "Concepts Biology",
+            "slug" => "concepts-biology"
           },
           {
             "uuid" => "0889907c-f0ef-496a-bcb8-2a5bb121717f",
             "version" => "9.3",
-            "title" => "Elementary Algebra"
+            "title" => "Elementary Algebra",
+            "slug" => "elementary-algebra"
           },
           {
             "uuid" => "55931856-c627-418b-a56f-1dd0007683a8",
             "version" => "9.3",
-            "title" => "Elementary Algebra 2e"
+            "title" => "Elementary Algebra 2e",
+            "slug" => "elementary-algebra-2e"
           },
           {
             "uuid" => "d380510e-6145-4625-b19a-4fa68204b6b1",
             "version" => "12.7",
-            "title" => "Entrepreneurship"
+            "title" => "Entrepreneurship",
+            "slug" => "entrepreneurship"
           },
           {
             "uuid" => "02776133-d49d-49cb-bfaa-67c7f61b25a1",
             "version" => "14.1",
-            "title" => "Intermediate Algebra"
+            "title" => "Intermediate Algebra",
+            "slug" => "intermediate-algebra"
           },
           {
             "uuid" => "4664c267-cd62-4a99-8b28-1cb9b3aee347",
             "version" => "7.2",
-            "title" => "Intermediate Algebra 2e"
+            "title" => "Intermediate Algebra 2e",
+            "slug" => "intermediate-algebra-2e"
           },
           {
             "uuid" => "4e09771f-a8aa-40ce-9063-aa58cc24e77f",
             "version" => "9.8",
-            "title" => "Introduction Business"
+            "title" => "Introduction Business",
+            "slug" => "introduction-business"
           },
           {
             "uuid" => "1b4ee0ce-ee89-44fa-a5e7-a0db9f0c94b1",
             "version" => "6.21",
-            "title" => "Introduction Intellectual Property"
+            "title" => "Introduction Intellectual Property",
+            "slug" => "introduction-intellectual-property"
           },
           {
             "uuid" => "afe4332a-c97f-4fc4-be27-4e4d384a32d8",
             "version" => "18.1",
-            "title" => "Introduction Sociology"
+            "title" => "Introduction Sociology",
+            "slug" => "introduction-sociology"
           },
           {
             "uuid" => "02040312-72c8-441e-a685-20e9333f3e1d",
             "version" => "15.10",
-            "title" => "Introduction Sociology 2e"
+            "title" => "Introduction Sociology 2e",
+            "slug" => "introduction-sociology-2e"
           },
           {
             "uuid" => "746f171e-0d6a-4ef2-b69d-367880872f4a",
             "version" => "3.19",
-            "title" => "Introduction To Sociology 3e"
+            "title" => "Introduction To Sociology 3e",
+            "slug" => "introduction-to-sociology-3e"
           },
           {
             "uuid" => "b56bb9e9-5eb8-48ef-9939-88b1b12ce22f",
             "version" => "38.24",
-            "title" => "Introductory Business Statistics"
+            "title" => "Introductory Business Statistics",
+            "slug" => "introductory-business-statistics"
           },
           {
             "uuid" => "30189442-6998-4686-ac05-ed152b91b9de",
             "version" => "25.23",
-            "title" => "Introductory Statistics"
+            "title" => "Introductory Statistics",
+            "slug" => "introductory-statistics"
           },
           {
             "uuid" => "e42bd376-624b-4c0f-972f-e0c57998e765",
             "version" => "9.13",
-            "title" => "Microbiology"
+            "title" => "Microbiology",
+            "slug" => "microbiology"
           },
           {
             "uuid" => "2d941ab9-ac5b-4eb8-b21c-965d36a4f296",
             "version" => "9.8",
-            "title" => "Organizational Behavior"
+            "title" => "Organizational Behavior",
+            "slug" => "organizational-behavior"
           },
           {
             "uuid" => "cce64fde-f448-43b8-ae88-27705cceb0da",
             "version" => "14.21",
-            "title" => "Physics"
+            "title" => "Physics",
+            "slug" => "physics"
           },
           {
             "uuid" => "caa57dab-41c7-455e-bd6f-f443cda5519c",
             "version" => "21.1",
-            "title" => "Prealgebra"
+            "title" => "Prealgebra",
+            "slug" => "prealgebra"
           },
           {
             "uuid" => "f0fa90be-fca8-43c9-9aad-715c0a2cee2b",
             "version" => "11.2",
-            "title" => "Prealgebra 2e"
+            "title" => "Prealgebra 2e",
+            "slug" => "prealgebra-2e"
           },
           {
             "uuid" => "fd53eae1-fa23-47c7-bb1b-972349835c3c",
             "version" => "36.3",
-            "title" => "Precalculus"
+            "title" => "Precalculus",
+            "slug" => "precalculus"
           },
           {
             "uuid" => "9ab4ba6d-1e48-486d-a2de-38ae1617ca84",
             "version" => "7.8",
-            "title" => "Principles Financial Accounting"
+            "title" => "Principles Financial Accounting",
+            "slug" => "principles-financial-accounting"
           },
           {
             "uuid" => "920d1c8a-606c-4888-bfd4-d1ee27ce1795",
             "version" => "18.1",
-            "title" => "Principles Managerial Accounting"
+            "title" => "Principles Managerial Accounting",
+            "slug" => "principles-managerial-accounting"
           },
           {
             "uuid" => "69619d2b-68f0-44b0-b074-a9b2bf90b2c6",
             "version" => "12.4",
-            "title" => "Principles Economics"
+            "title" => "Principles Economics",
+            "slug" => "principles-economics"
           },
           {
             "uuid" => "bc498e1f-efe9-43a0-8dea-d3569ad09a82",
             "version" => "12.4",
-            "title" => "Principles Economics 2e"
+            "title" => "Principles Economics 2e",
+            "slug" => "principles-economics-2e"
           },
           {
             "uuid" => "4061c832-098e-4b3c-a1d9-7eb593a2cb31",
             "version" => "13.2",
-            "title" => "Principles Macroeconomics"
+            "title" => "Principles Macroeconomics",
+            "slug" => "principles-macroeconomics"
           },
           {
             "uuid" => "27f59064-990e-48f1-b604-5188b9086c29",
             "version" => "16.1",
-            "title" => "Principles Macroeconomics 2e"
+            "title" => "Principles Macroeconomics 2e",
+            "slug" => "principles-macroeconomics-2e"
           },
           {
             "uuid" => "33076054-ec1d-4417-8824-ce354efe42d0",
             "version" => "4.2",
-            "title" => "Principles Macroeconomics Ap Courses"
+            "title" => "Principles Macroeconomics Ap Courses",
+            "slug" => "principles-macroeconomics-ap-courses"
           },
           {
             "uuid" => "9117cf8c-a8a3-4875-8361-9cb0f1fc9362",
             "version" => "15.1",
-            "title" => "Principles Macroeconomics Ap Courses 2e"
+            "title" => "Principles Macroeconomics Ap Courses 2e",
+            "slug" => "principles-macroeconomics-ap-courses-2e"
           },
           {
             "uuid" => "c3acb2ab-7d5c-45ad-b3cd-e59673fedd4e",
             "version" => "12.8",
-            "title" => "Principles Management"
+            "title" => "Principles Management",
+            "slug" => "principles-management"
           },
           {
             "uuid" => "ea2f225e-6063-41ca-bcd8-36482e15ef65",
             "version" => "13.3",
-            "title" => "Principles Microeconomics"
+            "title" => "Principles Microeconomics",
+            "slug" => "principles-microeconomics"
           },
           {
             "uuid" => "5c09762c-b540-47d3-9541-dda1f44f16e5",
             "version" => "19.1",
-            "title" => "Principles Microeconomics 2e"
+            "title" => "Principles Microeconomics 2e",
+            "slug" => "principles-microeconomics-2e"
           },
           {
             "uuid" => "ca344e2d-6731-43cd-b851-a7b3aa0b37aa",
             "version" => "7.1",
-            "title" => "Principles Microeconomics Ap Courses"
+            "title" => "Principles Microeconomics Ap Courses",
+            "slug" => "principles-microeconomics-ap-courses"
           },
           {
             "uuid" => "636cbfd9-4e37-4575-83ab-9dec9029ca4e",
             "version" => "15.1",
-            "title" => "Principles Microeconomics Ap Courses 2e"
+            "title" => "Principles Microeconomics Ap Courses 2e",
+            "slug" => "principles-microeconomics-ap-courses-2e"
           },
           {
             "uuid" => "4abf04bf-93a0-45c3-9cbc-2cefd46e68cc",
             "version" => "13.2",
-            "title" => "Psychology"
+            "title" => "Psychology",
+            "slug" => "psychology"
           },
           {
             "uuid" => "06aba565-9432-40f6-97ee-b8a361f118a8",
             "version" => "4.18",
-            "title" => "Psychology 2e"
+            "title" => "Psychology 2e",
+            "slug" => "psychology-2e"
           },
           {
             "uuid" => "394a1101-fd8f-4875-84fa-55f15b06ba66",
             "version" => "8.19",
-            "title" => "Statistics"
+            "title" => "Statistics",
+            "slug" => "statistics"
           },
           {
             "uuid" => "a7ba2fb8-8925-4987-b182-5f4429d48daa",
             "version" => "10.21",
-            "title" => "Us History"
+            "title" => "Us History",
+            "slug" => "us-history"
           },
           {
             "uuid" => "d50f6e32-0fda-46ef-a362-9bd36ca7c97d",
             "version" => "22.3",
-            "title" => "University Physics Volume 1"
+            "title" => "University Physics Volume 1",
+            "slug" => "university-physics-volume-1"
           },
           {
             "uuid" => "7a0f9770-1c44-4acd-9920-1cd9a99f2a1e",
             "version" => "27.1",
-            "title" => "University Physics Volume 2"
+            "title" => "University Physics Volume 2",
+            "slug" => "university-physics-volume-2"
           },
           {
             "uuid" => "af275420-6050-4707-995c-57b9cc13c358",
             "version" => "22.5",
-            "title" => "University Physics Volume 3"
+            "title" => "University Physics Volume 3",
+            "slug" => "university-physics-volume-3"
           }
         ]
       )

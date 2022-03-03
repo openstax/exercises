@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://raw.githubusercontent.com/openstax/content-manager-approved-books/master/approved-book-list.json
+    uri: https://raw.githubusercontent.com/openstax/content-manager-approved-books/main/approved-book-list.json
     body:
       encoding: US-ASCII
       string: ''
