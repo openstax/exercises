@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'content'
 
 RSpec.describe Exercises::Tag::Xlsx, type: :routine do
   let(:fixture_path)  { 'spec/fixtures/sample_tags.xlsx' }
@@ -19,8 +20,11 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
 
   let!(:exercises) { (1..6).map { |ii| FactoryBot.create(:publication, number: ii).publishable } }
 
+  # Disable set_slug_tags
+  before { allow_any_instance_of(Exercise).to receive(:set_slug_tags) }
+
   it 'tags exercises with the sample spreadsheet' do
-    expect { described_class.call(filename: fixture_path) }.to change{ ExerciseTag.count }.by(20)
+    expect { described_class.call(filename: fixture_path) }.to change { ExerciseTag.count }.by(20)
 
     exercises.each(&:reload)
 
@@ -33,8 +37,8 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
   end
 
   it 'skips exercises with no changes (idempotence)' do
-    expect { described_class.call(filename: fixture_path) }.to change{ ExerciseTag.count }.by(20)
+    expect { described_class.call(filename: fixture_path) }.to change { ExerciseTag.count }.by(20)
 
-    expect { described_class.call(filename: fixture_path) }.not_to change{ ExerciseTag.count }
+    expect { described_class.call(filename: fixture_path) }.not_to change { ExerciseTag.count }
   end
 end
