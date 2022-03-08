@@ -218,12 +218,16 @@ class Exercise < ApplicationRecord
     archive = OpenStax::Content::Archive.new version: archive_version
     cnxmod_tags.each do |cnxmod_tag|
       page_uuid = cnxmod_tag.sub 'context-cnxmod:', ''
+      next if page_uuid.blank?
+
       page = s3.find_page page_uuid, archive_version: archive_version
       next if page.nil?
 
       node = Nokogiri::HTML.parse archive.json(page)['content']
       cnxfeature_tags.each do |cnxfeature_tag|
         feature_id = cnxfeature_tag.sub 'context-cnxfeature:', ''
+        next if feature_id.blank?
+
         feature = node.at_css "##{feature_id}"
         next if feature.nil?
 
@@ -255,7 +259,7 @@ class Exercise < ApplicationRecord
 
     page_uuids = non_slug_tags.map(&:name).filter do |name|
       name.starts_with? 'context-cnxmod:'
-    end.map { |cnxmod| cnxmod.sub 'context-cnxmod:', '' }
+    end.map { |cnxmod| cnxmod.sub 'context-cnxmod:', '' }.reject(&:blank?)
 
     desired_slug_hashes = page_uuids.flat_map do |page_uuid|
       Content.slugs_by_page_uuid[page_uuid] || []
