@@ -259,7 +259,7 @@ class Exercise < ApplicationRecord
 
     page_uuids = non_slug_tags.map(&:name).filter do |name|
       name.starts_with? 'context-cnxmod:'
-    end.map { |cnxmod| cnxmod.sub 'context-cnxmod:', '' }
+    end.map { |cnxmod| cnxmod.sub 'context-cnxmod:', '' }.reject(&:blank?)
 
     desired_slug_hashes = page_uuids.flat_map do |page_uuid|
       Content.slugs_by_page_uuid[page_uuid] || []
