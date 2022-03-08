@@ -4,8 +4,8 @@ class CreateSlugTags < ActiveRecord::Migration[6.1]
   def up
     Exercise.preload(:publication).in_batches(of: 100, load: true) do |exercises|
       Exercise.transaction do
-        exercises.each(&:save) # creates the slug tags but does not set updated_at
-        exercises.update_all(updated_at: Time.current) # invalidates the exercise cache
+        exercises.each(&:set_slug_tags)
+        exercises.update_all updated_at: Time.current
       end
     end
   end

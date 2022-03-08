@@ -155,8 +155,6 @@ class Exercise < ApplicationRecord
     end
   end
 
-  protected
-
   def has_questions
     return unless questions.first.nil?
     errors.add(:questions, "can't be blank")
