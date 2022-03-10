@@ -20,8 +20,8 @@ RSpec.describe Exercises::Tag::Xlsx, type: :routine do
 
   let!(:exercises) { (1..6).map { |ii| FactoryBot.create(:publication, number: ii).publishable } }
 
-  # Disable set_slug_tags
-  before { allow_any_instance_of(Exercise).to receive(:set_slug_tags) }
+  # Disable set_slug_tags!
+  before { allow_any_instance_of(Exercise).to receive(:set_slug_tags!) }
 
   it 'tags exercises with the sample spreadsheet' do
     expect { described_class.call(filename: fixture_path) }.to change { ExerciseTag.count }.by(20)

@@ -96,7 +96,7 @@ class Exercise < ApplicationRecord
   scope :can_release_to_a15k, -> { where(release_to_a15k: true) }
   scope :not_released_to_a15k, -> { where(a15k_identifier: nil) }
 
-  before_validation :set_context, :set_slug_tags
+  before_validation :set_context, :set_slug_tags!
 
   def content_equals?(other_exercise)
     return false unless other_exercise.is_a? ActiveRecord::Base
@@ -247,7 +247,7 @@ class Exercise < ApplicationRecord
     return
   end
 
-  def set_slug_tags
+  def set_slug_tags!
     existing_book_slug_tags, other_tags = tags.partition do |tag|
       tag.name.starts_with? 'book-slug:'
     end
@@ -268,10 +268,10 @@ class Exercise < ApplicationRecord
       "module-slug:#{slug[:book]}:#{slug[:page]}"
     end
 
-    kept_book_slug_tags = existing_book_slug_tags.filter do |tag|
+    kept_book_slug_tags, removed_book_slug_tags = existing_book_slug_tags.partition do |tag|
       desired_book_slugs.include? tag.name
     end
-    kept_page_slug_tags = existing_page_slug_tags.filter do |tag|
+    kept_page_slug_tags, removed_page_slug_tags = existing_page_slug_tags.partition do |tag|
       desired_page_slugs.include? tag.name
     end
 
@@ -284,5 +284,11 @@ class Exercise < ApplicationRecord
     self.tags = non_slug_tags +
                 kept_book_slug_tags + kept_page_slug_tags +
                 new_book_slugs + new_page_slugs
+
+    # Return whether or not any tags changed
+    !removed_book_slug_tags.empty? ||
+    !removed_page_slug_tags.empty? ||
+    !new_book_slugs.empty? ||
+    !new_page_slugs.empty?
   end
 end

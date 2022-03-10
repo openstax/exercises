@@ -154,6 +154,9 @@ gem 'activerecord-import'
 # Get env variables from .env file
 gem 'dotenv-rails'
 
+# Cron job scheduling
+gem 'whenever'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'
