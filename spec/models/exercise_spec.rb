@@ -8,7 +8,8 @@ RSpec.describe Exercise, type: :model, vcr: VCR_OPTS do
   it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
 
   it 'automatically sets the context based on tags and rewrites image links' do
-    expect_any_instance_of(Exercise).to receive(:set_slug_tags).twice
+    # Disable set_slug_tags!
+    expect_any_instance_of(Exercise).to receive(:set_slug_tags!).twice
 
     exercise.tags = [
       'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61',

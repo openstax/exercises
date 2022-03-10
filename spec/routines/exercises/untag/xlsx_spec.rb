@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Exercises::Untag::Xlsx, type: :routine do
   before do
-    # Disable set_slug_tags
-    allow_any_instance_of(Exercise).to receive(:set_slug_tags)
+    # Disable set_slug_tags!
+    allow_any_instance_of(Exercise).to receive(:set_slug_tags!)
 
     @exercises = (1..6).map { |ii| FactoryBot.create(:publication, number: ii).publishable }
 
