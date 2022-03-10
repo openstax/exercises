@@ -4,7 +4,7 @@ class UpdateSlugs
   protected
 
   def exec
-    Exercise.preload(:publication).in_batches(of: 100, load: true) do |exercises|
+    Exercise.chainable_latest.preload(:publication).in_batches(of: 100, load: true) do |exercises|
       Exercise.transaction do
         updated_exercise_ids = exercises.select(:id).filter(&:set_slug_tags!).map(&:id)
         next if updated_exercise_ids.empty?
