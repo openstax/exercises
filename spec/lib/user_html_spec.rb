@@ -5,12 +5,9 @@ RSpec.describe UserHtml do
     expect(ActiveRecord::Base).to respond_to(:user_html)
   end
 
-  it 'converts url\'s to html anchors with rel="nofollow" and target="_blank"' do
+  it 'does not auto_link urls' do
     content = 'Here is a cool link: http://www.example.com.'
-    expect(described_class.sanitize(content)).to(
-      eq 'Here is a cool link: <a href="http://www.example.com" ' +
-         'rel="nofollow" target="_blank">http://www.example.com</a>.'
-    )
+    expect(described_class.sanitize(content)).to eq content
   end
 
   it 'adds rel="nofollow" and target="_blank" to existing html anchors' do
