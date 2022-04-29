@@ -41,9 +41,6 @@ gem 'rails-html-sanitizer'
 # URI replacement
 gem 'addressable'
 
-# Converts links in Strings to HTML anchors
-gem 'rinku'
-
 # Sanitizes user content
 gem 'sanitize'
 
