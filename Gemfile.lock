@@ -399,7 +399,6 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.5)
-    rinku (2.0.6)
     roar (1.0.3)
       representable (>= 2.0.1, <= 3.0.0)
     roar-rails (1.0.1)
@@ -589,7 +588,6 @@ DEPENDENCIES
   redis
   representable (~> 3.0.0)
   request_store
-  rinku
   roar (= 1.0.3)
   roo
   rspec-instafail
