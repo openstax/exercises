@@ -9,8 +9,9 @@ RSpec.describe 'cron:day', type: :rake do
 
   before { Rake::Task['cron:day'].reenable }
 
-  it 'calls the UpdateSlugs lev routine' do
+  it 'calls the UpdateSlugs and WarmUpCache lev routines' do
     expect(UpdateSlugs).to receive(:call)
+    expect(WarmUpCache).to receive(:call)
 
     Rake.application.invoke_task 'cron:day'
   end
