@@ -31,20 +31,41 @@ module Api::V1
     # show #
     ########/
 
-    api :GET, '/books/:uuid(/:version)', 'Returns a list of pages in some book version or latest'
-    description 'Returns a list of pages in some book version (default: latest version)'
+    api :GET, '/books/:uuid', 'Returns a list of pages in some book'
+    description 'Returns a list of pages in some book in some archive version (default: latest)'
     param :archive_version, String, desc: 'Archive code pipeline version (default: latest version)'
     param :uuid, String, desc: 'Book uuid'
-    param :version, String, desc: 'Book version (defaults to latest version in S3 bucket)'
     def show
       OSU::AccessPolicy.require_action_allowed! :read, current_api_user, OpenStax::Content::Book
 
-      uuid = params[:uuid]
-      version = params[:version] || available_book_versions_by_uuid[uuid].last
+      book = abl.approved_books(archive: archive).find { |book| book.uuid == params[:uuid] }
+      tree = []
 
-      tree = OpenStax::Content::Book.new(
-        archive: archive, uuid: uuid, version: version
-      ).tree['contents'] rescue []
+      loop do
+        begin
+          tree = book.tree['contents']
+        rescue StandardError => exception
+          # Sometimes books in the ABL fail to load
+          # Retry with an earlier version of archive, if possible
+          previous_version ||= book.archive.previous_version
+
+          # break from the loop if there are no more archive versions to try
+          break if previous_version.nil?
+
+          previous_archive ||= OpenStax::Content::Archive.new version: previous_version
+
+          book = OpenStax::Content::Book.new(
+            archive: previous_archive,
+            uuid: book.uuid,
+            version: book.version,
+            slug: book.slug,
+            style: book.style
+          )
+        else
+          # break from the loop if successful
+          break
+        end
+      end
 
       render json: tree
     end
@@ -72,19 +93,6 @@ module Api::V1
 
     def archive
       @archive ||= OpenStax::Content::Archive.new(version: archive_version)
-    end
-
-    def available_book_versions_by_uuid
-      @available_book_versions_by_uuid ||= Hash.new { |hash, key| hash[key] = [] }.tap do |hash|
-        s3.ls(archive_version).each do |book|
-          uuid, version = book.split('@')
-          hash[uuid] << version
-        end
-      end.tap do |hash|
-        hash.values.each do |versions|
-          versions.sort_by! { |version| version.split('.').map(&:to_i) }
-        end
-      end
     end
   end
 end
