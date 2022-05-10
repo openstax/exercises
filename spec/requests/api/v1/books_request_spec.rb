@@ -2095,5 +2095,2863 @@ RSpec.describe Api::V1::BooksController, type: :request, api: :true, version: :v
         }
       ]
     end
+
+    it 'searches previous archive versions when the latest book version is not found' do
+      api_get api_book_url(uuid: '185cbf87-c72e-48f5-b51e-f14f21b5eabd'), user_token
+      expect(response).to have_http_status(:ok)
+
+      expect(JSON.parse body).to eq [
+        {
+          "id" => "7d501ff3-7b18-4b9e-99fd-2f596024f3a1@",
+          "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Preface</span>",
+          "slug" => "preface"
+        },
+        {
+          "id" => "b642a710-1f2f-5780-9413-5a6bcd0ad3c1@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>1</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 1. The Chemistry of Life</span>",
+          "contents" => [
+            {
+              "id" => "0e4799ec-e0f3-5e41-8e80-0a69b7fc550a@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>1</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Study of Life</span>",
+              "contents" => [
+                {
+                  "id" => "ad9b9d37-a5cf-4a0d-b8c1-083fcc4d3b0c@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "1-introduction"
+                },
+                {
+                  "id" => "6a0568d8-23d7-439b-9a01-16e4e73886b3@",
+                  "title" => "<span class=\"os-number\">1.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Science of Biology</span>",
+                  "slug" => "1-1-the-science-of-biology"
+                },
+                {
+                  "id" => "80d2e9ef-abee-40c2-8586-5459a67c81f3@",
+                  "title" => "<span class=\"os-number\">1.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Themes and Concepts of Biology</span>",
+                  "slug" => "1-2-themes-and-concepts-of-biology"
+                },
+                {
+                  "id" => "0b26e8c9-1784-5aa1-bce1-1beb7ddd997d@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "1-key-terms"
+                },
+                {
+                  "id" => "fdaa8ea9-7591-58fd-950c-10932ccc1cb9@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "1-chapter-summary"
+                },
+                {
+                  "id" => "f889057f-e071-5076-a55e-c743ac53ab15@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "1-visual-connection-questions"
+                },
+                {
+                  "id" => "966ddb5b-86e6-57aa-8fb6-e1fb8970de68@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "1-review-questions"
+                },
+                {
+                  "id" => "731d103c-ebd7-58e7-8df4-b58cd62ae5f6@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "1-critical-thinking-questions"
+                }
+              ],
+              "slug" => "1-the-study-of-life"
+            },
+            {
+              "id" => "6e322e93-f9c0-50a5-8481-c2686c38f9b6@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>2</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Chemical Foundation of Life</span>",
+              "contents" => [
+                {
+                  "id" => "7636a3bf-eb80-4898-8b2c-e81c1711b99f@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "2-introduction"
+                },
+                {
+                  "id" => "be8818d0-2dba-4bf3-859a-737c25fb2c99@",
+                  "title" => "<span class=\"os-number\">2.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Atoms, Isotopes, Ions, and Molecules: The Building Blocks</span>",
+                  "slug" => "2-1-atoms-isotopes-ions-and-molecules-the-building-blocks"
+                },
+                {
+                  "id" => "a4f8df82-c778-4971-8dcc-7c5c72578e94@",
+                  "title" => "<span class=\"os-number\">2.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Water</span>",
+                  "slug" => "2-2-water"
+                },
+                {
+                  "id" => "52bfe5d1-7f8a-49b1-9c47-973d3f518958@",
+                  "title" => "<span class=\"os-number\">2.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Carbon</span>",
+                  "slug" => "2-3-carbon"
+                },
+                {
+                  "id" => "a3e8931e-e26a-5f32-93f4-eb866d94541b@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "2-key-terms"
+                },
+                {
+                  "id" => "f2da3ed3-67f6-5700-af42-6c4463071702@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "2-chapter-summary"
+                },
+                {
+                  "id" => "2ce79d9d-6219-5862-98b2-a8a6d969def5@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "2-visual-connection-questions"
+                },
+                {
+                  "id" => "12e876ba-ac3c-5d5a-a328-02e74b452a6d@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "2-review-questions"
+                },
+                {
+                  "id" => "2dfcc310-5154-55bd-9fda-e7767c99826d@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "2-critical-thinking-questions"
+                }
+              ],
+              "slug" => "2-the-chemical-foundation-of-life"
+            },
+            {
+              "id" => "45856fc2-21a6-55cb-87b7-d551b412802e@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>3</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Biological Macromolecules</span>",
+              "contents" => [
+                {
+                  "id" => "ee61d395-bee6-4692-8f3d-42159c445365@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "3-introduction"
+                },
+                {
+                  "id" => "ea44b8fa-e7a2-4360-ad34-ac081bcf104f@",
+                  "title" => "<span class=\"os-number\">3.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Synthesis of Biological Macromolecules</span>",
+                  "slug" => "3-1-synthesis-of-biological-macromolecules"
+                },
+                {
+                  "id" => "73b3ac54-811c-4bce-a9dd-e83f8c0dda77@",
+                  "title" => "<span class=\"os-number\">3.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Carbohydrates</span>",
+                  "slug" => "3-2-carbohydrates"
+                },
+                {
+                  "id" => "23ff3343-6924-4c37-8a08-876db2e9e242@",
+                  "title" => "<span class=\"os-number\">3.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Lipids</span>",
+                  "slug" => "3-3-lipids"
+                },
+                {
+                  "id" => "db3ce6d5-01bd-4ac5-a641-de285fdac0f1@",
+                  "title" => "<span class=\"os-number\">3.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Proteins</span>",
+                  "slug" => "3-4-proteins"
+                },
+                {
+                  "id" => "cb178029-ce17-4c82-aa11-94a2acf4accf@",
+                  "title" => "<span class=\"os-number\">3.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Nucleic Acids</span>",
+                  "slug" => "3-5-nucleic-acids"
+                },
+                {
+                  "id" => "7d0e5350-1538-5190-bcc9-bd8264e2687c@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "3-key-terms"
+                },
+                {
+                  "id" => "596c9b4e-6b5f-5c70-bac9-78e94f155153@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "3-chapter-summary"
+                },
+                {
+                  "id" => "39f2c05d-2c84-5a06-8d32-c2f9a6b88c8b@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "3-visual-connection-questions"
+                },
+                {
+                  "id" => "e81bea89-ced6-5884-91b7-05e4efc86deb@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "3-review-questions"
+                },
+                {
+                  "id" => "c837444f-528b-5f39-9c6c-de515995745d@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "3-critical-thinking-questions"
+                }
+              ],
+              "slug" => "3-biological-macromolecules"
+            }
+          ],
+          "slug" => "1-unit-1-the-chemistry-of-life"
+        },
+        {
+          "id" => "648955bb-7303-5083-ab5a-b27ac5571787@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>2</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 2. The Cell</span>",
+          "contents" => [
+            {
+              "id" => "7b9e049b-0d7f-536e-9ccc-39825a3dc445@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>4</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Cell Structure</span>",
+              "contents" => [
+                {
+                  "id" => "e98bdaec-4060-4b43-ac70-681555a30e22@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "4-introduction"
+                },
+                {
+                  "id" => "003aedba-f354-4e57-ba45-f8b4eda66e12@",
+                  "title" => "<span class=\"os-number\">4.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Studying Cells</span>",
+                  "slug" => "4-1-studying-cells"
+                },
+                {
+                  "id" => "a4ea5574-8c29-4a6d-a9af-3301ed2fdaa0@",
+                  "title" => "<span class=\"os-number\">4.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prokaryotic Cells</span>",
+                  "slug" => "4-2-prokaryotic-cells"
+                },
+                {
+                  "id" => "14f17ea6-1853-4b32-a834-576eb6dfeb67@",
+                  "title" => "<span class=\"os-number\">4.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Cells</span>",
+                  "slug" => "4-3-eukaryotic-cells"
+                },
+                {
+                  "id" => "10b53780-2949-45e7-961b-aafefeec467a@",
+                  "title" => "<span class=\"os-number\">4.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Endomembrane System and Proteins</span>",
+                  "slug" => "4-4-the-endomembrane-system-and-proteins"
+                },
+                {
+                  "id" => "736d0748-2d71-4db3-90bd-16ef0a9ad64d@",
+                  "title" => "<span class=\"os-number\">4.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Cytoskeleton</span>",
+                  "slug" => "4-5-the-cytoskeleton"
+                },
+                {
+                  "id" => "f14ca9c7-bbee-4ea2-ac54-b0a3c6d4bda7@",
+                  "title" => "<span class=\"os-number\">4.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Connections between Cells and Cellular Activities</span>",
+                  "slug" => "4-6-connections-between-cells-and-cellular-activities"
+                },
+                {
+                  "id" => "245c74c6-5eb0-5017-a884-d1dff6ee9ecd@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "4-key-terms"
+                },
+                {
+                  "id" => "115c0564-d8f8-51cc-9f76-53936324512f@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "4-chapter-summary"
+                },
+                {
+                  "id" => "8946f768-f3b2-5285-bcb5-3c131394b1cd@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "4-visual-connection-questions"
+                },
+                {
+                  "id" => "09c5c4a9-daba-53a8-ad71-c4e1e6d6e09b@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "4-review-questions"
+                },
+                {
+                  "id" => "5a157516-f41c-588f-a5d1-63d31c2704eb@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "4-critical-thinking-questions"
+                }
+              ],
+              "slug" => "4-cell-structure"
+            },
+            {
+              "id" => "e4d9300b-0194-58f8-bed4-0274808ac883@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>5</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Structure and Function of Plasma Membranes</span>",
+              "contents" => [
+                {
+                  "id" => "a1a2f03a-701f-4e7a-ae0e-d8087880c6fd@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "5-introduction"
+                },
+                {
+                  "id" => "40e1947a-5a8b-4314-a9e7-bae3cedb885d@",
+                  "title" => "<span class=\"os-number\">5.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Components and Structure</span>",
+                  "slug" => "5-1-components-and-structure"
+                },
+                {
+                  "id" => "e97f68fb-49fa-47ba-875b-6b1d59d8f11b@",
+                  "title" => "<span class=\"os-number\">5.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Passive Transport</span>",
+                  "slug" => "5-2-passive-transport"
+                },
+                {
+                  "id" => "0a64c993-2b3c-4cd6-94f8-1d864df896ce@",
+                  "title" => "<span class=\"os-number\">5.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Active Transport</span>",
+                  "slug" => "5-3-active-transport"
+                },
+                {
+                  "id" => "1f0bcd44-86e1-4c34-af1e-3de348baa8d4@",
+                  "title" => "<span class=\"os-number\">5.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Bulk Transport</span>",
+                  "slug" => "5-4-bulk-transport"
+                },
+                {
+                  "id" => "70481832-9ad4-50bf-b595-ecca73cfe683@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "5-key-terms"
+                },
+                {
+                  "id" => "c70ffc40-9859-5302-8aa6-4a316ec6810d@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "5-chapter-summary"
+                },
+                {
+                  "id" => "81d38106-536d-5429-bbee-dab3ab516222@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "5-visual-connection-questions"
+                },
+                {
+                  "id" => "e674fcc4-82c6-5dce-9c2c-0d8f52cd9a1d@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "5-review-questions"
+                },
+                {
+                  "id" => "f4ed5931-bc8d-5a92-8cf5-da855c20eaf2@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "5-critical-thinking-questions"
+                }
+              ],
+              "slug" => "5-structure-and-function-of-plasma-membranes"
+            },
+            {
+              "id" => "4a941b63-19d1-5caf-8425-aaf35bf635bf@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>6</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Metabolism</span>",
+              "contents" => [
+                {
+                  "id" => "77d140f0-5582-48ad-9119-79bdb81fbc70@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "6-introduction"
+                },
+                {
+                  "id" => "ed5df737-77ff-452c-b91e-a2c2dad59606@",
+                  "title" => "<span class=\"os-number\">6.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Energy and Metabolism</span>",
+                  "slug" => "6-1-energy-and-metabolism"
+                },
+                {
+                  "id" => "16b284a1-de63-4e08-910a-8baf1b94fc1e@",
+                  "title" => "<span class=\"os-number\">6.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Potential, Kinetic, Free, and Activation Energy</span>",
+                  "slug" => "6-2-potential-kinetic-free-and-activation-energy"
+                },
+                {
+                  "id" => "1d93a84f-d3e4-498b-99fb-36f389084856@",
+                  "title" => "<span class=\"os-number\">6.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Laws of Thermodynamics</span>",
+                  "slug" => "6-3-the-laws-of-thermodynamics"
+                },
+                {
+                  "id" => "99c09a74-d755-47ec-a38d-f6cc1aa5a6a7@",
+                  "title" => "<span class=\"os-number\">6.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">ATP: Adenosine Triphosphate</span>",
+                  "slug" => "6-4-atp-adenosine-triphosphate"
+                },
+                {
+                  "id" => "3270ba1a-e262-481e-9902-61ef811251d5@",
+                  "title" => "<span class=\"os-number\">6.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Enzymes</span>",
+                  "slug" => "6-5-enzymes"
+                },
+                {
+                  "id" => "1fac8b59-9ad4-55e2-91eb-8b734b876eae@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "6-key-terms"
+                },
+                {
+                  "id" => "23a35e5a-cac4-5b1d-ab0e-9e814f22e302@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "6-chapter-summary"
+                },
+                {
+                  "id" => "d4157d64-1500-50c7-8a88-a490d4485a0e@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "6-visual-connection-questions"
+                },
+                {
+                  "id" => "a31ce2d5-0b80-52a8-ae6a-8186677c7381@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "6-review-questions"
+                },
+                {
+                  "id" => "01f105b1-290c-51a1-8863-89c22e99a721@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "6-critical-thinking-questions"
+                }
+              ],
+              "slug" => "6-metabolism"
+            },
+            {
+              "id" => "ce3d410c-68e4-5f38-b5f9-ae5e3de78766@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>7</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Cellular Respiration</span>",
+              "contents" => [
+                {
+                  "id" => "e5cf99b1-c357-48c0-bd05-e15557c89951@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "7-introduction"
+                },
+                {
+                  "id" => "75fabe48-5fbc-458b-9062-010dd3886ae5@",
+                  "title" => "<span class=\"os-number\">7.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Energy in Living Systems</span>",
+                  "slug" => "7-1-energy-in-living-systems"
+                },
+                {
+                  "id" => "b58b6923-aad7-4c62-907e-fb0c0ba08f44@",
+                  "title" => "<span class=\"os-number\">7.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Glycolysis</span>",
+                  "slug" => "7-2-glycolysis"
+                },
+                {
+                  "id" => "c1e00705-ab75-4c24-8c6c-5d983c3cca49@",
+                  "title" => "<span class=\"os-number\">7.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Oxidation of Pyruvate and the Citric Acid Cycle</span>",
+                  "slug" => "7-3-oxidation-of-pyruvate-and-the-citric-acid-cycle"
+                },
+                {
+                  "id" => "ee84d502-0ad9-4abb-a530-94252d9f08d9@",
+                  "title" => "<span class=\"os-number\">7.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Oxidative Phosphorylation</span>",
+                  "slug" => "7-4-oxidative-phosphorylation"
+                },
+                {
+                  "id" => "8e609899-8a25-47cd-a019-11ed0e065755@",
+                  "title" => "<span class=\"os-number\">7.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Metabolism without Oxygen</span>",
+                  "slug" => "7-5-metabolism-without-oxygen"
+                },
+                {
+                  "id" => "64fe39ec-5eb8-491e-93ba-a92598aaaa80@",
+                  "title" => "<span class=\"os-number\">7.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Connections of Carbohydrate, Protein, and Lipid Metabolic Pathways</span>",
+                  "slug" => "7-6-connections-of-carbohydrate-protein-and-lipid-metabolic-pathways"
+                },
+                {
+                  "id" => "cd121ae8-7896-4d46-a606-17f78c37b826@",
+                  "title" => "<span class=\"os-number\">7.7</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Regulation of Cellular Respiration</span>",
+                  "slug" => "7-7-regulation-of-cellular-respiration"
+                },
+                {
+                  "id" => "58e9e038-1b18-5489-afed-29a8a6f924d2@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "7-key-terms"
+                },
+                {
+                  "id" => "6ed583d2-ddff-5545-9f80-49048fa3bd77@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "7-chapter-summary"
+                },
+                {
+                  "id" => "f688ac78-4318-59b7-b7f9-1c6b329cb731@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "7-visual-connection-questions"
+                },
+                {
+                  "id" => "c2f00861-7c2e-58fe-9310-4de62220d23b@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "7-review-questions"
+                },
+                {
+                  "id" => "c7c71e26-ab5a-50ba-894e-3139bd3fb290@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "7-critical-thinking-questions"
+                }
+              ],
+              "slug" => "7-cellular-respiration"
+            },
+            {
+              "id" => "9bc06b92-4081-5e0b-90da-dcd3bb1890be@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>8</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Photosynthesis</span>",
+              "contents" => [
+                {
+                  "id" => "48242857-59d1-4b46-a7e2-f27c33299f56@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "8-introduction"
+                },
+                {
+                  "id" => "5bb72d25-e488-4760-8da8-51bc5b86c29d@",
+                  "title" => "<span class=\"os-number\">8.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Overview of Photosynthesis</span>",
+                  "slug" => "8-1-overview-of-photosynthesis"
+                },
+                {
+                  "id" => "f829b3bd-472d-4885-a0a4-6fea3252e2b2@",
+                  "title" => "<span class=\"os-number\">8.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Light-Dependent Reactions of Photosynthesis</span>",
+                  "slug" => "8-2-the-light-dependent-reactions-of-photosynthesis"
+                },
+                {
+                  "id" => "36b3469d-e561-44ff-ac32-99f4d18830e2@",
+                  "title" => "<span class=\"os-number\">8.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Using Light Energy to Make Organic Molecules</span>",
+                  "slug" => "8-3-using-light-energy-to-make-organic-molecules"
+                },
+                {
+                  "id" => "f666dd17-2e7a-5010-8c87-b30fede79e20@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "8-key-terms"
+                },
+                {
+                  "id" => "f7efb3a6-f6ab-5580-94b1-7f5bc4b86d2f@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "8-chapter-summary"
+                },
+                {
+                  "id" => "7bb74fbb-6afc-58c5-a6c2-c673cd1016d6@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "8-visual-connection-questions"
+                },
+                {
+                  "id" => "f7bf762b-337b-5812-8132-f03a4c4b7479@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "8-review-questions"
+                },
+                {
+                  "id" => "c09302ed-cfb5-546c-8021-23a8aeb16721@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "8-critical-thinking-questions"
+                }
+              ],
+              "slug" => "8-photosynthesis"
+            },
+            {
+              "id" => "e6aeeadd-0434-5e25-9206-fd0890bb92dc@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>9</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Cell Communication</span>",
+              "contents" => [
+                {
+                  "id" => "d5ef65df-70bb-4cd6-8377-4c0f315c9e97@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "9-introduction"
+                },
+                {
+                  "id" => "1f8a0ca4-24a2-44fd-9706-f43ac0a5904e@",
+                  "title" => "<span class=\"os-number\">9.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Signaling Molecules and Cellular Receptors</span>",
+                  "slug" => "9-1-signaling-molecules-and-cellular-receptors"
+                },
+                {
+                  "id" => "b13912c1-d7fb-4f5f-9b8a-04a0ee9ed00f@",
+                  "title" => "<span class=\"os-number\">9.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Propagation of the Signal</span>",
+                  "slug" => "9-2-propagation-of-the-signal"
+                },
+                {
+                  "id" => "c90e0c3f-d259-40ae-845f-6cb0a364e388@",
+                  "title" => "<span class=\"os-number\">9.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Response to the Signal</span>",
+                  "slug" => "9-3-response-to-the-signal"
+                },
+                {
+                  "id" => "1a3eb179-6a06-4a14-81bb-90fce075c39d@",
+                  "title" => "<span class=\"os-number\">9.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Signaling in Single-Celled Organisms</span>",
+                  "slug" => "9-4-signaling-in-single-celled-organisms"
+                },
+                {
+                  "id" => "30a7660d-3ca0-5473-af1b-41b3833cefdd@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "9-key-terms"
+                },
+                {
+                  "id" => "909afe68-4dfb-5376-8e12-e534986a3417@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "9-chapter-summary"
+                },
+                {
+                  "id" => "b5a6b16b-1a29-53e2-bd80-2f41adf7085a@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "9-visual-connection-questions"
+                },
+                {
+                  "id" => "5785ccdf-dee0-5385-80b2-1bd256568438@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "9-review-questions"
+                },
+                {
+                  "id" => "fb86f9ec-c3d5-5bf8-99e2-1cac039b54d3@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "9-critical-thinking-questions"
+                }
+              ],
+              "slug" => "9-cell-communication"
+            },
+            {
+              "id" => "7340d08a-7e76-5f2a-ab5c-7e4889acafaa@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>10</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Cell Reproduction</span>",
+              "contents" => [
+                {
+                  "id" => "87a4423a-158e-40b8-86c5-a1bd14cf6584@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "10-introduction"
+                },
+                {
+                  "id" => "4caf480f-6848-4231-9fe3-345bd87cae80@",
+                  "title" => "<span class=\"os-number\">10.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Cell Division</span>",
+                  "slug" => "10-1-cell-division"
+                },
+                {
+                  "id" => "d6d279e4-eb7a-4e64-8d53-8710b4c50e81@",
+                  "title" => "<span class=\"os-number\">10.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Cell Cycle</span>",
+                  "slug" => "10-2-the-cell-cycle"
+                },
+                {
+                  "id" => "69b8e2ee-f350-4202-8085-878c433e1cd5@",
+                  "title" => "<span class=\"os-number\">10.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Control of the Cell Cycle</span>",
+                  "slug" => "10-3-control-of-the-cell-cycle"
+                },
+                {
+                  "id" => "09866999-e751-4c08-b013-e46b93c08188@",
+                  "title" => "<span class=\"os-number\">10.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Cancer and the Cell Cycle</span>",
+                  "slug" => "10-4-cancer-and-the-cell-cycle"
+                },
+                {
+                  "id" => "91c43929-51af-4cda-b1ba-ac8521bef464@",
+                  "title" => "<span class=\"os-number\">10.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prokaryotic Cell Division</span>",
+                  "slug" => "10-5-prokaryotic-cell-division"
+                },
+                {
+                  "id" => "27082fea-78ab-5c36-9347-11c9fdedd944@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "10-key-terms"
+                },
+                {
+                  "id" => "bceb103a-a597-565c-a9ce-9045448e5346@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "10-chapter-summary"
+                },
+                {
+                  "id" => "ee47fdee-66fc-5bb9-b819-2a7bc28f3eeb@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "10-visual-connection-questions"
+                },
+                {
+                  "id" => "ec3e8ad2-6fa7-5b75-b82d-f32b0771821d@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "10-review-questions"
+                },
+                {
+                  "id" => "cbbc4155-c793-5ac9-b7a8-a64c51bb0e47@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "10-critical-thinking-questions"
+                }
+              ],
+              "slug" => "10-cell-reproduction"
+            }
+          ],
+          "slug" => "2-unit-2-the-cell"
+        },
+        {
+          "id" => "26dff32b-3e2d-5672-8e49-cb4340b253ca@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>3</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 3. Genetics</span>",
+          "contents" => [
+            {
+              "id" => "1be9a8d1-e5e8-5bd7-94b0-3a843e3d717a@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>11</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Meiosis and Sexual Reproduction</span>",
+              "contents" => [
+                {
+                  "id" => "a29864f3-11df-4ded-a481-b9ddeba0d407@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "11-introduction"
+                },
+                {
+                  "id" => "198652dc-30cf-4065-9bbf-80fe4e1f123b@",
+                  "title" => "<span class=\"os-number\">11.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Process of Meiosis</span>",
+                  "slug" => "11-1-the-process-of-meiosis"
+                },
+                {
+                  "id" => "8fd39113-d8a6-4987-a41b-d0f4cea6062e@",
+                  "title" => "<span class=\"os-number\">11.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Sexual Reproduction</span>",
+                  "slug" => "11-2-sexual-reproduction"
+                },
+                {
+                  "id" => "b0077354-3025-5857-bb26-76beab58b3dd@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "11-key-terms"
+                },
+                {
+                  "id" => "93b0a5d1-51c1-5623-885c-dc5c7826a9a3@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "11-chapter-summary"
+                },
+                {
+                  "id" => "4fcdb0d8-17d0-5d5b-95fc-f931355918ef@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "11-visual-connection-questions"
+                },
+                {
+                  "id" => "94669760-ef30-55bc-8036-c3a8ece94623@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "11-review-questions"
+                },
+                {
+                  "id" => "8c21ed84-9930-50d9-96b6-c801d0831998@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "11-critical-thinking-questions"
+                }
+              ],
+              "slug" => "11-meiosis-and-sexual-reproduction"
+            },
+            {
+              "id" => "a790dcc2-b3a9-56dd-9403-f266f608c0c1@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>12</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Mendel's Experiments and Heredity</span>",
+              "contents" => [
+                {
+                  "id" => "3b695749-395f-41f8-9cb3-13ea11c30a34@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "12-introduction"
+                },
+                {
+                  "id" => "c785a8d1-04ca-47ff-af0b-8de66795436a@",
+                  "title" => "<span class=\"os-number\">12.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Mendel’s Experiments and the Laws of Probability</span>",
+                  "slug" => "12-1-mendels-experiments-and-the-laws-of-probability"
+                },
+                {
+                  "id" => "e2a834f2-7b7e-4ae4-bed8-f4d3c9fff598@",
+                  "title" => "<span class=\"os-number\">12.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Characteristics and Traits</span>",
+                  "slug" => "12-2-characteristics-and-traits"
+                },
+                {
+                  "id" => "71479ebe-e682-4230-beab-d458bc170fe1@",
+                  "title" => "<span class=\"os-number\">12.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Laws of Inheritance</span>",
+                  "slug" => "12-3-laws-of-inheritance"
+                },
+                {
+                  "id" => "a6dabf91-4bf7-50e6-9641-359f99c0f5fd@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "12-key-terms"
+                },
+                {
+                  "id" => "771861e1-470d-57db-9a14-baa3ddfecca5@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "12-chapter-summary"
+                },
+                {
+                  "id" => "37689f93-50e0-5338-beb6-8825fa079935@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "12-visual-connection-questions"
+                },
+                {
+                  "id" => "553b12c0-4772-5727-a357-98026e141e40@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "12-review-questions"
+                },
+                {
+                  "id" => "39a7f75e-3c5c-5036-9040-64cb3dd683ea@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "12-critical-thinking-questions"
+                }
+              ],
+              "slug" => "12-mendels-experiments-and-heredity"
+            },
+            {
+              "id" => "72b16345-860e-5e83-974a-ca42f22a08c7@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>13</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Modern Understandings of Inheritance</span>",
+              "contents" => [
+                {
+                  "id" => "86f39385-c19c-4006-8c52-138cc6145958@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "13-introduction"
+                },
+                {
+                  "id" => "a9d1d357-da72-47ee-8d93-4699f1da6244@",
+                  "title" => "<span class=\"os-number\">13.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Chromosomal Theory and Genetic Linkage</span>",
+                  "slug" => "13-1-chromosomal-theory-and-genetic-linkage"
+                },
+                {
+                  "id" => "91f58935-5bef-40f2-88fd-8ef637648b9c@",
+                  "title" => "<span class=\"os-number\">13.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Chromosomal Basis of Inherited Disorders</span>",
+                  "slug" => "13-2-chromosomal-basis-of-inherited-disorders"
+                },
+                {
+                  "id" => "643edc6e-a07c-5985-8f05-a7db8cb5956f@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "13-key-terms"
+                },
+                {
+                  "id" => "60b4bcec-8282-527a-bd78-26aae0a7a083@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "13-chapter-summary"
+                },
+                {
+                  "id" => "69c362eb-0009-58e9-8d95-5ef8e51aec89@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "13-visual-connection-questions"
+                },
+                {
+                  "id" => "672f424f-d3a1-5338-96c0-0c30685e79de@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "13-review-questions"
+                },
+                {
+                  "id" => "832cb804-7e5d-542e-830f-83473cf7c348@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "13-critical-thinking-questions"
+                }
+              ],
+              "slug" => "13-modern-understandings-of-inheritance"
+            },
+            {
+              "id" => "e30dc373-fba1-51d2-9907-4d988387c550@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>14</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">DNA Structure and Function</span>",
+              "contents" => [
+                {
+                  "id" => "434d46d6-6ce1-4709-96a7-e78e5477d4ee@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "14-introduction"
+                },
+                {
+                  "id" => "edcd817b-eeae-4d6f-8cbb-5cc0430a8564@",
+                  "title" => "<span class=\"os-number\">14.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Historical Basis of Modern Understanding</span>",
+                  "slug" => "14-1-historical-basis-of-modern-understanding"
+                },
+                {
+                  "id" => "53bb4f0d-1c4a-4451-a97a-e24e2b9e7776@",
+                  "title" => "<span class=\"os-number\">14.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">DNA Structure and Sequencing</span>",
+                  "slug" => "14-2-dna-structure-and-sequencing"
+                },
+                {
+                  "id" => "1723d815-cea1-4f32-891f-0373d7ef1137@",
+                  "title" => "<span class=\"os-number\">14.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Basics of DNA Replication</span>",
+                  "slug" => "14-3-basics-of-dna-replication"
+                },
+                {
+                  "id" => "34493d96-5fb7-4dd4-9ed4-6f476d2afa8f@",
+                  "title" => "<span class=\"os-number\">14.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">DNA Replication in Prokaryotes</span>",
+                  "slug" => "14-4-dna-replication-in-prokaryotes"
+                },
+                {
+                  "id" => "da5de7b1-f24a-4241-94ea-9740907f6bf9@",
+                  "title" => "<span class=\"os-number\">14.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">DNA Replication in Eukaryotes</span>",
+                  "slug" => "14-5-dna-replication-in-eukaryotes"
+                },
+                {
+                  "id" => "30fcb950-c2a6-4dab-b62f-549c8ce3d7d1@",
+                  "title" => "<span class=\"os-number\">14.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">DNA Repair</span>",
+                  "slug" => "14-6-dna-repair"
+                },
+                {
+                  "id" => "f8086000-7847-50a9-9948-607f8b3c6ee2@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "14-key-terms"
+                },
+                {
+                  "id" => "7ce1b9f6-3e2c-5b9b-9ae6-82d8679bd0ec@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "14-chapter-summary"
+                },
+                {
+                  "id" => "e2b458e8-6409-5353-9952-457b3b5c430b@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "14-visual-connection-questions"
+                },
+                {
+                  "id" => "879e864b-5b1f-5944-80db-edcc3a51bfce@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "14-review-questions"
+                },
+                {
+                  "id" => "f4d75e48-3fc2-514f-b118-0f405b429f24@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "14-critical-thinking-questions"
+                }
+              ],
+              "slug" => "14-dna-structure-and-function"
+            },
+            {
+              "id" => "3316c413-36da-5148-bc2b-c8d546b3bd3b@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>15</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Genes and Proteins</span>",
+              "contents" => [
+                {
+                  "id" => "ecc98c47-ea58-4a61-ba67-76ffa037a28c@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "15-introduction"
+                },
+                {
+                  "id" => "40489b84-9322-47be-96dc-4f80079cb868@",
+                  "title" => "<span class=\"os-number\">15.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Genetic Code</span>",
+                  "slug" => "15-1-the-genetic-code"
+                },
+                {
+                  "id" => "48fcec00-b861-4d5f-b1d3-1df6bbb80eb4@",
+                  "title" => "<span class=\"os-number\">15.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prokaryotic Transcription</span>",
+                  "slug" => "15-2-prokaryotic-transcription"
+                },
+                {
+                  "id" => "ea5ef43f-dbba-447e-b163-d9dc09b49990@",
+                  "title" => "<span class=\"os-number\">15.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Transcription</span>",
+                  "slug" => "15-3-eukaryotic-transcription"
+                },
+                {
+                  "id" => "8c2adf0b-96af-411c-9151-e53d9ce362b4@",
+                  "title" => "<span class=\"os-number\">15.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">RNA Processing in Eukaryotes</span>",
+                  "slug" => "15-4-rna-processing-in-eukaryotes"
+                },
+                {
+                  "id" => "d6603498-9a4c-4056-ac84-061ad4f8cdf9@",
+                  "title" => "<span class=\"os-number\">15.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Ribosomes and Protein Synthesis</span>",
+                  "slug" => "15-5-ribosomes-and-protein-synthesis"
+                },
+                {
+                  "id" => "b06f8c0a-0a6e-5a35-9f29-adb344802f06@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "15-key-terms"
+                },
+                {
+                  "id" => "daa66a82-6a04-5b31-8010-f164ed6bb655@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "15-chapter-summary"
+                },
+                {
+                  "id" => "68988d69-3c2b-5220-8f2e-c7b51561d80a@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "15-visual-connection-questions"
+                },
+                {
+                  "id" => "e767d0ce-a4fc-53f9-913b-e39fd0fdefcf@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "15-review-questions"
+                },
+                {
+                  "id" => "4f7e7a21-d0ad-5bb0-9c90-20edaa030736@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "15-critical-thinking-questions"
+                }
+              ],
+              "slug" => "15-genes-and-proteins"
+            },
+            {
+              "id" => "51dd48c1-9b5d-5f72-85ab-348221b7cace@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>16</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Gene Expression</span>",
+              "contents" => [
+                {
+                  "id" => "9a0de34f-fc57-4734-841e-78b9b4c3b7c8@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "16-introduction"
+                },
+                {
+                  "id" => "750579d3-02ef-4a96-8dee-bd9b11f7be6c@",
+                  "title" => "<span class=\"os-number\">16.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Regulation of Gene Expression</span>",
+                  "slug" => "16-1-regulation-of-gene-expression"
+                },
+                {
+                  "id" => "76b4a074-d223-4ad9-8d9e-4114c74f492c@",
+                  "title" => "<span class=\"os-number\">16.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prokaryotic Gene Regulation</span>",
+                  "slug" => "16-2-prokaryotic-gene-regulation"
+                },
+                {
+                  "id" => "112da94a-d347-4695-af35-9c97314f3e84@",
+                  "title" => "<span class=\"os-number\">16.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Epigenetic Gene Regulation</span>",
+                  "slug" => "16-3-eukaryotic-epigenetic-gene-regulation"
+                },
+                {
+                  "id" => "ed1cb7a1-1b1e-4426-9e90-4c7ee7cd1841@",
+                  "title" => "<span class=\"os-number\">16.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Transcription Gene Regulation</span>",
+                  "slug" => "16-4-eukaryotic-transcription-gene-regulation"
+                },
+                {
+                  "id" => "c1fdc133-0975-40e0-8e97-d091e2960734@",
+                  "title" => "<span class=\"os-number\">16.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Post-transcriptional Gene Regulation</span>",
+                  "slug" => "16-5-eukaryotic-post-transcriptional-gene-regulation"
+                },
+                {
+                  "id" => "f193c8c5-f472-43df-82b9-225103e22fd6@",
+                  "title" => "<span class=\"os-number\">16.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Translational and Post-translational Gene Regulation</span>",
+                  "slug" => "16-6-eukaryotic-translational-and-post-translational-gene-regulation"
+                },
+                {
+                  "id" => "21b659c0-10cc-43be-a34e-e41db8d149f3@",
+                  "title" => "<span class=\"os-number\">16.7</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Cancer and Gene Regulation</span>",
+                  "slug" => "16-7-cancer-and-gene-regulation"
+                },
+                {
+                  "id" => "35f6f025-ec10-5baa-8b0e-723128329dd7@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "16-key-terms"
+                },
+                {
+                  "id" => "be80587c-e754-516c-9cc9-c14be7d74e02@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "16-chapter-summary"
+                },
+                {
+                  "id" => "dbd4bb8a-a385-5219-a25d-360de9160d5d@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "16-visual-connection-questions"
+                },
+                {
+                  "id" => "0a9209fa-474e-5b9a-9b36-0d828927ded2@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "16-review-questions"
+                },
+                {
+                  "id" => "5e05f51a-9d4c-5abe-905a-564e177dca95@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "16-critical-thinking-questions"
+                }
+              ],
+              "slug" => "16-gene-expression"
+            },
+            {
+              "id" => "aadc1e77-1ea1-59e1-b2da-7a08278c2544@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>17</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Biotechnology and Genomics</span>",
+              "contents" => [
+                {
+                  "id" => "644feff4-c255-4063-811a-5104a2b430de@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "17-introduction"
+                },
+                {
+                  "id" => "7b18387b-8014-4514-b0fe-2dbef5e9d532@",
+                  "title" => "<span class=\"os-number\">17.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Biotechnology</span>",
+                  "slug" => "17-1-biotechnology"
+                },
+                {
+                  "id" => "42ae98d4-0d7a-4b6b-ba20-881b5e3be123@",
+                  "title" => "<span class=\"os-number\">17.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Mapping Genomes</span>",
+                  "slug" => "17-2-mapping-genomes"
+                },
+                {
+                  "id" => "e65f38e1-9dfc-4da9-995c-f51db70d5abc@",
+                  "title" => "<span class=\"os-number\">17.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Whole-Genome Sequencing</span>",
+                  "slug" => "17-3-whole-genome-sequencing"
+                },
+                {
+                  "id" => "29cd41e7-21fb-499e-9929-353ee596dbbe@",
+                  "title" => "<span class=\"os-number\">17.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Applying Genomics</span>",
+                  "slug" => "17-4-applying-genomics"
+                },
+                {
+                  "id" => "74a63fe7-167c-4666-a28e-1f634d43c6c0@",
+                  "title" => "<span class=\"os-number\">17.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Genomics and Proteomics</span>",
+                  "slug" => "17-5-genomics-and-proteomics"
+                },
+                {
+                  "id" => "cf5a79bd-aeac-5c7b-a0d6-e50ac6a6a83b@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "17-key-terms"
+                },
+                {
+                  "id" => "461bed25-aa39-5a09-aa1b-71e6695761ef@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "17-chapter-summary"
+                },
+                {
+                  "id" => "989ac35a-86bf-5ac9-a637-d4235adf9491@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "17-visual-connection-questions"
+                },
+                {
+                  "id" => "585d2c00-9fa4-589a-98fa-89c74cfd9bf0@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "17-review-questions"
+                },
+                {
+                  "id" => "f99f26bf-b6a8-5fcb-9ea1-81efd17170e8@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "17-critical-thinking-questions"
+                }
+              ],
+              "slug" => "17-biotechnology-and-genomics"
+            }
+          ],
+          "slug" => "3-unit-3-genetics"
+        },
+        {
+          "id" => "0aadc6c5-b12b-53e9-a570-2e65dd6ffbca@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>4</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 4. Evolutionary Processes</span>",
+          "contents" => [
+            {
+              "id" => "da278463-6172-519e-9604-9bbebc66bbb5@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>18</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Evolution and the Origin of Species</span>",
+              "contents" => [
+                {
+                  "id" => "b2589c4b-ef62-48a1-982a-724236ff26b5@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "18-introduction"
+                },
+                {
+                  "id" => "9e805c7d-3865-4666-85ba-34c01660bf84@",
+                  "title" => "<span class=\"os-number\">18.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Understanding Evolution</span>",
+                  "slug" => "18-1-understanding-evolution"
+                },
+                {
+                  "id" => "977917b4-2c6e-4646-a100-636fa26717d4@",
+                  "title" => "<span class=\"os-number\">18.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Formation of New Species</span>",
+                  "slug" => "18-2-formation-of-new-species"
+                },
+                {
+                  "id" => "9d38a9c1-e81a-4cb7-8aa0-dae690bc4371@",
+                  "title" => "<span class=\"os-number\">18.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Reconnection and Rates of Speciation</span>",
+                  "slug" => "18-3-reconnection-and-rates-of-speciation"
+                },
+                {
+                  "id" => "07030520-648f-55eb-bb59-cdcc7688cc25@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "18-key-terms"
+                },
+                {
+                  "id" => "f3e01f06-ea92-5690-93e9-926b238cd92b@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "18-chapter-summary"
+                },
+                {
+                  "id" => "3b1f1764-1d26-5696-a913-ee6e4af2e361@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "18-visual-connection-questions"
+                },
+                {
+                  "id" => "581263a7-eb16-5c0a-855d-103ac92dc103@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "18-review-questions"
+                },
+                {
+                  "id" => "735a0886-85c4-51e2-b7eb-e3e5b971e7e0@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "18-critical-thinking-questions"
+                }
+              ],
+              "slug" => "18-evolution-and-the-origin-of-species"
+            },
+            {
+              "id" => "59afc393-0d18-5675-9736-8fe04e2977d6@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>19</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Evolution of Populations</span>",
+              "contents" => [
+                {
+                  "id" => "38ad6783-a1f0-472e-8d3c-28cf336f1d3c@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "19-introduction"
+                },
+                {
+                  "id" => "22277798-cbf5-46d5-8abd-9a50a79b2b54@",
+                  "title" => "<span class=\"os-number\">19.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Population Evolution</span>",
+                  "slug" => "19-1-population-evolution"
+                },
+                {
+                  "id" => "c8d952c6-3d04-4c9f-b5dd-3c5350180468@",
+                  "title" => "<span class=\"os-number\">19.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Population Genetics</span>",
+                  "slug" => "19-2-population-genetics"
+                },
+                {
+                  "id" => "fa528285-084b-478c-adc2-da78c46915ca@",
+                  "title" => "<span class=\"os-number\">19.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Adaptive Evolution</span>",
+                  "slug" => "19-3-adaptive-evolution"
+                },
+                {
+                  "id" => "e3aa59fd-bfb5-5c8c-ba4d-0a33b7e24e3d@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "19-key-terms"
+                },
+                {
+                  "id" => "7d56bda7-f562-582f-a0b9-a6a2292addce@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "19-chapter-summary"
+                },
+                {
+                  "id" => "6a4b4b9c-15cc-5afc-a439-042932cd20a7@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "19-visual-connection-questions"
+                },
+                {
+                  "id" => "2bc9f0a9-00df-5ae9-905b-2ac5f5dc5a92@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "19-review-questions"
+                },
+                {
+                  "id" => "d08ff8fb-e57c-5a04-8911-069f8cf55d4d@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "19-critical-thinking-questions"
+                }
+              ],
+              "slug" => "19-the-evolution-of-populations"
+            },
+            {
+              "id" => "9e6a5b6d-1948-53f8-97be-887d5f6e9514@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>20</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Phylogenies and the History of Life</span>",
+              "contents" => [
+                {
+                  "id" => "5e2228c5-a640-42d4-8fec-2e8b668708d7@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "20-introduction"
+                },
+                {
+                  "id" => "67322fde-a447-4caa-94f6-2c072d3bda66@",
+                  "title" => "<span class=\"os-number\">20.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Organizing Life on Earth</span>",
+                  "slug" => "20-1-organizing-life-on-earth"
+                },
+                {
+                  "id" => "b4e739c3-be08-4216-9e15-288ac678bb30@",
+                  "title" => "<span class=\"os-number\">20.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Determining Evolutionary Relationships</span>",
+                  "slug" => "20-2-determining-evolutionary-relationships"
+                },
+                {
+                  "id" => "275b6240-caa4-4937-94bb-eaeb86b2f34b@",
+                  "title" => "<span class=\"os-number\">20.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Perspectives on the Phylogenetic Tree</span>",
+                  "slug" => "20-3-perspectives-on-the-phylogenetic-tree"
+                },
+                {
+                  "id" => "7b406e7f-ee75-5612-8c12-c63aa6348022@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "20-key-terms"
+                },
+                {
+                  "id" => "00d49889-e8ad-57fc-bd86-0333b47927cc@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "20-chapter-summary"
+                },
+                {
+                  "id" => "c4f479b1-951c-5aa5-b9f2-e02c9ffa884e@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "20-visual-connection-questions"
+                },
+                {
+                  "id" => "939745f8-072b-5f8a-84b5-e64bbd9978d8@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "20-review-questions"
+                },
+                {
+                  "id" => "ac761f42-8fb9-57bf-9ea8-daf7dcce9dec@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "20-critical-thinking-questions"
+                }
+              ],
+              "slug" => "20-phylogenies-and-the-history-of-life"
+            }
+          ],
+          "slug" => "4-unit-4-evolutionary-processes"
+        },
+        {
+          "id" => "854ac6e7-ea3b-5349-be63-5d15b7797092@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>5</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 5. Biological Diversity</span>",
+          "contents" => [
+            {
+              "id" => "aca2d7c8-e7ea-506f-94b7-08a1ae7a63cc@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>21</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Viruses</span>",
+              "contents" => [
+                {
+                  "id" => "ed0fb5c2-ce30-4a76-8d58-77fb7cf9c7ec@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "21-introduction"
+                },
+                {
+                  "id" => "78aa7335-3dd1-4dc4-bd12-f3dee2587553@",
+                  "title" => "<span class=\"os-number\">21.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Viral Evolution, Morphology, and Classification</span>",
+                  "slug" => "21-1-viral-evolution-morphology-and-classification"
+                },
+                {
+                  "id" => "7cbd15ad-5bff-4678-a99f-85fd579e070c@",
+                  "title" => "<span class=\"os-number\">21.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Virus Infections and Hosts</span>",
+                  "slug" => "21-2-virus-infections-and-hosts"
+                },
+                {
+                  "id" => "e0a7df01-1e56-47b2-81a1-95701e64b277@",
+                  "title" => "<span class=\"os-number\">21.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prevention and Treatment of Viral Infections</span>",
+                  "slug" => "21-3-prevention-and-treatment-of-viral-infections"
+                },
+                {
+                  "id" => "c7560d4a-bcd5-4739-83f4-3e44f44dc130@",
+                  "title" => "<span class=\"os-number\">21.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Other Acellular Entities: Prions and Viroids</span>",
+                  "slug" => "21-4-other-acellular-entities-prions-and-viroids"
+                },
+                {
+                  "id" => "ae677751-1785-59fb-8e32-f7df22585aa1@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "21-key-terms"
+                },
+                {
+                  "id" => "8ae44d80-4ae0-518c-ae55-aae257d5a5c2@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "21-chapter-summary"
+                },
+                {
+                  "id" => "7db678b3-ef31-5bfb-a332-7545c8786225@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "21-visual-connection-questions"
+                },
+                {
+                  "id" => "c84cdebf-cc9e-5321-bfa7-ad3887b36244@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "21-review-questions"
+                },
+                {
+                  "id" => "ce964293-36ce-5ed0-80a5-446a8ce81428@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "21-critical-thinking-questions"
+                }
+              ],
+              "slug" => "21-viruses"
+            },
+            {
+              "id" => "e4695d29-d401-5faa-89e6-3c8be88e8c2f@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>22</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Prokaryotes: Bacteria and Archaea</span>",
+              "contents" => [
+                {
+                  "id" => "2f332c42-3765-45dd-92a3-d1dfbe7678c1@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "22-introduction"
+                },
+                {
+                  "id" => "b94b96b8-c5fa-4bed-a047-97c324ffdc9d@",
+                  "title" => "<span class=\"os-number\">22.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prokaryotic Diversity</span>",
+                  "slug" => "22-1-prokaryotic-diversity"
+                },
+                {
+                  "id" => "9e7c7540-5794-4c31-917d-fce7e50ea6dd@",
+                  "title" => "<span class=\"os-number\">22.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Structure of Prokaryotes</span>",
+                  "slug" => "22-2-structure-of-prokaryotes"
+                },
+                {
+                  "id" => "47cb544e-2d71-4962-8d42-87f00bad4045@",
+                  "title" => "<span class=\"os-number\">22.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Prokaryotic Metabolism</span>",
+                  "slug" => "22-3-prokaryotic-metabolism"
+                },
+                {
+                  "id" => "0a866b1c-8f44-489a-ae8c-6e100ca0ee55@",
+                  "title" => "<span class=\"os-number\">22.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Bacterial Diseases in Humans</span>",
+                  "slug" => "22-4-bacterial-diseases-in-humans"
+                },
+                {
+                  "id" => "c839b5e3-3aa6-4855-a254-0a493ff1ad17@",
+                  "title" => "<span class=\"os-number\">22.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Beneficial Prokaryotes</span>",
+                  "slug" => "22-5-beneficial-prokaryotes"
+                },
+                {
+                  "id" => "72baf0d3-1c36-5a24-92ad-9d5531725d86@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "22-key-terms"
+                },
+                {
+                  "id" => "505a0456-8be3-5c59-92c5-ce116fa61a76@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "22-chapter-summary"
+                },
+                {
+                  "id" => "68329f44-891f-5ca9-ba10-7a4e703f4ba1@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "22-visual-connection-questions"
+                },
+                {
+                  "id" => "52a7b304-d0e7-5ba4-b051-adb486ac0d6d@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "22-review-questions"
+                },
+                {
+                  "id" => "7ea0249c-4f89-55d4-a361-527adcb205d0@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "22-critical-thinking-questions"
+                }
+              ],
+              "slug" => "22-prokaryotes-bacteria-and-archaea"
+            },
+            {
+              "id" => "58531c71-8fbf-58b9-9251-d3bc999cd5bd@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>23</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Protists</span>",
+              "contents" => [
+                {
+                  "id" => "2d9e50a6-fddc-4a36-8b85-609879ff3c32@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "23-introduction"
+                },
+                {
+                  "id" => "a0746ee5-d512-4fe7-91ba-91649630ca0c@",
+                  "title" => "<span class=\"os-number\">23.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Eukaryotic Origins</span>",
+                  "slug" => "23-1-eukaryotic-origins"
+                },
+                {
+                  "id" => "1e2d9bb8-0150-48c6-909e-1501c626c11b@",
+                  "title" => "<span class=\"os-number\">23.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Characteristics of Protists</span>",
+                  "slug" => "23-2-characteristics-of-protists"
+                },
+                {
+                  "id" => "1e968d8c-f2be-41e8-9610-3bff97d4d373@",
+                  "title" => "<span class=\"os-number\">23.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Groups of Protists</span>",
+                  "slug" => "23-3-groups-of-protists"
+                },
+                {
+                  "id" => "d668ad34-2c26-45db-9fc7-95e3cbfc0149@",
+                  "title" => "<span class=\"os-number\">23.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Ecology of Protists</span>",
+                  "slug" => "23-4-ecology-of-protists"
+                },
+                {
+                  "id" => "cc416398-ca95-58db-b1f4-d21e78b34d46@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "23-key-terms"
+                },
+                {
+                  "id" => "9a7fdd09-6bb6-55a4-b794-021b69484c29@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "23-chapter-summary"
+                },
+                {
+                  "id" => "4c261f3e-6c2d-54d3-a5de-a2e4d9322317@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "23-visual-connection-questions"
+                },
+                {
+                  "id" => "198704c4-43cd-559c-b5c9-3566b3fa8366@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "23-review-questions"
+                },
+                {
+                  "id" => "c7f1e114-7009-5a29-863a-5dd9ca12608e@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "23-critical-thinking-questions"
+                }
+              ],
+              "slug" => "23-protists"
+            },
+            {
+              "id" => "0b77582b-7a6b-5066-9f5a-af1253beb666@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>24</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Fungi</span>",
+              "contents" => [
+                {
+                  "id" => "ed9fa295-e334-4650-b81d-0ede564fb71f@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "24-introduction"
+                },
+                {
+                  "id" => "fa5f3021-e491-4c4d-bd3b-9b99bc75b3c9@",
+                  "title" => "<span class=\"os-number\">24.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Characteristics of Fungi</span>",
+                  "slug" => "24-1-characteristics-of-fungi"
+                },
+                {
+                  "id" => "0137fd51-7ed5-44de-b9a8-41c9311dcd3f@",
+                  "title" => "<span class=\"os-number\">24.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Classifications of Fungi</span>",
+                  "slug" => "24-2-classifications-of-fungi"
+                },
+                {
+                  "id" => "54faf509-a2ed-414d-8885-02445499420e@",
+                  "title" => "<span class=\"os-number\">24.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Ecology of Fungi</span>",
+                  "slug" => "24-3-ecology-of-fungi"
+                },
+                {
+                  "id" => "b81e6e0d-428f-4e3e-933f-c5e85ff4cad0@",
+                  "title" => "<span class=\"os-number\">24.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Fungal Parasites and Pathogens</span>",
+                  "slug" => "24-4-fungal-parasites-and-pathogens"
+                },
+                {
+                  "id" => "3f0c5f6b-e799-46d8-85c2-b416e19bc880@",
+                  "title" => "<span class=\"os-number\">24.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Importance of Fungi in Human Life</span>",
+                  "slug" => "24-5-importance-of-fungi-in-human-life"
+                },
+                {
+                  "id" => "5e3f0723-01f3-5250-83a1-5f4ad24887f0@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "24-key-terms"
+                },
+                {
+                  "id" => "5d865273-0368-5731-9ff5-92fe30ab7236@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "24-chapter-summary"
+                },
+                {
+                  "id" => "7f10ab90-5f22-596c-8ae9-f36ffab75262@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "24-visual-connection-questions"
+                },
+                {
+                  "id" => "823edce1-89d6-5393-8e85-ae2b6b454258@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "24-review-questions"
+                },
+                {
+                  "id" => "b03fd31e-d163-5904-9778-9714b8388c3e@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "24-critical-thinking-questions"
+                }
+              ],
+              "slug" => "24-fungi"
+            },
+            {
+              "id" => "299a4dca-2056-5ff6-8974-cd8714853828@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>25</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Seedless Plants</span>",
+              "contents" => [
+                {
+                  "id" => "204fed82-9cb3-41b3-b278-b117d2a7c1aa@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "25-introduction"
+                },
+                {
+                  "id" => "b12983b8-a6da-46f6-9873-7f9d5776b9ec@",
+                  "title" => "<span class=\"os-number\">25.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Early Plant Life</span>",
+                  "slug" => "25-1-early-plant-life"
+                },
+                {
+                  "id" => "5ff37d64-d2f7-44e3-8444-f0e63d5979cf@",
+                  "title" => "<span class=\"os-number\">25.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Green Algae: Precursors of Land Plants</span>",
+                  "slug" => "25-2-green-algae-precursors-of-land-plants"
+                },
+                {
+                  "id" => "1c7d3088-26b5-430a-a41d-1232a353e595@",
+                  "title" => "<span class=\"os-number\">25.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Bryophytes</span>",
+                  "slug" => "25-3-bryophytes"
+                },
+                {
+                  "id" => "e06bde91-e72c-46d4-85e4-08096675957e@",
+                  "title" => "<span class=\"os-number\">25.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Seedless Vascular Plants</span>",
+                  "slug" => "25-4-seedless-vascular-plants"
+                },
+                {
+                  "id" => "ee158315-165a-5557-babd-f1cebf7c5ea8@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "25-key-terms"
+                },
+                {
+                  "id" => "77e56b4e-fcf7-512b-8091-7aaaaa639296@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "25-chapter-summary"
+                },
+                {
+                  "id" => "10a16ca4-5b2c-501f-8ab9-4c61730a9174@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "25-visual-connection-questions"
+                },
+                {
+                  "id" => "ed265955-9445-550a-a171-54c1e1aea600@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "25-review-questions"
+                },
+                {
+                  "id" => "5343a5b0-a7c9-5965-a735-6e5cfbfe833a@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "25-critical-thinking-questions"
+                }
+              ],
+              "slug" => "25-seedless-plants"
+            },
+            {
+              "id" => "4bdb7012-9213-51ca-bd61-06320a4e26dc@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>26</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Seed Plants</span>",
+              "contents" => [
+                {
+                  "id" => "07323435-7692-4d81-a44d-4c4250c37c8e@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "26-introduction"
+                },
+                {
+                  "id" => "1c45a66a-7a23-48ef-9948-8ae39ee01eb4@",
+                  "title" => "<span class=\"os-number\">26.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Evolution of Seed Plants</span>",
+                  "slug" => "26-1-evolution-of-seed-plants"
+                },
+                {
+                  "id" => "b4bc502e-4b01-4832-be25-90b16239f1dd@",
+                  "title" => "<span class=\"os-number\">26.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Gymnosperms</span>",
+                  "slug" => "26-2-gymnosperms"
+                },
+                {
+                  "id" => "b3298ec7-b55c-4ce7-89fd-1d4fad39630f@",
+                  "title" => "<span class=\"os-number\">26.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Angiosperms</span>",
+                  "slug" => "26-3-angiosperms"
+                },
+                {
+                  "id" => "b3e7f392-d140-4ab4-b49b-d12c0e89c1a1@",
+                  "title" => "<span class=\"os-number\">26.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Role of Seed Plants</span>",
+                  "slug" => "26-4-the-role-of-seed-plants"
+                },
+                {
+                  "id" => "bfd9b6aa-0947-5981-9e31-4dd669bb906e@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "26-key-terms"
+                },
+                {
+                  "id" => "5de7fd5e-47cb-597c-a7d7-a9c5966d8254@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "26-chapter-summary"
+                },
+                {
+                  "id" => "8ee3f87c-40ad-56f4-99b6-8172f4edc8b8@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "26-visual-connection-questions"
+                },
+                {
+                  "id" => "405627c6-fbac-5ce1-ae4b-afe998f4c6cd@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "26-review-questions"
+                },
+                {
+                  "id" => "653aa263-711b-5fd6-a3ae-53544bdc2e2d@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "26-critical-thinking-questions"
+                }
+              ],
+              "slug" => "26-seed-plants"
+            },
+            {
+              "id" => "32a41c58-3a04-5885-8387-f19455e7ca67@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>27</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Introduction to Animal Diversity</span>",
+              "contents" => [
+                {
+                  "id" => "582b3b99-c003-4538-8965-2375382204ee@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "27-introduction"
+                },
+                {
+                  "id" => "d09cbd3e-a293-4aab-9ae6-e1a46e9e1da9@",
+                  "title" => "<span class=\"os-number\">27.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Features of the Animal Kingdom</span>",
+                  "slug" => "27-1-features-of-the-animal-kingdom"
+                },
+                {
+                  "id" => "7289a2d7-803c-49ef-905a-01324d155936@",
+                  "title" => "<span class=\"os-number\">27.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Features Used to Classify Animals</span>",
+                  "slug" => "27-2-features-used-to-classify-animals"
+                },
+                {
+                  "id" => "0b4f514a-f4d4-455a-8814-97fa5df05345@",
+                  "title" => "<span class=\"os-number\">27.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Animal Phylogeny</span>",
+                  "slug" => "27-3-animal-phylogeny"
+                },
+                {
+                  "id" => "0a0b301a-b084-4d30-82d5-430c4d266f35@",
+                  "title" => "<span class=\"os-number\">27.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Evolutionary History of the Animal Kingdom</span>",
+                  "slug" => "27-4-the-evolutionary-history-of-the-animal-kingdom"
+                },
+                {
+                  "id" => "869a1b64-9b2b-5c50-9bcc-caece77b2c74@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "27-key-terms"
+                },
+                {
+                  "id" => "c601f099-5608-5c0b-bac6-b7160678db63@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "27-chapter-summary"
+                },
+                {
+                  "id" => "cac39797-ceaa-572a-afaa-1b45e3f0414b@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "27-visual-connection-questions"
+                },
+                {
+                  "id" => "23342ce0-9865-5876-a645-b845d20e0957@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "27-review-questions"
+                },
+                {
+                  "id" => "ef5bd7e0-be36-57cc-ab32-91c30d60d6bd@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "27-critical-thinking-questions"
+                }
+              ],
+              "slug" => "27-introduction-to-animal-diversity"
+            },
+            {
+              "id" => "c308e50a-26ac-5ae3-84d4-3bab80b4599b@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>28</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Invertebrates</span>",
+              "contents" => [
+                {
+                  "id" => "11247285-083e-4281-ba13-20a70d0377d8@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "28-introduction"
+                },
+                {
+                  "id" => "bb72c222-96b6-4e61-828b-0a667ec1ef22@",
+                  "title" => "<span class=\"os-number\">28.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Phylum Porifera</span>",
+                  "slug" => "28-1-phylum-porifera"
+                },
+                {
+                  "id" => "a7777b21-e8d8-4e7f-a40f-5d3fdf86b904@",
+                  "title" => "<span class=\"os-number\">28.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Phylum Cnidaria</span>",
+                  "slug" => "28-2-phylum-cnidaria"
+                },
+                {
+                  "id" => "d1219426-4d63-40e3-83b4-dc367df7b1fa@",
+                  "title" => "<span class=\"os-number\">28.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Superphylum Lophotrochozoa</span>",
+                  "slug" => "28-3-superphylum-lophotrochozoa"
+                },
+                {
+                  "id" => "39403bd7-2528-49f8-b59d-c9ac37663e15@",
+                  "title" => "<span class=\"os-number\">28.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Superphylum Ecdysozoa</span>",
+                  "slug" => "28-4-superphylum-ecdysozoa"
+                },
+                {
+                  "id" => "88c2f090-b457-4f4e-9b9a-bce5949481e2@",
+                  "title" => "<span class=\"os-number\">28.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Superphylum Deuterostomia</span>",
+                  "slug" => "28-5-superphylum-deuterostomia"
+                },
+                {
+                  "id" => "cb620277-0bb9-5ec1-a380-a43f4f4cfbba@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "28-key-terms"
+                },
+                {
+                  "id" => "cb1f06a6-66a1-520e-b693-5fde35e723f8@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "28-chapter-summary"
+                },
+                {
+                  "id" => "e3fce574-bf41-5825-8628-9e340375e175@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "28-visual-connection-questions"
+                },
+                {
+                  "id" => "806ed1fa-080f-5d9e-b1d6-858f5b529427@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "28-review-questions"
+                },
+                {
+                  "id" => "20dd561c-1e51-5643-aa53-ecfb7ddde6ff@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "28-critical-thinking-questions"
+                }
+              ],
+              "slug" => "28-invertebrates"
+            },
+            {
+              "id" => "26a22ce1-6799-5fc3-b079-ba745601b9d6@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>29</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Vertebrates</span>",
+              "contents" => [
+                {
+                  "id" => "ce4b10f1-479c-47df-8da1-874637759176@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "29-introduction"
+                },
+                {
+                  "id" => "541db286-b021-462f-84f6-0d8540de9314@",
+                  "title" => "<span class=\"os-number\">29.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Chordates</span>",
+                  "slug" => "29-1-chordates"
+                },
+                {
+                  "id" => "856f19b8-cb2d-40b4-b9f7-b466c13045cd@",
+                  "title" => "<span class=\"os-number\">29.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Fishes</span>",
+                  "slug" => "29-2-fishes"
+                },
+                {
+                  "id" => "4c8391c9-f95a-4309-857a-840275fe776b@",
+                  "title" => "<span class=\"os-number\">29.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Amphibians</span>",
+                  "slug" => "29-3-amphibians"
+                },
+                {
+                  "id" => "7c002ad9-7046-4631-ae85-192159967cab@",
+                  "title" => "<span class=\"os-number\">29.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Reptiles</span>",
+                  "slug" => "29-4-reptiles"
+                },
+                {
+                  "id" => "16822841-8449-434a-a45f-9e1633044c32@",
+                  "title" => "<span class=\"os-number\">29.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Birds</span>",
+                  "slug" => "29-5-birds"
+                },
+                {
+                  "id" => "a7a48cd6-4931-4e0c-8499-9bb42411f0c5@",
+                  "title" => "<span class=\"os-number\">29.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Mammals</span>",
+                  "slug" => "29-6-mammals"
+                },
+                {
+                  "id" => "27ad04dc-d4c0-4fe1-af9c-cb65128de719@",
+                  "title" => "<span class=\"os-number\">29.7</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Evolution of Primates</span>",
+                  "slug" => "29-7-the-evolution-of-primates"
+                },
+                {
+                  "id" => "75ed1d67-430c-5ec5-81a7-d88cf7f12dea@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "29-key-terms"
+                },
+                {
+                  "id" => "419b4d90-c628-515c-b09a-8ff81e6f5d25@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "29-chapter-summary"
+                },
+                {
+                  "id" => "d12a6fb2-6074-5966-98ec-8ad0cf2059d8@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "29-visual-connection-questions"
+                },
+                {
+                  "id" => "27636e9b-d0b2-56cd-a11a-6f0ef2673c00@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "29-review-questions"
+                },
+                {
+                  "id" => "738d8609-eba9-5bfc-86cc-d09ca28d7f81@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "29-critical-thinking-questions"
+                }
+              ],
+              "slug" => "29-vertebrates"
+            }
+          ],
+          "slug" => "5-unit-5-biological-diversity"
+        },
+        {
+          "id" => "03130f75-5911-59aa-aef3-c4e562153469@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>6</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 6. Plant Structure and Function</span>",
+          "contents" => [
+            {
+              "id" => "3eebb432-585c-55f1-9725-a5207e52ba9f@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>30</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Plant Form and Physiology</span>",
+              "contents" => [
+                {
+                  "id" => "8cfff5fa-6a5f-491c-a768-44929964104d@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "30-introduction"
+                },
+                {
+                  "id" => "cd0fea74-368e-4015-ae27-e41b3d893b36@",
+                  "title" => "<span class=\"os-number\">30.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Plant Body</span>",
+                  "slug" => "30-1-the-plant-body"
+                },
+                {
+                  "id" => "135eeaa9-79a4-4d8d-af7d-a0b6cf9e22d6@",
+                  "title" => "<span class=\"os-number\">30.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Stems</span>",
+                  "slug" => "30-2-stems"
+                },
+                {
+                  "id" => "addad899-ddc7-489f-918a-30ff0b88911b@",
+                  "title" => "<span class=\"os-number\">30.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Roots</span>",
+                  "slug" => "30-3-roots"
+                },
+                {
+                  "id" => "b9423ada-def0-4c06-98b2-5b59c5d07596@",
+                  "title" => "<span class=\"os-number\">30.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Leaves</span>",
+                  "slug" => "30-4-leaves"
+                },
+                {
+                  "id" => "e5aabc6f-71d9-40d5-99f0-0fb2d8d47317@",
+                  "title" => "<span class=\"os-number\">30.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Transport of Water and Solutes in Plants</span>",
+                  "slug" => "30-5-transport-of-water-and-solutes-in-plants"
+                },
+                {
+                  "id" => "c63b7f28-16a2-4602-b996-cdc7eb78219b@",
+                  "title" => "<span class=\"os-number\">30.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Plant Sensory Systems and Responses</span>",
+                  "slug" => "30-6-plant-sensory-systems-and-responses"
+                },
+                {
+                  "id" => "b13d9cca-89ac-5cac-971f-466d27cbdcd6@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "30-key-terms"
+                },
+                {
+                  "id" => "1fc3678c-39d3-5932-a3d7-bcbcca7ec89d@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "30-chapter-summary"
+                },
+                {
+                  "id" => "4f8e2f5a-f918-559e-9f85-271ec0f5c893@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "30-visual-connection-questions"
+                },
+                {
+                  "id" => "79a5024f-907e-5107-a2fe-becee01f6ebf@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "30-review-questions"
+                },
+                {
+                  "id" => "cc14ce9a-2b06-5b40-9b54-aa56ec2bb0a5@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "30-critical-thinking-questions"
+                }
+              ],
+              "slug" => "30-plant-form-and-physiology"
+            },
+            {
+              "id" => "c6755ece-ed43-575f-91c0-1ddf4522cddb@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>31</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Soil and Plant Nutrition</span>",
+              "contents" => [
+                {
+                  "id" => "349efd3e-f7ce-43cd-8b7b-98424310a985@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "31-introduction"
+                },
+                {
+                  "id" => "57874cae-4b45-4edf-af71-f5df36ec4eb9@",
+                  "title" => "<span class=\"os-number\">31.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Nutritional Requirements of Plants</span>",
+                  "slug" => "31-1-nutritional-requirements-of-plants"
+                },
+                {
+                  "id" => "3ceada67-61b1-478f-9aaf-604f5f34d116@",
+                  "title" => "<span class=\"os-number\">31.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Soil</span>",
+                  "slug" => "31-2-the-soil"
+                },
+                {
+                  "id" => "bb913977-c624-45ce-99f2-425cb520b807@",
+                  "title" => "<span class=\"os-number\">31.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Nutritional Adaptations of Plants</span>",
+                  "slug" => "31-3-nutritional-adaptations-of-plants"
+                },
+                {
+                  "id" => "9a3d9464-7ffc-5fd6-a1af-959a5de8e236@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "31-key-terms"
+                },
+                {
+                  "id" => "c7213441-64e7-50e9-b62a-4004899c2967@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "31-chapter-summary"
+                },
+                {
+                  "id" => "7df0edf6-a7eb-5e6b-a41a-74f9059c4171@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "31-visual-connection-questions"
+                },
+                {
+                  "id" => "3114ca2c-9f9b-526f-b8d8-6666a6740574@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "31-review-questions"
+                },
+                {
+                  "id" => "e9fd016d-cebd-50e3-92e6-3b40d72ce30a@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "31-critical-thinking-questions"
+                }
+              ],
+              "slug" => "31-soil-and-plant-nutrition"
+            },
+            {
+              "id" => "14a45db9-9f2b-5643-bdb5-3643a7189ec3@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>32</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Plant Reproduction</span>",
+              "contents" => [
+                {
+                  "id" => "baffdcc7-0c68-416f-996e-0aa99cf96a5d@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "32-introduction"
+                },
+                {
+                  "id" => "f4f12383-bcdd-4ea4-a192-96a8f307e07f@",
+                  "title" => "<span class=\"os-number\">32.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Reproductive Development and Structure</span>",
+                  "slug" => "32-1-reproductive-development-and-structure"
+                },
+                {
+                  "id" => "4cb8905e-544e-4dc7-98ed-0889d3a4981a@",
+                  "title" => "<span class=\"os-number\">32.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Pollination and Fertilization</span>",
+                  "slug" => "32-2-pollination-and-fertilization"
+                },
+                {
+                  "id" => "32be2767-4952-4dba-a93f-5fb6593e3fd6@",
+                  "title" => "<span class=\"os-number\">32.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Asexual Reproduction</span>",
+                  "slug" => "32-3-asexual-reproduction"
+                },
+                {
+                  "id" => "6be8ca64-a52e-53b9-99e3-cd699794301a@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "32-key-terms"
+                },
+                {
+                  "id" => "c3b18aad-6b8b-5175-ba98-fd270c5bfb07@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "32-chapter-summary"
+                },
+                {
+                  "id" => "f2a121ae-a5d1-5884-8a24-10a5569642b1@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "32-visual-connection-questions"
+                },
+                {
+                  "id" => "d8828ad6-208e-5762-bf9d-bf822916ae12@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "32-review-questions"
+                },
+                {
+                  "id" => "fde1cb90-b440-50f6-a6ad-a1cb43f3759d@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "32-critical-thinking-questions"
+                }
+              ],
+              "slug" => "32-plant-reproduction"
+            }
+          ],
+          "slug" => "6-unit-6-plant-structure-and-function"
+        },
+        {
+          "id" => "74dd89f4-e18c-500b-a0a2-5104ef20e6ec@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>7</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 7. Animal Structure and Function</span>",
+          "contents" => [
+            {
+              "id" => "b90c0ebd-8fec-50ce-a1bc-e8c8319ba846@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>33</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Animal Body: Basic Form and Function</span>",
+              "contents" => [
+                {
+                  "id" => "60a1d14d-c74f-473c-a94b-029b4a704a35@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "33-introduction"
+                },
+                {
+                  "id" => "44503b54-9a4c-40c4-ae59-369526d2f9ef@",
+                  "title" => "<span class=\"os-number\">33.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Animal Form and Function</span>",
+                  "slug" => "33-1-animal-form-and-function"
+                },
+                {
+                  "id" => "f8b7e159-1112-46ea-be19-5f492747a7b5@",
+                  "title" => "<span class=\"os-number\">33.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Animal Primary Tissues</span>",
+                  "slug" => "33-2-animal-primary-tissues"
+                },
+                {
+                  "id" => "04fdb865-17a1-43d8-bb33-36f821ddd119@",
+                  "title" => "<span class=\"os-number\">33.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Homeostasis</span>",
+                  "slug" => "33-3-homeostasis"
+                },
+                {
+                  "id" => "ad757859-6533-5b83-8e37-6748106de4a1@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "33-key-terms"
+                },
+                {
+                  "id" => "f529b6d0-8500-5e8e-99ee-8cfed4235fc5@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "33-chapter-summary"
+                },
+                {
+                  "id" => "81adcedf-980e-5c5a-8462-2988194a8a3e@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "33-visual-connection-questions"
+                },
+                {
+                  "id" => "6fc3702d-eaf7-51a6-9a00-5910288fd0c5@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "33-review-questions"
+                },
+                {
+                  "id" => "c2db3d7a-a5ef-5cb2-a7b0-ffcc8954113a@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "33-critical-thinking-questions"
+                }
+              ],
+              "slug" => "33-the-animal-body-basic-form-and-function"
+            },
+            {
+              "id" => "208e39b4-e2b0-517b-a1a5-520a358d8506@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>34</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Animal Nutrition and the Digestive System</span>",
+              "contents" => [
+                {
+                  "id" => "41fb680f-b781-4e9a-a393-76ca49c55ff9@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "34-introduction"
+                },
+                {
+                  "id" => "39eb2d7f-4604-401d-a5ed-ca159c04cc80@",
+                  "title" => "<span class=\"os-number\">34.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Digestive Systems</span>",
+                  "slug" => "34-1-digestive-systems"
+                },
+                {
+                  "id" => "717906af-34be-4e1d-917d-e0e24bfc0901@",
+                  "title" => "<span class=\"os-number\">34.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Nutrition and Energy Production</span>",
+                  "slug" => "34-2-nutrition-and-energy-production"
+                },
+                {
+                  "id" => "f4dc9545-9398-417d-bb23-249fc9892cac@",
+                  "title" => "<span class=\"os-number\">34.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Digestive System Processes</span>",
+                  "slug" => "34-3-digestive-system-processes"
+                },
+                {
+                  "id" => "d8bc0f62-79c7-4777-bf95-3d94eeca7a1a@",
+                  "title" => "<span class=\"os-number\">34.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Digestive System Regulation</span>",
+                  "slug" => "34-4-digestive-system-regulation"
+                },
+                {
+                  "id" => "86c6f3d8-186c-5a07-b748-a6010223e033@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "34-key-terms"
+                },
+                {
+                  "id" => "cfbb19e0-a194-5dbc-979d-0313c5e66193@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "34-chapter-summary"
+                },
+                {
+                  "id" => "35640451-5dd6-5197-85f0-0de14a782981@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "34-visual-connection-questions"
+                },
+                {
+                  "id" => "0ed38205-7c6e-594a-b21e-d4f7b21587b7@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "34-review-questions"
+                },
+                {
+                  "id" => "99ba73d2-bb08-55d4-ab27-199d6fe81970@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "34-critical-thinking-questions"
+                }
+              ],
+              "slug" => "34-animal-nutrition-and-the-digestive-system"
+            },
+            {
+              "id" => "19708995-94b5-5dda-bc87-c145f437a17c@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>35</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Nervous System</span>",
+              "contents" => [
+                {
+                  "id" => "6dfe867e-6b08-47f3-a5f1-6bce3259ecb4@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "35-introduction"
+                },
+                {
+                  "id" => "73d8f8a7-46a3-4a3a-9afa-970f2f03deb3@",
+                  "title" => "<span class=\"os-number\">35.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Neurons and Glial Cells</span>",
+                  "slug" => "35-1-neurons-and-glial-cells"
+                },
+                {
+                  "id" => "72cfcf6f-e196-4e0b-9bcf-45f4853993e4@",
+                  "title" => "<span class=\"os-number\">35.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">How Neurons Communicate</span>",
+                  "slug" => "35-2-how-neurons-communicate"
+                },
+                {
+                  "id" => "24e8609c-16a7-4dd5-b3da-e38aaeef7ed5@",
+                  "title" => "<span class=\"os-number\">35.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Central Nervous System</span>",
+                  "slug" => "35-3-the-central-nervous-system"
+                },
+                {
+                  "id" => "56a8c532-664f-4ad7-8edf-2305d723be10@",
+                  "title" => "<span class=\"os-number\">35.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Peripheral Nervous System</span>",
+                  "slug" => "35-4-the-peripheral-nervous-system"
+                },
+                {
+                  "id" => "c1f66449-457f-401a-bac3-12c65da2779a@",
+                  "title" => "<span class=\"os-number\">35.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Nervous System Disorders</span>",
+                  "slug" => "35-5-nervous-system-disorders"
+                },
+                {
+                  "id" => "74c94ca4-7be1-5358-92de-9308edb48fa6@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "35-key-terms"
+                },
+                {
+                  "id" => "b71d4743-919f-50c0-8970-b2bf4c023f4e@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "35-chapter-summary"
+                },
+                {
+                  "id" => "60a0cc0e-e2d7-525a-9483-a1495f163bb4@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "35-visual-connection-questions"
+                },
+                {
+                  "id" => "36186e04-a1d8-50ad-a263-d46815a480a1@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "35-review-questions"
+                },
+                {
+                  "id" => "9a9c74bd-5cfd-5ab5-bb66-6f5dc8ed7a75@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "35-critical-thinking-questions"
+                }
+              ],
+              "slug" => "35-the-nervous-system"
+            },
+            {
+              "id" => "6058c936-fd91-5dc5-9ca0-b26fa12eabd7@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>36</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Sensory Systems</span>",
+              "contents" => [
+                {
+                  "id" => "bab1b85e-198a-4bb6-b801-c8d543f17f6e@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "36-introduction"
+                },
+                {
+                  "id" => "e9f97e0d-10ae-43ec-9062-5f0079dfd57f@",
+                  "title" => "<span class=\"os-number\">36.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Sensory Processes</span>",
+                  "slug" => "36-1-sensory-processes"
+                },
+                {
+                  "id" => "b32f61fc-5fab-4b07-bcc8-e455aa4a903d@",
+                  "title" => "<span class=\"os-number\">36.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Somatosensation</span>",
+                  "slug" => "36-2-somatosensation"
+                },
+                {
+                  "id" => "e6739dc0-2ea2-41ef-af28-61c53e04dbb0@",
+                  "title" => "<span class=\"os-number\">36.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Taste and Smell</span>",
+                  "slug" => "36-3-taste-and-smell"
+                },
+                {
+                  "id" => "45f94050-f136-4699-9779-b2953173b7bf@",
+                  "title" => "<span class=\"os-number\">36.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Hearing and Vestibular Sensation</span>",
+                  "slug" => "36-4-hearing-and-vestibular-sensation"
+                },
+                {
+                  "id" => "7efc0079-6e04-4ea9-a39c-6551121b9dd1@",
+                  "title" => "<span class=\"os-number\">36.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Vision</span>",
+                  "slug" => "36-5-vision"
+                },
+                {
+                  "id" => "eca674d2-1ab1-59f0-ae1f-a69e8f61a7b8@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "36-key-terms"
+                },
+                {
+                  "id" => "3db12d48-1a8b-506a-ab96-0d580b4ecb1f@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "36-chapter-summary"
+                },
+                {
+                  "id" => "e2336912-165b-50c1-afab-5f1fee402e5b@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "36-visual-connection-questions"
+                },
+                {
+                  "id" => "01c4de43-7cb8-563e-90e2-415d1db69923@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "36-review-questions"
+                },
+                {
+                  "id" => "236205fc-7340-55b0-a61d-6b261c33ed5a@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "36-critical-thinking-questions"
+                }
+              ],
+              "slug" => "36-sensory-systems"
+            },
+            {
+              "id" => "35cdf262-25ea-5075-bcbb-13d08cd03d11@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>37</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Endocrine System</span>",
+              "contents" => [
+                {
+                  "id" => "44398b9a-c25b-4e06-9352-feeac13dfad4@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "37-introduction"
+                },
+                {
+                  "id" => "9970356c-0383-482a-a13e-9e4fdbfc8917@",
+                  "title" => "<span class=\"os-number\">37.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Types of Hormones</span>",
+                  "slug" => "37-1-types-of-hormones"
+                },
+                {
+                  "id" => "cbe4c6ff-348e-4383-ae66-f6fa19823b6c@",
+                  "title" => "<span class=\"os-number\">37.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">How Hormones Work</span>",
+                  "slug" => "37-2-how-hormones-work"
+                },
+                {
+                  "id" => "a0d22048-c0b6-4b2b-abf1-1a3e61ada97d@",
+                  "title" => "<span class=\"os-number\">37.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Regulation of Body Processes</span>",
+                  "slug" => "37-3-regulation-of-body-processes"
+                },
+                {
+                  "id" => "0e09d3f8-790c-42fe-acb3-a7020c1eebe4@",
+                  "title" => "<span class=\"os-number\">37.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Regulation of Hormone Production</span>",
+                  "slug" => "37-4-regulation-of-hormone-production"
+                },
+                {
+                  "id" => "a708d3cb-ec37-4cbb-a945-e0b5fb0be2fa@",
+                  "title" => "<span class=\"os-number\">37.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Endocrine Glands</span>",
+                  "slug" => "37-5-endocrine-glands"
+                },
+                {
+                  "id" => "726f4190-38db-525a-8028-5a3531e7e519@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "37-key-terms"
+                },
+                {
+                  "id" => "92e76122-ee0e-5cb8-9933-9be29cee38de@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "37-chapter-summary"
+                },
+                {
+                  "id" => "ddebfd15-8ee4-5b7f-a364-5c6a3ca1f768@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "37-visual-connection-questions"
+                },
+                {
+                  "id" => "b8f003a7-3183-5b5f-88bb-ece669798938@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "37-review-questions"
+                },
+                {
+                  "id" => "dcc04056-ff1b-530b-a184-a9240bcb7267@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "37-critical-thinking-questions"
+                }
+              ],
+              "slug" => "37-the-endocrine-system"
+            },
+            {
+              "id" => "45384a35-75ab-53bb-ad59-49a6cd4ef823@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>38</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Musculoskeletal System</span>",
+              "contents" => [
+                {
+                  "id" => "58ed7aec-ef1b-4c9c-bb2c-8ef972188acb@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "38-introduction"
+                },
+                {
+                  "id" => "b30d4eb7-6be4-4db2-b8c9-20256add53f5@",
+                  "title" => "<span class=\"os-number\">38.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Types of Skeletal Systems</span>",
+                  "slug" => "38-1-types-of-skeletal-systems"
+                },
+                {
+                  "id" => "aa6ac9bb-ae22-47f2-8dbf-608fc90dd3b4@",
+                  "title" => "<span class=\"os-number\">38.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Bone</span>",
+                  "slug" => "38-2-bone"
+                },
+                {
+                  "id" => "f3a5c924-6b1b-4d1b-b506-906b00da0be5@",
+                  "title" => "<span class=\"os-number\">38.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Joints and Skeletal Movement</span>",
+                  "slug" => "38-3-joints-and-skeletal-movement"
+                },
+                {
+                  "id" => "b7c9b702-b46c-435e-bea3-eee85ed940b4@",
+                  "title" => "<span class=\"os-number\">38.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Muscle Contraction and Locomotion</span>",
+                  "slug" => "38-4-muscle-contraction-and-locomotion"
+                },
+                {
+                  "id" => "9c68e54b-73e9-5b56-87c3-4f04298d09d1@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "38-key-terms"
+                },
+                {
+                  "id" => "df9bb22e-57dc-5667-87c3-f0509dd4aca0@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "38-chapter-summary"
+                },
+                {
+                  "id" => "28986633-e19d-5460-9a67-c692cbaea4ba@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "38-visual-connection-questions"
+                },
+                {
+                  "id" => "0369bb70-ef91-5d0c-82a8-1cc31820f7cf@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "38-review-questions"
+                },
+                {
+                  "id" => "285658d7-3115-5919-be25-9d5659ab9390@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "38-critical-thinking-questions"
+                }
+              ],
+              "slug" => "38-the-musculoskeletal-system"
+            },
+            {
+              "id" => "d9d92c86-c524-553b-b8b2-70290122d968@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>39</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Respiratory System</span>",
+              "contents" => [
+                {
+                  "id" => "11c269b9-1f41-4e45-b6c6-b8dc7275b5f7@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "39-introduction"
+                },
+                {
+                  "id" => "df9f91d1-b8aa-45f9-9d13-50913bf95614@",
+                  "title" => "<span class=\"os-number\">39.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Systems of Gas Exchange</span>",
+                  "slug" => "39-1-systems-of-gas-exchange"
+                },
+                {
+                  "id" => "079215a1-b957-465f-bb1e-2393dcfe8915@",
+                  "title" => "<span class=\"os-number\">39.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Gas Exchange across Respiratory Surfaces</span>",
+                  "slug" => "39-2-gas-exchange-across-respiratory-surfaces"
+                },
+                {
+                  "id" => "1388be61-0219-4b08-b6d6-b3c7396b5fa3@",
+                  "title" => "<span class=\"os-number\">39.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Breathing</span>",
+                  "slug" => "39-3-breathing"
+                },
+                {
+                  "id" => "b241186c-4978-4904-ad7b-43e06974d549@",
+                  "title" => "<span class=\"os-number\">39.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Transport of Gases in Human Bodily Fluids</span>",
+                  "slug" => "39-4-transport-of-gases-in-human-bodily-fluids"
+                },
+                {
+                  "id" => "e6627402-de0b-5323-a4c6-a4ea6d92e00c@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "39-key-terms"
+                },
+                {
+                  "id" => "37460578-0bde-5fd4-b977-d8f2a5a4d0b1@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "39-chapter-summary"
+                },
+                {
+                  "id" => "52b507e0-24c7-5470-be77-706719be7fa1@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "39-visual-connection-questions"
+                },
+                {
+                  "id" => "c8cb6db3-b529-5405-a06d-6c03d5f8caaf@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "39-review-questions"
+                },
+                {
+                  "id" => "4be4497b-0ea5-5dfe-844a-9c7ba07087d5@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "39-critical-thinking-questions"
+                }
+              ],
+              "slug" => "39-the-respiratory-system"
+            },
+            {
+              "id" => "01e098a7-b2e6-5b3d-90f8-a58e0a39f273@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>40</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Circulatory System</span>",
+              "contents" => [
+                {
+                  "id" => "69577d07-ed4b-46ca-8f63-f99d08d0f8da@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "40-introduction"
+                },
+                {
+                  "id" => "599f6b13-33a3-4c76-908d-03c0f998d143@",
+                  "title" => "<span class=\"os-number\">40.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Overview of the Circulatory System</span>",
+                  "slug" => "40-1-overview-of-the-circulatory-system"
+                },
+                {
+                  "id" => "fd78a9c0-a232-4b11-b3a3-ab6955731177@",
+                  "title" => "<span class=\"os-number\">40.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Components of the Blood</span>",
+                  "slug" => "40-2-components-of-the-blood"
+                },
+                {
+                  "id" => "65d0b611-6bb3-47ae-84c2-471fb52ba148@",
+                  "title" => "<span class=\"os-number\">40.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Mammalian Heart and Blood Vessels</span>",
+                  "slug" => "40-3-mammalian-heart-and-blood-vessels"
+                },
+                {
+                  "id" => "607aff2b-b38c-47f2-8baa-b046cc7c6d85@",
+                  "title" => "<span class=\"os-number\">40.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Blood Flow and Blood Pressure Regulation</span>",
+                  "slug" => "40-4-blood-flow-and-blood-pressure-regulation"
+                },
+                {
+                  "id" => "51255f27-74cd-5fc1-90aa-5a3631baff49@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "40-key-terms"
+                },
+                {
+                  "id" => "65f42569-ce29-547a-84bb-1256cc880f0f@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "40-chapter-summary"
+                },
+                {
+                  "id" => "6a68ee54-bf00-5745-af09-2b81bea9b62a@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "40-visual-connection-questions"
+                },
+                {
+                  "id" => "ecc5fe50-36ff-5f5a-a57d-4326b6090296@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "40-review-questions"
+                },
+                {
+                  "id" => "8e5bd5f7-3cbb-5d97-a139-33fa4b28ea3a@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "40-critical-thinking-questions"
+                }
+              ],
+              "slug" => "40-the-circulatory-system"
+            },
+            {
+              "id" => "08b73643-1fac-56c6-8bd5-1cbcf5bca795@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>41</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Osmotic Regulation and Excretion</span>",
+              "contents" => [
+                {
+                  "id" => "80b07b39-b117-406c-aa18-d5f82ce7ed86@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "41-introduction"
+                },
+                {
+                  "id" => "d9b33f1c-23c0-46d3-8606-be1df10ccb63@",
+                  "title" => "<span class=\"os-number\">41.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Osmoregulation and Osmotic Balance</span>",
+                  "slug" => "41-1-osmoregulation-and-osmotic-balance"
+                },
+                {
+                  "id" => "3e2c416b-efb4-4386-a1ca-f18fb7b83ec5@",
+                  "title" => "<span class=\"os-number\">41.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Kidneys and Osmoregulatory Organs</span>",
+                  "slug" => "41-2-the-kidneys-and-osmoregulatory-organs"
+                },
+                {
+                  "id" => "a91a79a8-fad7-4fd5-a500-8db68ae7ad8c@",
+                  "title" => "<span class=\"os-number\">41.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Excretion Systems</span>",
+                  "slug" => "41-3-excretion-systems"
+                },
+                {
+                  "id" => "74427621-5991-4457-a80a-bc6b2edd4896@",
+                  "title" => "<span class=\"os-number\">41.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Nitrogenous Wastes</span>",
+                  "slug" => "41-4-nitrogenous-wastes"
+                },
+                {
+                  "id" => "9e7345a6-ff4a-4839-b05c-8c3f580aa32c@",
+                  "title" => "<span class=\"os-number\">41.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Hormonal Control of Osmoregulatory Functions</span>",
+                  "slug" => "41-5-hormonal-control-of-osmoregulatory-functions"
+                },
+                {
+                  "id" => "6c1dc811-9c56-5679-a6aa-7da9f9d3c4fc@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "41-key-terms"
+                },
+                {
+                  "id" => "bc61b1cf-6073-5bcf-ba65-59f379ccf855@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "41-chapter-summary"
+                },
+                {
+                  "id" => "8c2afce6-6ef5-5e80-9b84-36c5e6577581@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "41-visual-connection-questions"
+                },
+                {
+                  "id" => "c240f0dc-b6c0-5ba1-bcf5-9b40e42ebde6@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "41-review-questions"
+                },
+                {
+                  "id" => "2b32e3da-765c-5999-8996-2295e1081b54@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "41-critical-thinking-questions"
+                }
+              ],
+              "slug" => "41-osmotic-regulation-and-excretion"
+            },
+            {
+              "id" => "13a7cc26-ec56-5ca4-bcbd-aafdfa1ab70f@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>42</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">The Immune System</span>",
+              "contents" => [
+                {
+                  "id" => "cefec3f8-777e-4951-9b70-abf9d346b923@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "42-introduction"
+                },
+                {
+                  "id" => "5da10a86-3129-460c-b5b6-0a40c00b9969@",
+                  "title" => "<span class=\"os-number\">42.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Innate Immune Response</span>",
+                  "slug" => "42-1-innate-immune-response"
+                },
+                {
+                  "id" => "7ad6686e-c53e-45bb-aaa2-15327dff8d3e@",
+                  "title" => "<span class=\"os-number\">42.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Adaptive Immune Response</span>",
+                  "slug" => "42-2-adaptive-immune-response"
+                },
+                {
+                  "id" => "01be6158-869f-44d1-83ea-a2ce64d85ef1@",
+                  "title" => "<span class=\"os-number\">42.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Antibodies</span>",
+                  "slug" => "42-3-antibodies"
+                },
+                {
+                  "id" => "da9ed27d-8460-4964-9344-40a7c3901d29@",
+                  "title" => "<span class=\"os-number\">42.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Disruptions in the Immune System</span>",
+                  "slug" => "42-4-disruptions-in-the-immune-system"
+                },
+                {
+                  "id" => "a2d1f560-9449-5d61-8827-2efe0f4e8e96@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "42-key-terms"
+                },
+                {
+                  "id" => "9e1f72dd-49b5-5921-8c62-a74fe2a67402@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "42-chapter-summary"
+                },
+                {
+                  "id" => "3ca2d797-8789-53c8-8e68-1c85d584d274@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "42-visual-connection-questions"
+                },
+                {
+                  "id" => "cb78cbcf-1435-5379-a5ae-e08f3d5e728c@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "42-review-questions"
+                },
+                {
+                  "id" => "2699802c-4ac4-5162-8205-859602a5c746@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "42-critical-thinking-questions"
+                }
+              ],
+              "slug" => "42-the-immune-system"
+            },
+            {
+              "id" => "dd1eb3a0-928d-5888-995f-0b421f3866ee@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>43</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Animal Reproduction and Development</span>",
+              "contents" => [
+                {
+                  "id" => "1fc80d68-43c6-4a05-91a5-b839efdf2fa1@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "43-introduction"
+                },
+                {
+                  "id" => "3127134b-36a5-4489-adea-3cc50af1305a@",
+                  "title" => "<span class=\"os-number\">43.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Reproduction Methods</span>",
+                  "slug" => "43-1-reproduction-methods"
+                },
+                {
+                  "id" => "9b69aa5d-16fa-4604-a26b-e92f9ecd9bc0@",
+                  "title" => "<span class=\"os-number\">43.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Fertilization</span>",
+                  "slug" => "43-2-fertilization"
+                },
+                {
+                  "id" => "07f97982-30d2-425e-8a82-542e6fdd666e@",
+                  "title" => "<span class=\"os-number\">43.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Human Reproductive Anatomy and Gametogenesis</span>",
+                  "slug" => "43-3-human-reproductive-anatomy-and-gametogenesis"
+                },
+                {
+                  "id" => "1daddd9c-5131-4979-a7d5-a8183fca0ad8@",
+                  "title" => "<span class=\"os-number\">43.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Hormonal Control of Human Reproduction</span>",
+                  "slug" => "43-4-hormonal-control-of-human-reproduction"
+                },
+                {
+                  "id" => "3422a2b7-9dee-4e6b-93b5-3f1fc92e88b9@",
+                  "title" => "<span class=\"os-number\">43.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Human Pregnancy and Birth</span>",
+                  "slug" => "43-5-human-pregnancy-and-birth"
+                },
+                {
+                  "id" => "c8105eac-93c4-43e8-83f1-54995429e8ca@",
+                  "title" => "<span class=\"os-number\">43.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Fertilization and Early Embryonic Development</span>",
+                  "slug" => "43-6-fertilization-and-early-embryonic-development"
+                },
+                {
+                  "id" => "68ae7446-32b4-4cc7-89a7-4615dd20f3bd@",
+                  "title" => "<span class=\"os-number\">43.7</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Organogenesis and Vertebrate Formation</span>",
+                  "slug" => "43-7-organogenesis-and-vertebrate-formation"
+                },
+                {
+                  "id" => "9d1f3882-962a-57ee-84d9-d9238ce72096@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "43-key-terms"
+                },
+                {
+                  "id" => "e650800f-5f1e-5da9-83d6-5d60e3cb2479@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "43-chapter-summary"
+                },
+                {
+                  "id" => "cdf0341c-427f-5e23-a8dc-280a0763f5a5@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "43-visual-connection-questions"
+                },
+                {
+                  "id" => "70332a10-781f-5543-a253-efb3c6945cda@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "43-review-questions"
+                },
+                {
+                  "id" => "0271cd1f-a656-51aa-abe6-a4e011b4cd24@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "43-critical-thinking-questions"
+                }
+              ],
+              "slug" => "43-animal-reproduction-and-development"
+            }
+          ],
+          "slug" => "7-unit-7-animal-structure-and-function"
+        },
+        {
+          "id" => "c5d4dd8b-759b-55b8-9013-2295dc735cf3@e989ec3",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Unit </span>8</span>\n    <span class=\"os-divider\"> </span>\n    <span data-type=\"\" itemprop=\"\" class=\"os-text\">Unit 8. Ecology</span>",
+          "contents" => [
+            {
+              "id" => "7af8043f-ff11-5b74-94b2-97c397bdebd9@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>44</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Ecology and the Biosphere</span>",
+              "contents" => [
+                {
+                  "id" => "c49b257a-c9b1-4e3f-bc9b-a1b080801af3@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "44-introduction"
+                },
+                {
+                  "id" => "10d9c46e-990f-4404-b7af-802b5b4e0fa6@",
+                  "title" => "<span class=\"os-number\">44.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Scope of Ecology</span>",
+                  "slug" => "44-1-the-scope-of-ecology"
+                },
+                {
+                  "id" => "405e3804-5c8c-4f00-9dce-06b279ac4f53@",
+                  "title" => "<span class=\"os-number\">44.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Biogeography</span>",
+                  "slug" => "44-2-biogeography"
+                },
+                {
+                  "id" => "cf87c2b7-d8ec-4cba-adba-6c30f5736f63@",
+                  "title" => "<span class=\"os-number\">44.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Terrestrial Biomes</span>",
+                  "slug" => "44-3-terrestrial-biomes"
+                },
+                {
+                  "id" => "4552b33e-01c6-487b-81da-7f630a9a4298@",
+                  "title" => "<span class=\"os-number\">44.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Aquatic Biomes</span>",
+                  "slug" => "44-4-aquatic-biomes"
+                },
+                {
+                  "id" => "a1fb54b1-a560-4093-b4fc-277409b3b43b@",
+                  "title" => "<span class=\"os-number\">44.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Climate and the Effects of Global Climate Change</span>",
+                  "slug" => "44-5-climate-and-the-effects-of-global-climate-change"
+                },
+                {
+                  "id" => "a4e952ae-51a6-5160-bee2-333acfd2cabc@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "44-key-terms"
+                },
+                {
+                  "id" => "3a0ca41e-15e0-5723-96b1-d2a874394a5a@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "44-chapter-summary"
+                },
+                {
+                  "id" => "c2685be4-0044-502e-bc4d-b4b52f1ce8e4@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "44-visual-connection-questions"
+                },
+                {
+                  "id" => "84644b0c-0585-5740-baff-925d66bec67f@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "44-review-questions"
+                },
+                {
+                  "id" => "662505ac-136f-5a4c-b98a-6bb56ad18417@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "44-critical-thinking-questions"
+                }
+              ],
+              "slug" => "44-ecology-and-the-biosphere"
+            },
+            {
+              "id" => "3c186315-1bd7-5b21-b490-86582d6fadb4@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>45</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Population and Community Ecology</span>",
+              "contents" => [
+                {
+                  "id" => "d193fe8a-8026-4c62-bee4-e977c6de7989@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "45-introduction"
+                },
+                {
+                  "id" => "36b59ccb-df39-4ba6-85cc-52f3042c36ab@",
+                  "title" => "<span class=\"os-number\">45.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Population Demography</span>",
+                  "slug" => "45-1-population-demography"
+                },
+                {
+                  "id" => "04046ffb-73f6-4ccf-815d-e94697bab6fd@",
+                  "title" => "<span class=\"os-number\">45.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Life Histories and Natural Selection</span>",
+                  "slug" => "45-2-life-histories-and-natural-selection"
+                },
+                {
+                  "id" => "79ebaf1a-0e1a-4efb-9712-9bb41919a17d@",
+                  "title" => "<span class=\"os-number\">45.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Environmental Limits to Population Growth</span>",
+                  "slug" => "45-3-environmental-limits-to-population-growth"
+                },
+                {
+                  "id" => "bd8d993b-f105-4122-80ef-83d1dcfacde2@",
+                  "title" => "<span class=\"os-number\">45.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Population Dynamics and Regulation</span>",
+                  "slug" => "45-4-population-dynamics-and-regulation"
+                },
+                {
+                  "id" => "9bf55f5c-6f4b-40d8-bc99-873d021291c3@",
+                  "title" => "<span class=\"os-number\">45.5</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Human Population Growth</span>",
+                  "slug" => "45-5-human-population-growth"
+                },
+                {
+                  "id" => "774c6097-22c3-4621-a29f-62bb9d77d47e@",
+                  "title" => "<span class=\"os-number\">45.6</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Community Ecology</span>",
+                  "slug" => "45-6-community-ecology"
+                },
+                {
+                  "id" => "98dc9ab6-4f77-4f2e-85fb-c69c97c68649@",
+                  "title" => "<span class=\"os-number\">45.7</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Behavioral Biology: Proximate and Ultimate Causes of Behavior</span>",
+                  "slug" => "45-7-behavioral-biology-proximate-and-ultimate-causes-of-behavior"
+                },
+                {
+                  "id" => "247d2d27-fc38-5dad-97e2-b7a74c1bda6f@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "45-key-terms"
+                },
+                {
+                  "id" => "b50671fe-02f3-5ca8-a9e0-76490c6ab8ca@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "45-chapter-summary"
+                },
+                {
+                  "id" => "33e10c6c-43f6-5aac-a51e-071256e6de18@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "45-visual-connection-questions"
+                },
+                {
+                  "id" => "a307a4e9-9e3c-5e85-826e-b17919f18db8@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "45-review-questions"
+                },
+                {
+                  "id" => "b4397d35-1610-5258-b1e8-1611f8baa95e@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "45-critical-thinking-questions"
+                }
+              ],
+              "slug" => "45-population-and-community-ecology"
+            },
+            {
+              "id" => "3a1f9699-3915-54df-b0d8-1b04d82447ca@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>46</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Ecosystems</span>",
+              "contents" => [
+                {
+                  "id" => "76221989-258f-44ce-a9cd-77a3f8494bbc@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "46-introduction"
+                },
+                {
+                  "id" => "5f31b7ed-13e0-4a64-93b2-d1bb73a3e022@",
+                  "title" => "<span class=\"os-number\">46.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Ecology of Ecosystems</span>",
+                  "slug" => "46-1-ecology-of-ecosystems"
+                },
+                {
+                  "id" => "c96960a6-68ef-4834-b36d-2abc00a61619@",
+                  "title" => "<span class=\"os-number\">46.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Energy Flow through Ecosystems</span>",
+                  "slug" => "46-2-energy-flow-through-ecosystems"
+                },
+                {
+                  "id" => "65d16444-425c-4f43-bc48-a3d0de0c2fbd@",
+                  "title" => "<span class=\"os-number\">46.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Biogeochemical Cycles</span>",
+                  "slug" => "46-3-biogeochemical-cycles"
+                },
+                {
+                  "id" => "4fcd6c00-0b41-5da5-b269-c1bdb6461868@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "46-key-terms"
+                },
+                {
+                  "id" => "4dbb2c67-e367-5ae0-830d-09846f2828c2@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "46-chapter-summary"
+                },
+                {
+                  "id" => "bd988f77-9dfe-5229-a49c-9404238c4320@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "46-visual-connection-questions"
+                },
+                {
+                  "id" => "f102796f-b295-52c0-b687-6990fa71d110@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "46-review-questions"
+                },
+                {
+                  "id" => "c976813f-75fe-5542-a987-a8c276e71049@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "46-critical-thinking-questions"
+                }
+              ],
+              "slug" => "46-ecosystems"
+            },
+            {
+              "id" => "06ac604c-cf09-5630-b308-bcf9957cc68b@e989ec3",
+              "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Chapter </span>47</span>\n    <span class=\"os-divider\"> </span>\n    <span class=\"os-text\" data-type=\"\" itemprop=\"\">Conservation Biology and Biodiversity</span>",
+              "contents" => [
+                {
+                  "id" => "c0d58dad-90b4-4861-a66e-c4d495949899@",
+                  "title" => "<span data-type=\"\" itemprop=\"\" class=\"os-text\">Introduction</span>",
+                  "slug" => "47-introduction"
+                },
+                {
+                  "id" => "96f938e3-f5b1-46bc-9665-79d3a607d9e7@",
+                  "title" => "<span class=\"os-number\">47.1</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Biodiversity Crisis</span>",
+                  "slug" => "47-1-the-biodiversity-crisis"
+                },
+                {
+                  "id" => "773fc1ea-e2b8-4f5e-ade9-9b17d5b1d2b6@",
+                  "title" => "<span class=\"os-number\">47.2</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Importance of Biodiversity to Human Life</span>",
+                  "slug" => "47-2-the-importance-of-biodiversity-to-human-life"
+                },
+                {
+                  "id" => "ef12a7d2-c569-4f8b-833c-595454102c1a@",
+                  "title" => "<span class=\"os-number\">47.3</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Threats to Biodiversity</span>",
+                  "slug" => "47-3-threats-to-biodiversity"
+                },
+                {
+                  "id" => "aaf2ab73-1c53-4518-9a03-63e238421f59@",
+                  "title" => "<span class=\"os-number\">47.4</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Preserving Biodiversity</span>",
+                  "slug" => "47-4-preserving-biodiversity"
+                },
+                {
+                  "id" => "8d963c2c-9e87-568f-9e93-ce993cf259c1@e989ec3",
+                  "title" => "<span class=\"os-text\">Key Terms</span>",
+                  "slug" => "47-key-terms"
+                },
+                {
+                  "id" => "a77ce661-9d9f-5b8b-b24a-904b0c83fdb1@e989ec3",
+                  "title" => "<span class=\"os-text\">Chapter Summary</span>",
+                  "slug" => "47-chapter-summary"
+                },
+                {
+                  "id" => "4bde0015-fc2d-58c0-9cb7-cef1370124eb@e989ec3",
+                  "title" => "<span class=\"os-text\">Visual Connection Questions</span>",
+                  "slug" => "47-visual-connection-questions"
+                },
+                {
+                  "id" => "b974a5d6-c5d3-5156-a570-52ce2ba90dca@e989ec3",
+                  "title" => "<span class=\"os-text\">Review Questions</span>",
+                  "slug" => "47-review-questions"
+                },
+                {
+                  "id" => "15da5851-f60e-5f1e-818c-2f17d311ece3@e989ec3",
+                  "title" => "<span class=\"os-text\">Critical Thinking Questions</span>",
+                  "slug" => "47-critical-thinking-questions"
+                }
+              ],
+              "slug" => "47-conservation-biology-and-biodiversity"
+            }
+          ],
+          "slug" => "8-unit-8-ecology"
+        },
+        {
+          "id" => "85876150-cd23-42ac-ab49-a6002a43a5c8@",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Appendix </span>A</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">The Periodic Table of Elements</span>",
+          "slug" => "a-the-periodic-table-of-elements"
+        },
+        {
+          "id" => "aebd6cfc-39e6-4b33-ad78-604d5de78dfd@",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Appendix </span>B</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Geological Time</span>",
+          "slug" => "b-geological-time"
+        },
+        {
+          "id" => "fa9fa6f3-941c-45b2-927b-4a0ae10b0e07@",
+          "title" => "<span class=\"os-number\"><span class=\"os-part-text\">Appendix </span>C</span><span class=\"os-divider\"> </span><span data-type=\"\" itemprop=\"\" class=\"os-text\">Measurements and the Metric System</span>",
+          "slug" => "c-measurements-and-the-metric-system"
+        },
+        {
+          "id" => "18af2ca7-7db8-5fd3-a47d-d9576fd5f984@e989ec3",
+          "title" => "<span class=\"os-text\">Index</span>",
+          "slug" => "index"
+        }
+      ]
+    end
   end
 end
