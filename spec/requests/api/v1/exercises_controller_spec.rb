@@ -434,10 +434,7 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
       json_answers = @exercise.questions.first.answers
       expect(Set.new db_answers.map(&:content)).to eq(Set.new json_answers.map(&:content))
 
-      db_solutions = new_exercise.questions.first.collaborator_solutions
-      json_solutions = @exercise.questions.first.collaborator_solutions
-
-      expect(Set.new db_solutions.map(&:content)).to eq(Set.new json_solutions.map(&:content))
+      expect(new_exercise.questions.first.collaborator_solutions).to be_empty
 
       expect(new_exercise.authors.first.user).to eq @user_1
       expect(new_exercise.copyright_holders.first.user).to eq @user_1
@@ -492,7 +489,10 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
 
       new_exercise = Exercise.order(:created_at).last
 
-      expect(new_exercise.questions.first.collaborator_solutions).not_to be_empty
+      db_solutions = new_exercise.questions.first.collaborator_solutions
+      json_solutions = @exercise.questions.first.collaborator_solutions
+
+      expect(Set.new db_solutions.map(&:content)).to eq(Set.new json_solutions.map(&:content))
     end
 
     it "fails if the nickname has already been taken" do
