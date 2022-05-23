@@ -1,6 +1,6 @@
 class License < ApplicationRecord
 
-  has_many :publications, dependent: :destroy
+  has_many :publications
   has_many :class_licenses, dependent: :destroy
 
   has_many :combined_license_compatibilities,

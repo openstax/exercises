@@ -55,8 +55,8 @@ module Api::V1::Exercises
 
       it 'can be written' do
         stems = [ Stem.new(content: "Don't you agree?") ]
-        expect(question.stems).to receive(:<<).with(kind_of(Stem)) do |stem|
-          expect(stem.content).to eq "Don't you agree?"
+        expect(question.stems).to receive(:replace).with([kind_of(Stem)]) do |stems|
+          expect(stems.first.content).to eq "Don't you agree?"
         end
 
         described_class.new(question).from_hash(
@@ -77,8 +77,8 @@ module Api::V1::Exercises
       end
 
       it 'can be written' do
-        expect(question.answers).to receive(:<<).with(kind_of(Answer)).exactly(3).times do |answer|
-          expect(answer.content).to be_in [ 'Yes', 'No', 'Maybe so' ]
+        expect(question.answers).to receive(:replace).with([kind_of(Answer)]*3) do |answers|
+          expect(answers.map(&:content)).to eq [ 'Yes', 'No', 'Maybe so' ]
         end
 
         described_class.new(question).from_hash(
@@ -102,10 +102,10 @@ module Api::V1::Exercises
 
       it 'can be written' do
         expect(question.collaborator_solutions).to(
-          receive(:<<).with(kind_of(CollaboratorSolution)) do |collaborator_solution|
-            expect(collaborator_solution.title).to eq 'Test'
-            expect(collaborator_solution.solution_type).to eq 'example'
-            expect(collaborator_solution.content).to eq 'This is a test.'
+          receive(:replace).with([kind_of(CollaboratorSolution)]) do |collaborator_solutions|
+            expect(collaborator_solutions.first.title).to eq 'Test'
+            expect(collaborator_solutions.first.solution_type).to eq 'example'
+            expect(collaborator_solutions.first.content).to eq 'This is a test.'
           end
         )
 
@@ -132,7 +132,7 @@ module Api::V1::Exercises
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        expect(question.community_solutions).not_to receive(:<<)
+        expect(question.community_solutions).not_to receive(:replace)
 
         described_class.new(question).from_hash(
           {
@@ -155,8 +155,8 @@ module Api::V1::Exercises
       end
 
       it 'can be written' do
-        expect(question.hints).to receive(:<<).with(kind_of(Hint)) do |hint|
-          expect(hint.content).to eq 'A hint'
+        expect(question.hints).to receive(:replace).with([kind_of(Hint)]) do |hints|
+          expect(hints.first.content).to eq 'A hint'
         end
 
         described_class.new(question).from_hash('hints' => [ 'A hint' ])
@@ -170,10 +170,10 @@ module Api::V1::Exercises
 
       it 'can be written' do
         expect(question.parent_dependencies).to(
-          receive(:<<).with(kind_of(QuestionDependency)) do |question_dependency|
-            expect(question_dependency.dependent_question).to eq question
-            expect(question_dependency.parent_question).to eq question
-            expect(question_dependency.is_optional).to eq true
+          receive(:replace).with([kind_of(QuestionDependency)]) do |question_dependencies|
+            expect(question_dependencies.first.dependent_question).to eq question
+            expect(question_dependencies.first.parent_question).to eq question
+            expect(question_dependencies.first.is_optional).to eq true
           end
         )
 

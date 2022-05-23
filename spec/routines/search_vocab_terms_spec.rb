@@ -7,10 +7,11 @@ RSpec.describe SearchVocabTerms, type: :routine do
     10.times { FactoryBot.create(:vocab_term, :published) }
 
     tested_strings = ["%lorem ipsu%", "%uia dolor sit ame%", "%adipiscing elit%", "draft"]
-    
+
     vt = VocabTerm.arel_table
-    VocabTerm.where(vt[:name].matches_any(tested_strings).or(
-                    vt[:definition].matches_any(tested_strings))).delete_all
+    VocabTerm.where(
+      vt[:name].matches_any(tested_strings).or(vt[:definition].matches_any(tested_strings))
+    ).destroy_all
 
     @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
     Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(@vocab_term_1).from_hash(

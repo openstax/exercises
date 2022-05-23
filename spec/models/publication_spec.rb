@@ -11,7 +11,7 @@ RSpec.describe Publication, type: :model do
   it { is_expected.to have_many(:copyright_holders).dependent(:destroy) }
 
   it { is_expected.to have_many(:sources).dependent(:destroy) }
-  it { is_expected.to have_many(:derivations).dependent(:destroy) }
+  it { is_expected.to have_many(:derivations) }
 
   it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:version).scoped_to(:publication_group_id) }

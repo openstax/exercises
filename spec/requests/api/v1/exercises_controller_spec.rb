@@ -56,7 +56,7 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
                        .or(ans[:content].matches_any(tested_strings))
                    ).pluck(:id)
 
-          Exercise.where(id: ex_ids).delete_all
+          Exercise.where(id: ex_ids).destroy_all
 
           @exercise_1 = FactoryBot.build(:exercise, :published)
           Api::V1::Exercises::Representer.new(@exercise_1).from_hash(
@@ -403,9 +403,8 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
     before(:all) do
       DatabaseCleaner.start
 
+      Exercise.where(id: @exercise.id).destroy_all
       PublicationGroup.where(id: @exercise.publication.publication_group_id).delete_all
-      Publication.where(id: @exercise.publication.id).delete_all
-      Exercise.where(id: @exercise.id).delete_all
     end
     after(:all) { DatabaseCleaner.clean }
 

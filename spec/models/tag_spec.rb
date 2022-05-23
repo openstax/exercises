@@ -4,7 +4,8 @@ require 'rails_helper'
 RSpec.describe Tag, type: :model do
   subject(:tag) { FactoryBot.create :tag }
 
-  it { is_expected.to have_many(:exercise_tags).dependent(:destroy) }
+  it { is_expected.to have_many(:exercise_tags) }
+  it { is_expected.to have_many(:vocab_term_tags) }
 
   it { is_expected.to validate_presence_of(:name) }
 

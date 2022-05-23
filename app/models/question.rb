@@ -10,7 +10,7 @@ class Question < ApplicationRecord
   sortable_has_many :answers, dependent: :destroy, inverse_of: :question, autosave: true
 
   has_many :collaborator_solutions, dependent: :destroy
-  has_many :community_solutions, dependent: :destroy
+  has_many :community_solutions
 
   sortable_has_many :hints, dependent: :destroy, inverse_of: :question
 

@@ -4,7 +4,7 @@ RSpec.describe License, type: :model do
 
   subject(:license) { FactoryBot.create(:license) }
 
-  it { is_expected.to have_many(:publications).dependent(:destroy) }
+  it { is_expected.to have_many(:publications) }
   it { is_expected.to have_many(:class_licenses).dependent(:destroy) }
 
   it { is_expected.to have_many(:combined_license_compatibilities).dependent(:destroy) }

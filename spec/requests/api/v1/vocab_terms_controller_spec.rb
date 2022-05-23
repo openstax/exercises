@@ -50,8 +50,10 @@ RSpec.describe Api::V1::VocabTermsController, type: :request, api: true, version
           end
 
           tested_strings = ['%lorem%', '%ipsu%', '%draft%']
-          VocabTerm.where(VocabTerm.arel_table[:name].matches_any(tested_strings).or(
-                          VocabTerm.arel_table[:definition].matches_any(tested_strings))).delete_all
+          VocabTerm.where(
+            VocabTerm.arel_table[:name].matches_any(tested_strings).or(
+            VocabTerm.arel_table[:definition].matches_any(tested_strings))
+          ).destroy_all
 
           @vocab_term_1 = FactoryBot.build(:vocab_term, :published)
           Api::V1::Vocabs::TermWithDistractorsAndExerciseIdsRepresenter.new(
@@ -290,9 +292,8 @@ RSpec.describe Api::V1::VocabTermsController, type: :request, api: true, version
     before(:all) do
       DatabaseCleaner.start
 
+      VocabTerm.where(id: @vocab_term.id).destroy_all
       PublicationGroup.where(id: @vocab_term.publication.publication_group_id).delete_all
-      Publication.where(id: @vocab_term.publication.id).delete_all
-      VocabTerm.where(id: @vocab_term.id).delete_all
     end
     after(:all) { DatabaseCleaner.clean }
 

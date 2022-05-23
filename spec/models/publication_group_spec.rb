@@ -4,7 +4,7 @@ RSpec.describe PublicationGroup, type: :model do
 
   subject(:publication_group) { FactoryBot.create :publication_group }
 
-  it { is_expected.to have_many(:publications).dependent(:destroy) }
+  it { is_expected.to have_many(:publications) }
 
   it { is_expected.to validate_presence_of(:publishable_type) }
   it { is_expected.to validate_presence_of(:uuid) }

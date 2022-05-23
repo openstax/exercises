@@ -138,8 +138,8 @@ module Api::V1::Exercises
 
       it 'can be written' do
         expect(exercise.questions).to(
-          receive(:<<).with(kind_of(Question)).exactly(3).times do |question|
-            expect(question.stimulus).to be_in [ 'Question 1', 'Question 2', 'Question 3' ]
+          receive(:replace).with([kind_of(Question)]*3) do |questions|
+            expect(questions.map(&:stimulus)).to eq [ 'Question 1', 'Question 2', 'Question 3' ]
           end
         )
 

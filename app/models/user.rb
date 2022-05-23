@@ -9,22 +9,19 @@ class User < ApplicationRecord
   has_many :groups_as_member, through: :account
   has_many :groups_as_owner, through: :account
 
-  has_one :administrator, dependent: :destroy
+  has_one :administrator
 
-  has_many :authors, dependent: :destroy
-  has_many :copyright_holders, dependent: :destroy
+  has_many :authors
+  has_many :copyright_holders
 
   has_many :delegations_as_delegator, class_name: 'Delegation',
                                       foreign_key: :delegator_id,
-                                      dependent: :destroy,
                                       inverse_of: :delegator
-  has_many :delegations_as_delegate, class_name: 'Delegation',
-                                     as: :delegate,
-                                     dependent: :destroy
+  has_many :delegations_as_delegate, class_name: 'Delegation', as: :delegate
 
-  has_many :sortings, dependent: :destroy
+  has_many :sortings
 
-  has_many :applications, as: :owner, class_name: 'Doorkeeper::Application', dependent: :destroy
+  has_many :applications, as: :owner, class_name: 'Doorkeeper::Application'
 
   validates :account, uniqueness: true
 
