@@ -10,6 +10,10 @@ class FixForeignKeys < ActiveRecord::Migration[6.1]
         Answer.where.not(
           Question.where('"questions"."id" = "answers"."question_id"').arel.exists
         ).delete_all
+
+        CollaboratorSolution.where.not(
+          Question.where('"questions"."id" = "collaborator_solutions"."question_id"').arel.exists
+        ).delete_all
       end
     end
 
