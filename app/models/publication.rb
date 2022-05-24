@@ -12,7 +12,6 @@ class Publication < ApplicationRecord
                               dependent: :destroy,
                               inverse_of: :derived_publication
   has_many :derivations, foreign_key: :source_publication_id,
-                         dependent: :destroy,
                          inverse_of: :source_publication
 
   delegate :group_uuid, :number, :nickname, :nickname=,

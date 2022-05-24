@@ -20,7 +20,7 @@ RSpec.describe SearchExercises, type: :routine do
            .or(st[:content].matches_any(tested_strings))
            .or(ans[:content].matches_any(tested_strings))).pluck(:id)
 
-    Exercise.where(id: ex_ids).delete_all
+    Exercise.where(id: ex_ids).destroy_all
 
     @exercise_1 = Exercise.new
     Api::V1::Exercises::Representer.new(@exercise_1).from_hash(

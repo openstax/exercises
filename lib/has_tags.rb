@@ -3,19 +3,24 @@ module HasTags
     module Base
       def has_tags(association_name = nil, options = {})
         association_name ||= "#{name.tableize.singularize}_tags"
+        join_association = association_name.to_sym
         inverse_association_name = options[:inverse_of] || name.tableize.singularize
         tagging_class = association_name.to_s.classify.constantize
 
         class_exec do
-          has_many association_name.to_sym, { dependent: :destroy, autosave: true }.merge(options)
-          has_many :tags, through: association_name.to_sym do
+          has_many join_association, { dependent: :destroy, autosave: true }.merge(options)
+          has_many :tags, through: join_association do
             def <<(tag)
-              super(Tag.get(tag))
+              super Tag.get(tag)
+            end
+
+            def replace(other_array)
+              super Tag.get(other_array)
             end
           end
 
           def tags=(tags)
-            super(Tag.get(tags))
+            super Tag.get(tags)
           end
         end
       end

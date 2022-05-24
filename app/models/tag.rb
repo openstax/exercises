@@ -1,7 +1,7 @@
 class Tag < ApplicationRecord
 
-  has_many :exercise_tags, dependent: :destroy
-  has_many :vocab_term_tags, dependent: :destroy
+  has_many :exercise_tags
+  has_many :vocab_term_tags
 
   validates :name, presence: true, uniqueness: true, format: /\A[\w\.:#-]*\z/
 

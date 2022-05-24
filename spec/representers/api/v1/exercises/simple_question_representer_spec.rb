@@ -73,8 +73,8 @@ module Api::V1::Exercises
       end
 
       it 'can be written' do
-        expect(question.answers).to receive(:<<).with(kind_of(Answer)).exactly(3).times do |answer|
-          expect(answer.content).to be_in [ 'Yes', 'No', 'Maybe so' ]
+        expect(question.answers).to receive(:replace).with([kind_of(Answer)]*3) do |answers|
+          expect(answers.map(&:content)).to eq [ 'Yes', 'No', 'Maybe so' ]
         end
 
         described_class.new(question).from_hash(
@@ -98,10 +98,10 @@ module Api::V1::Exercises
 
       it 'can be written' do
         expect(question.collaborator_solutions).to(
-          receive(:<<).with(kind_of(CollaboratorSolution)) do |collaborator_solution|
-            expect(collaborator_solution.title).to eq 'Test'
-            expect(collaborator_solution.solution_type).to eq 'example'
-            expect(collaborator_solution.content).to eq 'This is a test.'
+          receive(:replace).with([kind_of(CollaboratorSolution)]) do |collaborator_solutions|
+            expect(collaborator_solutions.first.title).to eq 'Test'
+            expect(collaborator_solutions.first.solution_type).to eq 'example'
+            expect(collaborator_solutions.first.content).to eq 'This is a test.'
           end
         )
 
@@ -128,7 +128,7 @@ module Api::V1::Exercises
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        expect(question.community_solutions).not_to receive(:<<)
+        expect(question.community_solutions).not_to receive(:replace)
 
         described_class.new(question).from_hash(
           {
@@ -151,8 +151,8 @@ module Api::V1::Exercises
       end
 
       it 'can be written' do
-        expect(question.hints).to receive(:<<).with(kind_of(Hint)) do |hint|
-          expect(hint.content).to eq 'A hint'
+        expect(question.hints).to receive(:replace).with([kind_of(Hint)]) do |hints|
+          expect(hints.first.content).to eq 'A hint'
         end
 
         described_class.new(question).from_hash('hints' => [ 'A hint' ])
@@ -166,8 +166,8 @@ module Api::V1::Exercises
       end
 
       it 'can be written' do
-        expect(stem.stylings).to receive(:<<).twice.with(kind_of(Styling)) do |styling|
-          expect(styling.style).to be_in [ 'multiple-choice', 'free-response' ]
+        expect(stem.stylings).to receive(:replace).with([kind_of(Styling)]*2) do |stylings|
+          expect(stylings.map(&:style)).to eq [ 'multiple-choice', 'free-response' ]
         end
 
         described_class.new(question).from_hash('formats' => [ 'multiple-choice', 'free-response' ])
@@ -184,10 +184,12 @@ module Api::V1::Exercises
       end
 
       it 'can be written' do
-        expect(stem.combo_choices).to receive(:<<).with(kind_of(ComboChoice)) do |combo_choice|
-          expect(combo_choice.combo_choice_answers).to eq []
-          expect(combo_choice.correctness).to eq 0.0
-        end
+        expect(stem.combo_choices).to(
+          receive(:replace).with([kind_of(ComboChoice)]) do |combo_choices|
+            expect(combo_choices.first.combo_choice_answers).to eq []
+            expect(combo_choices.first.correctness).to eq 0.0
+          end
+        )
 
         described_class.new(question).from_hash(
           'combo_choices' => [ { 'combo_choice_answers' => [], 'correctness' => 0.0 } ]

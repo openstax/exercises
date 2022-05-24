@@ -55,10 +55,8 @@ module Api::V1::Vocabs
         end
 
         expect(vocab_term.vocab_distractors).to(
-          receive(:<<).with(kind_of(VocabDistractor)).exactly(3).times do |vocab_distractor|
-            expect(vocab_distractor.distractor_term).to be_in(
-              vocab_distractors.map(&:distractor_term)
-            )
+          receive(:replace).with([kind_of(VocabDistractor)]*3) do |vds|
+            expect(vds.map(&:distractor_term)).to eq vocab_distractors.map(&:distractor_term)
           end
         )
 
@@ -92,8 +90,8 @@ module Api::V1::Vocabs
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        expect(vocab_term.exercises).not_to receive(:<<)
-        expect(vocab_term.exercise_ids).not_to receive(:<<)
+        expect(vocab_term.exercises).not_to receive(:replace)
+        expect(vocab_term.exercise_ids).not_to receive(:replace)
 
         described_class.new(vocab_term).from_hash('exercise_uuids' => [ SecureRandom.uuid ])
       end
@@ -105,8 +103,8 @@ module Api::V1::Vocabs
       end
 
       it 'cannot be written (attempts are silently ignored)' do
-        expect(vocab_term.exercises).not_to receive(:<<)
-        expect(vocab_term.exercise_ids).not_to receive(:<<)
+        expect(vocab_term.exercises).not_to receive(:replace)
+        expect(vocab_term.exercise_ids).not_to receive(:replace)
 
         described_class.new(vocab_term).from_hash('exercise_uids' => ['42@1', '4@2'])
       end

@@ -2,11 +2,11 @@ class PublicationGroup < ApplicationRecord
 
   PUSLISHABLE_TYPES_WITH_DEFAULT_PUBLIC_SOLUTIONS = Set[ 'VocabTerm' ]
 
-  has_many :publications, dependent: :destroy, inverse_of: :publication_group, autosave: true
+  has_many :publications, inverse_of: :publication_group, autosave: true
 
   has_many :list_publication_groups, dependent: :destroy
 
-  has_many :vocab_distractors, dependent: :destroy
+  has_many :vocab_distractors
 
   validates :publishable_type, presence: true
   validates :uuid, presence: true, uniqueness: true
