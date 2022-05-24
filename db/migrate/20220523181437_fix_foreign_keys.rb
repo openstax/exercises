@@ -5,6 +5,26 @@ class FixForeignKeys < ActiveRecord::Migration[6.1]
     remove_foreign_key :vocab_term_tags, :tags, on_update: :cascade, on_delete: :cascade
     remove_foreign_key :vocab_term_tags, :vocab_terms, on_update: :cascade, on_delete: :cascade
 
+    reversible do |dir|
+      dir.up do
+        Answer.where.not(
+          Question.where('"questions"."id" = "answers"."question_id"').arel.exists
+        ).delete_all
+
+        CollaboratorSolution.where.not(
+          Question.where('"questions"."id" = "collaborator_solutions"."question_id"').arel.exists
+        ).delete_all
+
+        StemAnswer.where.not(
+          Answer.where('"answers"."id" = "stem_answers"."answer_id"').arel.exists
+        ).delete_all
+
+        Stem.where.not(
+          Question.where('"questions"."id" = "stems"."question_id"').arel.exists
+        ).delete_all
+      end
+    end
+
     add_foreign_key :administrators, :users
     add_foreign_key :answers, :questions
     add_foreign_key :authors, :publications
