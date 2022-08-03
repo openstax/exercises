@@ -263,7 +263,7 @@ class Exercise < ApplicationRecord
       Content.slugs_by_page_uuid[page_uuid] || []
     end
 
-    desired_book_slugs = desired_slug_hashes.map { |slug| "book-slug:#{slug[:book]}" }
+    desired_book_slugs = desired_slug_hashes.map { |slug| "book-slug:#{slug[:book]}" }.uniq
     desired_page_slugs = desired_slug_hashes.map do |slug|
       "module-slug:#{slug[:book]}:#{slug[:page]}"
     end

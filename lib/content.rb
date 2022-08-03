@@ -26,13 +26,17 @@ module Content
               else
                 previous_archive ||= OpenStax::Content::Archive.new version: previous_version
 
-                retry_books << OpenStax::Content::Book.new(
+                retry_book = OpenStax::Content::Book.new(
                   archive: previous_archive,
                   uuid: book.uuid,
                   version: book.version,
                   slug: book.slug,
-                  style: book.style
+                  style: book.style,
+                  min_code_version: book.min_code_version,
+                  committed_at: book.committed_at
                 )
+
+                retry_books << retry_book if retry_book.valid?
               end
             else
               pages.each do |page|
@@ -44,6 +48,8 @@ module Content
 
           books = retry_books
         end
+
+        hash.each { |uuid, slugs| slugs.uniq! }
       end
     end
   end
