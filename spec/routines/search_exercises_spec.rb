@@ -58,7 +58,7 @@ RSpec.describe SearchExercises, type: :routine do
         'answers' => [{
           'content_html' => "Sed quia non numquam"
         }],
-        'formats' => [ 'multiple-choice', 'free-response' ]
+        'formats' => [ 'true-false' ]
       }],
       'solutions_are_public' => false
     )
@@ -217,6 +217,15 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [@exercise_1]
     end
 
+    it "returns an Exercise matching a format" do
+      result = described_class.call q: "format:multiple-choice"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
     it "returns an Exercise matching solutions_are_public" do
       result = described_class.call q: "solutions_are_public:true"
       expect(result.errors).to be_empty
@@ -328,6 +337,24 @@ RSpec.describe SearchExercises, type: :routine do
         q: "collaborator:\"#{@exercise_1.authors.first.name
            }\" collaborator:\"#{@exercise_1.copyright_holders.first.name}\""
       )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns Exercises matching any of a list of formats" do
+      result = described_class.call q: "format:multiple-choice,true-false"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns an Exercise matching all of a list of formats" do
+      result = described_class.call q: "format:multiple-choice format:free-response"
       expect(result.errors).to be_empty
 
       outputs = result.outputs

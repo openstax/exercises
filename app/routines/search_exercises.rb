@@ -251,6 +251,19 @@ class SearchExercises
         end
       end
 
+      with.keyword :format do |formats|
+        formats.each do |format|
+          sanitized_formats = to_string_array(format).map(&:downcase)
+          next @items = @items.none if sanitized_formats.empty?
+
+          @items = @items.where(
+            Question.joins(stems: :stylings).where(
+              '"questions"."exercise_id" = "exercises"."id"'
+            ).where(stems: { stylings: { style: sanitized_formats } }).arel.exists
+          )
+        end
+      end
+
       with.keyword :solutions_are_public do |saps|
         saps.each do |sap|
           sanitized_saps = to_string_array(sap).map do |str|
