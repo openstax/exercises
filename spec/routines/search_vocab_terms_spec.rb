@@ -19,7 +19,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
       'tags' => ['tag1', 'tag2'],
       'term' => "Lorem ipsum",
       'definition' => "Dolor sit amet",
-      'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
+      'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"],
+      'solutions_are_public' => true
     )
     @vocab_term_1.save!
     FactoryBot.create :author, publication: @vocab_term_1.publication
@@ -36,7 +37,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
       'tags' => ['tag2', 'tag3'],
       'term' => "Dolorem ipsum",
       'definition' => "Quia dolor sit amet",
-      'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"]
+      'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"],
+      'solutions_are_public' => false
     )
     @vocab_term_2.save!
     @vocab_term_2.publication.update_attribute :version, 42
@@ -228,6 +230,15 @@ RSpec.describe SearchVocabTerms, type: :routine do
       result = described_class.call(
         q: "collaborator:\"#{@vocab_term_1.authors.first.name}\""
       )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
+
+    it "returns a VocabTerm matching solutions_are_public" do
+      result = described_class.call q: "solutions_are_public:true"
       expect(result.errors).to be_empty
 
       outputs = result.outputs

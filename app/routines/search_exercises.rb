@@ -250,6 +250,19 @@ class SearchExercises
           )
         end
       end
+
+      with.keyword :solutions_are_public do |saps|
+        saps.each do |sap|
+          sanitized_saps = to_string_array(sap).map do |str|
+            ActiveModel::Type::Boolean.new.cast(str)
+          end
+          next @items = @items.none if sanitized_saps.empty?
+
+          @items = @items.joins(publication: :publication_group).where(
+            publication: { publication_group: { solutions_are_public: sanitized_saps } }
+          )
+        end
+      end
     end
 
     outputs.items = outputs.items.select(

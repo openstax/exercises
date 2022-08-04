@@ -35,7 +35,8 @@ RSpec.describe SearchExercises, type: :routine do
           'content_html' => "Sed do eiusmod tempor"
         }],
         'formats' => [ 'multiple-choice', 'free-response' ]
-      }]
+      }],
+      'solutions_are_public' => true
     )
     @exercise_1.save!
     @exercise_1.publication.publish.save!
@@ -58,7 +59,8 @@ RSpec.describe SearchExercises, type: :routine do
           'content_html' => "Sed quia non numquam"
         }],
         'formats' => [ 'multiple-choice', 'free-response' ]
-      }]
+      }],
+      'solutions_are_public' => false
     )
     @exercise_2.save!
     @exercise_2.publication.version = 42
@@ -208,6 +210,15 @@ RSpec.describe SearchExercises, type: :routine do
       result = described_class.call(
         q: "collaborator:\"#{@exercise_1.authors.first.name}\""
       )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns an Exercise matching solutions_are_public" do
+      result = described_class.call q: "solutions_are_public:true"
       expect(result.errors).to be_empty
 
       outputs = result.outputs
