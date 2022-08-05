@@ -59,7 +59,9 @@ module Api::V1
             uuid: book.uuid,
             version: book.version,
             slug: book.slug,
-            style: book.style
+            style: book.style,
+            min_code_version: book.min_code_version,
+            committed_at: book.committed_at
           )
         else
           # break from the loop if successful
