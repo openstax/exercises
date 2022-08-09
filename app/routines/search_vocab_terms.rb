@@ -165,7 +165,11 @@ class SearchVocabTerms
           sanitized_tags = to_string_array(tag).map(&:downcase)
           next @items = @items.none if sanitized_tags.empty?
 
-          @items = @items.joins(:tags).where(tags: { name: sanitized_tags })
+          @items = @items.where(
+            VocabTermTag.joins(:tag).where(
+              '"vocab_term_tags"."vocab_term_id" = "vocab_terms"."id"'
+            ).where(tag: { name: sanitized_tags }).arel.exists
+          )
         end
       end
 
@@ -198,11 +202,16 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins(publication: { authors: { user: :account } }).where(
-                acct[:username].matches_any(sn)
-            .or(acct[:first_name].matches_any(sn))
-            .or(acct[:last_name].matches_any(sn))
-            .or(acct[:full_name].matches_any(sn)))
+          @items = @items.joins(:publication).where(
+            Author.joins(user: :account).where(
+              '"authors"."publication_id" = "publication"."id"'
+            ).where(
+              acct[:username].matches_any(sn)
+                .or(acct[:first_name].matches_any(sn))
+                .or(acct[:last_name].matches_any(sn))
+                .or(acct[:full_name].matches_any(sn))
+            ).arel.exists
+          )
         end
       end
 
@@ -211,11 +220,16 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins(publication: { copyright_holders: { user: :account } }).where(
-                acct[:username].matches_any(sn)
-            .or(acct[:first_name].matches_any(sn))
-            .or(acct[:last_name].matches_any(sn))
-            .or(acct[:full_name].matches_any(sn)))
+          @items = @items.joins(:publication).where(
+            CopyrightHolder.joins(user: :account).where(
+              '"copyright_holders"."publication_id" = "publication"."id"'
+            ).where(
+              acct[:username].matches_any(sn)
+                .or(acct[:first_name].matches_any(sn))
+                .or(acct[:last_name].matches_any(sn))
+                .or(acct[:full_name].matches_any(sn))
+            ).arel.exists
+          )
         end
       end
 
@@ -224,17 +238,38 @@ class SearchVocabTerms
           sn = to_string_array(name, append_wildcard: true)
           next @items = @items.none if sn.empty?
 
-          @items = @items.joins(
-            publication: { authors: { user: :account }, copyright_holders: { user: :account } }
-          ).where(
-                acct_author[:username].matches_any(sn)
-            .or(acct_author[:first_name].matches_any(sn))
-            .or(acct_author[:last_name].matches_any(sn))
-            .or(acct_author[:full_name].matches_any(sn))
-            .or(acct_copyright[:username].matches_any(sn))
-            .or(acct_copyright[:first_name].matches_any(sn))
-            .or(acct_copyright[:last_name].matches_any(sn))
-            .or(acct_copyright[:full_name].matches_any(sn)))
+          @items = @items.joins(:publication).where(
+            Author.joins(user: :account).where(
+              '"authors"."publication_id" = "publication"."id"'
+            ).where(
+              acct[:username].matches_any(sn)
+                .or(acct[:first_name].matches_any(sn))
+                .or(acct[:last_name].matches_any(sn))
+                .or(acct[:full_name].matches_any(sn))
+            ).arel.exists.or(
+              CopyrightHolder.joins(user: :account).where(
+                '"copyright_holders"."publication_id" = "publication"."id"'
+              ).where(
+                acct[:username].matches_any(sn)
+                  .or(acct[:first_name].matches_any(sn))
+                  .or(acct[:last_name].matches_any(sn))
+                  .or(acct[:full_name].matches_any(sn))
+              ).arel.exists
+            )
+          )
+        end
+      end
+
+      with.keyword :solutions_are_public do |saps|
+        saps.each do |sap|
+          sanitized_saps = to_string_array(sap).map do |str|
+            ActiveModel::Type::Boolean.new.cast(str)
+          end
+          next @items = @items.none if sanitized_saps.empty?
+
+          @items = @items.joins(publication: :publication_group).where(
+            publication: { publication_group: { solutions_are_public: sanitized_saps } }
+          )
         end
       end
     end

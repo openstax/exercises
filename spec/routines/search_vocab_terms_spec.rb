@@ -19,9 +19,13 @@ RSpec.describe SearchVocabTerms, type: :routine do
       'tags' => ['tag1', 'tag2'],
       'term' => "Lorem ipsum",
       'definition' => "Dolor sit amet",
-      'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"]
+      'distractor_literals' => ["Consectetur adipiscing elit", "Sed do eiusmod tempor"],
+      'solutions_are_public' => true
     )
     @vocab_term_1.save!
+    FactoryBot.create :author, publication: @vocab_term_1.publication
+    FactoryBot.create :copyright_holder, publication: @vocab_term_1.publication
+    @vocab_term_1.publication.reload
     FactoryBot.create :author, publication: @vocab_term_1.publication
     FactoryBot.create :copyright_holder, publication: @vocab_term_1.publication
     @vocab_term_1.publication.authors.reset
@@ -33,7 +37,8 @@ RSpec.describe SearchVocabTerms, type: :routine do
       'tags' => ['tag2', 'tag3'],
       'term' => "Dolorem ipsum",
       'definition' => "Quia dolor sit amet",
-      'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"]
+      'distractor_literals' => ["Consectetur adipisci velit", "Sed quia non numquam"],
+      'solutions_are_public' => false
     )
     @vocab_term_2.save!
     @vocab_term_2.publication.update_attribute :version, 42
@@ -110,7 +115,7 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_2]
     end
 
-    it "returns a VocabTerm matching some tags" do
+    it "returns a VocabTerm matching some tag" do
       result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
@@ -231,10 +236,46 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [@vocab_term_1]
     end
+
+    it "returns a VocabTerm matching solutions_are_public" do
+      result = described_class.call q: "solutions_are_public:true"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
   end
 
   context "multiple matches" do
-    it "returns VocabTerms matching the content" do
+    it "returns VocabTerms matching some tag" do
+      result = described_class.call(q: 'tag:TaG2')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@vocab_term_1, @vocab_term_2]
+    end
+
+    it "returns a VocabTerms matching any of a list of tags" do
+      result = described_class.call(q: 'tag:tAg1,TaG3')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@vocab_term_1, @vocab_term_2]
+    end
+
+    it "returns a VocabTerm matching all of a list of tags" do
+      result = described_class.call(q: 'tag:tAg1 tag:TaG2')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
+
+    it "returns VocabTerms matching some content" do
       result = described_class.call(q: 'content:"lOrEm IpSuM"')
       expect(result.errors).to be_empty
 
@@ -243,13 +284,75 @@ RSpec.describe SearchVocabTerms, type: :routine do
       expect(outputs.items).to eq [@vocab_term_1, @vocab_term_2]
     end
 
-    it "returns VocabTerms matching the tags" do
-      result = described_class.call(q: 'tag:TaG2')
+    it "returns VocabTerms matching any of a list of authors" do
+      result = described_class.call(
+        q: "author:\"#{@vocab_term_1.authors.first.name},#{@vocab_term_2.authors.first.name}\""
+      )
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 2
       expect(outputs.items).to eq [@vocab_term_1, @vocab_term_2]
+    end
+
+    it "returns a VocabTerm matching all of a list of authors" do
+      result = described_class.call(
+        q: "author:\"#{@vocab_term_1.authors.first.name
+           }\" author:\"#{@vocab_term_1.authors.last.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
+
+    it "returns VocabTerms matching any of a list of copyright holders" do
+      result = described_class.call(
+        q: "copyright_holder:\"#{@vocab_term_1.copyright_holders.first.name
+           },#{@vocab_term_2.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@vocab_term_1, @vocab_term_2]
+    end
+
+    it "returns a VocabTerm matching all of a list of copyright holders" do
+      result = described_class.call(
+        q: "copyright_holder:\"#{@vocab_term_1.copyright_holders.first.name
+           }\" copyright_holder:\"#{@vocab_term_1.copyright_holders.last.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
+    end
+
+    it "returns VocabTerms matching any of a list of collaborators" do
+      result = described_class.call(
+        q: "collaborator:\"#{@vocab_term_1.authors.first.name
+           },#{@vocab_term_2.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@vocab_term_1, @vocab_term_2]
+    end
+
+    it "returns a VocabTerm matching all of a list of collaborators" do
+      result = described_class.call(
+        q: "collaborator:\"#{@vocab_term_1.authors.first.name
+           }\" collaborator:\"#{@vocab_term_1.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@vocab_term_1]
     end
 
     it "sorts by multiple fields in different directions" do

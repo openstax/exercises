@@ -35,10 +35,14 @@ RSpec.describe SearchExercises, type: :routine do
           'content_html' => "Sed do eiusmod tempor"
         }],
         'formats' => [ 'multiple-choice', 'free-response' ]
-      }]
+      }],
+      'solutions_are_public' => true
     )
     @exercise_1.save!
     @exercise_1.publication.publish.save!
+    FactoryBot.create :author, publication: @exercise_1.publication
+    FactoryBot.create :copyright_holder, publication: @exercise_1.publication
+    @exercise_1.publication.reload
     FactoryBot.create :author, publication: @exercise_1.publication
     FactoryBot.create :copyright_holder, publication: @exercise_1.publication
 
@@ -54,8 +58,9 @@ RSpec.describe SearchExercises, type: :routine do
         'answers' => [{
           'content_html' => "Sed quia non numquam"
         }],
-        'formats' => [ 'multiple-choice', 'free-response' ]
-      }]
+        'formats' => [ 'true-false' ]
+      }],
+      'solutions_are_public' => false
     )
     @exercise_2.save!
     @exercise_2.publication.version = 42
@@ -119,7 +124,7 @@ RSpec.describe SearchExercises, type: :routine do
       end
     end
 
-    it "returns an Exercise matching some tags" do
+    it "returns an Exercise matching some tag" do
       result = described_class.call(q: 'tag:tAg1')
       expect(result.errors).to be_empty
 
@@ -128,7 +133,7 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.items).to eq [@exercise_1]
     end
 
-    it "does not return old versions of published Exercises matching the tags" do
+    it "does not return old versions of published Exercises matching the tag" do
       new_exercise = @exercise_1.new_version
       new_exercise.tags = ['tag2', 'tag3']
       new_exercise.save!
@@ -211,16 +216,52 @@ RSpec.describe SearchExercises, type: :routine do
       expect(outputs.total_count).to eq 1
       expect(outputs.items).to eq [@exercise_1]
     end
+
+    it "returns an Exercise matching a format" do
+      result = described_class.call q: "format:multiple-choice"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns an Exercise matching solutions_are_public" do
+      result = described_class.call q: "solutions_are_public:true"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
   end
 
   context "multiple matches" do
-    it "returns Exercises matching some tags" do
+    it "returns Exercises matching some tag" do
       result = described_class.call(q: 'tag:TaG2')
       expect(result.errors).to be_empty
 
       outputs = result.outputs
       expect(outputs.total_count).to eq 2
       expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns a Exercises matching any of a list of tags" do
+      result = described_class.call(q: 'tag:tAg1,TaG3')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns an Exercise matching all of a list of tags" do
+      result = described_class.call(q: 'tag:tAg1 tag:TaG2')
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
     end
 
     it "returns Exercises matching some content" do
@@ -230,6 +271,95 @@ RSpec.describe SearchExercises, type: :routine do
       outputs = result.outputs
       expect(outputs.total_count).to eq 2
       expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns Exercises matching any of a list of authors" do
+      result = described_class.call(
+        q: "author:\"#{@exercise_1.authors.first.name},#{@exercise_2.authors.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns an Exercise matching all of a list of authors" do
+      result = described_class.call(
+        q: "author:\"#{@exercise_1.authors.first.name
+           }\" author:\"#{@exercise_1.authors.last.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns Exercises matching any of a list of copyright holders" do
+      result = described_class.call(
+        q: "copyright_holder:\"#{@exercise_1.copyright_holders.first.name
+           },#{@exercise_2.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns an Exercise matching all of a list of copyright holders" do
+      result = described_class.call(
+        q: "copyright_holder:\"#{@exercise_1.copyright_holders.first.name
+           }\" copyright_holder:\"#{@exercise_1.copyright_holders.last.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns Exercises matching any of a list of collaborators" do
+      result = described_class.call(
+        q: "collaborator:\"#{@exercise_1.authors.first.name
+           },#{@exercise_2.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns an Exercise matching all of a list of collaborators" do
+      result = described_class.call(
+        q: "collaborator:\"#{@exercise_1.authors.first.name
+           }\" collaborator:\"#{@exercise_1.copyright_holders.first.name}\""
+      )
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
+    end
+
+    it "returns Exercises matching any of a list of formats" do
+      result = described_class.call q: "format:multiple-choice,true-false"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 2
+      expect(outputs.items).to eq [@exercise_1, @exercise_2]
+    end
+
+    it "returns an Exercise matching all of a list of formats" do
+      result = described_class.call q: "format:multiple-choice format:free-response"
+      expect(result.errors).to be_empty
+
+      outputs = result.outputs
+      expect(outputs.total_count).to eq 1
+      expect(outputs.items).to eq [@exercise_1]
     end
 
     it "sorts by multiple fields in different directions" do
