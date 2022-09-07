@@ -83,7 +83,11 @@ module Api::V1
 
       standard_search(
         Exercise, SearchExercises, Exercises::SearchRepresenter, user: current_api_user
-      )
+      ) do |outputs|
+        digest = Digest::SHA256.new
+        outputs.items.each { |exercise| digest << exercise.cache_key_with_version }
+        response.headers['X-Digest'] = digest.hexdigest
+      end
     end
 
     ##########
