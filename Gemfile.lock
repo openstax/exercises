@@ -120,9 +120,8 @@ GEM
       pager (~> 1.0)
     choice (0.2.0)
     chronic (0.10.2)
-    codecov (0.2.12)
-      json
-      simplecov
+    codecov (0.6.0)
+      simplecov (>= 0.15, < 0.22)
     concurrent-ruby (1.1.9)
     crack (0.4.5)
       rexml
@@ -231,7 +230,6 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    json (2.5.1)
     jwt (2.3.0)
     keyword_search (1.5.0)
     lev (11.0.0)
@@ -485,7 +483,7 @@ GEM
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
-    simplecov_json_formatter (0.1.3)
+    simplecov_json_formatter (0.1.4)
     sortability (1.0.0)
       rails
     sprockets (3.7.2)
