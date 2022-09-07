@@ -18,10 +18,17 @@ module Api::V1
     def index
       OSU::AccessPolicy.require_action_allowed! :index, current_api_user, OpenStax::Content::Book
 
-      books = abl.approved_books(archive: archive).map do |book|
+      books = abl.approved_books(archive: archive).group_by(&:uuid).map do |uuid, books|
+        latest_book = books.sort_by(&:committed_at).last
+
         # We use book.slug.titleize here to avoid fetching all book ToCs,
         # because the actual book title is not in the ABL
-        { uuid: book.uuid, version: book.version, title: book.slug.titleize, slug: book.slug }
+        {
+          uuid: latest_book.uuid,
+          version: latest_book.version,
+          title: latest_book.slug.titleize,
+          slug: latest_book.slug
+        }
       end
 
       render json: books
