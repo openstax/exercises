@@ -76,7 +76,7 @@ RSpec.describe UserHtml do
     expect(described_class.sanitize(content)).to eq 'Funny cat videos: '
   end
 
-  describe 'data-math attribute' do
+  context 'data-math attribute' do
     let (:formula){ %-\lim_{x\to\infty}f(x)=0- }
 
     it 'is allowed on divs' do
@@ -93,7 +93,16 @@ RSpec.describe UserHtml do
       content = "also: <p data-math='#{formula}'/>"
       expect(described_class.sanitize(content)).to eq 'also: <p></p>'
     end
-
   end
 
+  context 'style attributes' do
+    STYLE_ATTRIBUTES.each do |attr|
+      context "#{attr} attribute" do
+        it 'is allowed on any element' do
+          content = "<table><tbody><tr><td #{attr}=\"test\">Hi</td></tr></tbody></table>"
+          expect(described_class.sanitize(content)).to eq content
+        end
+      end
+    end
+  end
 end
