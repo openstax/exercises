@@ -42,15 +42,20 @@ embed_transformer = ->(env) do
   { node_whitelist: [node] }
 end
 
+STYLE_DATA_ATTRIBUTES = %w(bullet-style type orient valign align media)
+STYLE_ATTRIBUTES = STYLE_DATA_ATTRIBUTES.map { |attr| "data-#{attr}" }
+
 UserHtml.sanitize_config = Sanitize::Config.merge(
   Sanitize::Config::RELAXED,
   add_attributes: {
     'a' => {'rel' => 'nofollow', 'target' => '_blank'}
   },
-  attributes: Sanitize::Config::RELAXED[:attributes].merge({
+  attributes: Sanitize::Config::RELAXED[:attributes].merge(
+    # :all has to be a symbol, not a string
+    all: Sanitize::Config::RELAXED[:attributes][:all] + STYLE_ATTRIBUTES,
     'span' => ['data-math'],
     'div'  => ['data-math', 'align'],
     'p'    => ['align'],
-  }),
+  ),
   transformers: [embed_transformer]
 )
