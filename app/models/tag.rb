@@ -6,7 +6,7 @@ class Tag < ApplicationRecord
   validates :name, presence: true, uniqueness: true, format: /\A[\w\.:#\/-]*\z/
 
   def self.sanitize_name(name)
-    name.to_s.gsub(/[^\w\.:#\/-]+/, '-').gsub(/(?:\A-|-\z)/, '')
+    name.to_s.gsub(/[^\w\.:#\/]+/, '-').gsub(/(?:\A-|-\z)/, '')
   end
 
   def self.get(tags)
