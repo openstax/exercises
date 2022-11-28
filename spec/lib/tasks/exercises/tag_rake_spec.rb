@@ -43,4 +43,21 @@ RSpec.describe 'exercises tag', type: :rake do
       run_rake_task
     end
   end
+
+  context 'assessments' do
+    let(:fixture_path) { '../spec/fixtures/sample_assessment_tags.xlsx' }
+    let(:book_uuid)    { SecureRandom.uuid }
+
+    let :run_rake_task do
+      Rake::Task["exercises:tag:assessments"].reenable
+      Rake.application.invoke_task "exercises:tag:assessments[#{fixture_path},#{book_uuid}]"
+    end
+
+    it 'passes arguments to Exercises::Tag::Assessments' do
+      expect(Exercises::Tag::Assessments).to(
+        receive(:call).with(filename: fixture_path, book_uuid: book_uuid)
+      )
+      run_rake_task
+    end
+  end
 end
