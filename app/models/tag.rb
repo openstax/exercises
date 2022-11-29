@@ -3,10 +3,10 @@ class Tag < ApplicationRecord
   has_many :exercise_tags
   has_many :vocab_term_tags
 
-  validates :name, presence: true, uniqueness: true, format: /\A[\w\.:#-]*\z/
+  validates :name, presence: true, uniqueness: true, format: /\A[\w\.:#\/-]*\z/
 
   def self.sanitize_name(name)
-    name.to_s.gsub(/[^\w\.:#]+/, '-').gsub(/(?:\A-|-\z)/, '')
+    name.to_s.gsub(/[^\w\.:#\/]+/, '-').gsub(/(?:\A-|-\z)/, '')
   end
 
   def self.get(tags)

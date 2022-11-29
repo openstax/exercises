@@ -1,0 +1,35 @@
+require 'rails_helper'
+require 'content'
+
+RSpec.describe Exercises::Tag::Assessments, type: :routine do
+  let(:fixture_path) { 'spec/fixtures/sample_assessments_tags.xlsx' }
+  let(:book_uuid)    { SecureRandom.uuid }
+  let(:page_uuid)    { 'a9ce0e38-4f52-4fe0-9433-d8df95f6e3b2' }
+
+  let(:expected_pre_tag)  { "assessment:preparedness:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}" }
+  let(:expected_post_tag) { "assessment:practice:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}" }
+
+  let!(:exercises) { (1..10).map { |ii| FactoryBot.create(:publication, number: ii).publishable } }
+
+  # Disable set_slug_tags!
+  before { allow_any_instance_of(Exercise).to receive(:set_slug_tags!) }
+
+  it 'tags exercises with the sample spreadsheet' do
+    expect { described_class.call(filename: fixture_path, book_uuid: book_uuid) }.to change { ExerciseTag.count }.by(10)
+
+    exercises.each(&:reload)
+
+    exercises.each do |exercise|
+      expect(exercise.tags).not_to be_blank
+      expect(exercise.tags).to satisfy do |tags|
+        tags.all { |tag| expect(tag.name).to eq exercise.number <= 5 ? expected_pre_tag : expected_post_tag }
+      end
+    end
+  end
+
+  it 'skips exercises with no changes (idempotence)' do
+    expect { described_class.call(filename: fixture_path, book_uuid: book_uuid) }.to change { ExerciseTag.count }.by(10)
+
+    expect { described_class.call(filename: fixture_path, book_uuid: book_uuid) }.not_to change { ExerciseTag.count }
+  end
+end
