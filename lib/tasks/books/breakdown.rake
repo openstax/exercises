@@ -41,25 +41,47 @@ namespace :books do
         end
       end
 
-      all_pages = root_book_part.all_pages
-      tags = all_pages.map { |page| "context-cnxmod:#{page.uuid}" }
-      exercise_counts_by_tag = Exercise.chainable_latest.published.joins(:tags).where(
-        tags: { name: tags }
-      ).group(tags: :name).count
-
       recursive_exercise_counts = ->(book_part) do
         result = book_part.parts.map do |part|
-          part.is_a?(OpenStax::Content::Page) ?
-            [ part.uuid, exercise_counts_by_tag["context-cnxmod:#{part.uuid}"] || 0 ] : recursive_exercise_counts(part)
+          next recursive_exercise_counts(part) unless part.is_a?(OpenStax::Content::Page)
+
+          exercises = Exercise.chainable_latest.published.joins(:tags).where(
+            tags: { name: "context-cnxmod:#{part.uuid}" }
+          )
+
+          mc_tf_exercises = exercises.joins(:stylings).where(
+            stylings: { style: [ Style::MULTIPLE_CHOICE, Style::TRUE_FALSE ] }
+          ).pluck(:id)
+          fr_exercises = exercises.joins(:stylings).where(stylings: { style: Style::FREE_RESPONSE }).pluck(:id)
+
+          [
+            part.uuid,
+            'Page',
+            part.book_location,
+            part.title,
+            exercises.count,
+            (mc_tf_exercises & fr_exercises).size,
+            (mc_tf_exercises - fr_exercises).size,
+            (fr_exercises - mc_tf_exercises).size
+          ]
         end
 
-        [ book_part.uuid, result.map(&:second).sum ] + result
+        [
+          [
+            book_part.uuid,
+            'Book or Unit or Chapter',
+            book_part.book_location,
+            book_part.title
+          ] + result[3..-1].map(&:sum)
+        ] + result
       end
 
       CSV.open(filename, 'w') do |csv|
-        recursive_exercise_counts(root_book_part).each do |row|
-          csv << row
-        end
+        csv << [
+          'UUID', 'Type', 'Location in ToC', 'Title', 'Total Exercises', '2-step MC/TF', 'MC/TF only', 'FR only'
+        ]
+
+        recursive_exercise_counts(root_book_part).each { |row| csv << row }
       end
     ensure
       # Restore original logger
