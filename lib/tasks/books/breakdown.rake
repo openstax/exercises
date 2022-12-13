@@ -15,7 +15,7 @@ namespace :books do
       book_uuid = args[:book_uuid]
       filename = args[:filename] || "#{book_uuid}.csv"
 
-      book = abl.approved_books(archive: archive).find { |book| book.uuid == params[:uuid] }
+      book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
       root_book_part = loop do
         begin
           break book.root_book_part
@@ -41,47 +41,54 @@ namespace :books do
         end
       end
 
-      recursive_exercise_counts = ->(book_part) do
-        result = book_part.parts.map do |part|
-          next recursive_exercise_counts(part) unless part.is_a?(OpenStax::Content::Page)
+      def recursive_exercise_counts(book_part, type)
+        results = book_part.parts.flat_map do |part|
+          next recursive_exercise_counts(part, 'Unit/Chapter') unless part.is_a?(OpenStax::Content::Page)
 
           exercises = Exercise.chainable_latest.published.joins(:tags).where(
             tags: { name: "context-cnxmod:#{part.uuid}" }
-          )
+          ).joins(questions: {stems: :stylings}).distinct
 
-          mc_tf_exercises = exercises.joins(:stylings).where(
-            stylings: { style: [ Style::MULTIPLE_CHOICE, Style::TRUE_FALSE ] }
+          mc_tf_exercises = exercises.dup.where(
+            questions: { stems: { stylings: { style: [ Style::MULTIPLE_CHOICE, Style::TRUE_FALSE ] } } }
           ).pluck(:id)
-          fr_exercises = exercises.joins(:stylings).where(stylings: { style: Style::FREE_RESPONSE }).pluck(:id)
+          fr_exercises = exercises.dup.where(
+            questions: { stems: { stylings: { style: Style::FREE_RESPONSE } } }
+          ).pluck(:id)
 
           [
-            part.uuid,
-            'Page',
-            part.book_location,
-            part.title,
-            exercises.count,
-            (mc_tf_exercises & fr_exercises).size,
-            (mc_tf_exercises - fr_exercises).size,
-            (fr_exercises - mc_tf_exercises).size
+            [
+              part.uuid,
+              'Page',
+              part.book_location.join('.'),
+              ActionView::Base.full_sanitizer.sanitize(part.title).gsub(/\s+/, ' ').strip,
+              exercises.count,
+              (mc_tf_exercises & fr_exercises).size,
+              (mc_tf_exercises - fr_exercises).size,
+              (fr_exercises - mc_tf_exercises).size
+            ]
           ]
         end
+
+        direct_child_uuids = book_part.parts.map(&:uuid)
+        direct_child_results = results.filter { |result| direct_child_uuids.include? result.first }
 
         [
           [
             book_part.uuid,
-            'Book or Unit or Chapter',
-            book_part.book_location,
-            book_part.title
-          ] + result[3..-1].map(&:sum)
-        ] + result
+            type,
+            book_part.book_location.join('.'),
+            ActionView::Base.full_sanitizer.sanitize(book_part.title).gsub(/\s+/, ' ').strip
+          ] + direct_child_results.map { |result| result[4..-1] }.transpose.map(&:sum)
+        ] + results
       end
 
       CSV.open(filename, 'w') do |csv|
         csv << [
-          'UUID', 'Type', 'Location in ToC', 'Title', 'Total Exercises', '2-step MC/TF', 'MC/TF only', 'FR only'
+          'UUID', 'Type', 'Number', 'Title', 'Total Exercises', '2-step MC/TF', 'MC/TF only', 'FR only'
         ]
 
-        recursive_exercise_counts(root_book_part).each { |row| csv << row }
+        recursive_exercise_counts(root_book_part, 'Book').each { |row| csv << row }
       end
     ensure
       # Restore original logger
