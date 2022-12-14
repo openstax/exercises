@@ -9,7 +9,7 @@ RSpec.describe Exercises::Tag::Assessments, type: :routine do
   let(:expected_pre_tag)  { "assessment:preparedness:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}" }
   let(:expected_post_tag) { "assessment:practice:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}" }
 
-  let!(:exercises) { (1..10).map { |ii| FactoryBot.create(:publication, number: ii).publishable } }
+  let!(:exercises) { (1..9).map { |ii| FactoryBot.create(:publication, number: ii).publishable } }
 
   # Disable set_slug_tags!
   before { allow_any_instance_of(Exercise).to receive(:set_slug_tags!) }
@@ -20,9 +20,13 @@ RSpec.describe Exercises::Tag::Assessments, type: :routine do
     exercises.each(&:reload)
 
     exercises.each do |exercise|
-      expect(exercise.tags).not_to be_blank
+      valid_tags = []
+      valid_tags << expected_pre_tag if exercise.number <= 5
+      valid_tags << expected_post_tag if exercise.number >= 5
+
       expect(exercise.tags).to satisfy do |tags|
-        tags.all { |tag| expect(tag.name).to eq exercise.number <= 5 ? expected_pre_tag : expected_post_tag }
+        expect(tags.length).to eq exercise.number == 5 ? 2 : 1
+        tags.all { |tag| expect(valid_tags).to include tag.name }
       end
     end
   end
