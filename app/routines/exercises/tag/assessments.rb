@@ -42,8 +42,12 @@ module Exercises
               "WARNING: Couldn't find any Exercises with numbers #{not_found_numbers.join(', ')}"
             end unless not_found_numbers.empty?
 
-            pre_section_exercises = exercises.filter { |ex| pre_section_exercise_numbers.include? ex.number }
-            post_section_exercises = exercises.filter { |ex| post_section_exercise_numbers.include? ex.number }
+            pre_and_post_section_exercises, remaining_exercises = exercises.partition do |ex|
+              pre_section_exercise_numbers.include?(ex.number) && post_section_exercise_numbers.include?(ex.number)
+            end
+            pre_section_exercises, post_section_exercises = remaining_exercises.partition do |ex|
+              pre_section_exercise_numbers.include? ex.number
+            end
 
             pre_section_tag = "assessment:preparedness:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
             post_section_tag = "assessment:practice:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
@@ -51,8 +55,9 @@ module Exercises
             row_number = row_index + row_offset + 1
 
             begin
-              tag(pre_section_exercises, [ pre_section_tag ], row_number)
-              tag(post_section_exercises, [ post_section_tag ], row_number)
+              tag pre_and_post_section_exercises, [ pre_section_tag, post_section_tag ], row_number
+              tag pre_section_exercises, [ pre_section_tag ], row_number
+              tag post_section_exercises, [ post_section_tag ], row_number
             rescue StandardError => se
               Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
               failures[row_number] = se.to_s
