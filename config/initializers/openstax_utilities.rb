@@ -6,4 +6,13 @@ OpenStax::Utilities.configure do |config|
 
     raise SecurityTransgression
   end
+
+  secrets = Rails.application.secrets
+  config.assets_url = secrets.assets_url
+  config.environment_name = secrets.environment_name
+  config.backend = 'exercises'
+  config.frontend = 'tutor-js'
+  config.release_version = secrets.release_version
+  config.deployment = 'tutor-deployment'
+  config.deployment_version = secrets.deployment_version
 end
