@@ -2,7 +2,7 @@
   page = Integer(params[:page]) rescue 0
   per_page = Integer(params[:per_page]) rescue 20
   num_users = @handler_result&.outputs&.total_count || 0
-  pages = (num_users * 1.0 / per_page).ceil
+  pages = per_page == 0 ? 1 : (num_users * 1.0 / per_page).ceil
 %>
 
 <div id='search-results-pagination'>
