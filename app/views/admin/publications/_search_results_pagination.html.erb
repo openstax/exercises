@@ -5,7 +5,7 @@
   page         ||= 1
   per_page     ||= 20
 
-  num_pages = (total_count.to_f/per_page).ceil
+  num_pages = per_page == 0 ? 1 : (total_count.to_f/per_page).ceil
 %>
 
 <%= pluralize(total_count, 'publication') %> found.
