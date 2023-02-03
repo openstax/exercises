@@ -79,7 +79,6 @@ module Api::V1
       render json: tree
     end
 
-
     protected
 
     def abl
