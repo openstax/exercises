@@ -62,51 +62,62 @@ namespace :exercises do
     # Converts an EOC spreadsheet from the content team to a CSV for exercises:tag:spreadsheet
     desc 'converts an EOC spreadsheet from the content team to a CSV for exercises:tag:spreadsheet'
     task :convert_eoc, [:book_uuid, :has_units, :filename] => :environment do |t, args|
-      Rails.logger.info "Finding book #{args[:book_uuid]}"
-      book = FindBook[uuid: args[:book_uuid]]
+      # Output import logging info to the console (except in the test environment)
+      original_logger = Rails.logger
 
-      get_parts = ->(part) { part.parts.filter { |part| part.is_a?(OpenStax::Content::BookPart) } }
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
-      parts = get_parts.call(book.root_book_part)
-      # Skip units if necessary
-      chapters = args[:has_units] ? parts.flat_map { |part| get_parts.call(part) } : parts
+        Rails.logger.info { "Finding book \"#{args[:book_uuid]}\"" }
+        book = FindBook[uuid: args[:book_uuid]]
 
-      chapter_uuid_by_page_uuid = {}
-      chapters.each do |chapter|
-        chapter.all_pages.each do |page|
-          chapter_uuid_by_page_uuid[page.uuid] = chapter.uuid
+        get_parts = ->(part) { part.parts.filter { |part| part.is_a?(OpenStax::Content::BookPart) } }
+
+        parts = get_parts.call(book.root_book_part)
+        # Skip units if necessary
+        has_units = ActiveModel::Type::Boolean.new.cast args[:has_units]
+        chapters = has_units ? parts.flat_map { |part| get_parts.call(part) } : parts
+
+        chapter_uuid_by_page_uuid = {}
+        chapters.each do |chapter|
+          chapter.all_pages.each do |page|
+            chapter_uuid_by_page_uuid[page.uuid] = chapter.uuid
+          end
         end
-      end
 
-      output = "#{book.slug}.csv"
-      Rails.logger.info "Loading #{args[:filename]} and writing output to #{output}"
+        Rails.logger.info { "Processing \"#{args[:filename]}\"" }
 
-      CSV.open(output, 'w') do |csv|
-        csv << [ 'Exercise UID', 'Tags...' ]
+        output_filename = "#{book.slug}.csv"
+        CSV.open(output_filename, 'w') do |csv|
+          csv << [ 'Exercise UID', 'Tags...' ]
 
-        ProcessSpreadsheet.call(filename: args[:filename], offset: 2) do |row, index|
-          chapter_uuid = chapter_uuid_by_page_uuid[row[0]]
-          if chapter_uuid.nil?
-            Rails.logger.warn "Skipped row #{index + 1} because page UUID in column 1 was not found"
-            next
+          ProcessSpreadsheet.call(filename: args[:filename], offset: 2) do |row, index|
+            next Rails.logger.warn do
+              "Skipped row #{index + 1} because column 5 is blank"
+            end if row[4].blank?
+
+            next Rails.logger.warn do
+              "Skipped row #{index + 1} because column 4 says it is not in Exercises"
+            end if row[3].to_s == 'no'
+
+            page_uuid = row[0].to_s.strip
+            chapter_uuid = chapter_uuid_by_page_uuid[page_uuid]
+            next Rails.logger.warn do
+              "Skipped row #{index + 1} because page with UUID \"#{page_uuid}\" was not found"
+            end if chapter_uuid.nil?
+
+            csv << [
+              row[4].to_s.strip,
+              "assessment:practice:https://openstax.org/orn/book:subbook/#{
+                args[:book_uuid]}:#{chapter_uuid}"
+            ]
           end
-
-          if row[3] == 'no'
-            Rails.logger.warn "Skipped row #{index + 1} because column 4 says it is not in Exercises"
-            next
-          end
-
-          if row[4].blank?
-            Rails.logger.warn "Skipped row #{index + 1} because column 5 is blank"
-            next
-          end
-
-          csv << [
-            row[4],
-            "assessment:practice:https://openstax.org/orn/book:subbook/#{
-              book_uuid}:#{chapters[chapter.to_i-1].uuid}"
-          ]
         end
+
+        Rails.logger.info { "Output written to \"#{output_filename}\"" }
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
       end
     end
   end

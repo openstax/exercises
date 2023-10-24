@@ -5,11 +5,17 @@ class FindBook
   protected
 
   def exec(uuid:, archive_version: nil)
-    archive_version ||= OpenStax::Content::S3.new.ls.last
+    if archive_version.nil?
+      s3 = OpenStax::Content::S3.new
+      raise 'Content bucket not configured' unless s3.bucket_configured?
+      archive_version ||= s3.ls.last
+    end
     archive = OpenStax::Content::Archive.new(version: archive_version)
     book = OpenStax::Content::Abl.new.approved_books(archive: archive).find do |book|
       book.uuid == uuid
     end
+
+    raise ArgumentError, "No book found with UUID \"#{uuid}\"" if book.nil?
 
     loop do
       begin
