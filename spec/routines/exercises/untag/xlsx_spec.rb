@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Untag::Xlsx, type: :routine do
+RSpec.describe Exercises::Untag::Spreadsheet, type: :routine do
   before do
     # Disable set_slug_tags!
     allow_any_instance_of(Exercise).to receive(:set_slug_tags!)
@@ -10,7 +10,7 @@ RSpec.describe Exercises::Untag::Xlsx, type: :routine do
     @fixture_path = 'spec/fixtures/sample_tags.xlsx'
 
     # Add the tags but don't publish the exercises
-    Exercises::Tag::Xlsx.call(filename: @fixture_path)
+    Exercises::Tag::Spreadsheet.call(filename: @fixture_path)
     @exercises.each { |exercise| exercise.reload.publication.update_attribute :published_at, nil }
   end
 
