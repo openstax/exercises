@@ -45,38 +45,9 @@ module Api::V1
     def show
       OSU::AccessPolicy.require_action_allowed! :read, current_api_user, OpenStax::Content::Book
 
-      book = abl.approved_books(archive: archive).find { |book| book.uuid == params[:uuid] }
-      tree = []
+      book = FindBook[uuid: params[:uuid], archive_version: archive_version] rescue nil
 
-      loop do
-        begin
-          tree = book.tree['contents']
-        rescue StandardError => exception
-          # Sometimes books in the ABL fail to load
-          # Retry with an earlier version of archive, if possible
-          previous_version ||= book.archive.previous_version
-
-          # break from the loop if there are no more archive versions to try
-          break if previous_version.nil?
-
-          previous_archive ||= OpenStax::Content::Archive.new version: previous_version
-
-          book = OpenStax::Content::Book.new(
-            archive: previous_archive,
-            uuid: book.uuid,
-            version: book.version,
-            slug: book.slug,
-            style: book.style,
-            min_code_version: book.min_code_version,
-            committed_at: book.committed_at
-          )
-        else
-          # break from the loop if successful
-          break
-        end
-      end
-
-      render json: tree
+      render json: book.nil? ? [] : book.tree['contents']
     end
 
     protected

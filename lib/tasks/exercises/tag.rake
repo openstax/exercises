@@ -22,17 +22,17 @@ namespace :exercises do
     # Tags exercises using a spreadsheet
     # Arguments are, in order:
     # filename, [skip_first_row]
-    # Example: rake exercises:tag:xlsx[tags.xlsx]
+    # Example: rake exercises:tag:spreadsheet[tags.xlsx]
     #          will tag exercises based on tags.xlsx
-    desc "tags exercises using an xlsx file"
-    task :xlsx, [:filename, :skip_first_row] => :environment do |t, args|
+    desc "tags exercises using a spreadsheet"
+    task :spreadsheet, [:filename, :skip_first_row] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
 
       begin
         Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
-        Exercises::Tag::Xlsx.call(args.to_h)
+        Exercises::Tag::Spreadsheet.call(args.to_h)
       ensure
         # Restore original logger
         Rails.logger = original_logger
@@ -44,7 +44,7 @@ namespace :exercises do
     # filename, book_uuid, [skip_first_row]
     # Example: rake exercises:tag:assessments[tags.xlsx,12345]
     #          will tag exercises based on tags.xlsx with the book_uuid 12345
-    desc "tags exercises for OpenStax Assessments using an xlsx file"
+    desc "tags exercises for OpenStax Assessments using a spreadsheet"
     task :assessments, [:filename, :book_uuid, :skip_first_row] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
@@ -53,6 +53,68 @@ namespace :exercises do
         Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
         Exercises::Tag::Assessments.call args.to_h
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
+      end
+    end
+
+    # Converts an EOC spreadsheet from the content team to a CSV for exercises:tag:spreadsheet
+    desc 'converts an EOC spreadsheet from the content team to a CSV for exercises:tag:spreadsheet'
+    task :convert_eoc, [:filename, :book_uuid, :has_units] => :environment do |t, args|
+      # Output import logging info to the console (except in the test environment)
+      original_logger = Rails.logger
+
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
+
+        Rails.logger.info { "Finding book \"#{args[:book_uuid]}\"" }
+        book = FindBook[uuid: args[:book_uuid]]
+
+        get_parts = ->(part) { part.parts.filter { |part| part.is_a?(OpenStax::Content::BookPart) } }
+
+        parts = get_parts.call(book.root_book_part)
+        # Skip units if necessary
+        has_units = ActiveModel::Type::Boolean.new.cast args[:has_units]
+        chapters = has_units ? parts.flat_map { |part| get_parts.call(part) } : parts
+
+        chapter_uuid_by_page_uuid = {}
+        chapters.each do |chapter|
+          chapter.all_pages.each do |page|
+            chapter_uuid_by_page_uuid[page.uuid] = chapter.uuid
+          end
+        end
+
+        Rails.logger.info { "Processing \"#{args[:filename]}\"" }
+
+        output_filename = "#{book.slug}.csv"
+        CSV.open(output_filename, 'w') do |csv|
+          csv << [ 'Exercise UID', 'Tags...' ]
+
+          ProcessSpreadsheet.call(filename: args[:filename], offset: 2) do |row, index|
+            next Rails.logger.warn do
+              "Skipped row #{index + 1} because column 5 is blank"
+            end if row[4].blank?
+
+            next Rails.logger.warn do
+              "Skipped row #{index + 1} because column 4 says it is not in Exercises"
+            end if row[3].to_s == 'no'
+
+            page_uuid = row[0].to_s.strip
+            chapter_uuid = chapter_uuid_by_page_uuid[page_uuid]
+            next Rails.logger.warn do
+              "Skipped row #{index + 1} because page with UUID \"#{page_uuid}\" was not found"
+            end if chapter_uuid.nil?
+
+            csv << [
+              row[4].to_s.strip,
+              "assessment:practice:https://openstax.org/orn/book:subbook/#{
+                args[:book_uuid]}:#{chapter_uuid}"
+            ]
+          end
+        end
+
+        Rails.logger.info { "Output written to \"#{output_filename}\"" }
       ensure
         # Restore original logger
         Rails.logger = original_logger

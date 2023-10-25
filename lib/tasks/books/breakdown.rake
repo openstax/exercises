@@ -15,31 +15,8 @@ namespace :books do
       book_uuid = args[:book_uuid]
       filename = args[:filename] || "#{book_uuid}.csv"
 
-      book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
-      root_book_part = loop do
-        begin
-          break book.root_book_part
-        rescue StandardError => exception
-          # Sometimes books in the ABL fail to load
-          # Retry with an earlier version of archive, if possible
-          previous_version = book.archive.previous_version
-
-          # break from the loop if there are no more archive versions to try
-          raise exception if previous_version.nil?
-
-          book = OpenStax::Content::Book.new(
-            archive: OpenStax::Content::Archive.new(version: previous_version),
-            uuid: book.uuid,
-            version: book.version,
-            slug: book.slug,
-            style: book.style,
-            min_code_version: book.min_code_version,
-            committed_at: book.committed_at
-          )
-
-          raise exception unless book.valid?
-        end
-      end
+      book = FindBook[uuid: book_uuid]
+      root_book_part = book.root_book_part
 
       def recursive_exercise_counts(book_part, type)
         results = book_part.parts.flat_map do |part|

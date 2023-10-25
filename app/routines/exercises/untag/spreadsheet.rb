@@ -1,10 +1,10 @@
-# Removes Exercise tags based on an xlsx file
+# Removes Exercise tags based on a spreadsheet
 # Row format:
 # - Exercise Number
 # - Tags...
 module Exercises
   module Untag
-    class Xlsx
+    class Spreadsheet
 
       lev_routine
 
@@ -13,12 +13,10 @@ module Exercises
       def exec(filename:, skip_first_row: true)
         Rails.logger.info { "Filename: #{filename}" }
 
-        book = Roo::Excelx.new(filename)
         row_offset = skip_first_row ? 1 : 0
 
         record_failures do |failures|
-          book.each_row_streaming(offset: row_offset, pad_cells: true)
-              .each_with_index do |row, row_index|
+          ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
             values = 0.upto(row.size - 1).map do |index|
               row[index].try!(:value).try!(:to_s)
             end.compact

@@ -1,4 +1,4 @@
-# Tags Exercises for OpenStax Assessments based on an xlsx file
+# Tags Exercises for OpenStax Assessments based on a spreadsheet
 # Row format:
 # - Page/Module UUID
 # - Unused column (Section number)
@@ -15,12 +15,10 @@ module Exercises
       def exec(filename:, book_uuid:, skip_first_row: true)
         Rails.logger.info { "Filename: #{filename}" }
 
-        book = Roo::Excelx.new(filename)
         row_offset = skip_first_row ? 1 : 0
 
         record_failures do |failures|
-          book.each_row_streaming(offset: row_offset, pad_cells: true)
-              .each_with_index do |row, row_index|
+          ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
             values = 0.upto(row.size - 1).map do |index|
               row[index]&.value&.to_s
             end.compact
