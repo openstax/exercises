@@ -61,7 +61,7 @@ namespace :exercises do
 
     # Converts an EOC spreadsheet from the content team to a CSV for exercises:tag:spreadsheet
     desc 'converts an EOC spreadsheet from the content team to a CSV for exercises:tag:spreadsheet'
-    task :convert_eoc, [:book_uuid, :has_units, :filename] => :environment do |t, args|
+    task :convert_eoc, [:filename, :book_uuid, :has_units] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
 
