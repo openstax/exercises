@@ -1,10 +1,10 @@
-# Maps Exercises between CNX modules (updating cnxmod tags) using an xlsx file
+# Maps Exercises between CNX modules (updating cnxmod tags) using a spreadsheet
 # Row format:
 # - CNX UUID
 # - CNX UUID
 module Exercises
   module Map
-    class Xlsx
+    class Spreadsheet
 
       lev_routine
 
@@ -14,12 +14,10 @@ module Exercises
       def exec(filename:, skip_first_row: true)
         Rails.logger.info { "Filename: #{filename}" }
 
-        book = Roo::Excelx.new(filename)
         row_offset = skip_first_row ? 1 : 0
 
         record_failures do |failures|
-          book.each_row_streaming(offset: row_offset, pad_cells: true)
-              .each_with_index do |row, row_index|
+          ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
             values = (0..1).map { |index| row[index].try!(:value).try!(:to_s) }
             next if values.any?(&:nil?)
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Exercises::Map::Xlsx, type: :routine do
+RSpec.describe Exercises::Map::Spreadsheet, type: :routine do
   let(:fixture_path)  { 'spec/fixtures/sample_map.xlsx' }
 
   let(:source_tags)   do

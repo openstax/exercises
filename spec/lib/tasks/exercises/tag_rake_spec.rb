@@ -28,16 +28,16 @@ RSpec.describe 'exercises tag', type: :rake do
     end
   end
 
-  context 'xlsx' do
+  context 'spreadsheet' do
     let(:fixture_path) { '../spec/fixtures/sample_tags.xlsx' }
 
     let :run_rake_task do
-      Rake::Task["exercises:tag:xlsx"].reenable
-      Rake.application.invoke_task "exercises:tag:xlsx[#{fixture_path}]"
+      Rake::Task["exercises:tag:spreadsheet"].reenable
+      Rake.application.invoke_task "exercises:tag:spreadsheet[#{fixture_path}]"
     end
 
-    it 'passes arguments to Exercises::Tag::Xlsx' do
-      expect(Exercises::Tag::Xlsx).to(
+    it 'passes arguments to Exercises::Tag::Spreadsheet' do
+      expect(Exercises::Tag::Spreadsheet).to(
         receive(:call).with(filename: fixture_path)
       )
       run_rake_task
