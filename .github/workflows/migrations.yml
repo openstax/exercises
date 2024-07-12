@@ -45,7 +45,7 @@ jobs:
       - run: git checkout HEAD^
 
       # Install ruby
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
 
