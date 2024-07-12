@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 0 * * 0' # weekly
 
 jobs:
   assets:
@@ -28,7 +26,7 @@ jobs:
             ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-
       - name: Build assets
         run: |
-          gem install bundler
+          gem install bundler -v 2.4.22
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rake assets:precompile
