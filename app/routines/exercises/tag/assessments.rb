@@ -2,8 +2,8 @@
 # Row format:
 # - Page/Module UUID
 # - Unused column (Section number)
-# - 5 Pre-Section Exercise numbers in separate cells
-# - 5 Post-Section Exercise numbers in separate cells
+# - 3 Pre-Section Exercise numbers in separate cells
+# - 3 Post-Section Exercise numbers in separate cells
 module Exercises
   module Tag
     class Assessments
@@ -26,8 +26,8 @@ module Exercises
 
             page_uuid = values.first
 
-            pre_section_exercise_numbers = values[2..6].reject(&:blank?).map(&:to_i)
-            post_section_exercise_numbers = values[7..11].reject(&:blank?).map(&:to_i)
+            pre_section_exercise_numbers = values[2..4].reject(&:blank?).map(&:to_i)
+            post_section_exercise_numbers = values[5..7].reject(&:blank?).map(&:to_i)
             exercise_numbers = pre_section_exercise_numbers + post_section_exercise_numbers
             exercises = Exercise.joins(publication: :publication_group)
                                 .where(publication: { publication_group: { number: exercise_numbers } })
