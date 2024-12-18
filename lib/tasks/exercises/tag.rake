@@ -89,11 +89,11 @@ namespace :exercises do
           csv << [ 'Exercise UID', 'Tags...' ]
 
           ProcessSpreadsheet.call(filename: args[:filename], headers: :downcase) do |headers, row, index|
-            chapter_index ||= headers.index { |header| header.include? 'chapter' }
+            chapter_index ||= headers.index { |header| header&.include? 'chapter' }
             raise ArgumentError, 'Could not find Chapter column' if chapter_index.nil?
 
             exercise_id_index ||= headers.index do |header|
-              header.include?('assessment') || header.include?('exercise')
+              header&.include?('assessment') || header&.include?('exercise')
             end
             raise ArgumentError, 'Could not find Assessment ID column' if exercise_id_index.nil?
 

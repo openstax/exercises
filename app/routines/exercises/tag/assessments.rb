@@ -20,16 +20,16 @@ module Exercises
         post_indices = nil
         record_failures do |failures|
           ProcessSpreadsheet.call(filename: filename, headers: :downcase) do |headers, row, row_index|
-            uuid_index ||= headers.index { |header| header.include?('uuid') }
+            uuid_index ||= headers.index { |header| header&.include?('uuid') }
             raise ArgumentError, 'Could not find page UUID column' if uuid_index.nil?
 
             pre_indices ||= headers.filter_map.with_index do |header, index|
-              index if header.include?('pre')
+              index if header&.include?('pre')
             end
             raise ArgumentError, 'Could not find pre-section columns' if pre_indices.empty?
 
             post_indices ||= headers.filter_map.with_index do |header, index|
-              index if header.include?('post')
+              index if header&.include?('post')
             end
             raise ArgumentError, 'Could not find post-section columns' if post_indices.empty?
 
