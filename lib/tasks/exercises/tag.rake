@@ -97,12 +97,12 @@ namespace :exercises do
             end
             raise ArgumentError, 'Could not find Assessment ID column' if exercise_id_index.nil?
 
-            chapter = row[chapter_index].to_s.strip
+            chapter = row[chapter_index]
             # The value in the Chapter column may be a UUID or a chapter number
             chapter_uuid = chapter_uuids.include?(chapter) ? chapter : chapter_uuids[Integer(chapter) - 1]
 
             csv << [
-              row[exercise_id_index].to_s.strip,
+              row[exercise_id_index],
               "assessment:practice:https://openstax.org/orn/book:subbook/#{
                 args[:book_uuid]}:#{chapter_uuid}"
             ]

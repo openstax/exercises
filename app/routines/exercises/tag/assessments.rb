@@ -33,12 +33,12 @@ module Exercises
             end
             raise ArgumentError, 'Could not find post-section columns' if post_indices.empty?
 
-            page_uuid = row[uuid_index].to_s
+            page_uuid = row[uuid_index]
             pre_section_exercise_numbers = row.values_at(*pre_indices).filter_map do |val|
-              Integer(val.value) unless val.blank?
+              Integer(val) unless val.blank?
             end
             post_section_exercise_numbers = row.values_at(*post_indices).filter_map do |val|
-              Integer(val.value) unless val.blank?
+              Integer(val) unless val.blank?
             end
 
             exercise_numbers = pre_section_exercise_numbers + post_section_exercise_numbers

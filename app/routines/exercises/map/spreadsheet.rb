@@ -18,7 +18,7 @@ module Exercises
 
         record_failures do |failures|
           ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
-            values = (0..1).map { |index| row[index].try!(:value).try!(:to_s) }
+            values = row[0..1]
             next if values.any?(&:nil?)
 
             src_uuids = values.first.split(',')
