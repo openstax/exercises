@@ -41,11 +41,11 @@ namespace :exercises do
 
     # Tags exercises for OpenStax Assessments using a spreadsheet
     # Arguments are, in order:
-    # filename, book_uuid, [skip_first_row]
+    # filename, book_uuid
     # Example: rake exercises:tag:assessments[tags.xlsx,12345]
     #          will tag exercises based on tags.xlsx with the book_uuid 12345
     desc 'tags exercises for OpenStax Assessments using a spreadsheet'
-    task :assessments, [:filename, :book_uuid, :skip_first_row] => :environment do |t, args|
+    task :assessments, [:filename, :book_uuid] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
 
@@ -83,19 +83,16 @@ namespace :exercises do
         Rails.logger.info { "Processing \"#{args[:filename]}\"" }
 
         output_filename = "#{book.slug}.csv"
-        downcased_headers = nil
         chapter_index = nil
         exercise_id_index = nil
         CSV.open(output_filename, 'w') do |csv|
           csv << [ 'Exercise UID', 'Tags...' ]
 
-          ProcessSpreadsheet.call(filename: args[:filename], return_headers: true) do |headers, row, index|
-            downcased_headers ||= headers.map(&:downcase)
-
-            chapter_index ||= downcased_headers.find_index { |header| header.include? 'chapter' }
+          ProcessSpreadsheet.call(filename: args[:filename], headers: :downcase) do |headers, row, index|
+            chapter_index ||= headers.index { |header| header.include? 'chapter' }
             raise ArgumentError, 'Could not find Chapter column' if chapter_index.nil?
 
-            exercise_id_index ||= downcased_headers.find_index do |header|
+            exercise_id_index ||= headers.index do |header|
               header.include?('assessment') || header.include?('exercise')
             end
             raise ArgumentError, 'Could not find Assessment ID column' if exercise_id_index.nil?

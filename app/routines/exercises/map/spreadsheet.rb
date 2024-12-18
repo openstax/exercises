@@ -38,10 +38,10 @@ module Exercises
             dest_uuids = values.second.split(',')
             dest_tags = dest_uuids.map { |uuid| "context-cnxmod:#{uuid}" }
 
-            row_number = row_index + row_offset + 1
+            row_number = row_index + 1
 
             begin
-              tag(exercises, dest_tags, row_number)
+              tag exercises, dest_tags
             rescue StandardError => se
               Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
               failures[row_number] = se.to_s
