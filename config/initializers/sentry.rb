@@ -1,13 +1,19 @@
-Raven.configure do |config|
-  sentry_secrets = Rails.application.secrets.sentry
+Sentry.init do |config|
+  secrets = Rails.application.secrets
 
-  config.dsn = sentry_secrets[:dsn]
-  config.current_environment = Rails.application.secrets.environment_name
+  config.dsn = secrets.sentry[:dsn]
+  config.environment = secrets.environment_name
+  config.release = secrets.release_version
+
+  config.breadcrumbs_logger = %i[sentry_logger active_support_logger http_logger]
 
   # Send POST data and cookies to Sentry
-  config.processors -= [ Raven::Processor::Cookies, Raven::Processor::PostData ]
-  config.release = sentry_secrets[:release]
+  config.send_default_pii = true
 
-  # Don't log "Sentry is ready" message
-  config.silence_ready = true
+  # Don't send transaction data to Sentry
+  config.traces_sample_rate = 0.0
+
+  # Reduce the amount of logging from Sentry
+  config.logger = Sentry::Logger.new(STDOUT)
+  config.logger.level = Logger::ERROR
 end if Rails.env.production?
