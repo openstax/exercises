@@ -59,3 +59,5 @@ UserHtml.sanitize_config = Sanitize::Config.merge(
   ),
   transformers: [embed_transformer]
 )
+
+ActiveSupport.escape_html_entities_in_json = false
