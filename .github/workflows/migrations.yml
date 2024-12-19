@@ -1,8 +1,6 @@
 name: Migrations
 
 env:
-  POSTGRES_USER: ox_exercises
-  POSTGRES_PASSWORD: ox_exercises
   RAILS_ENV: test
 
 on:
@@ -27,6 +25,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        env:
+          POSTGRES_USER: ox_exercises
+          POSTGRES_PASSWORD: ox_exercises
       redis:
         image: redis
         ports:

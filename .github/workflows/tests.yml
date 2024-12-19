@@ -3,8 +3,6 @@ name: Tests
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   HEADLESS: true
-  POSTGRES_USER: ox_exercises
-  POSTGRES_PASSWORD: ox_exercises
   RAILS_ENV: test
 
 on:
@@ -27,7 +25,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+        env:
+          POSTGRES_USER: ox_exercises
+          POSTGRES_PASSWORD: ox_exercises
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
