@@ -1,47 +1,10 @@
-require 'simplecov'
-require 'codecov'
-require 'parallel_tests'
-
-# Deactivate automatic result merging, because we use custom result merging code
-SimpleCov.use_merging false
-
-# Custom result merging code to avoid the many partial merges that SimpleCov usually creates
-# and send to codecov only once
-SimpleCov.at_exit do
-  # Store the result for later merging
-  SimpleCov::ResultMerger.store_result(SimpleCov.result)
-
-  # All processes except one will exit here
-  next unless ParallelTests.last_process?
-
-  # Wait for everyone else to finish
-  ParallelTests.wait_for_other_processes_to_finish
-
-  # Send merged result to codecov only if on CI (will generate HTML report by default locally)
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
-
-  # Merge coverage reports (and maybe send to codecov)
-  SimpleCov::ResultMerger.merged_result.format!
-end
-
-# Start calculating code coverage
-unless ENV['NO_COVERAGE']
-  SimpleCov.start('rails') { merge_timeout 3600 }
-end
-
 ENV['RAILS_ENV'] = 'test'
 
-require 'spec_helper'
+require 'simplecov_helper'
 require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'shoulda/matchers'
-
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-    with.library :rails
-  end
-end
+require 'spec_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -50,7 +13,7 @@ end
 # run twice. It is recommended that you do not name files matching this glob to
 # end with _spec.rb. You can configure this pattern with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |file| require file }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -106,6 +69,16 @@ RSpec.configure do |config|
 
   config.append_after(:all) do
     DatabaseCleaner.clean
+  end
+end
+
+"""
+  Config for Shoulda Matchers
+"""
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
   end
 end
 

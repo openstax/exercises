@@ -9,16 +9,23 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
+gem 'rails', '< 7'
+
+# Psych 4 (included in Ruby 3.1) breaks Rails < 7
+# Remove this entry completely when updating to Rails 7
+gem 'psych', '< 4'
+
+# Sprockets 4 requires a manifest file which we don't really need and it's maybe gone in Rails 7
+gem 'sprockets', '< 4'
 
 # Bootstrap
 gem 'bootstrap-sass'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'
 
 # Use Uglifier as compressor for JS assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 
 # V8 bindings to precompile JS assets
 gem 'mini_racer'
@@ -69,13 +76,13 @@ gem 'openstax_accounts'
 gem 'doorkeeper'
 
 # API versioning and documentation
-gem 'representable', '~> 3.0.0'
+gem 'representable'
 gem 'openstax_api'
 gem 'apipie-rails'
 gem 'maruku'
 
 # Retry failed database transactions
-gem 'transaction_retry', github: 'openstax/transaction_retry'
+gem 'openstax_transaction_retry', github: 'openstax/transaction_retry'
 
 # Lev framework
 gem 'lev'
@@ -123,12 +130,7 @@ gem 'httparty'
 gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
-gem 'sentry-raven', require: 'raven/base'
-
-# API JSON rendering/parsing
-# Do not use Roar 1.0.4
-# Also, do not use Roar::Hypermedia links
-gem 'roar', '1.0.3'
+gem 'sentry-ruby'
 
 # Fast JSON parsing
 gem 'oj'
@@ -143,7 +145,7 @@ gem 'redis'
 gem 'openstax_healthcheck'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '~> 1.4.0', require: false
+gem 'bootsnap', require: false
 
 # Bulk inserts and upserts
 gem 'activerecord-import'

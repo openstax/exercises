@@ -8,7 +8,7 @@ module HasTags
         tagging_class = association_name.to_s.classify.constantize
 
         class_exec do
-          has_many join_association, { dependent: :destroy, autosave: true }.merge(options)
+          has_many join_association, **{ dependent: :destroy, autosave: true }.merge(options)
           has_many :tags, through: join_association do
             def <<(tag)
               super Tag.get(tag)

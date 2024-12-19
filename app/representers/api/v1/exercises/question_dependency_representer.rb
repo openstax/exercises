@@ -5,9 +5,9 @@ module Api::V1::Exercises
              type: Integer,
              writeable: true,
              readable: true,
-             setter: ->(input:, **) do
+             setter: ->(options) do
                self.parent_question = dependent_question.exercise.questions
-                                        .find { |qq| (qq.id || qq.temp_id) == input }
+                                        .find { |qq| (qq.id || qq.temp_id) == options[:input] }
              end
 
     property :is_optional,

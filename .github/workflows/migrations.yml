@@ -1,5 +1,10 @@
 name: Migrations
 
+env:
+  POSTGRES_USER: ox_exercises
+  POSTGRES_PASSWORD: ox_exercises
+  RAILS_ENV: test
+
 on:
   pull_request:
     types:
@@ -22,8 +27,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        env:
-          POSTGRES_PASSWORD: postgres
       redis:
         image: redis
         ports:
@@ -34,11 +37,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-
     steps:
       # Clone repo and checkout merge commit parent (PR target commit)
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
@@ -47,44 +48,20 @@ jobs:
       # Install ruby
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          bundler-cache: true
 
-      # Get OS version - https://github.com/actions/cache/issues/543
-      - run: echo "OS_VERSION=`lsb_release -sr`" >> $GITHUB_ENV
-
-      # Retrieve gem cache for merge commit parent
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ env.OS_VERSION }}-gems-parent-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.OS_VERSION }}-gems-parent-
-
-      - name: Install gems from base commit and create data to be migrated
-        env:
-          OXE_DB_USER: postgres
-          OXE_DB_PASS: postgres
+      # Create data to be migrated and revert to PR merge commit
+      - name: Create data to be migrated
         run: |
-          gem install bundler -v 2.4.22
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-          bundle exec rake db:create db:schema:load db:seed --trace
-          bundle exec rails runner '10.times { FactoryBot.create :exercise }'
+          bin/rake db:create db:schema:load db:seed --trace
+          bin/rails runner '10.times { FactoryBot.create :exercise }'
           git checkout --force -
 
-      # Retrieve gem cache for PR merge commit
-      - uses: actions/cache@v2
+      # Install PR ruby version
+      - uses: ruby/setup-ruby@v1
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-
+          bundler-cache: true
 
-      - name: Install gems from PR, migrate and ensure no files changed
-        env:
-          OXE_DB_USER: postgres
-          OXE_DB_PASS: postgres
-        run: |
-          bundle install --jobs 4 --retry 3
-          bundle exec rake db:migrate
-          git diff --exit-code
+      # Migrate the data
+      - name: Migrate
+        run: bin/rake db:migrate

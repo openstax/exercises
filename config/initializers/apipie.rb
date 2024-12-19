@@ -37,5 +37,6 @@ Apipie.configure do |config|
     A lot of these schemas aren't overly specific to the actions they are listed under,
     e.g. they always say that an `id` is required but that isn't the case when
     new data is being posted to a `create` call.
-    eos
+  eos
+  config.validate                = false
 end
