@@ -238,9 +238,9 @@ GEM
       hashie
       openstax_transaction_retry
       transaction_isolation
-    libv8-node (22.7.0.4)
-    libv8-node (22.7.0.4-x86_64-darwin)
-    libv8-node (22.7.0.4-x86_64-linux)
+    libv8-node (18.19.0.0)
+    libv8-node (18.19.0.0-x86_64-darwin)
+    libv8-node (18.19.0.0-x86_64-linux)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -268,8 +268,8 @@ GEM
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.8)
-    mini_racer (0.15.0)
-      libv8-node (~> 22.7.0.1)
+    mini_racer (0.16.0)
+      libv8-node (~> 18.19.0.0)
     minitest (5.25.4)
     msgpack (1.7.5)
     multi_json (1.15.0)
