@@ -292,7 +292,7 @@ GEM
       bigdecimal (~> 3.1)
     net-http (0.6.0)
       uri
-    net-imap (0.5.2)
+    net-imap (0.5.4)
       date
       net-protocol
     net-pop (0.1.2)
@@ -540,7 +540,7 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    sortability (1.1.0)
+    sortability (1.1.1)
       rails (>= 5, < 7)
     sprockets (3.7.5)
       base64
