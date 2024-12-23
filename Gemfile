@@ -82,10 +82,11 @@ gem 'apipie-rails'
 gem 'maruku'
 
 # Retry failed database transactions
-gem 'openstax_transaction_retry', github: 'openstax/transaction_retry'
+gem 'openstax_transaction_retry', github: 'openstax/transaction_retry', ref: '36e26d0a068756c334b9d1c671d40773bbfc9300'
+gem 'openstax_transaction_isolation', github: 'openstax/transaction_isolation', ref: '7387fa091462118704967a7c4b2821cd0f5d9e01'
 
 # Lev framework
-gem 'lev'
+gem 'lev', github: 'lml/lev', ref: 'a33c93c83afea63c80b5da6317efec4bfd357df5'
 
 # Contract management
 gem 'fine_print'

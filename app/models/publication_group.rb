@@ -6,7 +6,7 @@ class PublicationGroup < ApplicationRecord
 
   has_many :list_publication_groups, dependent: :destroy
 
-  has_many :vocab_distractors
+  has_many :vocab_distractors, foreign_key: :distractor_publication_group_id
 
   validates :publishable_type, presence: true
   validates :uuid, presence: true, uniqueness: true

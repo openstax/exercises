@@ -1,10 +1,34 @@
 GIT
-  remote: https://github.com/openstax/transaction_retry.git
-  revision: d283692afb1a06557764e06a59798a207bb1e465
+  remote: https://github.com/lml/lev.git
+  revision: a33c93c83afea63c80b5da6317efec4bfd357df5
+  ref: a33c93c83afea63c80b5da6317efec4bfd357df5
   specs:
-    openstax_transaction_retry (1.2.0)
-      activerecord (>= 5.1)
-      transaction_isolation (>= 1.0.5)
+    lev (13.0.0)
+      actionpack (>= 4.2)
+      active_attr
+      activejob
+      activemodel (>= 6.1)
+      activerecord (>= 4.2)
+      hashie
+      openstax_transaction_isolation
+      openstax_transaction_retry
+
+GIT
+  remote: https://github.com/openstax/transaction_isolation.git
+  revision: 7387fa091462118704967a7c4b2821cd0f5d9e01
+  ref: 7387fa091462118704967a7c4b2821cd0f5d9e01
+  specs:
+    openstax_transaction_isolation (2.0.0)
+      activerecord (>= 6)
+
+GIT
+  remote: https://github.com/openstax/transaction_retry.git
+  revision: 36e26d0a068756c334b9d1c671d40773bbfc9300
+  ref: 36e26d0a068756c334b9d1c671d40773bbfc9300
+  specs:
+    openstax_transaction_retry (2.0.0)
+      activerecord (>= 6)
+      openstax_transaction_isolation (>= 2)
 
 GEM
   remote: https://rubygems.org/
@@ -229,15 +253,6 @@ GEM
       base64
     keyword_search (1.5.0)
     language_server-protocol (3.17.0.3)
-    lev (12.1.0)
-      actionpack (>= 4.2)
-      active_attr
-      activejob
-      activemodel (>= 6.1)
-      activerecord (>= 4.2)
-      hashie
-      openstax_transaction_retry
-      transaction_isolation
     libv8-node (18.19.0.0)
     libv8-node (18.19.0.0-x86_64-darwin)
     libv8-node (18.19.0.0-x86_64-linux)
@@ -547,8 +562,6 @@ GEM
     timecop (0.9.10)
     timeout (0.4.3)
     trailblazer-option (0.1.2)
-    transaction_isolation (1.0.5)
-      activerecord (>= 3.0.11)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -614,7 +627,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   keyword_search
-  lev
+  lev!
   listen
   lograge
   maruku
@@ -628,6 +641,7 @@ DEPENDENCIES
   openstax_content
   openstax_healthcheck
   openstax_rescue_from
+  openstax_transaction_isolation!
   openstax_transaction_retry!
   openstax_utilities
   parallel_tests
