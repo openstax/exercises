@@ -18,9 +18,7 @@ module Exercises
 
         record_failures do |failures|
           ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
-            values = 0.upto(row.size - 1).map do |index|
-              row[index].try!(:value).try!(:to_s)
-            end.compact
+            values = row.compact
             next if values.size < 2
 
             exercise_numbers = values.first.split(',').map(&:to_i)
@@ -37,10 +35,10 @@ module Exercises
 
             tags = values.slice(1..-1).flat_map { |value| value.split(',') }
 
-            row_number = row_index + row_offset + 1
+            row_number = row_index + 1
 
             begin
-              tag(exercises, tags, row_number)
+              tag exercises, tags
             rescue StandardError => se
               Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
               failures[row_number] = se.to_s
