@@ -27,11 +27,11 @@ module Api::V1::Exercises
 
                stem_answers.first.correctness
              end,
-             setter: ->(input:, **) do
+             setter: ->(options) do
               stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                 if stem_answers.empty?
 
-              stem_answers.first.correctness = input
+              stem_answers.first.correctness = options[:input]
              end,
              schema_info: {
                type: 'number'
@@ -49,11 +49,11 @@ module Api::V1::Exercises
 
                stem_answers.first.feedback
              end,
-             setter: ->(input:, **) do
+             setter: ->(options) do
                stem_answers << StemAnswer.new(answer: self, stem: question.stems.first) \
                  if stem_answers.empty?
 
-               stem_answers.first.feedback = input
+               stem_answers.first.feedback = options[:input]
              end,
              if: CACHED_PRIVATE_FIELDS
 

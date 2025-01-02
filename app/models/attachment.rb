@@ -2,7 +2,7 @@
 class Attachment < ApplicationRecord
   belongs_to :parent, polymorphic: true, inverse_of: :attachments, touch: true
 
-  before_update { raise ActiveRecord::ReadOnlyRecord } # Prevent updates
+  before_update { raise ActiveRecord::ReadOnlyRecord if changed? } # Prevent updates
 
   validates :asset, presence: true
   validate :unique_asset

@@ -23,8 +23,6 @@ Rails.application.routes.draw do
       match :search, action: :index, via: [:get, :post], on: :collection
 
       publishable
-      # Not in V1
-      #has_logic
     end
 
     resources :vocab_terms do
@@ -32,15 +30,6 @@ Rails.application.routes.draw do
 
       publishable
     end
-
-    # Not in V1
-    #resources :logics, only: [] do
-    #  post 'seeds', on: :member
-    #end
-
-    #resources :lists do
-    #  publishable
-    #end
 
     resources :users, only: [:index]
 

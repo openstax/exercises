@@ -5,7 +5,7 @@ module Api::V1::Exercises
              type: Integer,
              writeable: true,
              readable: true,
-             setter: ->(input:, **) { self.temp_id = input },
+             setter: ->(options) { self.temp_id = options[:input] },
              if: CACHED_PUBLIC_FIELDS
 
     property :answer_order_matters,
@@ -63,11 +63,11 @@ module Api::V1::Exercises
     collection :hints,
                type: String,
                readable: true,
-               serialize: ->(input:, **) { input.content },
+               serialize: ->(options) { options[:input].content },
                writeable: true,
                class: Hint,
-               deserialize: ->(input:, fragment:, **) do
-                 input.tap { |input| input.content = fragment }
+               deserialize: ->(options) do
+                 options[:input].tap { |input| input.content = options[:fragment] }
                end,
                setter: AR_COLLECTION_SETTER,
                schema_info: {

@@ -52,13 +52,12 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id, :remote_ip ]
 
+  # Use a different cache store in production.
   redis_secrets = secrets.redis
   redis_secrets[:url] ||= "rediss://#{
     ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
     redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
     "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
-
-  # Use a different cache store in production.
   config.cache_store = :redis_cache_store, {
     url: redis_secrets[:url],
     namespace: redis_secrets[:namespaces][:cache],
@@ -87,9 +86,15 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  # Log to STDOUT and let systemd/journald handle the logs
-  logger = ActiveSupport::Logger.new(STDOUT)
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Use a different logger for distributed setups.
+  # require "syslog/logger"
+  # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   # Lograge configuration (one-line logs in production)
   config.lograge.enabled = true

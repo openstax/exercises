@@ -13,7 +13,7 @@ namespace :exercises do
       begin
         Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
-        Exercises::Map::Spreadsheet.call(args.to_h)
+        Exercises::Map::Spreadsheet.call(**args.to_h)
       ensure
         # Restore original logger
         Rails.logger = original_logger

@@ -17,11 +17,11 @@ module Stylable
                      as: :formats,
                      type: String,
                      readable: true,
-                     serialize: ->(input:, **) { input.style },
+                     serialize: ->(options) { options[:input].style },
                      writeable: true,
                      class: Styling,
-                     deserialize: ->(input:, fragment:, **) do
-                       input.tap { |input| input.style = fragment }
+                     deserialize: ->(options) do
+                       options[:input].tap { |input| input.style = options[:fragment] }
                      end,
                      setter: AR_COLLECTION_SETTER,
                      schema_info: {

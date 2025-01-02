@@ -53,13 +53,13 @@ module Publishable
 
         property :license,
                  {
-                   instance: ->(input:, **) do
-                     License.find_by(name: input['name']) || License.new(name: input['name'])
+                   instance: ->(options) do
+                     License.find_by(name: options[:input]['name']) || License.new(name: options[:input]['name'])
                    end,
                    extend: Api::V1::LicenseRepresenter,
                    writeable: true,
                    readable: true,
-                   setter: ->(input:, **) { self.license = input if input.persisted? }
+                   setter: ->(options) { self.license = options[:input] if options[:input].persisted? }
                  }.merge(options)
 
         property :solutions_are_public,

@@ -1,46 +1,47 @@
 require 'openstax_rescue_from'
 
 OpenStax::RescueFrom.configure do |config|
-  config.raise_exceptions = Rails.application.config.consider_all_requests_local
+  # Show the default Rails exception debugging page on dev
+  config.raise_exceptions = ENV['RAISE'].nil? ?
+    Rails.application.config.consider_all_requests_local :
+    ActiveModel::Type::Boolean.new.cast(ENV['RAISE'])
 
   config.app_name = 'Exercises'
-  config.contact_name = Rails.application.secrets.exception_contact_name
+  config.contact_name = Rails.application.secrets.exception_contact_name&.html_safe
 
-  # Notify devs using sentry-raven
+  # Notify devs using sentry
   config.notify_proc = ->(proxy, controller) do
-    extra = {
-      error_id: proxy.error_id,
-      class: proxy.name,
-      message: proxy.message,
-      first_line_of_backtrace: proxy.first_backtrace_line,
-      cause: proxy.cause,
-      dns_name: resolve_ip(controller.request.remote_ip)
-    }
-    extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
-
-    Raven.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception)
   end
   config.notify_background_proc = ->(proxy) do
-    extra = {
-      error_id: proxy.error_id,
-      class: proxy.name,
-      message: proxy.message,
-      first_line_of_backtrace: proxy.first_backtrace_line,
-      cause: proxy.cause
-    }
-    extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
-
-    Raven.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception)
   end
-  require 'raven/integrations/rack'
-  config.notify_rack_middleware = Raven::Rack
-
-  # config.html_error_template_path = 'errors/any'
-  # config.html_error_template_layout_name = 'application'
 end
 
-# Exceptions in controllers are not automatically reraised in production-like environments
-ActionController::Base.use_openstax_exception_rescue
+OpenStax::RescueFrom.register_exception('Lev::SecurityTransgression', notify: false, status: :forbidden)
 
-# RescueFrom always reraises background exceptions so that the background job may properly fail
-ActiveJob::Base.use_openstax_exception_rescue
+ActiveSupport.on_load(:action_controller_base) do
+  # Exceptions in controllers are not automatically reraised in production-like environments
+  ActionController::Base.use_openstax_exception_rescue
+end
+
+ActiveSupport.on_load(:active_job) do
+  # RescueFrom always reraises background exceptions so that the background job may properly fail
+  ActiveJob::Base.use_openstax_exception_rescue
+end
+
+module OpenStax::RescueFrom
+  def self.default_friendly_message
+    'We had some unexpected trouble with your request.'
+  end
+
+  def self.do_reraise
+    original = configuration.raise_exceptions
+    begin
+      configuration.raise_exceptions = true
+      yield
+    ensure
+      configuration.raise_exceptions = original
+    end
+  end
+end

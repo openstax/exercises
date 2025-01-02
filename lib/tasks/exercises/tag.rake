@@ -32,7 +32,7 @@ namespace :exercises do
       begin
         Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
-        Exercises::Tag::Spreadsheet.call(args.to_h)
+        Exercises::Tag::Spreadsheet.call(**args.to_h)
       ensure
         # Restore original logger
         Rails.logger = original_logger
@@ -52,7 +52,7 @@ namespace :exercises do
       begin
         Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
 
-        Exercises::Tag::Assessments.call args.to_h
+        Exercises::Tag::Assessments.call **args.to_h
       ensure
         # Restore original logger
         Rails.logger = original_logger
