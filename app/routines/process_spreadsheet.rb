@@ -3,6 +3,8 @@ class ProcessSpreadsheet
 
   protected
 
+  # "headers" can be either false to disable headers,
+  # or a method name to normalize the headers, like :downcase
   def exec(filename:, offset: 1, pad_cells: true, headers: false, &block)
     raise ArgumentError, 'A block must be provided' if block.nil?
 
