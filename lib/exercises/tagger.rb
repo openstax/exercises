@@ -1,6 +1,6 @@
 module Exercises
   module Tagger
-    def tag(exercises, new_tags, row_number)
+    def tag(exercises, new_tags)
       skipped_uids = []
       unpublished_uids = []
       published_uids = []

@@ -17,9 +17,7 @@ module Exercises
 
         record_failures do |failures|
           ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
-            values = 0.upto(row.size - 1).map do |index|
-              row[index].try!(:value).try!(:to_s)
-            end.compact
+            values = row.compact
             next if values.size < 2
 
             exercise_numbers = values.first.split(',').map(&:to_i)
