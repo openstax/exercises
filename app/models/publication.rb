@@ -203,8 +203,11 @@ class Publication < ApplicationRecord
     self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
 
     publication_group.assign_uuid_and_number
-    publication_group.new_record? ? publication_group.latest_version = version :
-                                    publication_group.update_attribute(:latest_version, version)
+    if publication_group.new_record?
+      publication_group.latest_version = version
+    else
+      publication_group.update_column(:latest_version, version)
+    end
   end
 
   protected

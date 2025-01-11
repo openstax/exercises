@@ -46,8 +46,8 @@ module Api::V1::Exercises
 
     collection :questions,
                instance: ->(*) { Question.new(exercise: self) },
-               extend: ->(input:, **) {
-                 input.nil? || input.stems.length > 1 ?
+               extend: ->(options) {
+                 options[:input].nil? || options[:input].stems.length > 1 ?
                    QuestionRepresenter : SimpleQuestionRepresenter
                },
                writeable: true,
@@ -61,9 +61,11 @@ module Api::V1::Exercises
              type: Array,
              writeable: false,
              readable: true,
-             getter: ->(decorator:, represented:, user_options:, **) do
-               represented.visible_versions(
-                 can_view_solutions: decorator.class.can_view_solutions?(represented, user_options)
+             getter: ->(options) do
+               options[:represented].visible_versions(
+                 can_view_solutions: options[:decorator].class.can_view_solutions?(
+                  options[:represented], options[:user_options]
+                )
                )
              end,
              if: UNCACHED_FIELDS

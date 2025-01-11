@@ -33,10 +33,10 @@ module Api::V1::Exercises
 
                stems.first.content
              end,
-             setter: ->(input:, **) do
+             setter: ->(options) do
                stems << Stem.new(question: self) if stems.empty?
 
-               stems.first.content = input
+               stems.first.content = options[:input]
              end,
              schema_info: {
                required: true
@@ -71,11 +71,11 @@ module Api::V1::Exercises
     collection :hints,
                type: String,
                readable: true,
-               serialize: ->(input:, **) { input.content },
+               serialize: ->(options) { options[:input].content },
                writeable: true,
                class: Hint,
-               deserialize: ->(input:, fragment:, **) do
-                 input.tap { |input| input.content = fragment }
+               deserialize: ->(options) do
+                 options[:input].tap { |input| input.content = options[:fragment] }
                end,
                setter: AR_COLLECTION_SETTER,
                schema_info: {
@@ -92,11 +92,11 @@ module Api::V1::Exercises
 
                  stems.first.stylings
                end,
-               serialize: ->(input:, **) { input.style },
+               serialize: ->(options) { options[:input].style },
                writeable: true,
                class: Styling,
-               deserialize: ->(input:, fragment:, **) do
-                 input.tap { |input| input.style = fragment }
+               deserialize: ->(options) do
+                 options[:input].tap { |input| input.style = options[:fragment] }
                end,
                setter: AR_COLLECTION_SETTER,
                schema_info: {

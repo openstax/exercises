@@ -3,7 +3,6 @@ module Publishable
     module Base
       def publishable(options = {})
         class_exec do
-
           has_one :publication, as: :publishable, dependent: :destroy, inverse_of: :publishable
           has_one :publication_group, through: :publication
 
@@ -129,7 +128,6 @@ module Publishable
           def ensure_publication!
             raise ::ActiveRecord::RecordInvalid, publication unless publication.persisted?
           end
-
         end
       end
     end

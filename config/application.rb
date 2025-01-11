@@ -26,9 +26,7 @@ NEVER_EXPIRES = 68.years
 module Exercises
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    # TODO: load_defaults 6.1 turns on config.active_record.has_many_inversing
-    #       which breaks VocabDistractor tests
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -37,6 +35,5 @@ module Exercises
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    ActiveSupport.escape_html_entities_in_json = false
   end
 end

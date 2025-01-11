@@ -5,7 +5,7 @@ module Api::V1::Exercises
              type: Integer,
              writeable: true,
              readable: true,
-             setter: ->(input:, **) { self.temp_id = input },
+             setter: ->(options) { self.temp_id = options[:input] },
              schema_info: {
                required: true
              }

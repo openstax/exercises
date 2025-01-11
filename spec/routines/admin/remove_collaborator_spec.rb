@@ -9,7 +9,7 @@ RSpec.describe Admin::RemoveCollaborator, type: :routine do
   after(:all)  { DatabaseCleaner.clean }
 
   let(:args) { { publishables: @pub_relation, user: @user, collaborator_type: collaborator_type } }
-  subject    { described_class.call args }
+  subject    { described_class.call **args }
 
   [ Exercise, VocabTerm ].each do |publishable_class|
     context publishable_class.name.pluralize do
