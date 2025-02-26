@@ -1,4 +1,4 @@
-# Imports exercies from a spreadsheet for Assignable
+# Imports exercies from a spreadsheet for Assessments
 # The first row contains column headers. Required columns:
 # UUID (page UUID)
 # Pre or Post
@@ -11,7 +11,7 @@
 # Detailed Solution
 module Exercises
   module Import
-    class Assignable
+    class Assessments
       AUTHOR_ID = 1
       COPYRIGHT_HOLDER_ID = 2
 
@@ -42,7 +42,7 @@ module Exercises
             question_stem_index ||= headers.index do |header|
               header&.start_with?('question') || header&.end_with?('stem')
             end
-            raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.empty?
+            raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
 
             answer_choice_indices ||= headers.filter_map.with_index do |header, index|
               index if header&.start_with?('answer') || header&.end_with?('choice')
@@ -50,10 +50,10 @@ module Exercises
             raise ArgumentError, 'Could not find "Answer Choice" columns' if answer_choice_indices.empty?
 
             correct_answer_index ||= headers.index { |header| header&.start_with?('correct') }
-            raise ArgumentError, 'Could not find "Correct Answer" column' if correct_answer_index.empty?
+            raise ArgumentError, 'Could not find "Correct Answer" column' if correct_answer_index.nil?
 
             detailed_solution_index ||= headers.index { |header| header&.end_with?('solution') }
-            raise ArgumentError, 'Could not find "Detailed Solution" column' if detailed_solution_index.empty?
+            raise ArgumentError, 'Could not find "Detailed Solution" column' if detailed_solution_index.nil?
 
             exercise = Exercise.new
 
@@ -76,30 +76,33 @@ module Exercises
 
             correct_answer = row[correct_answer_index].downcase.strip.each_byte.first - 97
             answer_choice_indices.each_with_index do |row_index, answer_index|
-              content = parse(row[row_index], exercise)
+              content = row[row_index]
               next if content.blank?
               stem.stem_answers << StemAnswer.new(
-                answer: Answer.new(question: question, content: content),
+                answer: Answer.new(question: question, content: parse(content, exercise)),
                 correctness: answer_index == correct_answer ? 1 : 0
               )
             end
 
-            detailed_solution = parse(row[detailed_solution_index], exercise)
+            detailed_solution = row[detailed_solution_index]
             if detailed_solution.present?
-              solution = CollaboratorSolution.new(solution_type: SolutionType::DETAILED, content: detailed_solution)
+              solution = CollaboratorSolution.new(
+                solution_type: SolutionType::DETAILED,
+                content: parse(detailed_solution, exercise)
+              )
               question.collaborator_solutions << solution
             end
 
             row_number = row_index + 1
 
             begin
-              ex.save!
-              ex.publication.publish.save!
+              exercise.save!
+              exercise.publication.publish.save!
 
-              Rails.logger.info { "Imported row ##{row_number} - New exercise ID: #{ex.uid}" }
-            rescue StandardError => se
-              Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
-              failures[row_number] = se.to_s
+              Rails.logger.info { "Imported row ##{row_number} - New exercise ID: #{exercise.uid}" }
+            rescue StandardError => error
+              Rails.logger.error { "Failed to import row ##{row_number} - #{error.message}" }
+              failures[row_number] = error.to_s
             end
           end
         end

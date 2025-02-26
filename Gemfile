@@ -157,6 +157,9 @@ gem 'dotenv-rails'
 # Cron job scheduling
 gem 'whenever'
 
+# Markdown parsing
+gem 'kramdown'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'

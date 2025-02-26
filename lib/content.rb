@@ -36,7 +36,7 @@ module Content
                   committed_at: book.committed_at
                 )
 
-                retry_books << retry_book if retry_book.valid?
+                retry_books << retry_book if retry_book.valid? && Rails.env.production?
               end
             else
               pages.each do |page|
