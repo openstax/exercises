@@ -13,9 +13,9 @@
       <%= vertical_bar(id: "account-bar-vertical-bar", class: "#{account_bar_classes}") %>
       <%= link_to "Sign out", openstax_accounts.logout_url, class: "#{account_bar_classes}", :'data-test-link-sign-out' => "", method: :delete %>
     <% else %>
-      <%= link_to "Join now", openstax_accounts.login_url, class: "#{account_bar_classes}", :'data-test-link-join' => "" %>
+      <%= link_to "Join now", openstax_accounts.login_url, class: "#{account_bar_classes}", 'data-test-link-join': "" %>
       <%= vertical_bar(id: "account-bar-vertical-bar", class: "#{account_bar_classes}") %>
-      <%= link_to "Sign in",  openstax_accounts.login_url, class: "#{account_bar_classes}", :'data-test-link-sign-in' => "" %>
+      <%= link_to "Sign in",  openstax_accounts.login_url, class: "#{account_bar_classes}", 'data-test-link-sign-in': "" %>
     <% end %>
 
     <%= link_to "http://www.facebook.com/openstaxtutor", id: "facebook-link" do %>
