@@ -220,6 +220,8 @@ GEM
     jwt (2.9.3)
       base64
     keyword_search (1.5.0)
+    kramdown (2.5.1)
+      rexml (>= 3.3.9)
     language_server-protocol (3.17.0.3)
     lev (13.0.0)
       actionpack (>= 4.2)
@@ -609,6 +611,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   keyword_search
+  kramdown
   lev
   listen
   lograge

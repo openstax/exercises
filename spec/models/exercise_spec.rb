@@ -23,6 +23,9 @@ RSpec.describe Exercise, type: :model, vcr: VCR_OPTS do
   end
 
   it 'automatically sets slug tags' do
+    expect(Content).to receive(:slugs_by_page_uuid).and_return({'4ee317f2-cc23-4075-b377-51ee4d11bb61' => [
+      {:book=>"introduction-sociology-2e", :page=>"3-3-pop-culture-subculture-and-cultural-change"}
+    ]})
     exercise.tags = [ 'context-cnxmod:4ee317f2-cc23-4075-b377-51ee4d11bb61' ]
     exercise.save!
 
