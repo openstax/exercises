@@ -90,14 +90,26 @@ namespace :exercises do
 
           ProcessSpreadsheet.call(filename: args[:filename], headers: :downcase) do |headers, row, index|
             chapter_index ||= headers.index { |header| header&.include? 'chapter' }
-            raise ArgumentError, 'Could not find Chapter column' if chapter_index.nil?
+            page_index ||= headers.index { |header| header&.include?('page') || header&.include?('module') }
+            chapter_uuid_by_page_uuid ||= {}
+            if chapter_index.nil?
+              raise ArgumentError, 'Could not find Chapter, Page or Module column' if page_index.nil?
+              chapters.each do |chapter|
+                chapter.parts.each { |page| chapter_uuid_by_page_uuid[page.uuid] = chapter.uuid }
+              end
+            end
 
             exercise_id_index ||= headers.index do |header|
               header&.include?('assessment') || header&.include?('exercise')
             end
             raise ArgumentError, 'Could not find Assessment ID column' if exercise_id_index.nil?
 
-            chapter = row[chapter_index]
+            if row[exercise_id_index].blank?
+              Rails.logger.info { "Skipped row #{index + 1} due to no Exercise ID" }
+              next
+            end
+
+            chapter = chapter_index.nil? ? chapter_uuid_by_page_uuid[row[page_index]] : row[chapter_index]
             # The value in the Chapter column may be a UUID or a chapter number
             chapter_uuid = chapter_uuids.include?(chapter) ? chapter : chapter_uuids[Integer(chapter) - 1]
 
