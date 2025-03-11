@@ -55,9 +55,16 @@ module Exercises
             detailed_solution_index ||= headers.index { |header| header&.end_with?('solution') }
             raise ArgumentError, 'Could not find "Detailed Solution" column' if detailed_solution_index.nil?
 
-            exercise = Exercise.new
+            row_number = row_index + 1
 
             page_uuid = row[uuid_index]
+            if page_uuid.blank?
+              Rails.logger.info { "Skipped row ##{row_number} with blank page UUID" }
+              next
+            end
+
+            exercise = Exercise.new
+
             exercise.tags = [
               "assessment:#{row[pre_or_post_index].downcase == 'pre' ? 'preparedness' : 'practice'
                 }:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}",
@@ -92,8 +99,6 @@ module Exercises
               )
               question.collaborator_solutions << solution
             end
-
-            row_number = row_index + 1
 
             begin
               exercise.save!
