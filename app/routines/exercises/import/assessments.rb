@@ -49,6 +49,10 @@ module Exercises
             end
             raise ArgumentError, 'Could not find "Answer Choice" columns' if answer_choice_indices.empty?
 
+            feedback_indices ||= headers.filter_map.with_index do |header, index|
+              index if header&.include?('feedback')
+            end
+
             correct_answer_index ||= headers.index { |header| header&.start_with?('correct') }
             raise ArgumentError, 'Could not find "Correct Answer" column' if correct_answer_index.nil?
 
@@ -85,9 +89,14 @@ module Exercises
             answer_choice_indices.each_with_index do |row_index, answer_index|
               content = row[row_index]
               next if content.blank?
+
+              feedback_index = feedback_indices[answer_index]
+              feedback = row[feedback_index] unless feedback_index.nil?
+
               stem.stem_answers << StemAnswer.new(
                 answer: Answer.new(question: question, content: parse(content, exercise)),
-                correctness: answer_index == correct_answer ? 1 : 0
+                correctness: answer_index == correct_answer ? 1 : 0,
+                feedback: parse(feedback, exercise)
               )
             end
 
