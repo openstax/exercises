@@ -5,16 +5,8 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
   let(:book_uuid)    { '62a49025-8cd8-407c-9cfb-c7eba55cf1c6' }
   let(:fixture_path) { 'spec/fixtures/sample_import_assessments.xlsx' }
 
-  before(:all) do
-    DatabaseCleaner.start
-
-    2.times { FactoryBot.create :user, :agreed_to_terms }
-  end
-  after(:all)  { DatabaseCleaner.clean }
-
   it 'imports exercises from the spreadsheet and adds Assignable tags' do
-    author = User.find(1)
-    copyright_holder = User.find(2)
+    allow(User).to receive(:find) { FactoryBot.create :user, :agreed_to_terms }
 
     allow_any_instance_of(OpenStax::Content::Book).to receive(:version).and_return('964da1b')
 
@@ -35,6 +27,7 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
       [stem_answer.answer.content, stem_answer.correctness.to_s, stem_answer.feedback]
     end)).to eq Set[['Right', '1.0', 'This is why A is correct'], ['Wrong', '0.0', 'This is why B is wrong']]
     expect(exercises[0].questions.first.collaborator_solutions.first.content).to eq 'Some solution'
+    expect(exercises[0].publication.published_at?).to eq true
 
     expect(Set.new exercises[1].tags.map(&:to_s)).to eq Set[
       'assessment:practice:https://openstax.org/orn/book:page/62a49025-8cd8-407c-9cfb-c7eba55cf1c6:6c30d0cc-e435-4081-be68-5ff2f558cbec',
@@ -47,5 +40,6 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
       [stem_answer.answer.content, stem_answer.correctness.to_s, stem_answer.feedback]
     end)).to eq Set[['Not this one', '0.0', 'Better luck next time'], ['This one', '1.0', 'Good job']]
     expect(exercises[1].questions.first.collaborator_solutions.first.content).to eq 'Another solution'
+    expect(exercises[1].publication.published_at?).to eq true
   end
 end
