@@ -1,14 +1,5 @@
 # Imports exercies from a spreadsheet for Assessments
-# The first row contains column headers. Required columns:
-# UUID (page UUID)
-# Pre or Post
-# Question Stem
-# Answer Choice A
-# Answer Choice B
-# Answer Choice C
-# Answer Choice D
-# Correct Answer (A, B, C or D)
-# Detailed Solution
+# The first row contains column headers. The only required column is Question Stem.
 module Exercises
   module Import
     class Assessments
@@ -26,47 +17,67 @@ module Exercises
         copyright_holder = User.find(COPYRIGHT_HOLDER_ID) rescue author # So it works in the dev env with only 1 user
 
         uuid_index = nil
-        pre_or_post_index = nil
+        section_index = nil
         question_stem_index = nil
+        pre_or_post_index = nil
         answer_choice_indices = nil
         correct_answer_index = nil
         detailed_solution_index = nil
+        background_index = nil
+        multi_step_index = nil
+        block_index = nil
+        feedback_indices = nil
+        nickname_index = nil
+        teks_index = nil
+        raise_id_index = nil
         record_failures do |failures|
           ProcessSpreadsheet.call(filename: filename, headers: :downcase) do |headers, row, row_index|
-            uuid_index ||= headers.index { |header| header == 'uuid' || header == 'page uuid' }
+            if row_index == 0
+              uuid_index ||= headers.index { |header| header == 'uuid' || header == 'page uuid' }
+              section_index ||= headers.index { |header| header == 'section' }
+              Rails.logger.warn { 'Could not find "UUID" or "Section" columns' } \
+                if uuid_index.nil? && section_index.nil?
 
-            section_index ||= headers.index { |header| header == 'section' }
-            raise ArgumentError, 'Could not find "UUID" or "Section" columns' if uuid_index.nil? && section_index.nil?
+              unless section_index.nil?
+                book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
+                page_uuid_by_book_location = {}
+                book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
+                raise ArgumentError, "Could not find book with UUID #{book_uuid} in the ABL" if book.nil?
+              end
 
-            unless section_index.nil?
-              book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
-              page_uuid_by_book_location = {}
-              book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
-              raise ArgumentError, "Could not find book with UUID #{book_uuid} in the ABL" if book.nil?
+              question_stem_index ||= headers.index do |header|
+                header&.start_with?('question') || header&.end_with?('stem')
+              end
+              raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
+
+              pre_or_post_index ||= headers.index { |header| header&.start_with?('pre') && header.end_with?('post') }
+              Rails.logger.warn { 'Could not find "Pre or Post" column' } if pre_or_post_index.nil?
+
+              answer_choice_indices ||= headers.filter_map.with_index do |header, index|
+                index if (header&.start_with?('answer') || header&.end_with?('choice')) && !header.include?('feedback')
+              end
+              Rails.logger.warn { 'Could not find "Answer Choice" columns' } if answer_choice_indices.empty?
+
+              correct_answer_index ||= headers.index { |header| header&.start_with?('correct') }
+              Rails.logger.warn { 'Could not find "Correct Answer" column' } if correct_answer_index.nil?
+
+              detailed_solution_index ||= headers.index { |header| header&.end_with?('solution') }
+              Rails.logger.warn { 'Could not find "Detailed Solution" column' } if detailed_solution_index.nil?
+
+              background_index ||= headers.index { |header| header&.include?('background') }
+
+              multi_step_index ||= headers.index { |header| header&.include?('multi') && header.index?('step') }
+
+              block_index ||= headers.index { |header| header&.include?('block') }
+
+              feedback_indices ||= headers.filter_map.with_index { |header, index| index if header&.include?('feedback') }
+
+              nickname_index ||= headers.index { |header| header&.include?('nickname') }
+
+              teks_index ||= headers.index { |header| header&.include?('teks') }
+
+              raise_id_index ||= headers.index { |header| header&.include?('raise') }
             end
-
-            pre_or_post_index ||= headers.index { |header| header&.start_with?('pre') && header.end_with?('post') }
-            raise ArgumentError, 'Could not find "Pre or Post" column' if pre_or_post_index.nil?
-
-            question_stem_index ||= headers.index do |header|
-              header&.start_with?('question') || header&.end_with?('stem')
-            end
-            raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
-
-            answer_choice_indices ||= headers.filter_map.with_index do |header, index|
-              index if (header&.start_with?('answer') || header&.end_with?('choice')) && !header.include?('feedback')
-            end
-            raise ArgumentError, 'Could not find "Answer Choice" columns' if answer_choice_indices.empty?
-
-            feedback_indices ||= headers.filter_map.with_index do |header, index|
-              index if header&.include?('feedback')
-            end
-
-            correct_answer_index ||= headers.index { |header| header&.start_with?('correct') }
-            raise ArgumentError, 'Could not find "Correct Answer" column' if correct_answer_index.nil?
-
-            detailed_solution_index ||= headers.index { |header| header&.end_with?('solution') }
-            raise ArgumentError, 'Could not find "Detailed Solution" column' if detailed_solution_index.nil?
 
             row_number = row_index + 1
 
@@ -75,11 +86,8 @@ module Exercises
             else
               row[uuid_index]
             end
-
-            if page_uuid.blank?
-              Rails.logger.info { "Skipped row ##{row_number} with blank Section or Page UUID" }
-              next
-            end
+            Rails.logger.warn { "Row ##{row_number} has no associated page in the book" } \
+              if page_uuid.blank? && (!uuid_index.nil? || !section_index.nil?)
 
             exercise = Exercise.new
 
