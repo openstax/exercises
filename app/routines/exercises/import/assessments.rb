@@ -154,6 +154,16 @@ module Exercises
             stem.stylings << Styling.new(style: ::Style::MULTIPLE_CHOICE)
             question.stems << stem
 
+            unless detailed_solution_index.nil? || row[detailed_solution_index].blank?
+              solution = CollaboratorSolution.new(
+                solution_type: SolutionType::DETAILED,
+                content: parse(row[detailed_solution_index], exercise)
+              )
+              question.collaborator_solutions << solution
+            end
+
+            next if correct_answer_index.nil? || row[correct_answer_index].blank?
+
             correct_answer = row[correct_answer_index].downcase.strip.each_byte.first - 97
             answer_choice_indices.each_with_index do |row_index, answer_index|
               content = row[row_index]
@@ -167,15 +177,6 @@ module Exercises
                 correctness: answer_index == correct_answer ? 1 : 0,
                 feedback: parse(feedback, exercise)
               )
-            end
-
-            detailed_solution = row[detailed_solution_index]
-            if detailed_solution.present?
-              solution = CollaboratorSolution.new(
-                solution_type: SolutionType::DETAILED,
-                content: parse(detailed_solution, exercise)
-              )
-              question.collaborator_solutions << solution
             end
           end
 
