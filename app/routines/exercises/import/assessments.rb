@@ -129,7 +129,10 @@ module Exercises
                   unless pre_or_post_index.nil? || row[pre_or_post_index].blank?
               end
 
-              exercise.tags << "teks:#{row[teks_index]}" unless teks_index.nil? || row[teks_index].blank?
+              unless teks_index.nil? || row[teks_index].blank?
+                teks = row[teks_index].split(',').map(&:strip)
+                teks.each { |tek| exercise.tags << "teks:#{tek}" }
+              end
               exercise.tags << "raise-id:#{row[raise_id_index]}" \
                 unless raise_id_index.nil? || row[raise_id_index].blank?
 
