@@ -6,7 +6,8 @@ Kramdown::Parser::Kramdown.class_exec do
   s3_client = nil
 
   def add_link_with_attachments(el, href, title, alt_text = nil, ial = nil)
-    return add_link_without_attachments(el, href, title, alt_text, ial) unless @options[:attachable]
+    return add_link_without_attachments(el, href, title, alt_text, ial) \
+      if Rails.env.development? || !@options[:attachable]
 
     uri = URI.parse(href)
     contents = Net::HTTP.get(uri)

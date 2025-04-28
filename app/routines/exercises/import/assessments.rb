@@ -16,6 +16,8 @@ module Exercises
         author = User.find(AUTHOR_ID)
         copyright_holder = User.find(COPYRIGHT_HOLDER_ID) rescue author # So it works in the dev env with only 1 user
 
+        initialized = false
+
         uuid_index = nil
         section_index = nil
         question_stem_index = nil
@@ -50,7 +52,7 @@ module Exercises
           end
 
           ProcessSpreadsheet.call(filename: filename, headers: :downcase) do |headers, row, row_index|
-            if row_index == 0
+            unless initialized
               question_stem_index ||= headers.index do |header|
                 header&.start_with?('question') || header&.end_with?('stem')
               end
@@ -97,6 +99,8 @@ module Exercises
 
               detailed_solution_index ||= headers.index { |header| header&.end_with?('solution') }
               Rails.logger.warn { 'Could not find "Detailed Solution" column' } if detailed_solution_index.nil?
+
+              initialized = true
             end
 
             row_number = row_index + 1
