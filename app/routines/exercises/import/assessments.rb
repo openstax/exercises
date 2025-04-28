@@ -86,7 +86,9 @@ module Exercises
               block_index ||= headers.index { |header| header&.include?('block') }
 
               answer_choice_indices ||= headers.filter_map.with_index do |header, index|
-                index if (header&.start_with?('answer') || header&.end_with?('choice')) && !header.include?('feedback')
+                index if (
+                  header&.start_with?('answer') || header&.start_with?('option') || header&.end_with?('choice')
+                ) && !header.include?('feedback')
               end
               Rails.logger.warn { 'Could not find "Answer Choice" columns' } if answer_choice_indices.empty?
 
