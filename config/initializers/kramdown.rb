@@ -1,14 +1,42 @@
 # https://www.snip2code.com/Snippet/49311/Monkey-patch-for-Kramdown-to-rewrite-rel
 require 'addressable/uri'
 
+secrets = Rails.application.secrets
 Kramdown::Parser::Kramdown.class_exec do
+  s3_client = nil
+
   def add_link_with_attachments(el, href, title, alt_text = nil, ial = nil)
     return add_link_without_attachments(el, href, title, alt_text, ial) unless @options[:attachable]
 
-    href_type = Addressable::URI.parse(href).relative? ? :file : :url
-    href = AttachFile.call(attachable: @options[:attachable], href_type => href).outputs.url
+    uri = URI.parse(href)
+    contents = Net::HTTP.get(uri)
 
-    add_link_without_attachments(el, href, title, alt_text, ial)
+    region = secrets.s3[:region]
+
+    s3_client ||= Aws::S3::Client.new(
+      region: region,
+      credentials: Aws::Credentials.new(
+        access_key_id: secrets.s3[:access_key_id],
+        secret_access_key: secrets.s3[:secret_access_key]
+      )
+    )
+
+    bucket_name = secrets.s3[:uploads_bucket_name]
+    key = "#{secrets.environment_name}/#{Digest::SHA2.new.update(contents).to_s}#{File.extname(uri.path)}"
+
+    s3_client.put_object(
+      body: StringIO.new(contents),
+      bucket: bucket_name,
+      key: key
+    )
+
+    file.close!
+
+    new_url = "https://s3-#{region}.amazonaws.com/#{bucket_name}/#{key}"
+
+    @options[:attachable].attachments << Attachment.new(asset: new_url)
+
+    add_link_without_attachments(el, new_url, title, alt_text, ial)
   end
   alias_method :add_link_without_attachments, :add_link
   alias_method :add_link, :add_link_with_attachments
