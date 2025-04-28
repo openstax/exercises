@@ -75,7 +75,8 @@ module Exercises
               pre_or_post_index ||= headers.index { |header| header&.start_with?('pre') && header.end_with?('post') }
               Rails.logger.warn { 'Could not find "Pre or Post" column' } if pre_or_post_index.nil?
 
-              teks_index ||= headers.index { |header| header&.include?('teks') }
+              teks_index ||= headers.index { |header| header&.include?('teks') && !header&.include?('machine') }
+              machine_teks_index ||= headers.index { |header| header&.include?('machine') && header&.include?('teks') }
 
               raise_id_index ||= headers.index { |header| header&.include?('raise') }
 
@@ -130,10 +131,14 @@ module Exercises
               end
 
               unless teks_index.nil? || row[teks_index].blank?
-                teks = row[teks_index].split(',').map(&:strip)
+                teks = row[teks_index].split(/,|;/).map(&:strip)
                 teks.each { |tek| exercise.tags << "teks:#{tek}" }
               end
-              exercise.tags << "raise-id:#{row[raise_id_index]}" \
+              unless machine_teks_index.nil? || row[machine_teks_index].blank?
+                machine_teks = row[machine_teks_index].split(/,|;/).map(&:strip)
+                machine_teks.each { |tek| exercise.tags << "machine-teks:#{tek}" }
+              end
+              exercise.tags << "raise-content-id:#{row[raise_id_index]}" \
                 unless raise_id_index.nil? || row[raise_id_index].blank?
 
               exercise.publication.authors << Author.new(user: author)
