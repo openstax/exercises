@@ -16,10 +16,11 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
   end
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new(
-      region: region,
-      credentials: Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key])
-    )
+    args = { region: region }
+    args[:credentials] = Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key]) \
+      unless Rails.env.production?
+
+    @s3_client ||= Aws::S3::Client.new(**args)
   end
 
   def add_text(text, tree = @tree, type = @text_type)
@@ -57,6 +58,8 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
       )
 
       last_el.attr['src'] = "https://s3.#{region}.amazonaws.com/#{bucket_name}/#{key}"
+
+      next if @options[:attachable].attachments.any? { |attachment| attachment.asset == last_el.attr['src'] }
 
       @options[:attachable].attachments << Attachment.new(asset: last_el.attr['src'])
     end
