@@ -19,7 +19,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
   def s3_client
     @s3_client ||= Aws::S3::Client.new(
       region: region,
-      credentials: Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key], s3_secrets[:session_token])
+      credentials: Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key])
     )
   end
 
