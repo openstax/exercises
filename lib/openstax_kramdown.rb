@@ -1,4 +1,3 @@
-# https://www.snip2code.com/Snippet/49311/Monkey-patch-for-Kramdown-to-rewrite-rel
 require 'addressable/uri'
 
 class Kramdown::Parser::Openstax < Kramdown::Parser::Html
