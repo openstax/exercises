@@ -119,7 +119,7 @@ module Exercises
             row_number = row_index + 1
 
             # Using row_index here because dealing with the previous row
-            if multi_step_index.nil? || row[multi_step_index] != multi_step
+            if multi_step_index.nil? || multi_step.nil? || row[multi_step_index] != multi_step
               save.call(exercise, row_index)
 
               multi_step = row[multi_step_index] unless multi_step_index.nil?
