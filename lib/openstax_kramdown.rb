@@ -1,22 +1,25 @@
 # https://www.snip2code.com/Snippet/49311/Monkey-patch-for-Kramdown-to-rewrite-rel
 require 'addressable/uri'
 
-secrets = Rails.application.secrets
 class Kramdown::Parser::Openstax < Kramdown::Parser::Html
   ESCAPED_PARENS_MATH_RE = /(.*?)\\\((.*?)\\\)(.*)/
 
-  def initialize(source, options)
-    super
-    @s3_client = nil
+  def secrets
+    @secrets ||= Rails.application.secrets
+  end
+
+  def s3_secrets
+    @s3_secrets ||= secrets.aws[:s3]
+  end
+
+  def region
+    @region ||= s3_secrets[:region]
   end
 
   def s3_client
     @s3_client ||= Aws::S3::Client.new(
       region: region,
-      credentials: Aws::Credentials.new(
-        access_key_id: secrets.s3[:access_key_id],
-        secret_access_key: secrets.s3[:secret_access_key]
-      )
+      credentials: Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key], s3_secrets[:session_token])
     )
   end
 
@@ -45,9 +48,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
       uri = URI.parse(last_el.attr['src'])
       contents = Net::HTTP.get(uri)
 
-      region = secrets.s3[:region]
-
-      bucket_name = secrets.s3[:uploads_bucket_name]
+      bucket_name = s3_secrets[:uploads_bucket_name]
       key = "#{secrets.environment_name}/#{Digest::SHA2.new.update(contents).to_s}#{File.extname(uri.path)}"
 
       s3_client.put_object(
@@ -56,7 +57,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
         key: key
       )
 
-      last_el.attr['src'] = "https://s3-#{region}.amazonaws.com/#{bucket_name}/#{key}"
+      last_el.attr['src'] = "https://s3.#{region}.amazonaws.com/#{bucket_name}/#{key}"
 
       @options[:attachable].attachments << Attachment.new(asset: last_el.attr['src'])
     end
