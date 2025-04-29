@@ -92,7 +92,7 @@ module Exercises
 
               background_index ||= headers.index { |header| header&.include?('background') }
 
-              multi_step_index ||= headers.index { |header| header&.include?('multi') && header.index?('step') }
+              multi_step_index ||= headers.index { |header| header&.include?('multi') && header.include?('step') }
 
               block_index ||= headers.index { |header| header&.include?('block') }
 
@@ -164,7 +164,7 @@ module Exercises
             end
 
             question = Question.new
-            question.sort_position = row[block_index] unless block_index.nil?
+            question.sort_position = row[block_index].to_i + 1 unless block_index.nil?
             exercise.questions << question
 
             stem = Stem.new(content: parse(row[question_stem_index], exercise))
