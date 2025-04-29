@@ -16,11 +16,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
   end
 
   def s3_client
-    args = { region: region }
-    args[:credentials] = Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key]) \
-      unless Rails.env.production?
-
-    @s3_client ||= Aws::S3::Client.new(**args)
+    @s3_client ||= Aws::S3::Client.new(region: region)
   end
 
   def add_text(text, tree = @tree, type = @text_type)
