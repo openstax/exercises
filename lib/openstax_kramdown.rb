@@ -26,11 +26,12 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
 
     super(matches[1], tree, type)
 
+    math = matches[2].strip
     last = tree.children.last
     location = (last && last.options[:location] || tree.options[:location])
-    math_el = Kramdown::Element.new(:html_element, 'span', { 'data-math' => matches[2] }, location: location)
+    math_el = Kramdown::Element.new(:html_element, 'span', { 'data-math' => math }, location: location)
     tree.children << math_el
-    super(matches[2], math_el, :text)
+    super(math, math_el, :text)
 
     add_text(matches[3], tree, type)
   end

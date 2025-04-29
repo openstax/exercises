@@ -14,13 +14,16 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
 
     exercises = Exercise.order(:created_at).last(2)
 
+    expect(exercises[0].publication_group.nickname).to eq 'Q1'
     expect(Set.new exercises[0].tags.map(&:to_s)).to eq Set[
       'assessment:preparedness:https://openstax.org/orn/book:page/62a49025-8cd8-407c-9cfb-c7eba55cf1c6:97af6b57-0004-4218-99c1-f2cfedea8f30',
       'context-cnxmod:97af6b57-0004-4218-99c1-f2cfedea8f30',
       'book-slug:college-success-concise',
       'book-slug:preparing-for-college-success',
+      'machine-teks:dacf53a6-2b09-49f1-9926-de4efe1049e0',
       'module-slug:college-success-concise:1-1-why-college',
       'module-slug:preparing-for-college-success:2-1-why-college',
+      'teks:T1.1',
     ]
     expect(exercises[0].questions.first.stems.first.content).to eq 'Some question?'
     expect(Set.new(exercises[0].questions.first.stems.first.stem_answers.map do |stem_answer|
@@ -29,13 +32,18 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(exercises[0].questions.first.collaborator_solutions.first.content).to eq 'Some solution'
     expect(exercises[0].publication.published_at?).to eq true
 
+    expect(exercises[1].publication_group.nickname).to eq 'Q2'
     expect(Set.new exercises[1].tags.map(&:to_s)).to eq Set[
       'assessment:practice:https://openstax.org/orn/book:page/62a49025-8cd8-407c-9cfb-c7eba55cf1c6:6c30d0cc-e435-4081-be68-5ff2f558cbec',
       'context-cnxmod:6c30d0cc-e435-4081-be68-5ff2f558cbec',
       'book-slug:college-success',
+      'machine-teks:c6623b8d-1eb7-41bf-875b-3456036000f9',
       'module-slug:college-success:1-2-the-first-year-of-college-will-be-an-experience',
+      'teks:T1.2',
     ]
-    expect(exercises[1].questions.first.stems.first.content).to eq 'Another question?'
+    expect(exercises[1].questions.first.stems.first.content).to eq(
+      'Another question with <span data-math="R = a^i/se">R = a^i/se</span> math?'
+    )
     expect(Set.new(exercises[1].questions.first.stems.first.stem_answers.map do |stem_answer|
       [stem_answer.answer.content, stem_answer.correctness.to_s, stem_answer.feedback]
     end)).to eq Set[['Not this one', '0.0', 'Better luck next time'], ['This one', '1.0', 'Good job']]

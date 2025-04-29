@@ -18,8 +18,8 @@ class ProcessSpreadsheet
 
     args = []
     pad_to_size = 0 if pad_cells
-    klass.new(filename).public_send(method).each_with_index do |row, row_index|
-      normalized_row = row.map { |cell| cell.value&.to_s&.strip }
+    klass.new(filename).public_send(method, pad_cells: pad_cells).each_with_index do |row, row_index|
+      normalized_row = row.map { |cell| cell&.value&.to_s&.strip }
 
       if headers && row_index == 0
         header_row = normalized_row

@@ -11,7 +11,7 @@ module RowParser
     # If only one <p> tag after Kramdown parsing, remove it and just return the nodes below
     kd.root.children = kd.root.children.first.children \
       if kd.root.children.length == 1 && kd.root.children.first.type == :p
-    kd.to_html
+    kd.to_html.strip
   end
 
   def record_failures

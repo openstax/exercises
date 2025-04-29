@@ -18,24 +18,35 @@ module Exercises
 
         initialized = false
 
+        question_stem_index = nil
         uuid_index = nil
         section_index = nil
-        question_stem_index = nil
+
+        page_uuid_by_book_location = {}
+
+        nickname_index = nil
+
         pre_or_post_index = nil
-        answer_choice_indices = nil
-        correct_answer_index = nil
-        detailed_solution_index = nil
+
+        teks_index = nil
+        machine_teks_index = nil
+
+        raise_id_index = nil
+
         background_index = nil
         multi_step_index = nil
         block_index = nil
+
+        answer_choice_indices = nil
+        correct_answer_index = nil
         feedback_indices = nil
-        nickname_index = nil
-        teks_index = nil
-        raise_id_index = nil
+
+        detailed_solution_index = nil
 
         row_number = nil
-        exercise = nil
+
         multi_step = nil
+        exercise = nil
         record_failures do |failures|
           save = ->(exercise, row_number) do
             return if exercise.nil? || row_number.nil?
@@ -65,7 +76,6 @@ module Exercises
 
               unless section_index.nil?
                 book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
-                page_uuid_by_book_location = {}
                 book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
                 raise ArgumentError, "Could not find book with UUID #{book_uuid} in the ABL" if book.nil?
               end
@@ -75,8 +85,8 @@ module Exercises
               pre_or_post_index ||= headers.index { |header| header&.start_with?('pre') && header.end_with?('post') }
               Rails.logger.warn { 'Could not find "Pre or Post" column' } if pre_or_post_index.nil?
 
-              teks_index ||= headers.index { |header| header&.include?('teks') && !header&.include?('machine') }
-              machine_teks_index ||= headers.index { |header| header&.include?('machine') && header&.include?('teks') }
+              teks_index ||= headers.index { |header| header&.include?('teks') && !header.include?('machine') }
+              machine_teks_index ||= headers.index { |header| header&.include?('machine') && header.include?('teks') }
 
               raise_id_index ||= headers.index { |header| header&.include?('raise') }
 
@@ -111,6 +121,8 @@ module Exercises
             # Using row_index here because dealing with the previous row
             if multi_step_index.nil? || row[multi_step_index] != multi_step
               save.call(exercise, row_index)
+
+              multi_step = row[multi_step_index] unless multi_step_index.nil?
 
               exercise = Exercise.new
 
