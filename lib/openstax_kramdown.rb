@@ -20,35 +20,6 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
     )
   end
 
-  def convert_img(el)
-    return process_html_element(el, false) if el.attr['src'].blank?
-
-    if @options[:attachable] && !Rails.env.development?
-      uri = URI.parse(el.attr['src'])
-      contents = Net::HTTP.get(uri)
-
-      region = secrets.s3[:region]
-
-      bucket_name = secrets.s3[:uploads_bucket_name]
-      key = "#{secrets.environment_name}/#{Digest::SHA2.new.update(contents).to_s}#{File.extname(uri.path)}"
-
-      s3_client.put_object(
-        body: StringIO.new(contents),
-        bucket: bucket_name,
-        key: key
-      )
-
-      file.close!
-
-      el.attr['src'] = "https://s3-#{region}.amazonaws.com/#{bucket_name}/#{key}"
-
-      @options[:attachable].attachments << Attachment.new(asset: el.attr['src'])
-    end
-
-    set_basics(el, :img)
-    process_children(el)
-  end
-
   def add_text(text, tree = @tree, type = @text_type)
     matches = ESCAPED_PARENS_MATH_RE.match(text)
     return super(text, tree, type) if matches.nil?
@@ -62,5 +33,31 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
     super(matches[2], math_el, :text)
 
     add_text(matches[3], tree, type)
+  end
+
+  def handle_html_start_tag(line, &block)
+    super(line, &block).tap do
+      next if Rails.env.development? || !@options[:attachable]
+      last_el = @tree.children.last
+      next unless last_el.type == :html_element && last_el.value == 'img' && last_el.attr['src']
+
+      uri = URI.parse(last_el.attr['src'])
+      contents = Net::HTTP.get(uri)
+
+      region = secrets.s3[:region]
+
+      bucket_name = secrets.s3[:uploads_bucket_name]
+      key = "#{secrets.environment_name}/#{Digest::SHA2.new.update(contents).to_s}#{File.extname(uri.path)}"
+
+      s3_client.put_object(
+        body: StringIO.new(contents),
+        bucket: bucket_name,
+        key: key
+      )
+
+      last_el.attr['src'] = "https://s3-#{region}.amazonaws.com/#{bucket_name}/#{key}"
+
+      @options[:attachable].attachments << Attachment.new(asset: last_el.attr['src'])
+    end
   end
 end
