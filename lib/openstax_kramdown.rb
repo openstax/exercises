@@ -16,10 +16,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
   end
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new(
-      region: region,
-      credentials: Aws::Credentials.new(s3_secrets[:access_key_id], s3_secrets[:secret_access_key])
-    )
+    @s3_client ||= Aws::S3::Client.new(region: region)
   end
 
   def add_text(text, tree = @tree, type = @text_type)
@@ -44,7 +41,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
       last_el = @tree.children.last
       next unless last_el.type == :html_element && last_el.value == 'img' && last_el.attr['src']
 
-      uri = URI.parse(last_el.attr['src'])
+      uri = URI.parse(last_el.attr['src'].strip)
       contents = Net::HTTP.get(uri)
 
       bucket_name = s3_secrets[:uploads_bucket_name]
@@ -57,6 +54,8 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
       )
 
       last_el.attr['src'] = "https://s3.#{region}.amazonaws.com/#{bucket_name}/#{key}"
+
+      next if @options[:attachable].attachments.any? { |attachment| attachment.asset == last_el.attr['src'] }
 
       @options[:attachable].attachments << Attachment.new(asset: last_el.attr['src'])
     end

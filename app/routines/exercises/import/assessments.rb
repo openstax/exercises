@@ -69,15 +69,17 @@ module Exercises
               end
               raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
 
-              uuid_index ||= headers.index { |header| header == 'uuid' || header == 'page uuid' }
-              section_index ||= headers.index { |header| header == 'section' }
+              uuid_index ||= headers.index do |header|
+                header == 'uuid' || header == 'page uuid' || header == 'section uuid'
+              end
+              section_index ||= headers.index { |header| header == 'section' || header == 'section number' }
               Rails.logger.warn { 'Could not find "UUID" or "Section" columns' } \
                 if uuid_index.nil? && section_index.nil?
 
               unless section_index.nil?
                 book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
-                book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
                 raise ArgumentError, "Could not find book with UUID #{book_uuid} in the ABL" if book.nil?
+                book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
               end
 
               nickname_index ||= headers.index { |header| header&.include?('nickname') }
@@ -168,7 +170,6 @@ module Exercises
             exercise.questions << question
 
             stem = Stem.new(content: parse(row[question_stem_index], exercise))
-            stem.stylings << Styling.new(style: ::Style::MULTIPLE_CHOICE)
             question.stems << stem
 
             unless detailed_solution_index.nil? || row[detailed_solution_index].blank?
@@ -179,7 +180,12 @@ module Exercises
               question.collaborator_solutions << solution
             end
 
-            next if correct_answer_index.nil? || row[correct_answer_index].blank?
+            if correct_answer_index.nil? || row[correct_answer_index].blank?
+              stem.stylings << Styling.new(style: ::Style::FREE_RESPONSE)
+              next
+            end
+
+            stem.stylings << Styling.new(style: ::Style::MULTIPLE_CHOICE)
 
             correct_answer = row[correct_answer_index].downcase.strip.each_byte.first - 97
             answer_choice_indices.each_with_index do |row_index, answer_index|
