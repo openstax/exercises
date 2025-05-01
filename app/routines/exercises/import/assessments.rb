@@ -158,7 +158,15 @@ module Exercises
               exercise.publication.authors << Author.new(user: author)
               exercise.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder)
 
-              exercise.publication.publication_group.nickname = row[nickname_index] unless nickname_index.nil?
+              unless nickname_index.nil? || row[nickname_index].blank?
+                existing_pg = PublicationGroup.find_by(nickname: row[nickname_index])
+
+                if existing_pg.nil?
+                  exercise.publication.publication_group.nickname = row[nickname_index]
+                else
+                  exercise.publication.publication_group = existing_pg
+                end
+              end
 
               exercise.stimulus = parse(row[background_index], exercise) unless background_index.nil?
             else

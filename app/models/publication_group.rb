@@ -1,6 +1,6 @@
 class PublicationGroup < ApplicationRecord
 
-  PUSLISHABLE_TYPES_WITH_DEFAULT_PUBLIC_SOLUTIONS = Set[ 'VocabTerm' ]
+  PUBLISHABLE_TYPES_WITH_DEFAULT_PUBLIC_SOLUTIONS = Set[ 'VocabTerm' ]
 
   has_many :publications, inverse_of: :publication_group, autosave: true
 
@@ -37,7 +37,7 @@ class PublicationGroup < ApplicationRecord
   end
 
   def set_default_solutions_are_public_if_nil
-    self.solutions_are_public = PUSLISHABLE_TYPES_WITH_DEFAULT_PUBLIC_SOLUTIONS.include?(
+    self.solutions_are_public = PUBLISHABLE_TYPES_WITH_DEFAULT_PUBLIC_SOLUTIONS.include?(
       publishable_type
     ) if solutions_are_public.nil?
   end

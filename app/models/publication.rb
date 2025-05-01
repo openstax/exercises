@@ -236,7 +236,7 @@ class Publication < ApplicationRecord
     return if published_at.nil? || publishable.nil?
 
     catch(:abort) do
-        publishable.before_publication
+      publishable.before_publication
     end
 
     return if publishable.errors.empty?
