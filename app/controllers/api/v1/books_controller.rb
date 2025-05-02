@@ -18,7 +18,7 @@ module Api::V1
     def index
       OSU::AccessPolicy.require_action_allowed! :index, current_api_user, OpenStax::Content::Book
 
-      books = abl.approved_books(archive: archive).group_by(&:uuid).map do |uuid, books|
+      books = abl.books(archive: archive).group_by(&:uuid).map do |uuid, books|
         latest_book = books.sort_by(&:committed_at).last
 
         # We use book.slug.titleize here to avoid fetching all book ToCs,

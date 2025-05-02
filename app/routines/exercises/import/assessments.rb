@@ -77,7 +77,7 @@ module Exercises
                 if uuid_index.nil? && section_index.nil?
 
               unless section_index.nil?
-                book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
+                book = OpenStax::Content::Abl.new.books.find { |book| book.uuid == book_uuid }
                 raise ArgumentError, "Could not find book with UUID #{book_uuid} in the ABL" if book.nil?
                 book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
               end
