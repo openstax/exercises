@@ -69,10 +69,10 @@ module Exercises
               end
               raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
 
-              uuid_index ||= headers.index do |header|
-                header == 'uuid' || header == 'page uuid' || header == 'section uuid'
+              uuid_index ||= headers.index { |header| header&.end_with?('uuid') && !header.include?('book') }
+              section_index ||= headers.index do |header|
+                header&.start_with?('section') && !header.include?('uuid') && !header.include?('name')
               end
-              section_index ||= headers.index { |header| header == 'section' || header == 'section number' }
               Rails.logger.warn { 'Could not find "UUID" or "Section" columns' } \
                 if uuid_index.nil? && section_index.nil?
 
