@@ -69,15 +69,15 @@ module Exercises
               end
               raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
 
-              uuid_index ||= headers.index do |header|
-                header == 'uuid' || header == 'page uuid' || header == 'section uuid'
+              uuid_index ||= headers.index { |header| header&.end_with?('uuid') && !header.include?('book') }
+              section_index ||= headers.index do |header|
+                header&.start_with?('section') && !header.include?('uuid') && !header.include?('name')
               end
-              section_index ||= headers.index { |header| header == 'section' || header == 'section number' }
               Rails.logger.warn { 'Could not find "UUID" or "Section" columns' } \
                 if uuid_index.nil? && section_index.nil?
 
               unless section_index.nil?
-                book = OpenStax::Content::Abl.new.approved_books.find { |book| book.uuid == book_uuid }
+                book = OpenStax::Content::Abl.new.books.find { |book| book.uuid == book_uuid }
                 raise ArgumentError, "Could not find book with UUID #{book_uuid} in the ABL" if book.nil?
                 book.all_pages.each { |page| page_uuid_by_book_location[page.book_location] = page.uuid }
               end
@@ -158,7 +158,15 @@ module Exercises
               exercise.publication.authors << Author.new(user: author)
               exercise.publication.copyright_holders << CopyrightHolder.new(user: copyright_holder)
 
-              exercise.publication.publication_group.nickname = row[nickname_index] unless nickname_index.nil?
+              unless nickname_index.nil? || row[nickname_index].blank?
+                existing_pg = PublicationGroup.find_by(nickname: row[nickname_index])
+
+                if existing_pg.nil?
+                  exercise.publication.publication_group.nickname = row[nickname_index]
+                else
+                  exercise.publication.publication_group = existing_pg
+                end
+              end
 
               exercise.stimulus = parse(row[background_index], exercise) unless background_index.nil?
             else

@@ -336,7 +336,7 @@ GEM
       roar
       roar-rails (>= 1)
       uber
-    openstax_content (1.3.0)
+    openstax_content (1.5.0)
       aws-sdk-s3
       faraday
       nokogiri

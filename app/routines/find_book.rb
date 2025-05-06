@@ -11,7 +11,7 @@ class FindBook
       archive_version ||= s3.ls.last
     end
     archive = OpenStax::Content::Archive.new(version: archive_version)
-    book = OpenStax::Content::Abl.new.approved_books(archive: archive).find do |book|
+    book = OpenStax::Content::Abl.new.books(archive: archive).find do |book|
       book.uuid == uuid
     end
 

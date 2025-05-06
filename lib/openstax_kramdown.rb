@@ -41,7 +41,7 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
       last_el = @tree.children.last
       next unless last_el.type == :html_element && last_el.value == 'img' && last_el.attr['src']
 
-      uri = URI.parse(last_el.attr['src'].strip)
+      uri = URI.parse(ActionController::Base.helpers.strip_tags(last_el.attr['src'].strip))
       contents = Net::HTTP.get(uri)
 
       bucket_name = s3_secrets[:uploads_bucket_name]
