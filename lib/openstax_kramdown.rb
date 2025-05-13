@@ -42,14 +42,16 @@ class Kramdown::Parser::Openstax < Kramdown::Parser::Html
       next unless last_el.type == :html_element && last_el.value == 'img' && last_el.attr['src']
 
       uri = URI.parse(ActionController::Base.helpers.strip_tags(last_el.attr['src'].strip))
-      contents = Net::HTTP.get(uri)
+      response = Net::HTTP.get_response(uri)
+      body = response.body
 
       bucket_name = s3_secrets[:uploads_bucket_name]
-      key = "#{secrets.environment_name}/#{Digest::SHA2.new.update(contents).to_s}#{File.extname(uri.path)}"
+      key = "#{secrets.environment_name}/#{Digest::SHA2.new.update(body).to_s}#{File.extname(uri.path)}"
 
       s3_client.put_object(
-        body: StringIO.new(contents),
+        body: StringIO.new(body),
         bucket: bucket_name,
+        content_type: response['content-type'] || 'application/octet-stream',
         key: key
       )
 
