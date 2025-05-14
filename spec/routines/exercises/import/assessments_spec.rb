@@ -50,6 +50,7 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
 
     expect(exercises[1].publication_group.nickname).to eq 'Q2'
     expect(Set.new exercises[1].tags.map(&:to_s)).to eq Set[
+      'assessment:practice:https://openstax.org/orn/ancillary/e9779614-2fca-43cb-ae53-4af6d20e00ea',
       'assessment:practice:https://openstax.org/orn/book:page/62a49025-8cd8-407c-9cfb-c7eba55cf1c6:6c30d0cc-e435-4081-be68-5ff2f558cbec',
       'context-cnxmod:6c30d0cc-e435-4081-be68-5ff2f558cbec',
       'book-slug:college-success',
