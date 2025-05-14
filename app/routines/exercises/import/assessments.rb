@@ -28,6 +28,7 @@ module Exercises
 
         pre_or_post_index = nil
 
+        ancillary_index = nil
         teks_index = nil
         machine_teks_index = nil
 
@@ -69,7 +70,11 @@ module Exercises
               end
               raise ArgumentError, 'Could not find "Question Stem" column' if question_stem_index.nil?
 
-              uuid_index ||= headers.index { |header| header&.end_with?('uuid') && !header.include?('book') }
+              uuid_index ||= headers.index do |header|
+                header&.end_with?('uuid') && (
+                  header == 'uuid' || header.start_with?('page') || header.start_with?('section')
+                )
+              end
               section_index ||= headers.index do |header|
                 header&.start_with?('section') && !header.include?('uuid') && !header.include?('name')
               end
