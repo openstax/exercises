@@ -87,6 +87,8 @@ module Exercises
               pre_or_post_index ||= headers.index { |header| header&.start_with?('pre') && header.end_with?('post') }
               Rails.logger.warn { 'Could not find "Pre or Post" column' } if pre_or_post_index.nil?
 
+              ancillary_index ||= headers.index { |header| header&.start_with?('ancillary') }
+
               teks_index ||= headers.index { |header| header&.include?('teks') && !header.include?('machine') }
               machine_teks_index ||= headers.index { |header| header&.include?('machine') && header.include?('teks') }
 
@@ -143,6 +145,9 @@ module Exercises
                   }:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}" \
                   unless pre_or_post_index.nil? || row[pre_or_post_index].blank?
               end
+
+              exercise.tags << "assessment:practice:https://openstax.org/orn/ancillary/#{row[ancillary_index]}" \
+                unless ancillary_index.nil? || row[ancillary_index].blank?
 
               unless teks_index.nil? || row[teks_index].blank?
                 teks = row[teks_index].split(/,|;/).map(&:strip)
