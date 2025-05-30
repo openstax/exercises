@@ -15,9 +15,6 @@ module Exercises
       def exec(filename:, book_uuid:)
         Rails.logger.info { "Filename: #{filename}" }
 
-        book = OpenStax::Content::Abl.new.books.find { |book| book.uuid == book_uuid }
-        all_cnxmod_tags = book.all_pages.map { |page| "context-cnxmod:#{page.uuid}" }
-
         uuid_index = nil
         pre_indices = nil
         post_indices = nil
@@ -67,18 +64,11 @@ module Exercises
             post_section_tag = "assessment:practice:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
             cnxmod_tag = "context-cnxmod:#{page_uuid}"
 
-            # Normally pre-section exercises don't get cnxmod tags,
-            # unless they have no cnxmod tags for the entire book
-            pre_section_ex_with_cnxmod, pre_section_ex_missing_cnxmod = pre_section_exercises.partition do |ex|
-              ex.tags.any? { |tag| all_cnxmod_tags.include? tag.name }
-            end
-
             row_number = row_index + 1
 
             begin
               tag pre_and_post_section_exercises, [ pre_section_tag, post_section_tag, cnxmod_tag ]
-              tag pre_section_ex_with_cnxmod, [ pre_section_tag ]
-              tag pre_section_ex_missing_cnxmod, [ pre_section_tag, cnxmod_tag ]
+              tag pre_section_exercises, [ pre_section_tag ]
               tag post_section_exercises, [ post_section_tag, cnxmod_tag ]
             rescue StandardError => se
               Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
