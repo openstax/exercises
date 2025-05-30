@@ -145,8 +145,9 @@ module Exercises
                 Rails.logger.warn { "Row ##{row_number} has no associated page in the book" } \
                   unless uuid_index.nil? && section_index.nil?
               else
-                exercise.tags << "context-cnxmod:#{page_uuid}"
-                exercise.tags << "assessment:#{row[pre_or_post_index].downcase == 'pre' ? 'preparedness' : 'practice'
+                is_pre = row[pre_or_post_index].downcase == 'pre'
+                exercise.tags << "context-cnxmod:#{page_uuid}" unless is_pre
+                exercise.tags << "assessment:#{is_pre ? 'preparedness' : 'practice'
                   }:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}" \
                   unless pre_or_post_index.nil? || row[pre_or_post_index].blank?
               end
