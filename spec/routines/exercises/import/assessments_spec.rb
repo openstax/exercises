@@ -35,10 +35,7 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(exercises[0].publication_group.nickname).to eq 'Q1'
     expect(Set.new exercises[0].tags.map(&:to_s)).to eq Set[
       'assessment:preparedness:https://openstax.org/orn/book:page/62a49025-8cd8-407c-9cfb-c7eba55cf1c6:97af6b57-0004-4218-99c1-f2cfedea8f30',
-      'context-cnxmod:97af6b57-0004-4218-99c1-f2cfedea8f30',
-      'book-slug:college-success-concise',
       'machine-teks:dacf53a6-2b09-49f1-9926-de4efe1049e0',
-      'module-slug:college-success-concise:1-1-why-college',
       'teks:T1.1',
     ]
     expect(exercises[0].questions.first.stems.first.content).to eq 'Some question?'
