@@ -62,13 +62,14 @@ module Exercises
 
             pre_section_tag = "assessment:preparedness:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
             post_section_tag = "assessment:practice:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
+            cnxmod_tag = "context-cnxmod:#{page_uuid}"
 
             row_number = row_index + 1
 
             begin
-              tag pre_and_post_section_exercises, [ pre_section_tag, post_section_tag ]
+              tag pre_and_post_section_exercises, [ pre_section_tag, post_section_tag, cnxmod_tag ]
               tag pre_section_exercises, [ pre_section_tag ]
-              tag post_section_exercises, [ post_section_tag ]
+              tag post_section_exercises, [ post_section_tag, cnxmod_tag ]
             rescue StandardError => se
               Rails.logger.error { "Failed to import row ##{row_number} - #{se.message}" }
               failures[row_number] = se.to_s
