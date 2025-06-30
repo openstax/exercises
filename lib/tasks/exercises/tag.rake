@@ -110,8 +110,16 @@ namespace :exercises do
             end
 
             chapter = chapter_index.nil? ? chapter_uuid_by_page_uuid[row[page_index]] : row[chapter_index]
+
             # The value in the Chapter column may be a UUID or a chapter number
-            chapter_uuid = chapter_uuids.include?(chapter) ? chapter : chapter_uuids[Integer(chapter) - 1]
+            chapter_uuid = if chapter_uuids.include?(chapter)
+              chapter
+            elsif chapter.to_i == 0
+              Rails.logger.info { "Skipped row #{index + 1} due to no Chapter" }
+              next
+            else
+              chapter_uuids[chapter.to_i - 1]
+            end
 
             csv << [
               row[exercise_id_index],
