@@ -1,6 +1,6 @@
 # Tags Exercises based on a spreadsheet
 # Row format:
-# - Exercise UID
+# - Exercise ID or Nickname
 # - Tags...
 module Exercises
   module Tag
@@ -11,27 +11,36 @@ module Exercises
       include RowParser
       include ::Exercises::Tagger
 
-      def exec(filename:, skip_first_row: true)
+      def exec(filename:)
         Rails.logger.info { "Filename: #{filename}" }
 
-        row_offset = skip_first_row ? 1 : 0
+        initialized = false
+
+        query_field = :number
 
         record_failures do |failures|
-          ProcessSpreadsheet.call(filename: filename, offset: row_offset) do |row, row_index|
+          ProcessSpreadsheet.call(filename: filename, headers: :downcase) do |headers, row, row_index|
+            unless initialized
+              query_field = :nickname if headers[0].include? 'nickname'
+              initialized = true
+            end
+
             values = row.compact
             next if values.size < 2
 
-            exercise_numbers = values.first.split(',').map(&:to_i)
+            exercise_numbers_or_nicknames = values.first.split(',')
             exercises = Exercise.joins(publication: :publication_group)
-                                .where(publication: {publication_group: {number: exercise_numbers}})
+                                .where(publication: {
+                                  publication_group: { query_field => exercise_numbers_or_nicknames }
+                                })
                                 .preload(:tags, publication: :publication_group)
                                 .latest
 
-            not_found_numbers = exercise_numbers - exercises.map(&:number)
+            not_found_numbers_or_nicknames = exercise_numbers_or_nicknames - exercises.map(&query_field)
 
             Rails.logger.warn do
-              "WARNING: Couldn't find any Exercises with numbers #{not_found_numbers.join(', ')}"
-            end unless not_found_numbers.empty?
+              "WARNING: Couldn't find any Exercises with #{query_field}(s) #{not_found_numbers_or_nicknames.join(', ')}"
+            end unless not_found_numbers_or_nicknames.empty?
 
             tags = values.slice(1..-1).flat_map { |value| value.split(',') }
 
