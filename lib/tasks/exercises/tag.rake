@@ -20,12 +20,11 @@ namespace :exercises do
     end
 
     # Tags exercises using a spreadsheet
-    # Arguments are, in order:
-    # filename, [skip_first_row]
+    # Argument is filename
     # Example: rake exercises:tag:spreadsheet[tags.xlsx]
     #          will tag exercises based on tags.xlsx
     desc 'tags exercises using a spreadsheet'
-    task :spreadsheet, [:filename, :skip_first_row] => :environment do |t, args|
+    task :spreadsheet, [:filename] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
 
@@ -83,38 +82,52 @@ namespace :exercises do
         Rails.logger.info { "Processing \"#{args[:filename]}\"" }
 
         output_filename = "#{book.slug}.csv"
+
+        initialized = false
+
         chapter_index = nil
-        exercise_id_index = nil
+        exercise_id_or_nickname_index = nil
         CSV.open(output_filename, 'w') do |csv|
-          csv << [ 'Exercise UID', 'Tags...' ]
-
           ProcessSpreadsheet.call(filename: args[:filename], headers: :downcase) do |headers, row, index|
-            chapter_index ||= headers.index { |header| header&.include? 'chapter' }
-            page_index ||= headers.index { |header| header&.include?('page') || header&.include?('module') }
-            chapter_uuid_by_page_uuid ||= {}
-            if chapter_index.nil?
-              raise ArgumentError, 'Could not find Chapter, Page or Module column' if page_index.nil?
-              chapters.each do |chapter|
-                chapter.parts.each { |page| chapter_uuid_by_page_uuid[page.uuid] = chapter.uuid }
+            unless initialized
+              chapter_index ||= headers.index { |header| header&.include? 'chapter' }
+              page_index ||= headers.index { |header| header&.include?('page') || header&.include?('module') }
+              chapter_uuid_by_page_uuid ||= {}
+              if chapter_index.nil?
+                raise ArgumentError, 'Could not find Chapter, Page or Module column' if page_index.nil?
+                chapters.each do |chapter|
+                  chapter.parts.each { |page| chapter_uuid_by_page_uuid[page.uuid] = chapter.uuid }
+                end
               end
+
+              exercise_id_or_nickname_index ||= headers.index do |header|
+                header&.include?('assessment') || header&.include?('exercise')
+              end
+              if exercise_id_or_nickname_index.nil?
+                exercise_id_or_nickname_index ||= headers.index { |header| header&.include?('nickname') }
+
+                raise ArgumentError, 'Could not find "Assessment ID" or "Nickname" columns' \
+                  if exercise_id_or_nickname_index.nil?
+
+                csv << [ 'Exercise Nickname', 'Tags...' ]
+              else
+                csv << [ 'Exercise ID', 'Tags...' ]
+              end
+
+              initialized = true
             end
 
-            exercise_id_index ||= headers.index do |header|
-              header&.include?('assessment') || header&.include?('exercise')
-            end
-            raise ArgumentError, 'Could not find Assessment ID column' if exercise_id_index.nil?
-
-            if row[exercise_id_index].blank?
+            if row[exercise_id_or_nickname_index].blank?
               Rails.logger.info { "Skipped row #{index + 1} due to no Exercise ID" }
               next
             end
 
             chapter = chapter_index.nil? ? chapter_uuid_by_page_uuid[row[page_index]] : row[chapter_index]
             # The value in the Chapter column may be a UUID or a chapter number
-            chapter_uuid = chapter_uuids.include?(chapter) ? chapter : chapter_uuids[Integer(chapter) - 1]
+            chapter_uuid = chapter_uuids.include?(chapter) ? chapter : chapter_uuids[Float(chapter).to_i - 1]
 
             csv << [
-              row[exercise_id_index],
+              row[exercise_id_or_nickname_index],
               "assessment:practice:https://openstax.org/orn/book:subbook/#{
                 args[:book_uuid]}:#{chapter_uuid}"
             ]
