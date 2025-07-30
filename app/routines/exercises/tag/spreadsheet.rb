@@ -36,7 +36,10 @@ module Exercises
                                 .preload(:tags, publication: :publication_group)
                                 .latest
 
-            not_found_numbers_or_nicknames = exercise_numbers_or_nicknames - exercises.map(&query_field)
+            # Handle exercise_numbers_or_nicknames being returned as floats
+            not_found_numbers_or_nicknames = exercise_numbers_or_nicknames.map do |value|
+              value.respond_to?(:round) ? value.round : value
+            end - exercises.map(&query_field)
 
             Rails.logger.warn do
               "WARNING: Couldn't find any Exercises with #{query_field}(s) #{not_found_numbers_or_nicknames.join(', ')}"
