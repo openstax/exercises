@@ -35,10 +35,10 @@ module Exercises
 
             page_uuid = row[uuid_index]
             pre_section_exercise_numbers = row.values_at(*pre_indices).filter_map do |val|
-              Integer(val) unless val.blank?
+              val.to_i unless val.blank?
             end
             post_section_exercise_numbers = row.values_at(*post_indices).filter_map do |val|
-              Integer(val) unless val.blank?
+              val.to_i unless val.blank?
             end
 
             exercise_numbers = pre_section_exercise_numbers + post_section_exercise_numbers
