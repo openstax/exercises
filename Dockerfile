@@ -1,4 +1,10 @@
-from ruby:2.7
+FROM ruby:3.1.6
+
+### java
+
+RUN apt-get update -y && \
+  apt-get install -y openjdk-17-jre-headless && \
+  rm -rf /var/lib/apt/lists/*
 
 ### rails
 
@@ -11,12 +17,6 @@ WORKDIR /code
 RUN bundle install
 
 CMD ["rails", "s"]
-
-### java
-
-RUN apt-get update -y && \
-  apt-get install -y openjdk-11-jre-headless && \
-  rm -rf /var/lib/apt/lists/*
 
 ### swagger-codegen
 

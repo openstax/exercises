@@ -56,6 +56,23 @@ Development Quick Start
 
 ### Use Docker
 
+#### openstax/exercises
+
+(Note: you may want to `docker volume rm exercises_pgdata` to get a clean start.)
+Checkout update-dockerfile
+```bash
+$> docker compose up -d # (make sure all services are up before continuing)
+$> docker compose run api bash
+$> rails db:setup
+```
+
+#### openstax/tutor-js
+
+```bash
+$> docker compose -f docker-compose.exercises.yml up
+```
+Then you should be able to go to localhost:3000 and everything should work
+
 ```bash
 $> docker-compose up
 ```
