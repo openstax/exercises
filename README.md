@@ -56,28 +56,34 @@ Development Quick Start
 
 ### Use Docker
 
+#### Getting started with openstax/exercises and openstax/tutor
+
+(Note: you may want to `docker volume rm exercises_pgdata` to get a clean start.)
 ```bash
-$> docker-compose up
+$> docker compose up -d # (make sure all services are up before continuing)
+$> docker compose run api bash
+$> rails db:setup
 ```
 
-Or use `docker-compose up -d` for a daemonized run.
-
-Drop into a bash shell with
+#### openstax/tutor-js
 
 ```bash
-$> docker-compose run api bash
+$> docker compose -f docker-compose.exercises.yml up
 ```
+Then you should be able to go to localhost:3000 and everything should work
+
+### Testing in docker
 
 To run tests, make sure the test database is ready:
 
 ```bash
-$> docker-compose run api bundle exec rake db:test:prepare
+$> docker compose run api bundle exec rake db:test:prepare
 ```
 
 Then
 
 ```bash
-$> docker-compose run api bundle exec rspec
+$> docker compose run api bundle exec rspec
 ```
 
 ### Install everything yourself
