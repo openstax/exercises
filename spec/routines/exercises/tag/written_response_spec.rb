@@ -10,7 +10,7 @@ RSpec.describe Exercises::Tag::WrittenResponse, type: :routine do
 
   # Create exercises matching the first 3 rows of the fixture (numbers 35604, 35605, 35606),
   # all sharing module UUID 65f20d1a-5bf0-4cd1-8d99-62851f9bc5ae with "Small", "Small", "Medium".
-  # Pre-seed with assessment tags that should be stripped by the routine.
+  # Pre-seed with assessment tags that should be removed by the routine.
   let!(:exercises) do
     [35604, 35605, 35606].map do |number|
       exercise = FactoryBot.create(:publication, number: number).publishable
@@ -25,24 +25,27 @@ RSpec.describe Exercises::Tag::WrittenResponse, type: :routine do
   before { allow_any_instance_of(Exercise).to receive(:set_slug_tags!) }
 
   it 'removes preparedness/practice tags and adds written-response tags' do
-    expected_wr_small  = "written-response:Small:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
-    expected_wr_medium = "written-response:Medium:https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
+    orn             = "https://openstax.org/orn/book:page/#{book_uuid}:#{page_uuid}"
+    expected_wr     = "written-response:practice:#{orn}"
+    expected_small  = 'response-size:small'
+    expected_medium = 'response-size:medium'
 
-    # 3 exercises × 2 assessment tags removed + 1 written-response tag added = net -3
+    # 3 exercises × 2 assessment tags removed, 2 new tags added = net 0
     expect do
       described_class.call(filename: fixture_path, book_uuid: book_uuid)
-    end.to change { ExerciseTag.count }.by(-3)
+    end.not_to change { ExerciseTag.count }
 
     exercises.each(&:reload)
     tag_names = exercises.flat_map { |ex| ex.tags.map(&:name) }
 
     expect(tag_names).not_to include(pre_tag)
     expect(tag_names).not_to include(post_tag)
+    expect(tag_names).to include(expected_wr)
 
     exercises.first(2).each do |exercise|
-      expect(exercise.tags.map(&:name)).to include(expected_wr_small)
+      expect(exercise.tags.map(&:name)).to include(expected_small)
     end
-    expect(exercises.last.tags.map(&:name)).to include(expected_wr_medium)
+    expect(exercises.last.tags.map(&:name)).to include(expected_medium)
   end
 
   it 'is idempotent (skips exercises with no changes on second call)' do

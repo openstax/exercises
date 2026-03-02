@@ -42,12 +42,15 @@ module Exercises
               next
             end
 
-            new_tag = "written-response:#{response_length
-              }:https://openstax.org/orn/book:page/#{book_uuid}:#{section_uuid}"
+            orn      = "https://openstax.org/orn/book:page/#{book_uuid}:#{section_uuid}"
+            new_tags = [
+              "written-response:practice:#{orn}",
+              "response-size:#{response_length.downcase}"
+            ]
 
             row_number = row_index + 1
             begin
-              retag(exercises, new_tag)
+              retag(exercises, new_tags)
             rescue StandardError => se
               Rails.logger.error { "Failed to process row ##{row_number} - #{se.message}" }
               failures[row_number] = se.to_s
@@ -58,7 +61,7 @@ module Exercises
 
       private
 
-      def retag(exercises, new_tag)
+      def retag(exercises, new_tags)
         skipped_uids     = []
         unpublished_uids = []
         published_uids   = []
@@ -68,17 +71,17 @@ module Exercises
         exercises.group_by(&:number).each do |_, exs|
           exercise     = exs.max_by(&:version)
           current_tags = exercise.tags.map(&:name)
-          stripped     = current_tags.select do |t|
+          removed     = current_tags.select do |t|
             t.start_with?('assessment:preparedness:', 'assessment:practice:')
           end
-          final_tags = (current_tags - stripped + [new_tag]).uniq
+          final_tags = (current_tags - removed + new_tags).uniq
 
           if final_tags == current_tags
             skipped_uids << exercise.uid
             next
           end
 
-          removed_tags |= stripped
+          removed_tags |= removed
 
           if exercise.is_published?
             tagged_exercise = exercise.new_version
@@ -101,17 +104,17 @@ module Exercises
 
         unless unpublished_uids.empty?
           Rails.logger.info do
-            msg = "Tagged #{unpublished_uids.join(', ')} with #{new_tag}"
-            msg += " (removed #{removed_tags.join(', ')})" unless removed_tags.empty?
-            msg + " (reused unpublished exercises)"
+            "Tagged #{unpublished_uids.join(', ')} with #{new_tags.join(', ')
+            }#{" (removed #{removed_tags.join(', ')})" unless removed_tags.empty?
+            } (reused unpublished exercises)"
           end
         end
 
         unless published_uids.empty?
           Rails.logger.info do
-            msg = "Tagged #{published_uids.join(', ')} with #{new_tag}"
-            msg += " (removed #{removed_tags.join(', ')})" unless removed_tags.empty?
-            msg + " (new exercise uids: #{new_uids.join(', ')})"
+            "Tagged #{published_uids.join(', ')} with #{new_tags.join(', ')
+            }#{" (removed #{removed_tags.join(', ')})" unless removed_tags.empty?
+            } (new exercise uids: #{new_uids.join(', ')})"
           end
         end
       end
