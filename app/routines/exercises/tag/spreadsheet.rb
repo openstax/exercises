@@ -37,7 +37,7 @@ module Exercises
                                 .latest
 
             not_found_numbers_or_nicknames = exercise_numbers_or_nicknames.map do |value|
-              query_field == :number ? Float(value).to_i : value
+              query_field == :number ? (Float(value).to_i rescue value) : value
             end - exercises.map(&query_field)
 
             Rails.logger.warn do
