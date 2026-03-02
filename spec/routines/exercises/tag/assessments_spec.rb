@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'content'
 
 RSpec.describe Exercises::Tag::Assessments, type: :routine do
-  let(:fixture_path) { 'spec/fixtures/sample_assessments_tags.xlsx' }
+  let(:fixture_path) { 'spec/fixtures/sample_tag_assessments.xlsx' }
   let(:book_uuid)    { SecureRandom.uuid }
   let(:page_uuid)    { 'a9ce0e38-4f52-4fe0-9433-d8df95f6e3b2' }
 
