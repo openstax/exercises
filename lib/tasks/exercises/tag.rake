@@ -41,8 +41,8 @@ namespace :exercises do
     # Tags exercises for OpenStax Assessments using a spreadsheet
     # Arguments are, in order:
     # filename, book_uuid
-    # Example: rake exercises:tag:assessments[tags.xlsx,12345]
-    #          will tag exercises based on tags.xlsx with the book_uuid 12345
+    # Example: rake exercises:tag:assessments[tags.xlsx,book-uuid-here]
+    #          will tag exercises based on tags.xlsx with the book_uuid book-uuid-here
     desc 'tags exercises for OpenStax Assessments using a spreadsheet'
     task :assessments, [:filename, :book_uuid] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
@@ -135,6 +135,24 @@ namespace :exercises do
         end
 
         Rails.logger.info { "Output written to \"#{output_filename}\"" }
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
+      end
+    end
+
+    # Tags written response exercises using a spreadsheet
+    # Arguments are, in order: filename, book_uuid
+    # Example: rake exercises:tag:written_response[tags.xlsx,book-uuid-here]
+    desc 'tags written response exercises using a spreadsheet'
+    task :written_response, [:filename, :book_uuid] => :environment do |t, args|
+      # Output import logging info to the console (except in the test environment)
+      original_logger = Rails.logger
+
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
+
+        Exercises::Tag::WrittenResponse.call(**args.to_h)
       ensure
         # Restore original logger
         Rails.logger = original_logger
