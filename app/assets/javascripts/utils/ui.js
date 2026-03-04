@@ -1,4 +1,4 @@
-(function() {
+;(function() {
 
   const Ui = (function() {
 
