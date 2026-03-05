@@ -42,7 +42,7 @@ embed_transformer = ->(env) do
   { node_whitelist: [node] }
 end
 
-STYLE_DATA_ATTRIBUTES = %w(bullet-style type orient valign align media lang)
+STYLE_DATA_ATTRIBUTES = %w(bullet-style type orient valign align media)
 STYLE_ATTRIBUTES = STYLE_DATA_ATTRIBUTES.map { |attr| "data-#{attr}" }
 
 UserHtml.sanitize_config = Sanitize::Config.merge(
@@ -56,6 +56,8 @@ UserHtml.sanitize_config = Sanitize::Config.merge(
     'span' => ['data-math'],
     'div'  => ['data-math', 'align'],
     'p'    => ['align'],
+    'pre'  => ['data-lang'],
+    'code' => ['data-lang'],
   ),
   transformers: [embed_transformer]
 )
