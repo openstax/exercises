@@ -56,6 +56,8 @@ UserHtml.sanitize_config = Sanitize::Config.merge(
     'span' => ['data-math'],
     'div'  => ['data-math', 'align'],
     'p'    => ['align'],
+    'pre'  => ['data-lang'],
+    'code' => ['data-lang'],
   ),
   transformers: [embed_transformer]
 )
