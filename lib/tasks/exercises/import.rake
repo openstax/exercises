@@ -25,5 +25,27 @@ namespace :exercises do
         Rails.logger = original_logger
       end
     end
+
+    # Imports written response exercises from a spreadsheet
+    # The first row contains column headers. Required columns:
+    # Question Stem
+    # Section UUID
+    # Length
+    # Optional:
+    # Detailed Solution
+    desc 'imports written response exercises from a spreadsheet'
+    task :wrq, [:filename, :book_uuid] => :environment do |t, args|
+      # Output import logging info to the console (except in the test environment)
+      original_logger = Rails.logger
+
+      begin
+        Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.test?
+
+        Exercises::Import::WrittenResponse.call **args.to_h
+      ensure
+        # Restore original logger
+        Rails.logger = original_logger
+      end
+    end
   end
 end
