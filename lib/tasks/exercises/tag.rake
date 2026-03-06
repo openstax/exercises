@@ -143,9 +143,9 @@ namespace :exercises do
 
     # Tags written response exercises using a spreadsheet
     # Arguments are, in order: filename, book_uuid
-    # Example: rake exercises:tag:written_response[tags.xlsx,book-uuid-here]
+    # Example: rake exercises:tag:wrq[tags.xlsx,book-uuid-here]
     desc 'tags written response exercises using a spreadsheet'
-    task :written_response, [:filename, :book_uuid] => :environment do |t, args|
+    task :wrq, [:filename, :book_uuid] => :environment do |t, args|
       # Output import logging info to the console (except in the test environment)
       original_logger = Rails.logger
 
