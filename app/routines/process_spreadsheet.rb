@@ -21,7 +21,12 @@ class ProcessSpreadsheet
     args = []
     pad_to_size = 0 if pad_xlsx
     klass.new(filename).public_send(method, **options).each_with_index do |row, row_index|
-      normalized_row = row.map { |cell| (cell.respond_to?(:value) ? cell.value : cell)&.to_s&.strip }
+      normalized_row = row.map do |cell|
+        val = (cell.respond_to?(:value) ? cell.value : cell)&.to_s&.strip
+        # Roo wraps rich-text cells in <html>...</html>; strip it so Kramdown doesn't treat
+        # <html> as a block element and discard the surrounding plain text.
+        val&.gsub(/\A<html>(.*)<\/html>\z/m, '\1')
+      end
 
       if headers && row_index == 0
         header_row = normalized_row

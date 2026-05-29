@@ -28,9 +28,9 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
 
     allow_any_instance_of(OpenStax::Content::Book).to receive(:version).and_return('964da1b')
 
-    expect { described_class.call(book_uuid: book_uuid, filename: fixture_path) }.to change { Exercise.count }.by(3)
+    expect { described_class.call(book_uuid: book_uuid, filename: fixture_path) }.to change { Exercise.count }.by(4)
 
-    exercises = Exercise.order(:created_at).last(3)
+    exercises = Exercise.order(:created_at).last(4)
 
     expect(exercises[0].publication_group.nickname).to eq 'Q1'
     expect(Set.new exercises[0].tags.map(&:to_s)).to eq Set[
@@ -77,5 +77,10 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(exercises[2].questions.second.stems.first.stem_answers).to eq []
     expect(exercises[2].questions.second.collaborator_solutions).to eq []
     expect(exercises[2].publication.published_at?).to eq true
+
+    expect(exercises[3].questions.first.stems.first.content).to eq 'A question with <em>italics</em>'
+    expect(exercises[3].questions.first.stems.first.stem_answers.find { |sa| sa.correctness == 1.0 }.answer.content).to eq 'It works'
+    expect(exercises[3].questions.first.stems.first.stem_answers.find { |sa| sa.correctness == 0.0 }.answer.content).to eq 'It does <em>not</em> work'
+    expect(exercises[3].publication.published_at?).to eq true
   end
 end
