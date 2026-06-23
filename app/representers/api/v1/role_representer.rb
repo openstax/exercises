@@ -20,5 +20,14 @@ module Api::V1
                required: true
              }
 
+    property :uuid,
+             type: String,
+             readable: true,
+             writeable: false,
+             getter: ->(*) { user.uuid },
+             schema_info: {
+               required: true
+             }
+
   end
 end
