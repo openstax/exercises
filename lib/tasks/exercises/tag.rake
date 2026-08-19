@@ -87,6 +87,7 @@ namespace :exercises do
 
         chapter_index = nil
         exercise_id_or_nickname_index = nil
+        using_nickname = false
         CSV.open(output_filename, 'w') do |csv|
           ProcessSpreadsheet.call(filename: args[:filename], headers: :downcase) do |headers, row, index|
             unless initialized
@@ -100,18 +101,21 @@ namespace :exercises do
                 end
               end
 
-              exercise_id_or_nickname_index ||= headers.index do |header|
-                header&.include?('assessment') || header&.include?('exercise')
-              end
+              # Check for "nickname" first: a header like "Exercise Nickname" also
+              # contains "exercise", so checking ID patterns first would misclassify it.
+              exercise_id_or_nickname_index ||= headers.index { |header| header&.include?('nickname') }
               if exercise_id_or_nickname_index.nil?
-                exercise_id_or_nickname_index ||= headers.index { |header| header&.include?('nickname') }
+                exercise_id_or_nickname_index ||= headers.index do |header|
+                  header&.include?('assessment') || header&.include?('exercise')
+                end
 
                 raise ArgumentError, 'Could not find "Assessment ID" or "Nickname" columns' \
                   if exercise_id_or_nickname_index.nil?
 
-                csv << [ 'Exercise Nickname', 'Tags...' ]
-              else
                 csv << [ 'Exercise ID', 'Tags...' ]
+              else
+                using_nickname = true
+                csv << [ 'Exercise Nickname', 'Tags...' ]
               end
 
               initialized = true
@@ -122,12 +126,18 @@ namespace :exercises do
               next
             end
 
+            # Exercise IDs come back from Roo/ProcessSpreadsheet as float-looking strings
+            # (e.g. "35623.0"); nicknames are never numeric, so only IDs need coercing.
+            exercise_id_or_nickname = using_nickname ?
+              row[exercise_id_or_nickname_index] :
+              Float(row[exercise_id_or_nickname_index]).to_i.to_s
+
             chapter = chapter_index.nil? ? chapter_uuid_by_page_uuid[row[page_index]] : row[chapter_index]
             # The value in the Chapter column may be a UUID or a chapter number
             chapter_uuid = chapter_uuids.include?(chapter) ? chapter : chapter_uuids[Float(chapter).to_i - 1]
 
             csv << [
-              row[exercise_id_or_nickname_index],
+              exercise_id_or_nickname,
               "assessment:practice:https://openstax.org/orn/book:subbook/#{
                 args[:book_uuid]}:#{chapter_uuid}"
             ]

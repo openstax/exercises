@@ -77,4 +77,90 @@ RSpec.describe 'exercises tag', type: :rake do
       run_rake_task
     end
   end
+
+  context 'convert_eoc' do
+    let(:book_uuid)   { SecureRandom.uuid }
+    let(:book_slug)   { 'rspec-convert-eoc-book' }
+    let(:output_path) { "#{book_slug}.csv" }
+
+    let(:chapter_1_uuid) { SecureRandom.uuid }
+    let(:chapter_2_uuid) { SecureRandom.uuid }
+
+    let :book do
+      tree = {
+        'id' => "#{SecureRandom.uuid}@1",
+        'title' => 'Test Book',
+        'contents' => [
+          { 'id' => "#{chapter_1_uuid}@1", 'title' => 'Chapter 1', 'contents' => [] },
+          { 'id' => "#{chapter_2_uuid}@1", 'title' => 'Chapter 2', 'contents' => [] }
+        ]
+      }
+
+      OpenStax::Content::Book.new(
+        archive: OpenStax::Content::Archive.new(version: 'test'),
+        uuid: book_uuid, version: '1', slug: book_slug, hash: { 'tree' => tree }
+      )
+    end
+
+    before { allow(FindBook).to receive(:[]).with(uuid: book_uuid).and_return(book) }
+
+    after { FileUtils.rm_f(output_path) }
+
+    let :run_rake_task do
+      Rake::Task["exercises:tag:convert_eoc"].reenable
+      Rake.application.invoke_task "exercises:tag:convert_eoc[dummy.xlsx,#{book_uuid},false]"
+    end
+
+    def written_rows
+      CSV.read(output_path)
+    end
+
+    context 'with a numeric Exercise ID column' do
+      before do
+        allow(ProcessSpreadsheet).to receive(:call) do |**_kwargs, &block|
+          # Roo::Excelx returns numeric cells as Floats; ProcessSpreadsheet stringifies
+          # them, so a real "101" cell arrives here as the string "101.0".
+          block.call(['chapter', 'exercise id'], ['1', '101.0'], 0)
+          block.call(['chapter', 'exercise id'], ['1', '102.0'], 1)
+          block.call(['chapter', 'exercise id'], ['2', '201.0'], 2)
+        end
+      end
+
+      it 'writes plain integer exercise IDs, not float-formatted strings' do
+        run_rake_task
+
+        rows = written_rows
+        expect(rows.first).to eq(['Exercise ID', 'Tags...'])
+        expect(rows[1..].map(&:first)).to eq(%w(101 102 201))
+      end
+
+      it 'tags each exercise with its own chapter uuid' do
+        run_rake_task
+
+        rows = written_rows
+        expect(rows[1][1]).to eq(
+          "assessment:practice:https://openstax.org/orn/book:subbook/#{book_uuid}:#{chapter_1_uuid}"
+        )
+        expect(rows[3][1]).to eq(
+          "assessment:practice:https://openstax.org/orn/book:subbook/#{book_uuid}:#{chapter_2_uuid}"
+        )
+      end
+    end
+
+    context 'with an Exercise Nickname column (no ID column present)' do
+      before do
+        allow(ProcessSpreadsheet).to receive(:call) do |**_kwargs, &block|
+          block.call(['chapter', 'exercise nickname'], ['1', '01-01-TB-AQ01'], 0)
+        end
+      end
+
+      it 'leaves the nickname untouched instead of trying to coerce it to a number' do
+        run_rake_task
+
+        rows = written_rows
+        expect(rows.first).to eq(['Exercise Nickname', 'Tags...'])
+        expect(rows[1][0]).to eq('01-01-TB-AQ01')
+      end
+    end
+  end
 end
