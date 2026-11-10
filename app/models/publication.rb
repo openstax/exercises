@@ -250,7 +250,10 @@ class Publication < ApplicationRecord
   # version that no longer exists. Point it at the highest version left instead.
   # If no versions are left, there is nothing for it to point to, so it is left unchanged; the next
   # version created in the group sets it.
+  # The publication group row is locked before reading the highest version, so a version created or
+  # deleted at the same time either finishes first and is counted, or waits until this one is done.
   def update_latest_version
+    PublicationGroup.unscoped.lock.find(publication_group_id)
     highest_version = Publication.unscoped.where(publication_group_id: publication_group_id).maximum(:version)
     return if highest_version.nil?
 

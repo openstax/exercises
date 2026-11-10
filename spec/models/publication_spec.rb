@@ -218,6 +218,20 @@ RSpec.describe Publication, type: :model do
       expect(latest_exercise).to eq new_draft
     end
 
+    it 'locks the publication group before reading the highest remaining version' do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+      ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
+        newer_draft.publishable.destroy!
+      end
+
+      lock_index = queries.index { |sql| sql =~ /FROM "publication_groups".*FOR UPDATE/m }
+      maximum_index = queries.index { |sql| sql =~ /SELECT MAX\("publications"\."version"\)/ }
+      expect(lock_index).not_to be_nil
+      expect(maximum_index).not_to be_nil
+      expect(lock_index).to be < maximum_index
+    end
+
     it 'does not change latest_version when a draft below the highest version is deleted' do
       older_draft.publishable.destroy!
 
