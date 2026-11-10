@@ -225,4 +225,28 @@ RSpec.describe Publication, type: :model do
       expect(latest_exercise).to eq newer_draft.publishable
     end
   end
+
+  it 'sets latest_version for a new version in a publication group whose drafts were all deleted' do
+    first_draft = FactoryBot.create :exercise
+    second_draft = first_draft.new_version.tap(&:save!)
+    group = first_draft.publication.publication_group
+
+    # Deleting the oldest draft first leaves latest_version at 2 when the group becomes empty
+    first_draft.destroy!
+    second_draft.destroy!
+
+    # The assessments importer reuses an existing publication group by nickname
+    reimported = FactoryBot.build :exercise
+    reimported.publication.publication_group = PublicationGroup.find(group.id)
+    reimported.save!
+
+    expect(reimported.version).to eq 1
+    expect(group.reload.latest_version).to eq 1
+    expect(
+      Exercise.joins(publication: :publication_group)
+              .where(publication: { publication_group: { number: group.number } })
+              .latest
+              .first
+    ).to eq reimported
+  end
 end

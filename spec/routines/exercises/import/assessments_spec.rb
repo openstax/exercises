@@ -83,4 +83,32 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(exercises[3].questions.first.stems.first.stem_answers.find { |sa| sa.correctness == 0.0 }.answer.content).to eq 'It does <em>not</em> work'
     expect(exercises[3].publication.published_at?).to eq true
   end
+
+  # Imports the same spreadsheet as the example above, so it reuses its recorded requests
+  # (not necessarily all of them)
+  it 're-imports into a publication group whose drafts were all deleted', vcr: VCR_OPTS.merge(
+    cassette_name: 'Exercises_Import_Assessments/imports_exercises_from_the_spreadsheet_and_adds_Assignable_tags',
+    allow_unused_http_interactions: true
+  ) do
+    allow(User).to receive(:find) { FactoryBot.create :user, :agreed_to_terms }
+
+    allow_any_instance_of(OpenStax::Content::Book).to receive(:version).and_return('964da1b')
+
+    # Leave an empty 'Q1' group: deleting its drafts oldest-first leaves latest_version at 2
+    first_draft = FactoryBot.create :exercise
+    first_draft.publication.publication_group.update!(nickname: 'Q1')
+    second_draft = first_draft.new_version.tap(&:save!)
+    group = first_draft.publication.publication_group
+    first_draft.destroy!
+    second_draft.destroy!
+
+    described_class.call(book_uuid: book_uuid, filename: fixture_path)
+
+    reimported = Exercise.latest.joins(publication: :publication_group)
+                         .where(publication: { publication_group: { id: group.id } })
+                         .first
+    expect(reimported).not_to be_nil
+    expect(reimported.version).to eq 1
+    expect(reimported.questions.first.stems.first.content).to eq 'Some question?'
+  end
 end

@@ -211,14 +211,16 @@ class Publication < ApplicationRecord
     self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
 
     publication_group.assign_uuid_and_number
-    # Only creating a version can change latest_version. Saving an existing version, such as
-    # publishing an old draft, must not move it back down.
+    # Only creating or deleting a version changes latest_version. Saving an existing version, such as
+    # publishing an old draft, must not change it.
     return unless new_record?
 
+    # A new version is numbered one above the highest existing version, so it is now the latest,
+    # even in a group whose drafts were all deleted and whose latest_version was left higher.
     if publication_group.new_record?
       publication_group.latest_version = version
     else
-      update_group_version_if_higher(:latest_version, version)
+      set_group_latest_version(version)
     end
   end
 
@@ -236,16 +238,23 @@ class Publication < ApplicationRecord
     publication_group.clear_attribute_changes([ column ])
   end
 
+  # Sets latest_version in the database, then copies it into the in-memory publication group without
+  # marking it changed, so saving that publication group later doesn't write a stale value back.
+  def set_group_latest_version(value)
+    PublicationGroup.unscoped.where(id: publication_group.id).update_all(latest_version: value)
+    publication_group.latest_version = value
+    publication_group.clear_attribute_changes([ :latest_version ])
+  end
+
   # A deleted draft may have been the latest version, which would leave latest_version pointing at a
   # version that no longer exists. Point it at the highest version left instead.
-  # If no versions are left, there is nothing for it to point to, so it is left unchanged.
+  # If no versions are left, there is nothing for it to point to, so it is left unchanged; the next
+  # version created in the group sets it.
   def update_latest_version
     highest_version = Publication.unscoped.where(publication_group_id: publication_group_id).maximum(:version)
     return if highest_version.nil?
 
-    PublicationGroup.unscoped.where(id: publication_group_id).update_all(latest_version: highest_version)
-    publication_group.latest_version = highest_version
-    publication_group.clear_attribute_changes([ :latest_version ])
+    set_group_latest_version(highest_version)
   end
 
   def valid_license
