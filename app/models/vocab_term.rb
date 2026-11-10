@@ -120,11 +120,22 @@ class VocabTerm < ApplicationRecord
 
     throw(:abort) if errors.any?
 
-    # Publish exercises
-    latest_exercises.each do |exercise|
-      exercise.publication.update_attribute :published_at, published_at
+    # Publish exercises. The term and its exercises are published together or not at all, so if any
+    # exercise can't be published, roll back the ones already published. A savepoint is used because
+    # a rollback in a transaction joined to an outer one (e.g. a rake task's) would otherwise be ignored.
+    VocabTerm.transaction(requires_new: true) do
+      latest_exercises.each do |exercise|
+        next if exercise.publication.update_attribute :published_at, published_at
+
+        exercise.publication.errors.each do |error|
+          errors.add(:base, "Exercise #{exercise.uid} #{error.message}")
+        end
+      end
+
+      raise ActiveRecord::Rollback if errors.any?
     end
 
+    throw(:abort) if errors.any?
   end
 
   def after_publication
