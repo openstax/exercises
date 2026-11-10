@@ -42,6 +42,7 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(Set.new(exercises[0].questions.first.stems.first.stem_answers.map do |stem_answer|
       [stem_answer.answer.content, stem_answer.correctness.to_s, stem_answer.feedback]
     end)).to eq Set[['Right', '1.0', 'This is why A is correct'], ['Wrong', '0.0', 'This is why B is wrong']]
+    expect(exercises[0].questions.first.answers.map(&:content)).to eq ['Right', 'Wrong']
     expect(exercises[0].questions.first.collaborator_solutions.first.content).to eq 'Some solution'
     expect(exercises[0].publication.published_at?).to eq true
 
@@ -61,6 +62,7 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(Set.new(exercises[1].questions.first.stems.first.stem_answers.map do |stem_answer|
       [stem_answer.answer.content, stem_answer.correctness.to_s, stem_answer.feedback]
     end)).to eq Set[['Not this one', '0.0', 'Better luck next time'], ['This one', '1.0', 'Good job']]
+    expect(exercises[1].questions.first.answers.map(&:content)).to eq ['Not this one', 'This one']
     expect(exercises[1].questions.first.collaborator_solutions.first.content).to eq 'Another solution'
     expect(exercises[1].publication.published_at?).to eq true
 
@@ -81,6 +83,7 @@ RSpec.describe Exercises::Import::Assessments, type: :routine, vcr: VCR_OPTS do
     expect(exercises[3].questions.first.stems.first.content).to eq 'A question with <em>italics</em>'
     expect(exercises[3].questions.first.stems.first.stem_answers.find { |sa| sa.correctness == 1.0 }.answer.content).to eq 'It works'
     expect(exercises[3].questions.first.stems.first.stem_answers.find { |sa| sa.correctness == 0.0 }.answer.content).to eq 'It does <em>not</em> work'
+    expect(exercises[3].questions.first.answers.map(&:content)).to eq ['It works', 'It does <em>not</em> work']
     expect(exercises[3].publication.published_at?).to eq true
   end
 end
