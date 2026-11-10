@@ -28,11 +28,11 @@ class FixLatestVersionInPublicationGroups < ActiveRecord::Migration[6.1]
         # transaction commits, because creating a version locks its group first.
         execute <<~SQL
           UPDATE publication_groups
-          SET latest_version = (
+          SET latest_version = COALESCE((
             SELECT MAX(publications.version)
             FROM publications
             WHERE publications.publication_group_id = publication_groups.id
-          )
+          ), publication_groups.latest_version)
           WHERE publication_groups.id IN (#{ids.join(', ')})
         SQL
       end
