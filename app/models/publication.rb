@@ -228,7 +228,7 @@ class Publication < ApplicationRecord
   # Then copies the database value into the in-memory publication group without marking it changed,
   # so saving that publication group later doesn't write a stale value back.
   def update_group_version_if_higher(column, value)
-    PublicationGroup.where(id: publication_group.id)
+    PublicationGroup.unscoped.where(id: publication_group.id)
                     .where("#{column} IS NULL OR #{column} < ?", value)
                     .update_all(column => value)
     publication_group[column] = PublicationGroup.where(id: publication_group.id).pick(column)
