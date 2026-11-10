@@ -22,6 +22,9 @@ module Exercises
 
         # Attempt to find existing exercise
         @exercise = Exercise.visible_for(user: current_api_user).with_id(uid).first
+        # Don't return a draft older than another version: it holds old content and can't be published.
+        # Create a new draft from the latest published version instead.
+        @exercise = nil if draft_requested && @exercise&.has_newer_version?
         return unless @exercise.nil?
 
         # Exercise not found and either draft not requested or

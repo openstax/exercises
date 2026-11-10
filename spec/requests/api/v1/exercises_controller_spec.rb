@@ -337,6 +337,20 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
         .to eq(@exercise.attributes.except('id', 'created_at', 'updated_at'))
     end
 
+    it "creates a new draft if \"@draft\" is requested and the draft is older than a published version" do
+      # Load a fresh copy: another example destroys @exercise_2, which freezes its cached publication
+      Exercise.find(@exercise_2.id).publication.publish.save!
+
+      expect do
+        api_get api_exercise_url("#{@exercise.number}@draft"), @user_1_token
+      end.to change { Exercise.count }.by(1)
+      expect(response).to have_http_status(:ok)
+
+      new_exercise = Exercise.order(:created_at).last
+      expect(response.body_as_hash).to match(a_hash_including(uuid: new_exercise.uuid))
+      expect(new_exercise.version).to eq @exercise_2.version + 1
+    end
+
     context 'with solutions' do
       before(:all) do
         DatabaseCleaner.start
@@ -607,6 +621,24 @@ RSpec.describe Api::V1::ExercisesController, type: :request, api: true, version:
       expect(new_exercise.title).to eq "Ipsum lorem"
       expect(new_attributes.except('id', 'title', 'created_at', 'updated_at'))
         .to eq(@old_attributes.except('id', 'title', 'created_at', 'updated_at'))
+    end
+
+    it "creates a new draft if \"@draft\" is requested and the draft is older than a published version" do
+      @exercise.publication.publish.save!
+      older_draft = @exercise.new_version.tap(&:save!)
+      newer_version = @exercise.new_version.tap(&:save!)
+      newer_version.publication.publish.save!
+
+      id = "#{@exercise.number}@draft"
+      expect do
+        api_patch api_exercise_url(id), @user_1_token, params: { title: "Ipsum lorem" }.to_json
+      end.to change { Exercise.count }.by(1)
+      expect(response).to have_http_status(:ok)
+
+      new_exercise = Exercise.with_id(response.body_as_hash[:uid]).first
+      expect(new_exercise.version).to eq newer_version.version + 1
+      expect(new_exercise.title).to eq "Ipsum lorem"
+      expect(older_draft.reload.title).not_to eq "Ipsum lorem"
     end
   end
 

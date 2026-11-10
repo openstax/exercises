@@ -158,4 +158,44 @@ RSpec.describe Publication, type: :model do
     expect(publication.publication_group.reload.latest_version).to eq new_version.version
     expect(publication.publication_group.latest_published_version).to eq publication.version
   end
+
+  context 'with drafts newer than the published version' do
+    before { publication.publish.save! }
+
+    let!(:older_draft) { publication.publishable.new_version.tap(&:save!).publication }
+    let!(:newer_draft) { publication.publishable.new_version.tap(&:save!).publication }
+
+    it 'does not publish a draft when a newer draft exists' do
+      expect(older_draft.publish.save).to eq false
+      expect(older_draft.errors[:base]).to eq [ 'cannot be published because a newer version exists' ]
+      expect(older_draft.reload.published_at).to be_nil
+    end
+
+    it 'does not publish a draft when a newer version was published' do
+      newer_draft.publish.save!
+      expect(older_draft.reload.publish.save).to eq false
+      expect(older_draft.reload.published_at).to be_nil
+      expect(publication.publication_group.reload.latest_published_version).to eq newer_draft.version
+    end
+
+    it 'publishes the highest version' do
+      expect(newer_draft.publish.save).to eq true
+      expect(publication.publication_group.reload.latest_published_version).to eq newer_draft.version
+    end
+
+    it 'does not lower latest_version when an older version is saved' do
+      publication.reload.save!
+      older_draft.reload.save!
+      expect(publication.publication_group.reload.latest_version).to eq newer_draft.version
+    end
+
+    it 'does not lower latest_published_version when its publication group was loaded earlier' do
+      stale_draft = described_class.find(newer_draft.id)
+      stale_draft.publication_group.latest_published_version # Loads the publication group now
+      PublicationGroup.where(id: publication.publication_group_id).update_all(latest_published_version: 10)
+
+      expect(stale_draft.publish.save).to eq true
+      expect(publication.publication_group.reload.latest_published_version).to eq 10
+    end
+  end
 end

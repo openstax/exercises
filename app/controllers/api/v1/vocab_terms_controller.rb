@@ -223,6 +223,9 @@ module Api::V1
 
         # Attempt to find existing vocab_term
         @vocab_term = VocabTerm.visible_for(user: current_api_user).with_id(params[:id]).first
+        # Don't return a draft older than another version: it holds old content and can't be published.
+        # Create a new draft from the latest published version instead.
+        @vocab_term = nil if draft_requested && @vocab_term&.has_newer_version?
         return unless @vocab_term.nil?
 
         # VocabTerm not found and either draft not requested or
