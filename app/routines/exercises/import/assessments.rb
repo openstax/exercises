@@ -214,8 +214,14 @@ module Exercises
               feedback_index = feedback_indices[answer_index]
               feedback = row[feedback_index] unless feedback_index.nil?
 
+              # Set the position explicitly. Left blank, Sortability numbers these answers in reverse.
+              answer = Answer.new(
+                question: question,
+                content: parse(content, exercise),
+                sort_position: stem.stem_answers.size + 1
+              )
               stem.stem_answers << StemAnswer.new(
-                answer: Answer.new(question: question, content: parse(content, exercise)),
+                answer: answer,
                 correctness: answer_index == correct_answer ? 1 : 0,
                 feedback: parse(feedback, exercise)
               )
