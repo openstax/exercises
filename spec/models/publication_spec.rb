@@ -197,5 +197,32 @@ RSpec.describe Publication, type: :model do
       expect(stale_draft.publish.save).to eq true
       expect(publication.publication_group.reload.latest_published_version).to eq 10
     end
+
+    def latest_exercise
+      Exercise.joins(publication: :publication_group)
+              .where(publication: { publication_group: { number: publication.number } })
+              .latest
+              .first
+    end
+
+    it 'sets latest_version to the highest remaining version when drafts are deleted' do
+      newer_draft.publishable.destroy!
+      older_draft.publishable.destroy!
+
+      expect(publication.publication_group.reload.latest_version).to eq publication.version
+      expect(latest_exercise).to eq publication.publishable
+
+      new_draft = publication.publishable.reload.new_version.tap(&:save!)
+      expect(new_draft.version).to eq publication.version + 1
+      expect(publication.publication_group.reload.latest_version).to eq new_draft.version
+      expect(latest_exercise).to eq new_draft
+    end
+
+    it 'does not change latest_version when a draft below the highest version is deleted' do
+      older_draft.publishable.destroy!
+
+      expect(publication.publication_group.reload.latest_version).to eq newer_draft.version
+      expect(latest_exercise).to eq newer_draft.publishable
+    end
   end
 end

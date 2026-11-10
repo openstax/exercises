@@ -25,6 +25,7 @@ class Publication < ApplicationRecord
 
   before_save :before_publication
   after_save :after_publication
+  after_destroy :update_latest_version
 
   after_initialize :build_publication_group, if: :new_record?, unless: :publication_group
   before_validation :assign_uuid_and_version
@@ -233,6 +234,18 @@ class Publication < ApplicationRecord
                     .update_all(column => value)
     publication_group[column] = PublicationGroup.where(id: publication_group.id).pick(column)
     publication_group.clear_attribute_changes([ column ])
+  end
+
+  # A deleted draft may have been the latest version, which would leave latest_version pointing at a
+  # version that no longer exists. Point it at the highest version left instead.
+  # If no versions are left, there is nothing for it to point to, so it is left unchanged.
+  def update_latest_version
+    highest_version = Publication.unscoped.where(publication_group_id: publication_group_id).maximum(:version)
+    return if highest_version.nil?
+
+    PublicationGroup.unscoped.where(id: publication_group_id).update_all(latest_version: highest_version)
+    publication_group.latest_version = highest_version
+    publication_group.clear_attribute_changes([ :latest_version ])
   end
 
   def valid_license
