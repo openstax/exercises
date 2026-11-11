@@ -25,6 +25,7 @@ class Publication < ApplicationRecord
 
   before_save :before_publication
   after_save :after_publication
+  after_destroy :update_latest_version
 
   after_initialize :build_publication_group, if: :new_record?, unless: :publication_group
   before_validation :assign_uuid_and_version
@@ -143,6 +144,13 @@ class Publication < ApplicationRecord
     version.nil? || version == publication_group.latest_version
   end
 
+  # Checks the database for another version in the same group with a higher version number.
+  def has_newer_version?
+    return false if version.nil? || publication_group.nil? || publication_group.new_record?
+
+    publication_group.publications.where('"publications"."version" > ?', version).exists?
+  end
+
   def collaborators(preload: nil)
     preload = preload.nil? ? :user : { user: preload }
 
@@ -203,14 +211,54 @@ class Publication < ApplicationRecord
     self.version ||= (publication_group.publications.maximum(:version) || 0) + 1
 
     publication_group.assign_uuid_and_number
+    # Only creating or deleting a version changes latest_version. Saving an existing version, such as
+    # publishing an old draft, must not change it.
+    return unless new_record?
+
+    # A new version is numbered one above the highest existing version, so it is now the latest,
+    # even in a group whose drafts were all deleted and whose latest_version was left higher.
     if publication_group.new_record?
       publication_group.latest_version = version
     else
-      publication_group.update_column(:latest_version, version)
+      set_group_latest_version(version)
     end
   end
 
   protected
+
+  # Updates the publication group's version column in the database only if the new value is higher,
+  # so a publication group loaded before a newer version was saved can't lower it.
+  # Then copies the database value into the in-memory publication group without marking it changed,
+  # so saving that publication group later doesn't write a stale value back.
+  def update_group_version_if_higher(column, value)
+    PublicationGroup.unscoped.where(id: publication_group.id)
+                    .where("#{column} IS NULL OR #{column} < ?", value)
+                    .update_all(column => value)
+    publication_group[column] = PublicationGroup.where(id: publication_group.id).pick(column)
+    publication_group.clear_attribute_changes([ column ])
+  end
+
+  # Sets latest_version in the database, then copies it into the in-memory publication group without
+  # marking it changed, so saving that publication group later doesn't write a stale value back.
+  def set_group_latest_version(value)
+    PublicationGroup.unscoped.where(id: publication_group.id).update_all(latest_version: value)
+    publication_group.latest_version = value
+    publication_group.clear_attribute_changes([ :latest_version ])
+  end
+
+  # A deleted draft may have been the latest version, which would leave latest_version pointing at a
+  # version that no longer exists. Point it at the highest version left instead.
+  # If no versions are left, there is nothing for it to point to, so it is left unchanged; the next
+  # version created in the group sets it.
+  # The publication group row is locked before reading the highest version, so a version created or
+  # deleted at the same time either finishes first and is counted, or waits until this one is done.
+  def update_latest_version
+    PublicationGroup.unscoped.lock.find(publication_group_id)
+    highest_version = Publication.unscoped.where(publication_group_id: publication_group_id).maximum(:version)
+    return if highest_version.nil?
+
+    set_group_latest_version(highest_version)
+  end
 
   def valid_license
     return if license.nil? || license.valid_for?(publishable_type)
@@ -235,6 +283,12 @@ class Publication < ApplicationRecord
   def before_publication
     return if published_at.nil? || publishable.nil?
 
+    # Publishing an old draft would publish content older than a version that already exists.
+    if published_at_in_database.nil? && has_newer_version?
+      errors.add(:base, 'cannot be published because a newer version exists')
+      throw(:abort)
+    end
+
     catch(:abort) do
       publishable.before_publication
     end
@@ -253,9 +307,7 @@ class Publication < ApplicationRecord
 
     publishable.after_publication
     if publishable.errors.empty?
-      publication_group.update_attribute(:latest_published_version, version) \
-        if publication_group.latest_published_version.nil? ||
-           publication_group.latest_published_version < version
+      update_group_version_if_higher(:latest_published_version, version)
 
       return
     end

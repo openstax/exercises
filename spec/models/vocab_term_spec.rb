@@ -70,6 +70,29 @@ RSpec.describe VocabTerm, type: :model do
     vocab_term.exercises.each { |exercise| expect(exercise).to be_is_published }
   end
 
+  it 'is not published if one of its exercises cannot be published' do
+    vocab_term.publication.publish.save!
+    term_v2 = vocab_term.new_version.tap(&:save!)
+    term_v2_exercise = term_v2.exercises.first
+    # A newer version of term v2's exercise, made from the version linked to v1
+    vocab_term.exercises.first.new_version.save!
+    # An exercise that can be published, to check that its publication is rolled back
+    publishable_exercise = FactoryBot.create :exercise
+    term_v2.exercises << publishable_exercise
+
+    # Publish inside an outer transaction, as rake tasks do, so the rollback can't rely on the
+    # publication's own transaction being the outermost one
+    ActiveRecord::Base.transaction do
+      expect(term_v2.publication.publish.save).to eq false
+    end
+    expect(term_v2.publication.errors.full_messages).to include(
+      "Vocab term Exercise #{term_v2_exercise.uid} cannot be published because a newer version exists"
+    )
+    expect(term_v2.publication.reload).not_to be_is_published
+    expect(term_v2_exercise.publication.reload).not_to be_is_published
+    expect(publishable_exercise.publication.reload).not_to be_is_published
+  end
+
   it 'does not create extra versions of exercises when creating a new version' do
     vocab_term.exercises.first.publication.publish.save!
     vocab_term.exercises << vocab_term.exercises.first.new_version

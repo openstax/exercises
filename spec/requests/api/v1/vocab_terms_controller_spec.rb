@@ -286,6 +286,20 @@ RSpec.describe Api::V1::VocabTermsController, type: :request, api: true, version
       expect(new_vocab_term.attributes.except('id', 'created_at', 'updated_at'))
         .to eq(@vocab_term.attributes.except('id', 'created_at', 'updated_at'))
     end
+
+    it "creates a new draft if \"@draft\" is requested and the draft is older than a published version" do
+      newer_version = @vocab_term.new_version.tap(&:save!)
+      newer_version.publication.publish.save!
+
+      expect do
+        api_get api_vocab_term_url("#{@vocab_term.number}@draft"), @user_1_token
+      end.to change { VocabTerm.count }.by(1)
+      expect(response).to have_http_status(:ok)
+
+      new_vocab_term = VocabTerm.order(:created_at).last
+      expect(response.body_as_hash).to match(a_hash_including(uuid: new_vocab_term.uuid))
+      expect(new_vocab_term.version).to eq newer_version.version + 1
+    end
   end
 
   context "POST /api/vocab_terms" do

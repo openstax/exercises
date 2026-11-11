@@ -55,6 +55,18 @@ RSpec.describe Api::V1::PublicationsController, type: :request, api: true, versi
         expect(JSON.parse(response.body)).to eq JSON.parse(expected_response)
         expect(exercise.is_published?).to eq false
       end
+
+      it "does not publish an exercise when a newer version exists" do
+        exercise.new_version.save!
+
+        api_put api_exercise_publish_url(exercise.uid), exercise_author_token
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body_as_hash[:errors].first[:code]).to(
+          eq 'base_cannot_be_published_because_a_newer_version_exists'
+        )
+        expect(exercise.reload.is_published?).to eq false
+      end
     end
 
     context "when given a vocab_term_id" do
